@@ -91,12 +91,25 @@ function nirup_yoast_breadcrumbs() {
     }
 }
 
-// TranslatePress compatibility
+// TranslatePress compatibility and customization
 function nirup_translatepress_support() {
     if (function_exists('trp_custom_language_switcher')) {
-        // Language switcher will be added in templates as needed
+        // Hide the default TranslatePress language switcher
+        add_action('wp_head', function() {
+            echo '<style>
+                .trp-language-switcher-container,
+                .trp-floater,
+                #trp-floater-ls {
+                    display: none !important;
+                }
+            </style>';
+        });
+        
+        // Remove TranslatePress default language switcher from footer/bottom
+        remove_action('wp_footer', 'trp_add_language_switcher_shortcode');
     }
 }
+add_action('init', 'nirup_translatepress_support');
 
 // WP Booking System hooks
 function nirup_booking_system_hooks() {
@@ -235,8 +248,160 @@ remove_action('wp_head', 'wp_shortlink_wp_head');
  */
 
 /**
- * Default Menu Fallbacks
+ * Display Language Dropdown - Simplified TranslatePress Integration
  */
+function nirup_language_dropdown() {
+    // Check if TranslatePress is active
+    if (function_exists('trp_custom_language_switcher')) {
+        
+        // Get TranslatePress instance and settings
+        $trp = TRP_Translate_Press::get_trp_instance();
+        if (!$trp) {
+            nirup_language_fallback();
+            return;
+        }
+        
+        $trp_settings = $trp->get_component('settings');
+        $settings = $trp_settings->get_settings();
+        $trp_languages = $trp->get_component('languages');
+        $trp_url_converter = $trp->get_component('url_converter');
+        
+        // Get all published languages
+        $published_languages = $settings['publish-languages'];
+        $all_languages = $trp_languages->get_language_names($published_languages);
+        
+        // Get current language
+        $current_language = get_locale();
+        if (isset($_GET['trp-edit-translation']) && $_GET['trp-edit-translation'] == 'preview') {
+            $current_language = sanitize_text_field($_GET['trp-edit-translation']);
+        }
+        
+        // Find current language in published languages
+        $current_lang_code = '';
+        foreach ($published_languages as $code) {
+            if ($code === $current_language || $code === substr($current_language, 0, 2)) {
+                $current_lang_code = $code;
+                break;
+            }
+        }
+        
+        // If no current language found, use default
+        if (empty($current_lang_code)) {
+            $current_lang_code = $settings['default-language'];
+        }
+        
+        // Map language codes to display names
+        $lang_display_names = array(
+            'en_US' => 'ENG',
+            'es_ES' => 'ESP', 
+            'fr_FR' => 'FRA',
+            'de_DE' => 'GER',
+            'it_IT' => 'ITA',
+            'pt_PT' => 'POR',
+            'nl_NL' => 'NLD',
+            'ru_RU' => 'RUS',
+            'zh_CN' => 'CHN',
+            'ja' => 'JPN',
+            'ko' => 'KOR',
+            // Add more short codes for common languages
+            'en' => 'ENG',
+            'es' => 'ESP',
+            'fr' => 'FRA', 
+            'de' => 'GER',
+            'it' => 'ITA',
+            'pt' => 'POR',
+            'nl' => 'NLD',
+            'ru' => 'RUS',
+            'zh' => 'CHN',
+        );
+        
+        // Get display name for current language
+        $current_display = isset($lang_display_names[$current_lang_code]) ? 
+                          $lang_display_names[$current_lang_code] : 
+                          strtoupper(substr($current_lang_code, 0, 3));
+        
+        // Start building the dropdown
+        echo '<div class="language-switcher-container">';
+        echo '<button class="language-current" data-current="' . esc_attr($current_display) . '">';
+        echo esc_html($current_display);
+        echo '<svg class="lang-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none">
+            <path d="M9 1L5 5L1 1" stroke="black"/>
+            </svg>';
+        echo '</button>';
+        
+        echo '<ul class="language-dropdown-menu">';
+        
+        // Loop through all published languages
+        foreach ($published_languages as $language_code) {
+            if (isset($all_languages[$language_code])) {
+                
+                // Get display name
+                $display_name = isset($lang_display_names[$language_code]) ? 
+                               $lang_display_names[$language_code] : 
+                               strtoupper(substr($language_code, 0, 3));
+                
+                // Get URL for this language
+                $language_url = $trp_url_converter->get_url_for_language($language_code);
+                
+                // Check if this is the current language
+                $is_current = ($language_code === $current_lang_code) ? ' current-language' : '';
+                
+                echo '<li class="language-option' . $is_current . '">';
+                echo '<a href="' . esc_url($language_url) . '" data-lang="' . esc_attr($language_code) . '">';
+                echo esc_html($display_name);
+                echo '</a>';
+                echo '</li>';
+            }
+        }
+        
+        echo '</ul>';
+        echo '</div>';
+        
+    } else {
+        // Fallback if TranslatePress is not active
+        nirup_language_fallback();
+    }
+}
+    
+/**
+ * Debug function to help troubleshoot language issues
+ * Add ?debug_lang=1 to your URL to see language information
+ */
+function nirup_debug_language_info() {
+    if (isset($_GET['debug_lang']) && $_GET['debug_lang'] == '1' && current_user_can('manage_options')) {
+        if (function_exists('trp_custom_language_switcher')) {
+            $trp = TRP_Translate_Press::get_trp_instance();
+            if ($trp) {
+                $trp_settings = $trp->get_component('settings');
+                $settings = $trp_settings->get_settings();
+                
+                echo '<div style="position: fixed; top: 100px; right: 20px; background: white; padding: 20px; border: 2px solid red; z-index: 9999; font-size: 12px; max-width: 300px;">';
+                echo '<h4>TranslatePress Debug Info:</h4>';
+                echo '<strong>Current Locale:</strong> ' . get_locale() . '<br>';
+                echo '<strong>Default Language:</strong> ' . $settings['default-language'] . '<br>';
+                echo '<strong>Published Languages:</strong> ' . implode(', ', $settings['publish-languages']) . '<br>';
+                echo '<strong>Current URL:</strong> ' . esc_url($_SERVER['REQUEST_URI']) . '<br>';
+                echo '<button onclick="this.parentElement.style.display=\'none\'">Close</button>';
+                echo '</div>';
+            }
+        } else {
+            echo '<div style="position: fixed; top: 100px; right: 20px; background: white; padding: 20px; border: 2px solid red; z-index: 9999;">TranslatePress not active!</div>';
+        }
+    }
+}
+add_action('wp_footer', 'nirup_debug_language_info');
+function nirup_language_fallback() {
+    echo '<div class="language-switcher-container">';
+    echo '<button class="language-current" data-current="ENG">ENG';
+    echo '<svg class="lang-dropdown-arrow" width="8" height="4" viewBox="0 0 8 4" fill="none">
+            <path d="M0 0L4 4L8 0" fill="currentColor"/>
+          </svg>';
+    echo '</button>';
+    echo '<ul class="language-dropdown-menu">';
+    echo '<li class="language-option current-language"><a href="#">ENG</a></li>';
+    echo '</ul>';
+    echo '</div>';
+}
 function nirup_default_left_menu() {
     echo '<ul class="primary-menu-left">';
     echo '<li><a href="' . esc_url(home_url('/getting-here/')) . '">' . __('Getting Here', 'nirup-island') . '</a></li>';

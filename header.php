@@ -25,8 +25,8 @@
                 <?php endif; ?>
                 
                 <span class="announcement-text"><?php echo esc_html($announcement_text); ?></span>
-                <svg class="announcement-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M3.33594 7.99992H12.6693M12.6693 7.99992L8.00261 3.33325M12.6693 7.99992L8.00261 12.6666" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg class="announcement-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M8.293 4.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L11.586 9H3a1 1 0 110-2h8.586l-3.293-3.293a1 1 0 010-1.414z" fill="currentColor"/>
                 </svg>
                 
                 <?php if ($announcement_link) : ?>
@@ -82,19 +82,7 @@
                         ?>
                         
                         <!-- Language Switcher -->
-                        <div class="language-switcher">
-                            <?php
-                            if (function_exists('trp_custom_language_switcher')) {
-                                trp_custom_language_switcher();
-                            } else {
-                                // Fallback if TranslatePress is not active
-                                echo '<span class="lang-fallback">ENG</span>';
-                                echo '<svg class="lang-dropdown-arrow" width="8" height="4" viewBox="0 0 8 4" fill="none">
-                                        <path d="M0 0L4 4L8 0" fill="currentColor"/>
-                                      </svg>';
-                            }
-                            ?>
-                        </div>
+                        <?php nirup_language_dropdown(); ?>
 
                         <!-- Search Icon -->
                         <button class="search-toggle" aria-label="<?php _e('Search', 'nirup-island'); ?>">
@@ -162,8 +150,8 @@
             <div class="search-overlay" id="search-overlay">
                 <div class="search-overlay-content">
                     <button class="search-close" aria-label="<?php _e('Close Search', 'nirup-island'); ?>">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M14 14L11.1067 11.1067M12.6667 7.33333C12.6667 10.2789 10.2789 12.6667 7.33333 12.6667C4.38781 12.6667 2 10.2789 2 7.33333C2 4.38781 4.38781 2 7.33333 2C10.2789 2 12.6667 4.38781 12.6667 7.33333Z" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
                     <div class="search-form-wrapper">

@@ -140,7 +140,7 @@ button,
     display: inline-block;
     padding: 12px 24px;
     background: var(--color-golden);
-    color: var(--color-white);
+    /* color: var(--color-white); */
     border: none;
     border-radius: 4px;
     font-family: var(--font-family);
@@ -152,18 +152,18 @@ button,
     text-align: center;
 }
 
-button:hover,
+/* button:hover,
 .button:hover {
     background: var(--color-black);
     color: var(--color-white);
     opacity: 1;
-}
+} */
 
-button:focus,
+/* button:focus,
 .button:focus {
     outline: 2px solid var(--color-golden);
     outline-offset: 2px;
-}
+} */
 
 /* Images */
 img {
