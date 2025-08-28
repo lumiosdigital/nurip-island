@@ -28,7 +28,8 @@ function nirup_theme_setup() {
     
     // Add support for custom menus
     register_nav_menus(array(
-        'primary' => __('Primary Menu', 'nirup-island'),
+        'primary' => __('Primary Menu (Left Side)', 'nirup-island'),
+        'secondary' => __('Secondary Menu (Right Side)', 'nirup-island'),
         'footer' => __('Footer Menu', 'nirup-island'),
     ));
     
@@ -43,10 +44,16 @@ add_action('after_setup_theme', 'nirup_theme_setup');
  * Enqueue Scripts and Styles
  */
 function nirup_enqueue_assets() {
-    // Enqueue main stylesheet
+    // Enqueue main stylesheet (WordPress theme header only)
     wp_enqueue_style('nirup-style', get_stylesheet_uri(), array(), '1.0.0');
     
-    // Enqueue main JavaScript (to be created later)
+    // Enqueue main CSS file
+    wp_enqueue_style('nirup-main', get_template_directory_uri() . '/assets/css/main.css', array(), '1.0.0');
+    
+    // Enqueue header CSS file
+    wp_enqueue_style('nirup-header', get_template_directory_uri() . '/assets/css/header.css', array('nirup-main'), '1.0.0');
+    
+    // Enqueue main JavaScript
     wp_enqueue_script('nirup-main', get_template_directory_uri() . '/js/main.js', array('jquery'), '1.0.0', true);
     
     // Localize script for AJAX
@@ -135,13 +142,79 @@ function nirup_get_template_part($slug, $name = null, $args = array()) {
 }
 
 /**
- * Theme Customizer (basic setup)
+ * Theme Customizer
  */
 function nirup_customize_register($wp_customize) {
-    // Add customizer sections as needed
-    $wp_customize->add_section('nirup_general', array(
-        'title' => __('Nirup Island Settings', 'nirup-island'),
+    // Announcement Bar Section
+    $wp_customize->add_section('nirup_announcement_bar', array(
+        'title' => __('Announcement Bar', 'nirup-island'),
         'priority' => 30,
+    ));
+
+    // Show/Hide Announcement Bar
+    $wp_customize->add_setting('nirup_announcement_show', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+
+    $wp_customize->add_control('nirup_announcement_show', array(
+        'label' => __('Show Announcement Bar', 'nirup-island'),
+        'section' => 'nirup_announcement_bar',
+        'type' => 'checkbox',
+    ));
+
+    // Announcement Text
+    $wp_customize->add_setting('nirup_announcement_text', array(
+        'default' => __('Wellness Retreat now available – June to September 2025', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_announcement_text', array(
+        'label' => __('Announcement Text', 'nirup-island'),
+        'section' => 'nirup_announcement_bar',
+        'type' => 'text',
+    ));
+
+    // Announcement Link
+    $wp_customize->add_setting('nirup_announcement_link', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_announcement_link', array(
+        'label' => __('Announcement Link URL', 'nirup-island'),
+        'section' => 'nirup_announcement_bar',
+        'type' => 'url',
+    ));
+
+    // Navigation Settings Section
+    $wp_customize->add_section('nirup_navigation', array(
+        'title' => __('Navigation Settings', 'nirup-island'),
+        'priority' => 31,
+    ));
+
+    // Book Your Stay Button Text
+    $wp_customize->add_setting('nirup_booking_button_text', array(
+        'default' => __('Book Your Stay', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_booking_button_text', array(
+        'label' => __('Booking Button Text', 'nirup-island'),
+        'section' => 'nirup_navigation',
+        'type' => 'text',
+    ));
+
+    // Book Your Stay Button Link
+    $wp_customize->add_setting('nirup_booking_button_link', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_booking_button_link', array(
+        'label' => __('Booking Button Link URL', 'nirup-island'),
+        'section' => 'nirup_navigation',
+        'type' => 'url',
     ));
 }
 add_action('customize_register', 'nirup_customize_register');
@@ -160,3 +233,37 @@ remove_action('wp_head', 'wp_shortlink_wp_head');
 /**
  * AJAX Handlers (to be added as needed)
  */
+
+/**
+ * Default Menu Fallbacks
+ */
+function nirup_default_left_menu() {
+    echo '<ul class="primary-menu-left">';
+    echo '<li><a href="' . esc_url(home_url('/getting-here/')) . '">' . __('Getting Here', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/accommodations/')) . '">' . __('Accommodations', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/experiences/')) . '">' . __('Experiences', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/dining/')) . '">' . __('Dining', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/marina/')) . '">' . __('Marina', 'nirup-island') . '</a></li>';
+    echo '</ul>';
+}
+
+function nirup_default_right_menu() {
+    echo '<ul class="secondary-menu">';
+    echo '<li><a href="' . esc_url(home_url('/private-events/')) . '">' . __('Private Events', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/events-offers/')) . '">' . __('Events & Offers', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/contact/')) . '">' . __('Contact', 'nirup-island') . '</a></li>';
+    echo '</ul>';
+}
+
+function nirup_mobile_default_menu() {
+    echo '<ul class="mobile-primary-menu">';
+    echo '<li><a href="' . esc_url(home_url('/getting-here/')) . '">' . __('Getting Here', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/accommodations/')) . '">' . __('Accommodations', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/experiences/')) . '">' . __('Experiences', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/dining/')) . '">' . __('Dining', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/marina/')) . '">' . __('Marina', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/private-events/')) . '">' . __('Private Events', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/events-offers/')) . '">' . __('Events & Offers', 'nirup-island') . '</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/contact/')) . '">' . __('Contact', 'nirup-island') . '</a></li>';
+    echo '</ul>';
+}
