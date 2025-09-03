@@ -25,8 +25,8 @@
                 <?php endif; ?>
                 
                 <span class="announcement-text"><?php echo esc_html($announcement_text); ?></span>
-                <svg class="announcement-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M8.293 4.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L11.586 9H3a1 1 0 110-2h8.586l-3.293-3.293a1 1 0 010-1.414z" fill="currentColor"/>
+                <svg class="announcement-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3.33398 7.99992H12.6673M12.6673 7.99992L8.00065 3.33325M12.6673 7.99992L8.00065 12.6666" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 
                 <?php if ($announcement_link) : ?>
