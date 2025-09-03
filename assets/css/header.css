@@ -196,17 +196,17 @@
 }
 
 /* Menu Focus States */
-.primary-menu-left li.focused,
+/* .primary-menu-left li.focused,
 .secondary-menu li.focused {
     background-color: rgba(139, 94, 29, 0.1);
     border-radius: 4px;
-}
+} */
 
-.primary-menu-left a:focus,
+/* .primary-menu-left a:focus,
 .secondary-menu a:focus {
     outline: 2px solid var(--color-golden);
     outline-offset: 2px;
-}
+} */
 
 /* ===========================
    LANGUAGE SWITCHER STYLES
