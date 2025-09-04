@@ -58,6 +58,10 @@ function nirup_enqueue_assets() {
     
     // Enqueue main JavaScript
     wp_enqueue_script('nirup-main', get_template_directory_uri() . '/js/main.js', array('jquery'), '1.0.0', true);
+
+    // Enqueue navigation JavaScript
+    wp_enqueue_script('nirup-navigation', get_template_directory_uri() . '/js/navigation.js', array('jquery'), '1.0.0', true);
+    
     
     // Localize script for AJAX
     wp_localize_script('nirup-main', 'nirup_ajax', array(

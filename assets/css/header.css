@@ -9,9 +9,17 @@
     font-size: 11px;
     font-weight: 400;
     text-align: center;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     width: 100%;
-    z-index: 100;
+    z-index: 101;
+    transition: transform 0.3s ease;
+}
+
+.announcement-bar.header-hidden {
+    transform: translateY(-100%);
 }
 
 .announcement-content {
@@ -59,8 +67,22 @@
     height: 80px;
     display: flex;
     align-items: center;
-    position: relative;
-    z-index: 50;
+    position: fixed;
+    top: 31px;
+    /* Height of announcement bar */
+    left: 0;
+    right: 0;
+    z-index: 100;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.site-header.header-hidden {
+    transform: translateY(-100%);
+}
+
+/* Add subtle shadow when scrolling */
+.site-header.header-scrolled {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .header-container {
@@ -459,10 +481,11 @@
 .mobile-menu {
     display: none;
     position: fixed;
-    top: 0;
+    top: 111px;
+    /* Height of announcement bar + header */
     left: 0;
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 111px);
     background-color: var(--color-white);
     z-index: 1000;
     overflow-y: auto;
@@ -475,7 +498,7 @@
 }
 
 .mobile-menu-content {
-    padding: 80px 20px 40px;
+    padding: 40px 20px 40px;
     max-width: 400px;
     margin: 0 auto;
 }
@@ -666,6 +689,15 @@ body.mobile-menu-open {
 }
 
 /* ===========================
+   BODY PADDING FOR FIXED HEADER
+   =========================== */
+
+body {
+    padding-top: 111px;
+    /* announcement bar (31px) + header (80px) */
+}
+
+/* ===========================
    RESPONSIVE STYLES
    =========================== */
 
@@ -685,6 +717,10 @@ body.mobile-menu-open {
 }
 
 @media (max-width: 768px) {
+    body {
+        padding-top: 111px;
+    }
+
     .header-container {
         padding: 0 15px;
     }
@@ -743,7 +779,7 @@ body.mobile-menu-open {
     }
 
     .mobile-menu-content {
-        padding: 60px 15px 30px;
+        padding: 30px 15px 30px;
     }
 
     .announcement-content {
@@ -782,6 +818,11 @@ body.mobile-menu-open {
     .site-header {
         border-bottom: 2px solid var(--color-black);
         background: transparent !important;
+        position: static;
+    }
+
+    body {
+        padding-top: 0;
     }
 
     .primary-menu-left a,
