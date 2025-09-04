@@ -53,6 +53,9 @@ function nirup_enqueue_assets() {
     // Enqueue header CSS file
     wp_enqueue_style('nirup-header', get_template_directory_uri() . '/assets/css/header.css', array('nirup-main'), '1.0.0');
     
+    // Enqueue hero CSS file
+    wp_enqueue_style('nirup-hero', get_template_directory_uri() . '/assets/css/hero.css', array('nirup-main'), '1.0.0');
+    
     // Enqueue main JavaScript
     wp_enqueue_script('nirup-main', get_template_directory_uri() . '/js/main.js', array('jquery'), '1.0.0', true);
     
@@ -155,6 +158,23 @@ function nirup_get_template_part($slug, $name = null, $args = array()) {
 }
 
 /**
+ * Get YouTube video embed URL from video ID
+ */
+function nirup_get_youtube_embed_url($video_id) {
+    if (empty($video_id)) {
+        return '';
+    }
+    
+    // Clean up the video ID in case full URL was provided
+    if (strpos($video_id, 'youtube.com') !== false || strpos($video_id, 'youtu.be') !== false) {
+        preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/', $video_id, $matches);
+        $video_id = isset($matches[1]) ? $matches[1] : $video_id;
+    }
+    
+    return 'https://www.youtube.com/embed/' . $video_id . '?autoplay=1&rel=0&showinfo=0';
+}
+
+/**
  * Theme Customizer
  */
 function nirup_customize_register($wp_customize) {
@@ -199,6 +219,145 @@ function nirup_customize_register($wp_customize) {
         'section' => 'nirup_announcement_bar',
         'type' => 'url',
     ));
+
+    // Hero Section
+    $wp_customize->add_section('nirup_hero_section', array(
+        'title' => __('Hero Section', 'nirup-island'),
+        'priority' => 25,
+    ));
+
+    // Hero Main Title
+    $wp_customize->add_setting('nirup_hero_title', array(
+        'default' => __('Your Island Escape', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_hero_title', array(
+        'label' => __('Hero Title', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'type' => 'text',
+    ));
+
+    // Hero Subtitle
+    $wp_customize->add_setting('nirup_hero_subtitle', array(
+        'default' => __('Just 50 minutes from Singapore', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_hero_subtitle', array(
+        'label' => __('Hero Subtitle', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'type' => 'text',
+    ));
+
+    // Hero Logo/Brand Image
+    $wp_customize->add_setting('nirup_hero_logo', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_hero_logo', array(
+        'label' => __('Hero Logo/Brand Image', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'mime_type' => 'image',
+    )));
+
+    // Hero CTA Button Text
+    $wp_customize->add_setting('nirup_hero_cta_text', array(
+        'default' => __('Book Your Stay', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_hero_cta_text', array(
+        'label' => __('Hero Button Text', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'type' => 'text',
+    ));
+
+    // Hero CTA Button Link
+    $wp_customize->add_setting('nirup_hero_cta_link', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_hero_cta_link', array(
+        'label' => __('Hero Button Link', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'type' => 'url',
+    ));
+
+    // Video Section Heading
+    $wp_customize->add_setting('nirup_hero_video_heading', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Control($wp_customize, 'nirup_hero_video_heading', array(
+        'label' => __('Video Section', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'type' => 'hidden',
+        'description' => __('Configure the video settings below:', 'nirup-island'),
+    )));
+
+    // YouTube Video ID
+    $wp_customize->add_setting('nirup_hero_video_id', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_hero_video_id', array(
+        'label' => __('YouTube Video ID', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'type' => 'text',
+        'description' => __('Enter just the video ID from YouTube URL (e.g., if URL is https://youtube.com/watch?v=ABC123, enter ABC123)', 'nirup-island'),
+    ));
+
+    // Show/Hide Video Button
+    $wp_customize->add_setting('nirup_hero_show_video', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+
+    $wp_customize->add_control('nirup_hero_show_video', array(
+        'label' => __('Show Video Button', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'type' => 'checkbox',
+    ));
+
+    // Layered Background Images
+    $wp_customize->add_setting('nirup_hero_layer1_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_hero_layer1_image', array(
+        'label' => __('Layer 1 Background (Optional)', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'mime_type' => 'image',
+        'description' => __('Additional layered background images for depth effect', 'nirup-island'),
+    )));
+
+    $wp_customize->add_setting('nirup_hero_layer2_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_hero_layer2_image', array(
+        'label' => __('Layer 2 Background (Optional)', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'mime_type' => 'image',
+    )));
+
+    $wp_customize->add_setting('nirup_hero_layer3_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_hero_layer3_image', array(
+        'label' => __('Layer 3 Background (Optional)', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'mime_type' => 'image',
+    )));
 
     // Navigation Settings Section
     $wp_customize->add_section('nirup_navigation', array(
@@ -390,6 +549,7 @@ function nirup_debug_language_info() {
     }
 }
 add_action('wp_footer', 'nirup_debug_language_info');
+
 function nirup_language_fallback() {
     echo '<div class="language-switcher-container">';
     echo '<button class="language-current" data-current="ENG">ENG';
@@ -402,6 +562,7 @@ function nirup_language_fallback() {
     echo '</ul>';
     echo '</div>';
 }
+
 function nirup_default_left_menu() {
     echo '<ul class="primary-menu-left">';
     echo '<li><a href="' . esc_url(home_url('/getting-here/')) . '">' . __('Getting Here', 'nirup-island') . '</a></li>';
