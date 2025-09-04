@@ -12,8 +12,6 @@ $hero_subtitle = get_theme_mod('nirup_hero_subtitle', __('Just 50 minutes from S
 $hero_logo_id = get_theme_mod('nirup_hero_logo');
 $hero_cta_text = get_theme_mod('nirup_hero_cta_text', __('Book Your Stay', 'nirup-island'));
 $hero_cta_link = get_theme_mod('nirup_hero_cta_link', '');
-$hero_video_id = get_theme_mod('nirup_hero_video_id');
-$show_video = get_theme_mod('nirup_hero_show_video', true);
 $hero_layer1_id = get_theme_mod('nirup_hero_layer1_image');
 $hero_layer2_id = get_theme_mod('nirup_hero_layer2_image');
 $hero_layer3_id = get_theme_mod('nirup_hero_layer3_image');
@@ -116,81 +114,10 @@ if ($inline_styles) {
         </a>
         <?php endif; ?>
     </div>
-    
-    <?php if ($show_video && $hero_video_id): ?>
-    <!-- Video Play Button -->
-    <button class="hero-video-button" 
-            aria-label="<?php esc_attr_e('Play video', 'nirup-island'); ?>"
-            data-video-id="<?php echo esc_attr($hero_video_id); ?>">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="5,3 19,12 5,21"></polygon>
-        </svg>
-    </button>
-    <?php endif; ?>
 </section>
-
-<?php if ($show_video && $hero_video_id): ?>
-<!-- Video Modal -->
-<div class="video-modal" id="video-modal">
-    <div class="video-modal-content">
-        <button class="video-modal-close" aria-label="<?php esc_attr_e('Close video', 'nirup-island'); ?>">&times;</button>
-        <iframe id="hero-video-iframe" 
-                src="" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-        </iframe>
-    </div>
-</div>
-<?php endif; ?>
 
 <script>
 jQuery(document).ready(function($) {
-    <?php if ($show_video && $hero_video_id): ?>
-    // Video modal functionality
-    $('.hero-video-button').on('click', function() {
-        var videoId = $(this).data('video-id');
-        var embedUrl = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&showinfo=0';
-        
-        $('#hero-video-iframe').attr('src', embedUrl);
-        $('#video-modal').addClass('active');
-        $('body').addClass('modal-open');
-        
-        // Analytics tracking
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'video_play', {
-                video_title: 'Hero Video',
-                video_url: embedUrl
-            });
-        }
-        
-        // Microsoft Clarity tracking
-        if (typeof clarity !== 'undefined') {
-            clarity('event', 'hero_video_play', {
-                video_id: videoId
-            });
-        }
-    });
-    
-    // Close video modal
-    $('.video-modal-close, .video-modal').on('click', function(e) {
-        if (e.target === this) {
-            $('#video-modal').removeClass('active');
-            $('#hero-video-iframe').attr('src', '');
-            $('body').removeClass('modal-open');
-        }
-    });
-    
-    // Close video modal with Escape key
-    $(document).on('keydown', function(e) {
-        if (e.key === 'Escape' && $('#video-modal').hasClass('active')) {
-            $('#video-modal').removeClass('active');
-            $('#hero-video-iframe').attr('src', '');
-            $('body').removeClass('modal-open');
-        }
-    });
-    <?php endif; ?>
-    
     // Hero CTA button tracking
     $('.hero-cta').on('click', function() {
         var buttonText = $(this).text();

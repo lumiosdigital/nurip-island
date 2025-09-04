@@ -1,5 +1,6 @@
 /* Import Albert Sans Font */
 @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700&display=swap');
+@import url("https://use.typekit.net/jft2tld.css");
 
 /* CSS Variables */
 :root {
@@ -10,6 +11,7 @@
     --color-border: #ebebeb;
     --color-white: #ffffff;
     --font-family: 'Albert Sans', sans-serif;
+    --font-hero: 'Amiri', serif;
     --container-max-width: 1440px;
 }
 

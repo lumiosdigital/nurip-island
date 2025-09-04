@@ -19,50 +19,6 @@ get_header(); ?>
      */
     get_template_part('template-parts/hero-section');
     ?>
-    
-    <?php
-    /**
-     * Future homepage sections will go here
-     * Examples:
-     * - Features/Amenities section
-     * - Accommodation preview
-     * - Dining section
-     * - Contact/Location section
-     * - Newsletter signup
-     */
-    
-    // get_template_part('template-parts/features-section');
-    // get_template_part('template-parts/accommodations-preview');
-    // get_template_part('template-parts/dining-preview');
-    // get_template_part('template-parts/contact-section');
-    ?>
-    
-    <?php
-    /**
-     * Optional: Display page content if this page has content in the editor
-     * This allows you to add additional content through the WordPress editor
-     * while still maintaining the custom sections above
-     */
-    if (have_posts()) :
-        while (have_posts()) :
-            the_post();
-            
-            // Only display content if it's not empty
-            $content = get_the_content();
-            if (!empty(trim($content))) :
-    ?>
-                <section class="homepage-content">
-                    <div class="container">
-                        <div class="entry-content">
-                            <?php the_content(); ?>
-                        </div>
-                    </div>
-                </section>
-    <?php
-            endif;
-        endwhile;
-    endif;
-    ?>
 
 </main>
 
