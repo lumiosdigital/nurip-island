@@ -253,15 +253,10 @@
         height: 30px;
     }
 
-    .hero-video-button {
-        width: 120px;
-        height: 120px;
+    .hero-video-container {
+        width: 300px;
+        height: 169px;
         bottom: 10%;
-    }
-
-    .hero-video-button svg {
-        width: 36px;
-        height: 36px;
     }
 
     .hero-layered-bg {
@@ -283,14 +278,9 @@
         gap: 25px;
     }
 
-    .hero-video-button {
-        width: 100px;
-        height: 100px;
-    }
-
-    .hero-video-button svg {
-        width: 30px;
-        height: 30px;
+    .hero-video-container {
+        width: 250px;
+        height: 140px;
     }
 }
 

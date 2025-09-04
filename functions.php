@@ -158,20 +158,32 @@ function nirup_get_template_part($slug, $name = null, $args = array()) {
 }
 
 /**
- * Get YouTube video embed URL from video ID
+ * Get YouTube video embed URL from video URL or ID
  */
-function nirup_get_youtube_embed_url($video_id) {
+function nirup_get_youtube_embed_url($video_url) {
+    if (empty($video_url)) {
+        return '';
+    }
+    
+    $video_id = '';
+    
+    // Extract video ID from various YouTube URL formats
+    if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/', $video_url, $matches)) {
+        $video_id = $matches[1];
+    } else {
+        // If no URL pattern matches, assume it's just a video ID
+        $video_id = $video_url;
+    }
+    
+    // Clean up video ID (remove any extra parameters)
+    $video_id = preg_replace('/[&?].*/', '', $video_id);
+    
     if (empty($video_id)) {
         return '';
     }
     
-    // Clean up the video ID in case full URL was provided
-    if (strpos($video_id, 'youtube.com') !== false || strpos($video_id, 'youtu.be') !== false) {
-        preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/', $video_id, $matches);
-        $video_id = isset($matches[1]) ? $matches[1] : $video_id;
-    }
-    
-    return 'https://www.youtube.com/embed/' . $video_id . '?autoplay=1&rel=0&showinfo=0';
+    // Return embed URL without autoplay for direct embedding
+    return 'https://www.youtube.com/embed/' . $video_id . '?rel=0&showinfo=0&modestbranding=1';
 }
 
 /**

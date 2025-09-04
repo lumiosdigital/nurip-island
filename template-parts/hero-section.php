@@ -223,30 +223,3 @@ jQuery(document).ready(function($) {
     });
 });
 </script>
-
-<style>
-/* Modal-specific styles */
-body.modal-open {
-    overflow: hidden;
-}
-
-.video-modal {
-    backdrop-filter: blur(5px);
-}
-
-.video-modal-close:hover {
-    opacity: 0.7;
-}
-
-@media (max-width: 768px) {
-    .video-modal-content {
-        width: 95%;
-        margin: 0 auto;
-    }
-    
-    .video-modal-close {
-        top: -35px;
-        font-size: 20px;
-    }
-}
-</style>
