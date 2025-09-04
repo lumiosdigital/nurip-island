@@ -1,12 +1,15 @@
 /**
- * Nirup Island Theme JavaScript
+ * Nirup Island Theme JavaScript - Fixed Based on Working Version
  */
 
 jQuery(document).ready(function($) {
     'use strict';
 
+    console.log('Nirup Theme JS loaded - based on working version');
+
     // Mobile menu toggle with improved animations
     $('.mobile-menu-toggle').on('click', function() {
+        console.log('Mobile menu toggle clicked');
         var $toggle = $(this);
         var $menu = $('.mobile-menu');
         var $body = $('body');
@@ -30,6 +33,7 @@ jQuery(document).ready(function($) {
     // Search overlay toggle with improved animations
     $('.search-toggle').on('click', function(e) {
         e.preventDefault();
+        console.log('Search toggle clicked');
         var $overlay = $('.search-overlay');
         
         $overlay.show().addClass('active');
@@ -40,16 +44,79 @@ jQuery(document).ready(function($) {
         }, 350);
     });
 
-    // Close search overlay
-    $('.search-close, .search-overlay').on('click', function(e) {
+    // Close search overlay - Fixed version
+    $('.search-close').on('click', function(e) {
+        e.preventDefault();
+        console.log('Search close clicked');
+        var $overlay = $('.search-overlay');
+        $overlay.removeClass('active');
+        $('body').removeClass('search-open');
+        
+        setTimeout(function() {
+            $overlay.hide();
+        }, 300);
+    });
+
+    // Close search when clicking overlay background
+    $('.search-overlay').on('click', function(e) {
         if (e.target === this) {
-            var $overlay = $('.search-overlay');
+            console.log('Search overlay background clicked');
+            var $overlay = $(this);
             $overlay.removeClass('active');
             $('body').removeClass('search-open');
             
             setTimeout(function() {
                 $overlay.hide();
             }, 300);
+        }
+    });
+
+    // Language dropdown functionality - FIXED to match your HTML structure
+    $('.language-current').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Language dropdown clicked');
+        
+        var $container = $(this).closest('.language-switcher-container');
+        
+        // Close other dropdowns
+        $('.language-switcher-container').not($container).removeClass('active');
+        
+        // Toggle current dropdown
+        $container.toggleClass('active');
+    });
+
+    // Language option selection
+    $(document).on('click', '.language-option a', function(e) {
+        console.log('Language option clicked:', $(this).text());
+        
+        var selectedLang = $(this).text();
+        var $container = $(this).closest('.language-switcher-container');
+        var $currentButton = $container.find('.language-current');
+        
+        // Update the current language display - simple method
+        var $textNode = $currentButton.contents().filter(function() {
+            return this.nodeType === 3;
+        }).first();
+        
+        if ($textNode.length) {
+            $textNode[0].nodeValue = selectedLang;
+        }
+        
+        // Close dropdown
+        $container.removeClass('active');
+        
+        // Update current language styling
+        $container.find('.language-option').removeClass('current-language');
+        $(this).closest('.language-option').addClass('current-language');
+        
+        // Let the link work normally for TranslatePress
+    });
+
+    // Close language dropdown when clicking outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.language-switcher-container').length) {
+            $('.language-switcher-container').removeClass('active');
         }
     });
 
@@ -65,6 +132,9 @@ jQuery(document).ready(function($) {
                     $searchOverlay.hide();
                 }, 300);
             }
+            
+            // Close language dropdown
+            $('.language-switcher-container').removeClass('active');
             
             // Close mobile menu
             var $mobileMenu = $('.mobile-menu');
@@ -122,77 +192,6 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // Language dropdown functionality
-    $(document).on('click', '.language-current', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        var $container = $(this).closest('.language-switcher-container');
-        var $dropdown = $container.find('.language-dropdown-menu');
-        
-        // Close other dropdowns
-        $('.language-switcher-container').not($container).removeClass('active');
-        
-        // Toggle current dropdown
-        $container.toggleClass('active');
-        
-        if ($container.hasClass('active')) {
-            $dropdown.show();
-        }
-    });
-
-    // Close language dropdown when clicking outside
-    $(document).on('click', function(e) {
-        if (!$(e.target).closest('.language-switcher-container').length) {
-            $('.language-switcher-container').removeClass('active');
-        }
-    });
-
-    // Language option click - Updated for automatic TranslatePress integration
-    $(document).on('click', '.language-option a', function(e) {
-        var selectedLang = $(this).text();
-        var $container = $(this).closest('.language-switcher-container');
-        var $currentButton = $container.find('.language-current');
-        var selectedUrl = $(this).attr('href');
-        
-        // Update the current language display
-        $currentButton.contents().first().replaceWith(selectedLang);
-        $currentButton.attr('data-current', selectedLang);
-        
-        // Close dropdown
-        $container.removeClass('active');
-        
-        // Update current language styling
-        $container.find('.language-option').removeClass('current-language');
-        $(this).closest('.language-option').addClass('current-language');
-        
-        // Track language change
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'language_change', {
-                language: selectedLang,
-                language_code: $(this).attr('data-lang')
-            });
-        }
-        
-        // Microsoft Clarity tracking
-        if (typeof clarity !== 'undefined') {
-            clarity('event', 'language_switch', {
-                from_language: $currentButton.attr('data-current'),
-                to_language: selectedLang
-            });
-        }
-        
-        // Don't prevent default - let TranslatePress URLs work
-        // The href contains the proper TranslatePress language URL
-    });
-
-    // Close language dropdown with Escape key
-    $(document).on('keydown', function(e) {
-        if (e.key === 'Escape') {
-            $('.language-switcher-container').removeClass('active');
-        }
-    });
-
     // Navigation menu accessibility enhancements
     $('.primary-menu-left a, .secondary-menu a').on('focus', function() {
         $(this).parent().addClass('focused');
@@ -200,17 +199,10 @@ jQuery(document).ready(function($) {
         $(this).parent().removeClass('focused');
     });
 
-    // Booking button analytics tracking (placeholder)
+    // Booking button analytics tracking
     $('.booking-button, .mobile-booking-button').on('click', function() {
         var buttonText = $(this).text();
         var buttonLocation = $(this).hasClass('mobile-booking-button') ? 'mobile' : 'desktop';
-        
-        // Add analytics tracking here if needed
-        // Example: gtag('event', 'click', { 
-        //     event_category: 'booking', 
-        //     event_label: 'header_cta_' + buttonLocation,
-        //     value: buttonText
-        // });
         
         // Microsoft Clarity tracking
         if (typeof clarity !== 'undefined') {
@@ -286,6 +278,9 @@ jQuery(document).ready(function($) {
                 $('.mobile-menu-toggle').removeClass('active');
                 $('body').removeClass('mobile-menu-open');
                 $('.mobile-menu-toggle').attr('aria-expanded', 'false');
+                
+                // Close language dropdown
+                $('.language-switcher-container').removeClass('active');
             }
         }, 250);
     });
@@ -315,5 +310,7 @@ jQuery(document).ready(function($) {
     $(window).on('load', function() {
         $('.loading').removeClass('loading');
     });
+
+    console.log('Nirup Theme JS initialization complete');
 
 });
