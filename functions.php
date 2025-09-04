@@ -269,41 +269,6 @@ function nirup_customize_register($wp_customize) {
         'type' => 'url',
     ));
 
-    // Layered Background Images
-    $wp_customize->add_setting('nirup_hero_layer1_image', array(
-        'default' => '',
-        'sanitize_callback' => 'absint',
-    ));
-
-    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_hero_layer1_image', array(
-        'label' => __('Layer 1 Background (Optional)', 'nirup-island'),
-        'section' => 'nirup_hero_section',
-        'mime_type' => 'image',
-        'description' => __('Additional layered background images for depth effect', 'nirup-island'),
-    )));
-
-    $wp_customize->add_setting('nirup_hero_layer2_image', array(
-        'default' => '',
-        'sanitize_callback' => 'absint',
-    ));
-
-    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_hero_layer2_image', array(
-        'label' => __('Layer 2 Background (Optional)', 'nirup-island'),
-        'section' => 'nirup_hero_section',
-        'mime_type' => 'image',
-    )));
-
-    $wp_customize->add_setting('nirup_hero_layer3_image', array(
-        'default' => '',
-        'sanitize_callback' => 'absint',
-    ));
-
-    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_hero_layer3_image', array(
-        'label' => __('Layer 3 Background (Optional)', 'nirup-island'),
-        'section' => 'nirup_hero_section',
-        'mime_type' => 'image',
-    )));
-
     // Navigation Settings Section
     $wp_customize->add_section('nirup_navigation', array(
         'title' => __('Navigation Settings', 'nirup-island'),

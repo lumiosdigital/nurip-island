@@ -9,20 +9,12 @@ $hero_bg_image_id = get_theme_mod('nirup_hero_bg_image');
 $hero_pattern_image_id = get_theme_mod('nirup_hero_pattern_image');
 $hero_title = get_theme_mod('nirup_hero_title', __('Your Island Escape', 'nirup-island'));
 $hero_subtitle = get_theme_mod('nirup_hero_subtitle', __('Just 50 minutes from Singapore', 'nirup-island'));
-$hero_logo_id = get_theme_mod('nirup_hero_logo');
 $hero_cta_text = get_theme_mod('nirup_hero_cta_text', __('Book Your Stay', 'nirup-island'));
 $hero_cta_link = get_theme_mod('nirup_hero_cta_link', '');
-$hero_layer1_id = get_theme_mod('nirup_hero_layer1_image');
-$hero_layer2_id = get_theme_mod('nirup_hero_layer2_image');
-$hero_layer3_id = get_theme_mod('nirup_hero_layer3_image');
 
 // Get image URLs
 $hero_bg_url = $hero_bg_image_id ? wp_get_attachment_image_url($hero_bg_image_id, 'full') : '';
 $hero_pattern_url = $hero_pattern_image_id ? wp_get_attachment_image_url($hero_pattern_image_id, 'full') : '';
-$hero_logo_url = $hero_logo_id ? wp_get_attachment_image_url($hero_logo_id, 'full') : '';
-$hero_layer1_url = $hero_layer1_id ? wp_get_attachment_image_url($hero_layer1_id, 'full') : '';
-$hero_layer2_url = $hero_layer2_id ? wp_get_attachment_image_url($hero_layer2_id, 'full') : '';
-$hero_layer3_url = $hero_layer3_id ? wp_get_attachment_image_url($hero_layer3_id, 'full') : '';
 
 // Build inline styles
 $inline_styles = '';
@@ -32,18 +24,6 @@ if ($hero_bg_url) {
 if ($hero_pattern_url) {
     $inline_styles .= '.hero-pattern-bg { background-image: url(' . esc_url($hero_pattern_url) . '); }';
 }
-if ($hero_logo_url) {
-    $inline_styles .= '.hero-logo { background-image: url(' . esc_url($hero_logo_url) . '); }';
-}
-if ($hero_layer1_url) {
-    $inline_styles .= '.hero-layer-1 { background-image: url(' . esc_url($hero_layer1_url) . '); }';
-}
-if ($hero_layer2_url) {
-    $inline_styles .= '.hero-layer-2 { background-image: url(' . esc_url($hero_layer2_url) . '); }';
-}
-if ($hero_layer3_url) {
-    $inline_styles .= '.hero-layer-3 { background-image: url(' . esc_url($hero_layer3_url) . '); }';
-}
 
 // Add inline styles if we have any
 if ($inline_styles) {
@@ -52,37 +32,6 @@ if ($inline_styles) {
 ?>
 
 <section class="hero-section" id="hero">
-    <?php if ($hero_layer1_url || $hero_layer2_url || $hero_layer3_url): ?>
-    <!-- Layered Backgrounds -->
-    <div class="hero-layered-bg">
-        <?php if ($hero_layer1_url): ?>
-        <div class="hero-layer hero-layer-1"></div>
-        <?php endif; ?>
-        
-        <?php if ($hero_layer2_url): ?>
-        <div class="hero-layer hero-layer-2"></div>
-        <?php endif; ?>
-        
-        <?php if ($hero_layer3_url): ?>
-        <div class="hero-layer hero-layer-3"></div>
-        <?php endif; ?>
-        
-        <!-- Overlay for layered effect -->
-        <div class="hero-layer" style="
-            position: absolute;
-            top: 720px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 1400px;
-            height: 780px;
-            background: rgba(41, 26, 26, 0.08);
-            mask-image: url('data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 1400 780&quot;><ellipse cx=&quot;700&quot; cy=&quot;390&quot; rx=&quot;700&quot; ry=&quot;390&quot; fill=&quot;black&quot;/></svg>');
-            mask-size: 1400px 780px;
-            mask-position: 0px;
-            mask-repeat: no-repeat;
-        "></div>
-    </div>
-    <?php endif; ?>
     
     <!-- Hero Content -->
     <div class="hero-content">
@@ -100,10 +49,11 @@ if ($inline_styles) {
         <!-- Decorative Line -->
         <div class="hero-divider"></div>
         
-        <?php if ($hero_logo_url): ?>
-        <!-- Hero Logo -->
-        <div class="hero-logo" role="img" aria-label="<?php echo esc_attr(get_bloginfo('name')); ?>"></div>
-        <?php endif; ?>
+        <!-- Hardcoded Hero Logo -->
+        <div class="hero-logo">
+            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/the-westin-logo.png" 
+                 alt="The Westin Logo">
+        </div>
         
         <?php if ($hero_cta_text): ?>
         <!-- CTA Button -->
