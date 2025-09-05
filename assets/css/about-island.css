@@ -70,8 +70,9 @@
 
 .about-features-grid {
     display: grid;
+    align-items: stretch;
     grid-template-columns: repeat(6, 1fr);
-    gap: 5px;
+    gap: 8px;
     max-width: 1400px;
     /* 6 * 217px + 5 * 20px gaps */
     margin: 0 auto;
@@ -159,7 +160,7 @@
     color: #3d332f;
     margin: 0;
     opacity: 0.8;
-    width: 210px;
+    
 }
 
 /* ===========================
