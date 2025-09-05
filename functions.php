@@ -41,35 +41,139 @@ function nirup_theme_setup() {
 add_action('after_setup_theme', 'nirup_theme_setup');
 
 /**
- * Enqueue Scripts and Styles
+ * FIXED Enqueue Scripts and Styles Function
  */
 function nirup_enqueue_assets() {
-    // Enqueue main stylesheet (WordPress theme header only)
-    wp_enqueue_style('nirup-style', get_stylesheet_uri(), array(), '1.0.0');
+    // Debug output
+    if (current_user_can('manage_options')) {
+        echo '<script>console.log("🔧 FIXED nirup_enqueue_assets function running!");</script>';
+    }
     
-    // Enqueue main CSS file
-    wp_enqueue_style('nirup-main', get_template_directory_uri() . '/assets/css/main.css', array(), '1.0.0');
+    // === EXPLICITLY ENQUEUE JQUERY FIRST ===
+    wp_enqueue_script('jquery');
     
-    // Enqueue header CSS file
-    wp_enqueue_style('nirup-header', get_template_directory_uri() . '/assets/css/header.css', array('nirup-main'), '1.0.0');
+    if (current_user_can('manage_options')) {
+        echo '<script>console.log("✅ jQuery explicitly enqueued");</script>';
+    }
     
-    // Enqueue hero CSS file
-    wp_enqueue_style('nirup-hero', get_template_directory_uri() . '/assets/css/hero.css', array('nirup-main'), '1.0.0');
+    // === CSS FILES ===
+    wp_enqueue_style('nirup-style', get_stylesheet_uri(), array(), '1.0.1');
+    wp_enqueue_style('nirup-main', get_template_directory_uri() . '/assets/css/main.css', array(), '1.0.1');
+    wp_enqueue_style('nirup-header', get_template_directory_uri() . '/assets/css/header.css', array('nirup-main'), '1.0.1');
+    wp_enqueue_style('nirup-hero', get_template_directory_uri() . '/assets/css/hero.css', array('nirup-main'), '1.0.1');
     
-    // Enqueue main JavaScript
-    wp_enqueue_script('nirup-main', get_template_directory_uri() . '/js/main.js', array('jquery'), '1.0.0', true);
-
-    // Enqueue navigation JavaScript
-    wp_enqueue_script('nirup-navigation', get_template_directory_uri() . '/js/navigation.js', array('jquery'), '1.0.0', true);
+    // === JAVASCRIPT FILES WITH EXPLICIT JQUERY DEPENDENCY ===
     
+    // 1. Core utilities - explicitly depend on 'jquery' handle
+    wp_enqueue_script(
+        'nirup-utils', 
+        get_template_directory_uri() . '/assets/js/utils.js', 
+        array('jquery'), 
+        '1.0.1', 
+        true
+    );
     
-    // Localize script for AJAX
+    if (current_user_can('manage_options')) {
+        echo '<script>console.log("📝 nirup-utils enqueued");</script>';
+    }
+    
+    // 2. Navigation and header behavior
+    wp_enqueue_script(
+        'nirup-navigation', 
+        get_template_directory_uri() . '/assets/js/navigation.js', 
+        array('jquery', 'nirup-utils'), 
+        '1.0.1', 
+        true
+    );
+    
+    // 3. Mobile menu functionality
+    wp_enqueue_script(
+        'nirup-mobile-menu', 
+        get_template_directory_uri() . '/assets/js/mobile-menu.js', 
+        array('jquery', 'nirup-utils'), 
+        '1.0.1', 
+        true
+    );
+    
+    // 4. Search functionality
+    wp_enqueue_script(
+        'nirup-search', 
+        get_template_directory_uri() . '/assets/js/search.js', 
+        array('jquery', 'nirup-utils'), 
+        '1.0.1', 
+        true
+    );
+    
+    // 5. Language switcher
+    wp_enqueue_script(
+        'nirup-language', 
+        get_template_directory_uri() . '/assets/js/language-switcher.js', 
+        array('jquery', 'nirup-utils'), 
+        '1.0.1', 
+        true
+    );
+    
+    // 6. Analytics and tracking
+    wp_enqueue_script(
+        'nirup-analytics', 
+        get_template_directory_uri() . '/assets/js/analytics.js', 
+        array('jquery', 'nirup-utils'), 
+        '1.0.1', 
+        true
+    );
+    
+    // 7. Plugin integrations
+    wp_enqueue_script(
+        'nirup-plugins', 
+        get_template_directory_uri() . '/assets/js/plugins.js', 
+        array('jquery', 'nirup-utils'), 
+        '1.0.1', 
+        true
+    );
+    
+    // 8. Main initialization (loads last)
+    wp_enqueue_script(
+        'nirup-main', 
+        get_template_directory_uri() . '/assets/js/main.js', 
+        array(
+            'jquery',
+            'nirup-utils',
+            'nirup-navigation', 
+            'nirup-mobile-menu',
+            'nirup-search',
+            'nirup-language',
+            'nirup-analytics',
+            'nirup-plugins'
+        ), 
+        '1.0.1', 
+        true
+    );
+    
+    if (current_user_can('manage_options')) {
+        echo '<script>console.log("✅ All JavaScript files enqueued!");</script>';
+    }
+    
+    // === LOCALIZATION ===
     wp_localize_script('nirup-main', 'nirup_ajax', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('nirup_nonce')
     ));
+    
+    wp_localize_script('nirup-utils', 'nirup_theme', array(
+        'template_url' => get_template_directory_uri(),
+        'home_url' => home_url('/'),
+        'is_mobile' => wp_is_mobile(),
+        'debug' => defined('WP_DEBUG') && WP_DEBUG
+    ));
+    
+    if (current_user_can('manage_options')) {
+        echo '<script>console.log("✅ Script localization complete!");</script>';
+    }
 }
-add_action('wp_enqueue_scripts', 'nirup_enqueue_assets');
+
+// Make sure the hook is properly registered
+remove_action('wp_enqueue_scripts', 'nirup_enqueue_assets'); // Remove any existing
+add_action('wp_enqueue_scripts', 'nirup_enqueue_assets'); // Add fresh
 
 /**
  * Widget Areas
@@ -321,7 +425,7 @@ remove_action('wp_head', 'wp_shortlink_wp_head');
  */
 
 /**
- * Display Language Dropdown - Simplified TranslatePress Integration
+ * Display Language Dropdown - FIXED TO MATCH JAVASCRIPT
  */
 function nirup_language_dropdown() {
     // Check if TranslatePress is active
@@ -376,7 +480,6 @@ function nirup_language_dropdown() {
             'zh_CN' => 'CHN',
             'ja' => 'JPN',
             'ko' => 'KOR',
-            // Add more short codes for common languages
             'en' => 'ENG',
             'es' => 'ESP',
             'fr' => 'FRA', 
@@ -393,13 +496,13 @@ function nirup_language_dropdown() {
                           $lang_display_names[$current_lang_code] : 
                           strtoupper(substr($current_lang_code, 0, 3));
         
-        // Start building the dropdown
+        // FIXED HTML STRUCTURE TO MATCH JAVASCRIPT
         echo '<div class="language-switcher-container">';
-        echo '<button class="language-current" data-current="' . esc_attr($current_display) . '">';
+        echo '<button class="language-current" type="button">';
         echo esc_html($current_display);
-        echo '<svg class="lang-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none">
-            <path d="M9 1L5 5L1 1" stroke="black"/>
-            </svg>';
+        echo '<svg class="lang-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none">';
+        echo '<path d="M9 1L5 5L1 1" stroke="black" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>';
+        echo '</svg>';
         echo '</button>';
         
         echo '<ul class="language-dropdown-menu">';
@@ -466,10 +569,10 @@ add_action('wp_footer', 'nirup_debug_language_info');
 
 function nirup_language_fallback() {
     echo '<div class="language-switcher-container">';
-    echo '<button class="language-current" data-current="ENG">ENG';
-    echo '<svg class="lang-dropdown-arrow" width="8" height="4" viewBox="0 0 8 4" fill="none">
-            <path d="M0 0L4 4L8 0" fill="currentColor"/>
-          </svg>';
+    echo '<button class="language-current" type="button">ENG';
+    echo '<svg class="lang-dropdown-arrow" width="8" height="4" viewBox="0 0 8 4" fill="none">';
+    echo '<path d="M0 0L4 4L8 0" fill="currentColor"/>';
+    echo '</svg>';
     echo '</button>';
     echo '<ul class="language-dropdown-menu">';
     echo '<li class="language-option current-language"><a href="#">ENG</a></li>';

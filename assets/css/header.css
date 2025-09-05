@@ -77,7 +77,8 @@
 }
 
 .site-header.header-hidden {
-    transform: translateY(-100%);
+    transform: translateY(-111px);
+    /* FIXED: Complete hide including announcement bar */
 }
 
 /* Add subtle shadow when scrolling */
@@ -231,7 +232,7 @@
 } */
 
 /* ===========================
-   LANGUAGE SWITCHER STYLES
+   LANGUAGE SWITCHER STYLES - FIXED
    =========================== */
 
 .language-switcher-container {
@@ -298,13 +299,17 @@
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s ease;
+    display: none;
+    /* FIXED: Start hidden */
 }
 
+/* FIXED: Show dropdown when active */
 .language-switcher-container.active .language-dropdown-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
     display: block !important;
+    /* FIXED: Force display */
 }
 
 .language-option {
