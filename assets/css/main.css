@@ -49,12 +49,6 @@ body {
     z-index: 100;
 }
 
-/* Optional: Add background overlay for better text readability */
-.content-overlay {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(1px);
-}
-
 /* Typography */
 h1,
 h2,

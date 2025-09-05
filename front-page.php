@@ -28,6 +28,15 @@ get_header(); ?>
     get_template_part('template-parts/video-section');
     ?>
 
+    <?php
+    /**
+     * About Island Section
+     * Features grid showing island amenities and services
+     */
+    get_template_part('template-parts/about-island-section');
+    ?>
+
+
 </main>
 
 <?php get_footer(); ?>

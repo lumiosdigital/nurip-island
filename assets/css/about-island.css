@@ -1,0 +1,369 @@
+/* ===========================
+   ABOUT ISLAND SECTION STYLES
+   File: assets/css/about-island.css
+   =========================== */
+
+.about-island-section {
+    padding: 100px 0;
+    position: relative;
+    /* background: rgba(255, 255, 255, 0.95); */
+    /* backdrop-filter: blur(1px); */
+}
+
+/* ===========================
+   SECTION HEADER STYLES
+   =========================== */
+
+.about-island-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 80px;
+    margin-left: auto;
+    margin-right: auto;
+    /* max-width: 670px; */
+}
+
+.about-section-title {
+    font-family: var(--font-hero);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3d332f;
+    text-transform: uppercase;
+    margin: 0 0 30px 0;
+    letter-spacing: 0.5px;
+
+}
+
+.about-main-title {
+    font-family: var(--font-hero);
+    font-size: 60px;
+    font-weight: 400;
+    line-height: 1;
+    color: #3d332f;
+    text-transform: uppercase;
+    margin: 0 0 30px 0;
+    letter-spacing: -1px;
+    max-width: 574px;
+}
+
+.about-description {
+    opacity: 0.8;
+}
+
+.about-description p {
+    font-family: var(--font-hero);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 140%;
+    letter-spacing: 0px;
+    color: #3D332F;
+    margin: 0;
+    width: 600px;
+}
+
+/* ===========================
+   FEATURES GRID STYLES
+   =========================== */
+
+.about-features-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+    max-width: 1400px;
+    /* 6 * 217px + 5 * 20px gaps */
+    margin: 0 auto;
+}
+
+/* ===========================
+   FEATURE ITEM STYLES
+   =========================== */
+
+.feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    padding: 20px 10px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    cursor: pointer;
+}
+
+.feature-item.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+}
+
+/* Feature Icon Container */
+.feature-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+.feature-icon svg {
+    width: 100%;
+    height: 100%;
+    color: #3d332f;
+    transition: color 0.3s ease;
+}
+
+.feature-item:hover .feature-icon svg {
+    color: var(--color-golden);
+}
+
+/* Feature Content */
+.feature-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.feature-title {
+    font-family: var(--font-hero);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.feature-item:hover .feature-title {
+    color: var(--color-golden);
+}
+
+.feature-description {
+    font-family: var(--font-family);
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0;
+    opacity: 0.8;
+    width: 210px;
+}
+
+/* ===========================
+   ANIMATION DELAYS
+   =========================== */
+
+/* .feature-item:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.feature-item:nth-child(2) {
+    transition-delay: 0.2s;
+}
+
+.feature-item:nth-child(3) {
+    transition-delay: 0.3s;
+ }
+
+.feature-item:nth-child(4) {
+    transition-delay: 0.4s;
+}
+
+.feature-item:nth-child(5) {
+    transition-delay: 0.5s;
+}
+
+.feature-item:nth-child(6) {
+    transition-delay: 0.6s;
+}  */
+
+/* ===========================
+   RESPONSIVE STYLES
+   =========================== */
+
+@media (max-width: 1400px) {
+    .about-features-grid {
+        max-width: 1200px;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .about-features-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 800px;
+        gap: 30px;
+    }
+
+    .feature-item {
+        gap: 25px;
+        padding: 30px 15px;
+    }
+
+    .about-main-title {
+        font-size: 48px;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-island-section {
+        padding: 60px 0;
+    }
+
+    .about-island-header {
+        margin-bottom: 50px;
+        max-width: 100%;
+        padding: 0 20px;
+    }
+
+    .about-main-title {
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .about-section-title {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .about-description p {
+        font-size: 15px;
+    }
+
+    .about-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 400px;
+        gap: 40px;
+    }
+
+    .feature-item {
+        gap: 20px;
+        padding: 25px 10px;
+    }
+
+    .feature-title {
+        font-size: 16px;
+    }
+
+    .feature-description {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-island-section {
+        padding: 40px 0;
+    }
+
+    .about-island-header {
+        margin-bottom: 40px;
+    }
+
+    .about-main-title {
+        font-size: 28px;
+        line-height: 1.1;
+    }
+
+    .about-section-title {
+        font-size: 14px;
+    }
+
+    .about-description p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .about-features-grid {
+        grid-template-columns: 1fr;
+        max-width: 280px;
+        gap: 35px;
+    }
+
+    .feature-item {
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .feature-title {
+        font-size: 15px;
+    }
+
+    .feature-description {
+        font-size: 12px;
+    }
+}
+
+/* ===========================
+   ACCESSIBILITY STYLES
+   =========================== */
+
+.feature-item:focus {
+    outline: 2px solid var(--color-golden);
+    outline-offset: 4px;
+    border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .feature-item,
+    .feature-icon,
+    .feature-title {
+        transition: none;
+    }
+
+    .feature-item.animate-in {
+        opacity: 1;
+        transform: none;
+    }
+
+    .feature-item:hover {
+        transform: none;
+    }
+
+    .feature-item:hover .feature-icon {
+        transform: none;
+    }
+}
+
+/* ===========================
+   PRINT STYLES
+   =========================== */
+
+@media print {
+    .about-island-section {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        padding: 40px 0;
+    }
+
+    .about-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .feature-item:hover {
+        transform: none;
+    }
+
+    .feature-icon svg {
+        color: #3d332f !important;
+    }
+}
