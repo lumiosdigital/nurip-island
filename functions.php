@@ -61,6 +61,7 @@ function nirup_enqueue_assets() {
     wp_enqueue_style('nirup-main', get_template_directory_uri() . '/assets/css/main.css', array(), '1.0.1');
     wp_enqueue_style('nirup-header', get_template_directory_uri() . '/assets/css/header.css', array('nirup-main'), '1.0.1');
     wp_enqueue_style('nirup-hero', get_template_directory_uri() . '/assets/css/hero.css', array('nirup-main'), '1.0.1');
+    wp_enqueue_style('nirup-video', get_template_directory_uri() . '/assets/css/video.css', array('nirup-main'), '1.0.1');
     
     // === JAVASCRIPT FILES WITH EXPLICIT JQUERY DEPENDENCY ===
     
@@ -377,6 +378,50 @@ function nirup_customize_register($wp_customize) {
         'type' => 'url',
     ));
 
+    // Video Section
+    $wp_customize->add_section('nirup_video_section', array(
+        'title' => __('Video Section', 'nirup-island'),
+        'priority' => 26,
+    ));
+
+    // Show/Hide Video Section
+    $wp_customize->add_setting('nirup_video_show', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+
+    $wp_customize->add_control('nirup_video_show', array(
+        'label' => __('Show Video Section', 'nirup-island'),
+        'section' => 'nirup_video_section',
+        'type' => 'checkbox',
+    ));
+
+    // Video URL (YouTube)
+    $wp_customize->add_setting('nirup_video_url', array(
+        'default' => '',
+        'sanitize_callback' => 'nirup_sanitize_youtube_url',
+    ));
+
+    $wp_customize->add_control('nirup_video_url', array(
+        'label' => __('YouTube Video URL', 'nirup-island'),
+        'description' => __('Enter the full YouTube URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID)', 'nirup-island'),
+        'section' => 'nirup_video_section',
+        'type' => 'url',
+    ));
+
+    // Video Title (for accessibility)
+    $wp_customize->add_setting('nirup_video_title', array(
+        'default' => __('Nirup Island Video', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_video_title', array(
+        'label' => __('Video Title', 'nirup-island'),
+        'description' => __('Title for accessibility (screen readers)', 'nirup-island'),
+        'section' => 'nirup_video_section',
+        'type' => 'text',
+    ));
+
     // Navigation Settings Section
     $wp_customize->add_section('nirup_navigation', array(
         'title' => __('Navigation Settings', 'nirup-island'),
@@ -609,4 +654,64 @@ function nirup_mobile_default_menu() {
     echo '<li><a href="' . esc_url(home_url('/events-offers/')) . '">' . __('Events & Offers', 'nirup-island') . '</a></li>';
     echo '<li><a href="' . esc_url(home_url('/contact/')) . '">' . __('Contact', 'nirup-island') . '</a></li>';
     echo '</ul>';
+}
+
+/**
+ * Convert YouTube URL to embed format
+ */
+function nirup_get_youtube_embed_url($url) {
+    if (empty($url)) {
+        return false;
+    }
+
+    // Extract video ID from various YouTube URL formats
+    $video_id = '';
+    
+    // Standard watch URL: https://www.youtube.com/watch?v=VIDEO_ID
+    if (preg_match('/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/', $url, $matches)) {
+        $video_id = $matches[1];
+    }
+    // Short URL: https://youtu.be/VIDEO_ID
+    elseif (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+        $video_id = $matches[1];
+    }
+    // Embed URL: https://www.youtube.com/embed/VIDEO_ID
+    elseif (preg_match('/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+        $video_id = $matches[1];
+    }
+    
+    if (empty($video_id)) {
+        return false;
+    }
+    
+    // Build embed URL with privacy-enhanced mode and parameters
+    $embed_url = 'https://www.youtube-nocookie.com/embed/' . $video_id;
+    
+    // Add parameters for better experience
+    $params = array(
+        'rel' => '0',           // Don't show related videos from other channels
+        'modestbranding' => '1', // Minimal YouTube branding
+        'iv_load_policy' => '3', // Don't show annotations
+        'enablejsapi' => '1',    // Enable JavaScript API for tracking
+    );
+    
+    $embed_url .= '?' . http_build_query($params);
+    
+    return $embed_url;
+}
+
+/**
+ * Validate YouTube URL (for customizer)
+ */
+function nirup_sanitize_youtube_url($url) {
+    if (empty($url)) {
+        return '';
+    }
+    
+    // Check if it's a valid YouTube URL
+    if (nirup_get_youtube_embed_url($url)) {
+        return esc_url_raw($url);
+    }
+    
+    return '';
 }

@@ -20,6 +20,14 @@ get_header(); ?>
     get_template_part('template-parts/hero-section');
     ?>
 
+    <?php
+    /**
+     * Video Section
+     * YouTube video embed section
+     */
+    get_template_part('template-parts/video-section');
+    ?>
+
 </main>
 
 <?php get_footer(); ?>
