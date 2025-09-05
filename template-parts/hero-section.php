@@ -50,19 +50,21 @@ if ($inline_styles) {
         <div class="hero-divider"></div>
         
         <!-- Hardcoded Hero Logo -->
-        <div class="hero-logo">
-            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/the-westin-logo.png" 
-                 alt="The Westin Logo">
+        <div class="hero-bottom">
+            <div class="hero-logo">
+                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/the-westin-logo.png" 
+                    alt="The Westin Logo">
+            </div>
+            
+            <?php if ($hero_cta_text): ?>
+            <!-- CTA Button -->
+            <a href="<?php echo esc_url($hero_cta_link ? $hero_cta_link : '#'); ?>" 
+            class="hero-cta"
+            <?php if (empty($hero_cta_link)): ?>onclick="return false;"<?php endif; ?>>
+                <?php echo esc_html($hero_cta_text); ?>
+            </a>
+            <?php endif; ?>
         </div>
-        
-        <?php if ($hero_cta_text): ?>
-        <!-- CTA Button -->
-        <a href="<?php echo esc_url($hero_cta_link ? $hero_cta_link : '#'); ?>" 
-           class="hero-cta"
-           <?php if (empty($hero_cta_link)): ?>onclick="return false;"<?php endif; ?>>
-            <?php echo esc_html($hero_cta_text); ?>
-        </a>
-        <?php endif; ?>
     </div>
 </section>
 

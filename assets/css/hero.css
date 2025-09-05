@@ -65,6 +65,13 @@
 }
 
 /* Logo/Branding Element */
+.hero-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    align-items: center;
+}
+
 .hero-logo {
     width: 164px;
     height: 41px;
@@ -112,55 +119,6 @@
     color: var(--color-white);
 }
 
-/* Layered Background Images */
-.hero-layered-bg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 10%);
-    z-index: 3;
-    pointer-events: none;
-}
-
-.hero-layer {
-    position: absolute;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.hero-layer-1 {
-    width: 1780px;
-    height: 1334px;
-    top: 295px;
-    left: 79px;
-    mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 780"><ellipse cx="700" cy="390" rx="700" ry="390" fill="black"/></svg>');
-    mask-size: 1400px 780px;
-    mask-position: -59px 424px;
-    mask-repeat: no-repeat;
-}
-
-.hero-layer-2 {
-    width: 1407px;
-    height: 1054px;
-    top: 526px;
-    left: 20px;
-    mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 780"><ellipse cx="700" cy="390" rx="700" ry="390" fill="black"/></svg>');
-    mask-size: 1400px 780px;
-    mask-position: 0px 194px;
-    mask-repeat: no-repeat;
-}
-
-.hero-layer-3 {
-    width: 1546px;
-    height: 1158px;
-    top: 407px;
-    left: 73px;
-    mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 780"><ellipse cx="700" cy="390" rx="700" ry="390" fill="black"/></svg>');
-    mask-size: 1400px 780px;
-    mask-position: 53px 313px;
-    mask-repeat: no-repeat;
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
