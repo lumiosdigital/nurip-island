@@ -41,7 +41,7 @@ function nirup_theme_setup() {
 add_action('after_setup_theme', 'nirup_theme_setup');
 
 /**
- * FIXED Enqueue Scripts and Styles Function
+ * UPDATED Enqueue Scripts and Styles Function
  */
 function nirup_enqueue_assets() {
     // Debug output
@@ -57,12 +57,15 @@ function nirup_enqueue_assets() {
     }
     
     // === CSS FILES ===
-    wp_enqueue_style('nirup-style', get_stylesheet_uri(), array(), '1.0.1');
-    wp_enqueue_style('nirup-main', get_template_directory_uri() . '/assets/css/main.css', array(), '1.0.1');
-    wp_enqueue_style('nirup-header', get_template_directory_uri() . '/assets/css/header.css', array('nirup-main'), '1.0.1');
-    wp_enqueue_style('nirup-hero', get_template_directory_uri() . '/assets/css/hero.css', array('nirup-main'), '1.0.1');
-    wp_enqueue_style('nirup-video', get_template_directory_uri() . '/assets/css/video.css', array('nirup-main'), '1.0.1');
-    wp_enqueue_style('nirup-about-island', get_template_directory_uri() . '/assets/css/about-island.css', array('nirup-main'), '1.0.1');
+    wp_enqueue_style('nirup-style', get_stylesheet_uri(), array(), '1.0.2');
+    wp_enqueue_style('nirup-main', get_template_directory_uri() . '/assets/css/main.css', array(), '1.0.2');
+    wp_enqueue_style('nirup-header', get_template_directory_uri() . '/assets/css/header.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-hero', get_template_directory_uri() . '/assets/css/hero.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-video', get_template_directory_uri() . '/assets/css/video.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-about-island', get_template_directory_uri() . '/assets/css/about-island.css', array('nirup-main'), '1.0.2');
+    
+    // NEW: Add accommodations CSS
+    wp_enqueue_style('nirup-accommodations', get_template_directory_uri() . '/assets/css/accommodations.css', array('nirup-main'), '1.0.2');
     
     // === JAVASCRIPT FILES WITH EXPLICIT JQUERY DEPENDENCY ===
     
@@ -71,7 +74,7 @@ function nirup_enqueue_assets() {
         'nirup-utils', 
         get_template_directory_uri() . '/assets/js/utils.js', 
         array('jquery'), 
-        '1.0.1', 
+        '1.0.2', 
         true
     );
     
@@ -84,7 +87,7 @@ function nirup_enqueue_assets() {
         'nirup-navigation', 
         get_template_directory_uri() . '/assets/js/navigation.js', 
         array('jquery', 'nirup-utils'), 
-        '1.0.1', 
+        '1.0.2', 
         true
     );
     
@@ -93,7 +96,7 @@ function nirup_enqueue_assets() {
         'nirup-mobile-menu', 
         get_template_directory_uri() . '/assets/js/mobile-menu.js', 
         array('jquery', 'nirup-utils'), 
-        '1.0.1', 
+        '1.0.2', 
         true
     );
     
@@ -102,7 +105,7 @@ function nirup_enqueue_assets() {
         'nirup-search', 
         get_template_directory_uri() . '/assets/js/search.js', 
         array('jquery', 'nirup-utils'), 
-        '1.0.1', 
+        '1.0.2', 
         true
     );
     
@@ -111,7 +114,7 @@ function nirup_enqueue_assets() {
         'nirup-language', 
         get_template_directory_uri() . '/assets/js/language-switcher.js', 
         array('jquery', 'nirup-utils'), 
-        '1.0.1', 
+        '1.0.2', 
         true
     );
     
@@ -120,7 +123,7 @@ function nirup_enqueue_assets() {
         'nirup-analytics', 
         get_template_directory_uri() . '/assets/js/analytics.js', 
         array('jquery', 'nirup-utils'), 
-        '1.0.1', 
+        '1.0.2', 
         true
     );
     
@@ -129,7 +132,7 @@ function nirup_enqueue_assets() {
         'nirup-plugins', 
         get_template_directory_uri() . '/assets/js/plugins.js', 
         array('jquery', 'nirup-utils'), 
-        '1.0.1', 
+        '1.0.2', 
         true
     );
     
@@ -147,7 +150,7 @@ function nirup_enqueue_assets() {
             'nirup-analytics',
             'nirup-plugins'
         ), 
-        '1.0.1', 
+        '1.0.2', 
         true
     );
     
@@ -456,6 +459,353 @@ function nirup_customize_register($wp_customize) {
 add_action('customize_register', 'nirup_customize_register');
 
 /**
+ * Add About Island Customizer Options
+ */
+function nirup_about_island_customizer($wp_customize) {
+    // About Island Section
+    $wp_customize->add_section('nirup_about_island', array(
+        'title' => __('About Island Section', 'nirup-island'),
+        'priority' => 35,
+        'description' => __('Customize the About Island section content', 'nirup-island'),
+    ));
+
+    // Section Title
+    $wp_customize->add_setting('nirup_about_section_title', array(
+        'default' => __('ABOUT THE ISLAND', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_about_section_title', array(
+        'label' => __('Section Title', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'text',
+    ));
+
+    // Main Title
+    $wp_customize->add_setting('nirup_about_main_title', array(
+        'default' => __('Where Luxury Meets Nature', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_about_main_title', array(
+        'label' => __('Main Title', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'text',
+    ));
+
+    // Description
+    $wp_customize->add_setting('nirup_about_description', array(
+        'default' => __('Just 8 nautical miles from Singapore and Batam, Nirup Island offers a luxurious and convenient paradise. The island features The Westin Nirup Island Resort & Spa, ONE°15 Marina yacht facilities, beach club dining and wellness experiences amid pristine beaches. Sustainability and seamless arrival experiences ensure guests unwind fully.', 'nirup-island'),
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+
+    $wp_customize->add_control('nirup_about_description', array(
+        'label' => __('Description', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'textarea',
+        'description' => __('Main description text for the about section', 'nirup-island'),
+    ));
+
+    // Feature 1
+    $wp_customize->add_setting('nirup_feature_1_title', array(
+        'default' => __('Private Yacht Charter', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_1_title', array(
+        'label' => __('Feature 1 - Title', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_feature_1_desc', array(
+        'default' => __('Book a private yacht from ONE°15 Marina for day‑trip or overnight stays.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_1_desc', array(
+        'label' => __('Feature 1 - Description', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'textarea',
+    ));
+
+    // Feature 2
+    $wp_customize->add_setting('nirup_feature_2_title', array(
+        'default' => __('Heavenly Spa by Westin™', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_2_title', array(
+        'label' => __('Feature 2 - Title', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_feature_2_desc', array(
+        'default' => __('Rejuvenate with spa treatments surrounded by tranquil nature.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_2_desc', array(
+        'label' => __('Feature 2 - Description', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'textarea',
+    ));
+
+    // Feature 3
+    $wp_customize->add_setting('nirup_feature_3_title', array(
+        'default' => __('Curated Island Dining', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_3_title', array(
+        'label' => __('Feature 3 - Title', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_feature_3_desc', array(
+        'default' => __('Enjoy elevated dining experiences at the beach club and fine restaurants.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_3_desc', array(
+        'label' => __('Feature 3 - Description', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'textarea',
+    ));
+
+    // Feature 4
+    $wp_customize->add_setting('nirup_feature_4_title', array(
+        'default' => __('Kids Club & Family Fun', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_4_title', array(
+        'label' => __('Feature 4 - Title', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_feature_4_desc', array(
+        'default' => __('Dedicated programming and play spaces for children aged 4–12.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_4_desc', array(
+        'label' => __('Feature 4 - Description', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'textarea',
+    ));
+
+    // Feature 5
+    $wp_customize->add_setting('nirup_feature_5_title', array(
+        'default' => __('Luxury Resort & Villas', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_5_title', array(
+        'label' => __('Feature 5 - Title', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_feature_5_desc', array(
+        'default' => __('Stay at The Westin Resort or Riahi Residences, steps from the sea.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_5_desc', array(
+        'label' => __('Feature 5 - Description', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'textarea',
+    ));
+
+    // Feature 6
+    $wp_customize->add_setting('nirup_feature_6_title', array(
+        'default' => __('Eco‑Conscious Design', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_6_title', array(
+        'label' => __('Feature 6 - Title', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_feature_6_desc', array(
+        'default' => __('Built with sustainability in mind: solar, rainwater harvesting, local staff.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_feature_6_desc', array(
+        'label' => __('Feature 6 - Description', 'nirup-island'),
+        'section' => 'nirup_about_island',
+        'type' => 'textarea',
+    ));
+}
+add_action('customize_register', 'nirup_about_island_customizer');
+
+/**
+ * Add Accommodations Customizer Options
+ */
+function nirup_accommodations_customizer($wp_customize) {
+    // Accommodations Section
+    $wp_customize->add_section('nirup_accommodations', array(
+        'title' => __('Accommodations Section', 'nirup-island'),
+        'priority' => 36,
+        'description' => __('Customize the accommodations comparison section', 'nirup-island'),
+    ));
+
+    // === RESORT SETTINGS ===
+    
+    // Resort Category
+    $wp_customize->add_setting('nirup_resort_category', array(
+        'default' => __('Resort Hotel', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_resort_category', array(
+        'label' => __('Resort Category', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'type' => 'text',
+    ));
+
+    // Resort Title
+    $wp_customize->add_setting('nirup_resort_title', array(
+        'default' => __('The Westin Nirup Island Resort & Spa', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_resort_title', array(
+        'label' => __('Resort Title', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'type' => 'text',
+    ));
+
+    // Resort Description
+    $wp_customize->add_setting('nirup_resort_description', array(
+        'default' => __('Luxurious rooms and overwater villas with private pools and sweeping sea views. Guests enjoy Heavenly Spa by Westin™, the WestinWORKOUT® Fitness Studio, and access to the Kids Club — all in a tranquil island setting.', 'nirup-island'),
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+
+    $wp_customize->add_control('nirup_resort_description', array(
+        'label' => __('Resort Description', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'type' => 'textarea',
+    ));
+
+    // Resort Image
+    $wp_customize->add_setting('nirup_resort_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_resort_image', array(
+        'label' => __('Resort Background Image', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'mime_type' => 'image',
+    )));
+
+    // Resort CTA Button
+    $wp_customize->add_setting('nirup_resort_cta_text', array(
+        'default' => __('Explore Resort', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_resort_cta_text', array(
+        'label' => __('Resort Button Text', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_resort_cta_link', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_resort_cta_link', array(
+        'label' => __('Resort Button Link', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'type' => 'url',
+    ));
+
+    // === VILLAS SETTINGS ===
+    
+    // Villas Category
+    $wp_customize->add_setting('nirup_villas_category', array(
+        'default' => __('Private Villas', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_villas_category', array(
+        'label' => __('Villas Category', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'type' => 'text',
+    ));
+
+    // Villas Title
+    $wp_customize->add_setting('nirup_villas_title', array(
+        'default' => __('Riahi Residences', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_villas_title', array(
+        'label' => __('Villas Title', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'type' => 'text',
+    ));
+
+    // Villas Description
+    $wp_customize->add_setting('nirup_villas_description', array(
+        'default' => __('1 to 4-Bedroom Private Villas. Spacious villas with full kitchens, private pools, and sea views. Designed for privacy and long stays, with access to Westin\'s facilities and optional in-villa dining.', 'nirup-island'),
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+
+    $wp_customize->add_control('nirup_villas_description', array(
+        'label' => __('Villas Description', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'type' => 'textarea',
+    ));
+
+    // Villas Image
+    $wp_customize->add_setting('nirup_villas_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_villas_image', array(
+        'label' => __('Villas Background Image', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'mime_type' => 'image',
+    )));
+
+    // Villas CTA Button
+    $wp_customize->add_setting('nirup_villas_cta_text', array(
+        'default' => __('Explore Villas', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_villas_cta_text', array(
+        'label' => __('Villas Button Text', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_villas_cta_link', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_villas_cta_link', array(
+        'label' => __('Villas Button Link', 'nirup-island'),
+        'section' => 'nirup_accommodations',
+        'type' => 'url',
+    ));
+}
+add_action('customize_register', 'nirup_accommodations_customizer');
+
+/**
  * Security and Performance
  */
 // Remove WordPress version from head
@@ -716,192 +1066,4 @@ function nirup_sanitize_youtube_url($url) {
     
     return '';
 }
-
-/**
- * Add About Island Customizer Options
- */
-function nirup_about_island_customizer($wp_customize) {
-    // About Island Section
-    $wp_customize->add_section('nirup_about_island', array(
-        'title' => __('About Island Section', 'nirup-island'),
-        'priority' => 35,
-        'description' => __('Customize the About Island section content', 'nirup-island'),
-    ));
-
-    // Section Title
-    $wp_customize->add_setting('nirup_about_section_title', array(
-        'default' => __('ABOUT THE ISLAND', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_about_section_title', array(
-        'label' => __('Section Title', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'text',
-    ));
-
-    // Main Title
-    $wp_customize->add_setting('nirup_about_main_title', array(
-        'default' => __('Where Luxury Meets Nature', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_about_main_title', array(
-        'label' => __('Main Title', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'text',
-    ));
-
-    // Description
-    $wp_customize->add_setting('nirup_about_description', array(
-        'default' => __('Just 8 nautical miles from Singapore and Batam, Nirup Island offers a luxurious and convenient paradise. The island features The Westin Nirup Island Resort & Spa, ONE°15 Marina yacht facilities, beach club dining and wellness experiences amid pristine beaches. Sustainability and seamless arrival experiences ensure guests unwind fully.', 'nirup-island'),
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-
-    $wp_customize->add_control('nirup_about_description', array(
-        'label' => __('Description', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'textarea',
-        'description' => __('Main description text for the about section', 'nirup-island'),
-    ));
-
-    // Feature 1
-    $wp_customize->add_setting('nirup_feature_1_title', array(
-        'default' => __('Private Yacht Charter', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_1_title', array(
-        'label' => __('Feature 1 - Title', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('nirup_feature_1_desc', array(
-        'default' => __('Book a private yacht from ONE°15 Marina for day‑trip or overnight stays.', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_1_desc', array(
-        'label' => __('Feature 1 - Description', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'textarea',
-    ));
-
-    // Feature 2
-    $wp_customize->add_setting('nirup_feature_2_title', array(
-        'default' => __('Heavenly Spa by Westin™', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_2_title', array(
-        'label' => __('Feature 2 - Title', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('nirup_feature_2_desc', array(
-        'default' => __('Rejuvenate with spa treatments surrounded by tranquil nature.', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_2_desc', array(
-        'label' => __('Feature 2 - Description', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'textarea',
-    ));
-
-    // Feature 3
-    $wp_customize->add_setting('nirup_feature_3_title', array(
-        'default' => __('Curated Island Dining', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_3_title', array(
-        'label' => __('Feature 3 - Title', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('nirup_feature_3_desc', array(
-        'default' => __('Enjoy elevated dining experiences at the beach club and fine restaurants.', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_3_desc', array(
-        'label' => __('Feature 3 - Description', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'textarea',
-    ));
-
-    // Feature 4
-    $wp_customize->add_setting('nirup_feature_4_title', array(
-        'default' => __('Kids Club & Family Fun', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_4_title', array(
-        'label' => __('Feature 4 - Title', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('nirup_feature_4_desc', array(
-        'default' => __('Dedicated programming and play spaces for children aged 4–12.', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_4_desc', array(
-        'label' => __('Feature 4 - Description', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'textarea',
-    ));
-
-    // Feature 5
-    $wp_customize->add_setting('nirup_feature_5_title', array(
-        'default' => __('Luxury Resort & Villas', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_5_title', array(
-        'label' => __('Feature 5 - Title', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('nirup_feature_5_desc', array(
-        'default' => __('Stay at The Westin Resort or Riahi Residences, steps from the sea.', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_5_desc', array(
-        'label' => __('Feature 5 - Description', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'textarea',
-    ));
-
-    // Feature 6
-    $wp_customize->add_setting('nirup_feature_6_title', array(
-        'default' => __('Eco‑Conscious Design', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_6_title', array(
-        'label' => __('Feature 6 - Title', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('nirup_feature_6_desc', array(
-        'default' => __('Built with sustainability in mind: solar, rainwater harvesting, local staff.', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_feature_6_desc', array(
-        'label' => __('Feature 6 - Description', 'nirup-island'),
-        'section' => 'nirup_about_island',
-        'type' => 'textarea',
-    ));
-}
-add_action('customize_register', 'nirup_about_island_customizer');
 ?>

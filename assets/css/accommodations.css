@@ -1,0 +1,485 @@
+/* ===========================
+   ACCOMMODATIONS SECTION STYLES
+   File: assets/css/accommodations.css
+   =========================== */
+
+.accommodations-section {
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ===========================
+   MAIN CONTAINER
+   =========================== */
+
+.accommodations-container {
+    max-width: var(--container-max-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: stretch;
+}
+
+/* ===========================
+   ACCOMMODATION CARDS
+   =========================== */
+
+.accommodation-card {
+    position: relative;
+    background-color: #fcfaf6;
+    min-height: 700px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.accommodation-card.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.accommodation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* ===========================
+   BACKGROUND AND IMAGES
+   =========================== */
+
+.accommodation-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 450px;
+    overflow: hidden;
+}
+
+.accommodation-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform 0.3s ease;
+}
+
+.accommodation-card:hover {
+    transform: scale(1.01);
+    cursor: pointer;
+}
+
+/* .accommodation-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.1) 70%,
+            rgba(0, 0, 0, 0.3) 100%);
+} */
+
+/* ===========================
+   CONTENT AREA
+   =========================== */
+
+.accommodation-content {
+    position: relative;
+    z-index: 10;
+    margin-top: 450px;
+    padding: 60px 40px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    flex: 1;
+}
+
+/* ===========================
+   HEADER STYLES
+   =========================== */
+
+.accommodation-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.accommodation-category {
+    font-family: var(--font-hero);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #555250;
+    text-transform: uppercase;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.accommodation-title {
+    font-family: var(--font-hero);
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555250;
+    text-transform: uppercase;
+    margin: 0;
+    letter-spacing: -1px;
+}
+
+.accommodation-description {
+    font-family: var(--font-hero);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #555250;
+    margin: 0;
+}
+
+/* ===========================
+   AMENITIES STYLES
+   =========================== */
+
+.accommodation-amenities {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.amenities-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.amenity-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.2s ease, color 0.2s ease;
+    padding: 2px 0;
+}
+
+.amenity-item.hovered {
+    transform: translateX(5px);
+}
+
+.amenity-item.hovered .amenity-text {
+    color: var(--color-golden);
+}
+
+.amenity-item.hovered .amenity-icon svg {
+    fill: var(--color-golden);
+    color: var(--color-golden);
+}
+
+.amenity-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.amenity-icon svg {
+    width: 100%;
+    height: 100%;
+    fill: #3d332f;
+    color: #3d332f;
+    transition: all 0.2s ease;
+}
+
+.amenity-text {
+    font-family: var(--font-hero);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3d332f;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+/* ===========================
+   CTA BUTTON STYLES
+   =========================== */
+
+.accommodation-cta {
+    margin-top: auto;
+    text-align: center;
+    padding-top: 20px;
+}
+
+.accommodation-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border: 1px solid var(--color-golden);
+    background: transparent;
+    color: var(--color-golden);
+    font-family: var(--font-family);
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    border-radius: 2px;
+    min-width: 160px;
+}
+
+.accommodation-button:hover {
+    background-color: var(--color-golden);
+    color: var(--color-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 94, 29, 0.3);
+}
+
+/* ===========================
+   CARD SPECIFIC STYLES
+   =========================== */
+
+.resort-card {
+    transition-delay: 0.1s;
+}
+
+.villas-card {
+    transition-delay: 0.2s;
+}
+
+/* Hover effects for different card types */
+.resort-card:hover .accommodation-title {
+    color: #8b5e1d;
+}
+
+.villas-card:hover .accommodation-title {
+    color: #8b5e1d;
+}
+
+/* ===========================
+   RESPONSIVE STYLES
+   =========================== */
+
+@media (max-width: 1200px) {
+    .accommodations-container {
+        gap: 30px;
+    }
+
+    .accommodation-content {
+        padding: 50px 30px 30px;
+        gap: 30px;
+    }
+
+    .accommodation-title {
+        font-size: 36px;
+    }
+
+    .accommodation-amenities {
+        gap: 30px;
+    }
+}
+
+@media (max-width: 968px) {
+    .accommodations-section {
+        padding: 80px 0;
+    }
+
+    .accommodations-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        max-width: 600px;
+    }
+
+    .accommodation-card {
+        min-height: 650px;
+    }
+
+    .accommodation-background {
+        height: 400px;
+    }
+
+    .accommodation-content {
+        margin-top: 400px;
+        padding: 40px 30px 30px;
+    }
+
+    .accommodation-title {
+        font-size: 32px;
+    }
+
+    .accommodation-amenities {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .amenity-text {
+        white-space: normal;
+    }
+}
+
+@media (max-width: 768px) {
+    .accommodations-section {
+        padding: 60px 0;
+    }
+
+    .accommodations-container {
+        padding: 0 15px;
+    }
+
+    .accommodation-card {
+        min-height: 600px;
+    }
+
+    .accommodation-background {
+        height: 350px;
+    }
+
+    .accommodation-content {
+        margin-top: 350px;
+        padding: 30px 20px 20px;
+        gap: 25px;
+    }
+
+    .accommodation-title {
+        font-size: 28px;
+        line-height: 1.1;
+    }
+
+    .accommodation-category {
+        font-size: 16px;
+    }
+
+    .accommodation-description {
+        font-size: 15px;
+    }
+
+    .amenity-item {
+        gap: 8px;
+    }
+
+    .amenity-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .amenity-text {
+        font-size: 14px;
+    }
+
+    .accommodation-button {
+        padding: 10px 20px;
+        font-size: 10px;
+        min-width: 140px;
+    }
+}
+
+@media (max-width: 480px) {
+    .accommodation-card {
+        min-height: 550px;
+    }
+
+    .accommodation-background {
+        height: 300px;
+    }
+
+    .accommodation-content {
+        margin-top: 300px;
+        padding: 25px 15px 15px;
+        gap: 20px;
+    }
+
+    .accommodation-title {
+        font-size: 24px;
+    }
+
+    .accommodation-category {
+        font-size: 14px;
+    }
+
+    .accommodation-description {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .amenities-column {
+        gap: 12px;
+    }
+
+    .amenity-text {
+        font-size: 13px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .accommodation-card,
+    .accommodation-image,
+    .accommodation-button,
+    .amenity-item {
+        transition: none;
+    }
+
+    .accommodation-card.animate-in {
+        opacity: 1;
+        transform: none;
+    }
+
+    .accommodation-card:hover {
+        transform: none;
+    }
+
+    .accommodation-card:hover .accommodation-image {
+        transform: none;
+    }
+}
+
+/* ===========================
+   PRINT STYLES
+   =========================== */
+
+@media print {
+    .accommodations-section {
+        background: transparent !important;
+        padding: 40px 0;
+    }
+
+    .accommodations-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .accommodation-card {
+        break-inside: avoid;
+        min-height: auto;
+    }
+
+    .accommodation-background {
+        display: none;
+    }
+
+    .accommodation-content {
+        margin-top: 0;
+        padding: 20px;
+    }
+
+    .accommodation-button {
+        border: 1px solid #000 !important;
+        color: #000 !important;
+        background: transparent !important;
+    }
+}

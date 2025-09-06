@@ -36,6 +36,14 @@ get_header(); ?>
     get_template_part('template-parts/about-island-section');
     ?>
 
+     <?php
+    /**
+     * Accommodations Section
+     * Side-by-side comparison of Resort and Villas
+     */
+    get_template_part('template-parts/accommodations-section');
+    ?>
+
 
 </main>
 
