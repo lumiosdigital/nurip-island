@@ -168,22 +168,22 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: transform 0.2s ease, color 0.2s ease;
+    /* transition: transform 0.2s ease, color 0.2s ease; */
     padding: 2px 0;
 }
-
+/* 
 .amenity-item.hovered {
     transform: translateX(5px);
-}
+} */
 
-.amenity-item.hovered .amenity-text {
+/* .amenity-item.hovered .amenity-text {
     color: var(--color-golden);
-}
+} */
 
-.amenity-item.hovered .amenity-icon svg {
+/* .amenity-item.hovered .amenity-icon svg {
     fill: var(--color-golden);
     color: var(--color-golden);
-}
+} */
 
 .amenity-icon {
     width: 28px;

@@ -23,6 +23,25 @@ function initExperiencesCarousel() {
     
     let currentIndex = 0;
     let maxIndex = 0;
+    let visibleCards = 3; // Default number of visible cards
+    
+    function calculateVisibleCards() {
+        const containerWidth = carousel.offsetWidth;
+        const availableWidth = containerWidth - 40; // Account for padding
+        const newVisibleCards = Math.floor(availableWidth / cardStep);
+        visibleCards = Math.max(1, Math.min(newVisibleCards, cards.length));
+        return visibleCards;
+    }
+    
+    function calculateMaxIndex() {
+        calculateVisibleCards();
+        maxIndex = Math.max(0, cards.length - visibleCards);
+        
+        // Ensure current index doesn't exceed max
+        if (currentIndex > maxIndex) {
+            currentIndex = maxIndex;
+        }
+    }
     
     function updateCarousel() {
         const translateX = -currentIndex * cardStep;
@@ -40,17 +59,7 @@ function initExperiencesCarousel() {
         nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
         
         prevBtn.style.cursor = currentIndex <= 0 ? 'default' : 'pointer';
-        nextBtn.style.cursor = currentIndex >= maxIndex ? 'default' : 'pointer';
-    }
-    
-    function calculateMaxIndex() {
-        const containerWidth = carousel.offsetWidth;
-        const visibleCards = Math.floor(containerWidth / cardStep);
-        maxIndex = Math.max(0, cards.length - visibleCards);
-        
-        if (currentIndex > maxIndex) {
-            currentIndex = maxIndex;
-        }
+        nextBtn.style.cursor = currentIndex >= maxIndex ? '0.5' : 'pointer';
     }
     
     function updateLayout() {
@@ -147,56 +156,15 @@ function initExperiencesCarousel() {
         }
     });
     
-    // Auto-play functionality (optional)
-    let autoPlayInterval;
-    const autoPlayDelay = 5000; // 5 seconds
-    
-    function startAutoPlay() {
-        stopAutoPlay();
-        autoPlayInterval = setInterval(function() {
-            if (currentIndex < maxIndex) {
-                currentIndex++;
-            } else {
-                currentIndex = 0; // Loop back to start
-            }
-            updateCarousel();
-        }, autoPlayDelay);
-    }
-    
-    function stopAutoPlay() {
-        if (autoPlayInterval) {
-            clearInterval(autoPlayInterval);
-            autoPlayInterval = null;
-        }
-    }
-    
-    // Pause auto-play on hover/focus
-    carousel.addEventListener('mouseenter', stopAutoPlay);
-    carousel.addEventListener('mouseleave', startAutoPlay);
-    carousel.addEventListener('focusin', stopAutoPlay);
-    carousel.addEventListener('focusout', startAutoPlay);
-    
-    // Pause auto-play when page is not visible
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            stopAutoPlay();
-        } else {
-            startAutoPlay();
-        }
-    });
-    
-    // Initialize
+    // Initialize - Start from leftmost position
+    currentIndex = 0;
     updateLayout();
     
-    // Start auto-play if there are multiple cards
-    if (cards.length > 1) {
-        startAutoPlay();
-    }
-    
-    // Smooth scroll to carousel when hash is present
-    if (window.location.hash === '#experiences') {
-        setTimeout(function() {
-            carousel.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-    }
+    // Debug info (remove in production)
+    console.log('Carousel initialized:', {
+        totalCards: cards.length,
+        visibleCards: visibleCards,
+        maxIndex: maxIndex,
+        currentIndex: currentIndex
+    });
 }

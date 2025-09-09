@@ -17,6 +17,7 @@ if ($experience_type === 'category') {
 ?>
 
 <div class="experience-card" data-experience-id="<?php echo esc_attr(get_the_ID()); ?>">
+    <a href="<?php echo esc_url($experience_link); ?>" class="experience-card-link">
     <div class="experience-image-container">
         <?php if (has_post_thumbnail()) : ?>
             <?php the_post_thumbnail('full', array(
@@ -46,4 +47,5 @@ if ($experience_type === 'category') {
             Discover More
         </a>
     </div>
+    </a>
 </div>
