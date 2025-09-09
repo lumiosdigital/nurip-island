@@ -64,8 +64,14 @@ function nirup_enqueue_assets() {
     wp_enqueue_style('nirup-video', get_template_directory_uri() . '/assets/css/video.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-about-island', get_template_directory_uri() . '/assets/css/about-island.css', array('nirup-main'), '1.0.2');
     
-    // NEW: Add accommodations CSS
+    // Add accommodations CSS
     wp_enqueue_style('nirup-accommodations', get_template_directory_uri() . '/assets/css/accommodations.css', array('nirup-main'), '1.0.2');
+    
+    // NEW: Add experiences carousel CSS
+    wp_enqueue_style('nirup-experiences-carousel', get_template_directory_uri() . '/assets/css/experiences-carousel.css', array('nirup-main'), '1.0.2');
+    
+    // === GOOGLE FONTS ===
+    wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Albert+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap', array(), null);
     
     // === JAVASCRIPT FILES WITH EXPLICIT JQUERY DEPENDENCY ===
     
@@ -136,7 +142,16 @@ function nirup_enqueue_assets() {
         true
     );
     
-    // 8. Main initialization (loads last)
+    // NEW: 8. Experiences carousel
+    wp_enqueue_script(
+        'nirup-carousel', 
+        get_template_directory_uri() . '/assets/js/carousel.js', 
+        array('jquery'), 
+        '1.0.2', 
+        true
+    );
+    
+    // 9. Main initialization (loads last)
     wp_enqueue_script(
         'nirup-main', 
         get_template_directory_uri() . '/assets/js/main.js', 
@@ -148,7 +163,8 @@ function nirup_enqueue_assets() {
             'nirup-search',
             'nirup-language',
             'nirup-analytics',
-            'nirup-plugins'
+            'nirup-plugins',
+            'nirup-carousel'
         ), 
         '1.0.2', 
         true
@@ -169,6 +185,12 @@ function nirup_enqueue_assets() {
         'home_url' => home_url('/'),
         'is_mobile' => wp_is_mobile(),
         'debug' => defined('WP_DEBUG') && WP_DEBUG
+    ));
+    
+    // NEW: Localize carousel script
+    wp_localize_script('nirup-carousel', 'nirup_carousel', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('nirup_carousel_nonce')
     ));
     
     if (current_user_can('manage_options')) {
@@ -195,6 +217,305 @@ function nirup_register_sidebars() {
     ));
 }
 add_action('widgets_init', 'nirup_register_sidebars');
+
+/**
+ * NEW: Register Custom Post Type: Experiences
+ */
+function register_experiences_post_type() {
+    $labels = array(
+        'name'                  => _x('Experiences', 'Post type general name', 'nirup-island'),
+        'singular_name'         => _x('Experience', 'Post type singular name', 'nirup-island'),
+        'menu_name'             => _x('Experiences', 'Admin Menu text', 'nirup-island'),
+        'name_admin_bar'        => _x('Experience', 'Add New on Toolbar', 'nirup-island'),
+        'add_new'               => __('Add New', 'nirup-island'),
+        'add_new_item'          => __('Add New Experience', 'nirup-island'),
+        'new_item'              => __('New Experience', 'nirup-island'),
+        'edit_item'             => __('Edit Experience', 'nirup-island'),
+        'view_item'             => __('View Experience', 'nirup-island'),
+        'all_items'             => __('All Experiences', 'nirup-island'),
+        'search_items'          => __('Search Experiences', 'nirup-island'),
+        'parent_item_colon'     => __('Parent Experiences:', 'nirup-island'),
+        'not_found'             => __('No experiences found.', 'nirup-island'),
+        'not_found_in_trash'    => __('No experiences found in Trash.', 'nirup-island'),
+        'featured_image'        => _x('Experience Featured Image', 'Overrides the "Featured Image" phrase', 'nirup-island'),
+        'set_featured_image'    => _x('Set featured image', 'Overrides the "Set featured image" phrase', 'nirup-island'),
+        'remove_featured_image' => _x('Remove featured image', 'Overrides the "Remove featured image" phrase', 'nirup-island'),
+        'use_featured_image'    => _x('Use as featured image', 'Overrides the "Use as featured image" phrase', 'nirup-island'),
+        'archives'              => _x('Experience archives', 'The post type archive label', 'nirup-island'),
+        'insert_into_item'      => _x('Insert into experience', 'Overrides the "Insert into post" phrase', 'nirup-island'),
+        'uploaded_to_this_item' => _x('Uploaded to this experience', 'Overrides the "Uploaded to this post" phrase', 'nirup-island'),
+        'filter_items_list'     => _x('Filter experiences list', 'Screen reader text for the filter links', 'nirup-island'),
+        'items_list_navigation' => _x('Experiences list navigation', 'Screen reader text for the pagination', 'nirup-island'),
+        'items_list'            => _x('Experiences list', 'Screen reader text for the items list', 'nirup-island'),
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array('slug' => 'experiences'),
+        'capability_type'    => 'post',
+        'has_archive'        => true,
+        'hierarchical'       => true, // Enable parent-child relationships
+        'menu_position'      => 20,
+        'menu_icon'          => 'dashicons-palmtree',
+        'supports'           => array('title', 'editor', 'excerpt', 'thumbnail', 'custom-fields', 'page-attributes'),
+        'show_in_rest'       => true,
+    );
+
+    register_post_type('experience', $args);
+}
+add_action('init', 'register_experiences_post_type');
+
+/**
+ * NEW: Add custom fields for experiences
+ */
+function add_experience_meta_boxes() {
+    add_meta_box(
+        'experience_details',
+        'Experience Details',
+        'experience_details_callback',
+        'experience',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'add_experience_meta_boxes');
+
+function experience_details_callback($post) {
+    wp_nonce_field('save_experience_details', 'experience_details_nonce');
+    
+    $short_description = get_post_meta($post->ID, '_experience_short_description', true);
+    $experience_type = get_post_meta($post->ID, '_experience_type', true);
+    $featured_in_carousel = get_post_meta($post->ID, '_featured_in_carousel', true);
+    
+    echo '<table class="form-table">';
+    echo '<tr>';
+    echo '<th><label for="experience_short_description">Short Description (for carousel)</label></th>';
+    echo '<td><input type="text" id="experience_short_description" name="experience_short_description" value="' . esc_attr($short_description) . '" class="widefat" placeholder="e.g., Banana boat, flying donut, kayak, paddle boat" /></td>';
+    echo '</tr>';
+    echo '<tr>';
+    echo '<th><label for="experience_type">Experience Type</label></th>';
+    echo '<td>';
+    echo '<select id="experience_type" name="experience_type">';
+    echo '<option value="single"' . selected($experience_type, 'single', false) . '>Single Experience</option>';
+    echo '<option value="category"' . selected($experience_type, 'category', false) . '>Category (has sub-experiences)</option>';
+    echo '</select>';
+    echo '<p class="description">Choose "Category" if this experience contains multiple sub-experiences (like Excursions).</p>';
+    echo '</td>';
+    echo '</tr>';
+    echo '<tr>';
+    echo '<th><label for="featured_in_carousel">Featured in Homepage Carousel</label></th>';
+    echo '<td>';
+    echo '<input type="checkbox" id="featured_in_carousel" name="featured_in_carousel" value="1"' . checked($featured_in_carousel, 1, false) . ' />';
+    echo '<label for="featured_in_carousel"> Display this experience in the homepage carousel</label>';
+    echo '</td>';
+    echo '</tr>';
+    echo '</table>';
+}
+
+function save_experience_details($post_id) {
+    if (!isset($_POST['experience_details_nonce']) || !wp_verify_nonce($_POST['experience_details_nonce'], 'save_experience_details')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (isset($_POST['experience_short_description'])) {
+        update_post_meta($post_id, '_experience_short_description', sanitize_text_field($_POST['experience_short_description']));
+    }
+
+    if (isset($_POST['experience_type'])) {
+        update_post_meta($post_id, '_experience_type', sanitize_text_field($_POST['experience_type']));
+    }
+
+    $featured = isset($_POST['featured_in_carousel']) ? 1 : 0;
+    update_post_meta($post_id, '_featured_in_carousel', $featured);
+}
+add_action('save_post', 'save_experience_details');
+
+/**
+ * NEW: Get featured experiences for carousel
+ */
+function get_featured_experiences($limit = -1) {
+    $args = array(
+        'post_type' => 'experience',
+        'posts_per_page' => $limit,
+        'post_status' => 'publish',
+        'meta_query' => array(
+            array(
+                'key' => '_featured_in_carousel',
+                'value' => '1',
+                'compare' => '='
+            )
+        ),
+        'orderby' => 'menu_order',
+        'order' => 'ASC'
+    );
+    
+    return new WP_Query($args);
+}
+
+/**
+ * NEW: Get all experiences (for archive page)
+ */
+function get_all_experiences($parent_id = 0) {
+    $args = array(
+        'post_type' => 'experience',
+        'posts_per_page' => -1,
+        'post_status' => 'publish',
+        'post_parent' => $parent_id,
+        'orderby' => 'menu_order',
+        'order' => 'ASC'
+    );
+    
+    return new WP_Query($args);
+}
+
+/**
+ * NEW: Get child experiences for category-type experiences
+ */
+function get_child_experiences($parent_id) {
+    $args = array(
+        'post_type' => 'experience',
+        'posts_per_page' => -1,
+        'post_status' => 'publish',
+        'post_parent' => $parent_id,
+        'orderby' => 'menu_order',
+        'order' => 'ASC'
+    );
+    
+    return new WP_Query($args);
+}
+
+/**
+ * NEW: Add custom columns to experiences admin list
+ */
+function set_custom_experience_columns($columns) {
+    $columns['featured'] = __('Featured in Carousel', 'nirup-island');
+    $columns['type'] = __('Type', 'nirup-island');
+    $columns['short_desc'] = __('Short Description', 'nirup-island');
+    $columns['parent'] = __('Parent', 'nirup-island');
+    return $columns;
+}
+add_filter('manage_experience_posts_columns', 'set_custom_experience_columns');
+
+function custom_experience_column($column, $post_id) {
+    switch ($column) {
+        case 'featured':
+            $featured = get_post_meta($post_id, '_featured_in_carousel', true);
+            echo $featured ? '<span style="color: green; font-weight: bold;">✓ Yes</span>' : '<span style="color: #888;">No</span>';
+            break;
+        case 'type':
+            $type = get_post_meta($post_id, '_experience_type', true);
+            echo $type ? '<span style="background: #0073aa; color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px;">' . ucfirst($type) . '</span>' : '<span style="background: #ddd; color: #555; padding: 2px 6px; border-radius: 3px; font-size: 11px;">Single</span>';
+            break;
+        case 'short_desc':
+            $desc = get_post_meta($post_id, '_experience_short_description', true);
+            echo $desc ? '<em>' . esc_html(wp_trim_words($desc, 8)) . '</em>' : '<span style="color: #888;">—</span>';
+            break;
+        case 'parent':
+            $parent_id = wp_get_post_parent_id($post_id);
+            if ($parent_id) {
+                echo '<a href="' . get_edit_post_link($parent_id) . '">' . get_the_title($parent_id) . '</a>';
+            } else {
+                echo '<span style="color: #888;">—</span>';
+            }
+            break;
+    }
+}
+add_action('manage_experience_posts_custom_column', 'custom_experience_column', 10, 2);
+
+/**
+ * NEW: Create sample experiences on theme activation
+ */
+function create_sample_experiences() {
+    // Check if sample experiences already exist
+    $existing = get_posts(array(
+        'post_type' => 'experience',
+        'posts_per_page' => 1,
+        'post_status' => 'any'
+    ));
+    
+    if (!empty($existing)) {
+        return; // Sample experiences already exist
+    }
+    
+    // Sample experiences data
+    $sample_experiences = array(
+        array(
+            'title' => 'Water Sports',
+            'short_desc' => 'Banana boat, flying donut, kayak, paddle boat',
+            'content' => 'Dive into excitement with our comprehensive water sports activities. From thrilling banana boat rides to peaceful kayaking sessions, there\'s something for every adventure level.',
+            'type' => 'single',
+            'featured' => true
+        ),
+        array(
+            'title' => 'Wellness',
+            'short_desc' => 'Heavenly Spa, fitness studio, outdoor pool',
+            'content' => 'Rejuvenate your mind, body, and soul with our world-class wellness facilities. Experience the ultimate relaxation at our Heavenly Spa by Westin™.',
+            'type' => 'single',
+            'featured' => true
+        ),
+        array(
+            'title' => 'Kids Club',
+            'short_desc' => 'Indoor & outdoor activities for ages 4–12',
+            'content' => 'Keep your little ones entertained with our supervised kids club featuring age-appropriate activities, games, and adventures.',
+            'type' => 'single',
+            'featured' => true
+        ),
+        array(
+            'title' => 'Excursions',
+            'short_desc' => 'Cultural trips to the Riau Islands',
+            'content' => 'Explore the rich culture and natural beauty of the Riau Islands with our guided excursion packages.',
+            'type' => 'category',
+            'featured' => true
+        )
+    );
+    
+    foreach ($sample_experiences as $experience) {
+        $post_id = wp_insert_post(array(
+            'post_title' => $experience['title'],
+            'post_content' => $experience['content'],
+            'post_status' => 'publish',
+            'post_type' => 'experience'
+        ));
+        
+        if ($post_id && !is_wp_error($post_id)) {
+            update_post_meta($post_id, '_experience_short_description', $experience['short_desc']);
+            update_post_meta($post_id, '_experience_type', $experience['type']);
+            update_post_meta($post_id, '_featured_in_carousel', $experience['featured'] ? 1 : 0);
+        }
+    }
+}
+add_action('after_switch_theme', 'create_sample_experiences');
+
+/**
+ * NEW: Add custom image sizes for experiences
+ */
+function nirup_custom_image_sizes() {
+    add_image_size('experience-carousel', 380, 420, true);
+    add_image_size('experience-featured', 800, 600, true);
+}
+add_action('after_setup_theme', 'nirup_custom_image_sizes');
+
+/**
+ * NEW: Flush rewrite rules on theme activation
+ */
+function nirup_rewrite_flush() {
+    register_experiences_post_type();
+    flush_rewrite_rules();
+}
+add_action('after_switch_theme', 'nirup_rewrite_flush');
 
 /**
  * Plugin Support and Compatibility

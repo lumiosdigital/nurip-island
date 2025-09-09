@@ -44,6 +44,9 @@ get_header(); ?>
     get_template_part('template-parts/accommodations-section');
     ?>
 
+     <!-- Experiences Carousel Section -->
+    <?php get_template_part('template-parts/experiences-carousel'); ?>
+
 
 </main>
 
