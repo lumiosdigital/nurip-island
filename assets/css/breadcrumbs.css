@@ -1,0 +1,112 @@
+/* Breadcrumbs Styles */
+
+.breadcrumbs {
+    background: transparent;
+    padding: 20px 0;
+}
+
+.breadcrumbs-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    /* padding: 0 40px; */
+}
+
+.breadcrumbs-list {
+    display: flex;
+    align-items: center;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.breadcrumb-item::before {
+    display: none !important;
+}
+
+.breadcrumb-link {
+    color: #999;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+    color: #8B5E1D;
+}
+
+.breadcrumb-current {
+    color: #666;
+}
+
+.breadcrumb-separator {
+    margin: 0 10px;
+    color: #ccc;
+    font-weight: 400;
+}
+
+/* Reset any theme list styles */
+.breadcrumbs ol,
+.breadcrumbs ul {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.breadcrumbs li {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.breadcrumbs li::before,
+.breadcrumbs li::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .breadcrumbs-container {
+        padding: 0 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .breadcrumbs {
+        padding: 15px 0;
+    }
+
+    .breadcrumbs-container {
+        padding: 0 20px;
+    }
+
+    .breadcrumbs-list {
+        font-size: 11px;
+    }
+
+    .breadcrumb-separator {
+        margin: 0 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .breadcrumbs-list {
+        font-size: 10px;
+    }
+
+    .breadcrumb-separator {
+        margin: 0 6px;
+    }
+}

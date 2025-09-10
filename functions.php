@@ -69,6 +69,11 @@ function nirup_enqueue_assets() {
     
     // NEW: Add experiences carousel CSS
     wp_enqueue_style('nirup-experiences-carousel', get_template_directory_uri() . '/assets/css/experiences-carousel.css', array('nirup-main'), '1.0.2');
+
+    // NEW: Add experiences archive CSS
+    wp_enqueue_style('nirup-experiences-archive', get_template_directory_uri() . '/assets/css/archive-experiences.css', array('nirup-main'), '1.0.2');
+    
+    wp_enqueue_style('nirup-breadcrumbs', get_template_directory_uri() . '/assets/css/breadcrumbs.css', array(), '1.0.2');
     
     // === GOOGLE FONTS ===
     wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Albert+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap', array(), null);
@@ -1387,4 +1392,66 @@ function nirup_sanitize_youtube_url($url) {
     
     return '';
 }
+
+// Register Experiences Post Type
+function nirup_register_experiences() {
+    register_post_type('experience', array(
+        'public' => true,
+        'label' => 'Experiences',
+        'has_archive' => true,
+        'menu_icon' => 'dashicons-palmtree',
+        'supports' => array('title', 'editor', 'thumbnail')
+    ));
+}
+add_action('init', 'nirup_register_experiences');
+
+/**
+ * Generate breadcrumbs for current page
+ */
+function nirup_get_breadcrumbs() {
+    $breadcrumbs = array();
+    
+    // Always start with Home
+    $breadcrumbs[] = array(
+        'title' => 'Home',
+        'url' => home_url('/')
+    );
+    
+    if (is_post_type_archive('experience')) {
+        // Experiences archive page
+        $breadcrumbs[] = array(
+            'title' => 'Experiences',
+            'url' => ''
+        );
+    } elseif (is_singular('experience')) {
+        // Single experience page
+        $breadcrumbs[] = array(
+            'title' => 'Experiences',
+            'url' => get_post_type_archive_link('experience')
+        );
+        $breadcrumbs[] = array(
+            'title' => get_the_title(),
+            'url' => ''
+        );
+    } elseif (is_page()) {
+        // Regular pages
+        $breadcrumbs[] = array(
+            'title' => get_the_title(),
+            'url' => ''
+        );
+    } elseif (is_single()) {
+        // Blog posts
+        $breadcrumbs[] = array(
+            'title' => 'Blog',
+            'url' => get_permalink(get_option('page_for_posts'))
+        );
+        $breadcrumbs[] = array(
+            'title' => get_the_title(),
+            'url' => ''
+        );
+    }
+    
+    return $breadcrumbs;
+}
 ?>
+
