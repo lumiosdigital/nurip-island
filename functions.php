@@ -296,10 +296,11 @@ function experience_details_callback($post) {
     $short_description = get_post_meta($post->ID, '_experience_short_description', true);
     $experience_type = get_post_meta($post->ID, '_experience_type', true);
     $featured_in_carousel = get_post_meta($post->ID, '_featured_in_carousel', true);
+    $featured_in_archive = get_post_meta($post->ID, '_featured_in_archive', true);
     
     echo '<table class="form-table">';
     echo '<tr>';
-    echo '<th><label for="experience_short_description">Short Description (for carousel)</label></th>';
+    echo '<th><label for="experience_short_description">Short Description</label></th>';
     echo '<td><input type="text" id="experience_short_description" name="experience_short_description" value="' . esc_attr($short_description) . '" class="widefat" placeholder="e.g., Banana boat, flying donut, kayak, paddle boat" /></td>';
     echo '</tr>';
     echo '<tr>';
@@ -309,14 +310,15 @@ function experience_details_callback($post) {
     echo '<option value="single"' . selected($experience_type, 'single', false) . '>Single Experience</option>';
     echo '<option value="category"' . selected($experience_type, 'category', false) . '>Category (has sub-experiences)</option>';
     echo '</select>';
-    echo '<p class="description">Choose "Category" if this experience contains multiple sub-experiences (like Excursions).</p>';
+    echo '<p class="description">Choose "Category" if this experience contains multiple sub-experiences.</p>';
     echo '</td>';
     echo '</tr>';
     echo '<tr>';
-    echo '<th><label for="featured_in_carousel">Featured in Homepage Carousel</label></th>';
+    echo '<th>Display Options</th>';
     echo '<td>';
-    echo '<input type="checkbox" id="featured_in_carousel" name="featured_in_carousel" value="1"' . checked($featured_in_carousel, 1, false) . ' />';
-    echo '<label for="featured_in_carousel"> Display this experience in the homepage carousel</label>';
+    echo '<label><input type="checkbox" name="featured_in_carousel" value="1"' . checked($featured_in_carousel, 1, false) . ' /> Display in Homepage Carousel</label><br>';
+    echo '<label><input type="checkbox" name="featured_in_archive" value="1"' . checked($featured_in_archive, 1, false) . ' /> Display in Experiences Archive Page</label>';
+    echo '<p class="description">Choose where this experience should appear. Child experiences typically only need "Archive Page" checked.</p>';
     echo '</td>';
     echo '</tr>';
     echo '</table>';
@@ -343,8 +345,11 @@ function save_experience_details($post_id) {
         update_post_meta($post_id, '_experience_type', sanitize_text_field($_POST['experience_type']));
     }
 
-    $featured = isset($_POST['featured_in_carousel']) ? 1 : 0;
-    update_post_meta($post_id, '_featured_in_carousel', $featured);
+    $featured_carousel = isset($_POST['featured_in_carousel']) ? 1 : 0;
+    update_post_meta($post_id, '_featured_in_carousel', $featured_carousel);
+    
+    $featured_archive = isset($_POST['featured_in_archive']) ? 1 : 0;
+    update_post_meta($post_id, '_featured_in_archive', $featured_archive);
 }
 add_action('save_post', 'save_experience_details');
 
@@ -1395,19 +1400,26 @@ function nirup_sanitize_youtube_url($url) {
 
 // Register Experiences Post Type
 function nirup_register_experiences() {
-    register_post_type('experience', array(
-        'public' => true,
-        'label' => 'Experiences',
-        'has_archive' => true,
-        'menu_icon' => 'dashicons-palmtree',
-        'supports' => array('title', 'editor', 'thumbnail')
-    ));
+    $args = array(
+        'label'               => 'Experiences',
+        'public'              => true,
+        'show_ui'             => true,
+        'show_in_menu'        => true,
+        'menu_position'       => 25,
+        'menu_icon'           => 'dashicons-palmtree',
+        'supports'            => array('title', 'editor', 'excerpt', 'thumbnail', 'page-attributes'),
+        'has_archive'         => true,
+        'hierarchical'        => true,
+        'rewrite'             => array('slug' => 'experiences'),
+        'capability_type'     => 'post',
+        'publicly_queryable'  => true,
+        'show_in_rest'        => true,
+    );
+    
+    register_post_type('experience', $args);
 }
 add_action('init', 'nirup_register_experiences');
 
-/**
- * Generate breadcrumbs for current page
- */
 function nirup_get_breadcrumbs() {
     $breadcrumbs = array();
     
@@ -1418,33 +1430,27 @@ function nirup_get_breadcrumbs() {
     );
     
     if (is_post_type_archive('experience')) {
-        // Experiences archive page
         $breadcrumbs[] = array(
             'title' => 'Experiences',
             'url' => ''
         );
     } elseif (is_singular('experience')) {
-        // Single experience page
+        $experience_type = get_post_meta(get_the_ID(), '_experience_type', true);
+        
         $breadcrumbs[] = array(
             'title' => 'Experiences',
             'url' => get_post_type_archive_link('experience')
         );
-        $breadcrumbs[] = array(
-            'title' => get_the_title(),
-            'url' => ''
-        );
-    } elseif (is_page()) {
-        // Regular pages
-        $breadcrumbs[] = array(
-            'title' => get_the_title(),
-            'url' => ''
-        );
-    } elseif (is_single()) {
-        // Blog posts
-        $breadcrumbs[] = array(
-            'title' => 'Blog',
-            'url' => get_permalink(get_option('page_for_posts'))
-        );
+        
+        // If this is a child experience, add the parent
+        $parent_id = wp_get_post_parent_id(get_the_ID());
+        if ($parent_id) {
+            $breadcrumbs[] = array(
+                'title' => get_the_title($parent_id),
+                'url' => get_permalink($parent_id)
+            );
+        }
+        
         $breadcrumbs[] = array(
             'title' => get_the_title(),
             'url' => ''
@@ -1490,5 +1496,24 @@ function nirup_experiences_archive_customizer($wp_customize) {
     ));
 }
 add_action('customize_register', 'nirup_experiences_archive_customizer');
+
+/**
+ * Use custom template for category-type experiences
+ */
+function nirup_experience_template($template) {
+    if (is_singular('experience')) {
+        global $post;
+        $experience_type = get_post_meta($post->ID, '_experience_type', true);
+        
+        if ($experience_type === 'category') {
+            $category_template = get_template_directory() . '/single-experience-category.php';
+            if (file_exists($category_template)) {
+                return $category_template;
+            }
+        }
+    }
+    return $template;
+}
+add_filter('single_template', 'nirup_experience_template');
 ?>
 

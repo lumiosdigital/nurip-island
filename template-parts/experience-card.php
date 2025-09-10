@@ -1,19 +1,9 @@
 <?php
-/**
- * Template part for displaying experience cards in the carousel
- */
-
 $experience_type = get_post_meta(get_the_ID(), '_experience_type', true);
 $short_description = get_post_meta(get_the_ID(), '_experience_short_description', true);
 
-// Determine the link based on experience type
-if ($experience_type === 'category') {
-    // Link to archive page showing sub-experiences
-    $experience_link = get_post_type_archive_link('experience') . '?parent=' . get_the_ID();
-} else {
-    // Link directly to the experience page
-    $experience_link = get_permalink();
-}
+// Always use the permalink - no more ?parent= URLs
+$experience_link = get_permalink();
 ?>
 
 <div class="experience-card" data-experience-id="<?php echo esc_attr(get_the_ID()); ?>">

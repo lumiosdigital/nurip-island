@@ -1,16 +1,11 @@
-<?php get_header(); ?>
 <?php
-// Handle old ?parent= URLs as fallback
-if (isset($_GET['parent']) && !empty($_GET['parent'])) {
-    $parent_id = intval($_GET['parent']);
-    $parent_post = get_post($parent_id);
-    if ($parent_post) {
-        // Redirect to proper URL structure
-        wp_redirect(get_permalink($parent_post), 301);
-        exit;
-    }
-}
-?>
+/**
+ * Template for displaying category-type experiences (shows child experiences)
+ * This template is used when viewing experiences marked as "category" type
+ */
+
+get_header(); ?>
+
 <!-- Breadcrumbs -->
 <?php get_template_part('template-parts/breadcrumbs'); ?>
 
@@ -19,43 +14,32 @@ if (isset($_GET['parent']) && !empty($_GET['parent'])) {
         
         <!-- Header Section -->
         <div class="experiences-archive-header">
-            <h1 class="experiences-archive-title">
-                <?php echo esc_html(get_theme_mod('nirup_experiences_archive_title', 'Island Experiences')); ?>
-            </h1>
-            <p class="experiences-archive-subtitle">
-                <?php echo esc_html(get_theme_mod('nirup_experiences_archive_subtitle', 'Discover curated experiences that make every moment unforgettable — from family fun to wellness escapes')); ?>
-            </p>
+            <h1 class="experiences-archive-title"><?php echo strtoupper(get_the_title()); ?></h1>
+            <?php if (has_excerpt()) : ?>
+                <p class="experiences-archive-subtitle"><?php echo esc_html(get_the_excerpt()); ?></p>
+            <?php elseif (get_the_content()) : ?>
+                <p class="experiences-archive-subtitle"><?php echo esc_html(wp_trim_words(get_the_content(), 20, '...')); ?></p>
+            <?php endif; ?>
         </div>
 
-        <!-- Experiences Grid -->
+        <!-- Child Experiences Grid -->
         <?php 
-        // Show only experiences marked for archive display
-        $args = array(
+        // Get child experiences for this parent
+        $child_experiences = new WP_Query(array(
             'post_type' => 'experience',
             'posts_per_page' => -1,
             'post_status' => 'publish',
-            'meta_query' => array(
-                array(
-                    'key' => '_featured_in_archive',
-                    'value' => '1',
-                    'compare' => '='
-                )
-            ),
+            'post_parent' => get_the_ID(),
             'orderby' => 'menu_order',
             'order' => 'ASC'
-        );
-        $experiences_query = new WP_Query($args);
+        ));
         
-        if ($experiences_query->have_posts()) : ?>
+        if ($child_experiences->have_posts()) : ?>
             <div class="experiences-archive-grid">
-                <?php while ($experiences_query->have_posts()) : $experiences_query->the_post(); ?>
+                <?php while ($child_experiences->have_posts()) : $child_experiences->the_post(); ?>
                     
                     <article class="experience-archive-card">
-                        <?php 
-                        $experience_type = get_post_meta(get_the_ID(), '_experience_type', true);
-                        $experience_link = get_permalink();
-                        ?>
-                        <a href="<?php echo esc_url($experience_link); ?>" class="experience-archive-link">
+                        <a href="<?php the_permalink(); ?>" class="experience-archive-link">
                             
                             <!-- Card Image -->
                             <div class="experience-archive-image">
@@ -104,11 +88,12 @@ if (isset($_GET['parent']) && !empty($_GET['parent'])) {
             
         <?php else : ?>
             <div class="no-experiences-found">
-                <p>No experiences found.</p>
+                <p>No experiences found in this category.</p>
+                <a href="<?php echo get_post_type_archive_link('experience'); ?>" class="back-to-experiences">← Back to All Experiences</a>
             </div>
         <?php endif; ?>
         
     </div>
 </main>
 
-<?php get_footer(); ?>
+<?php get_footer(); ?>s
