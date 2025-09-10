@@ -75,6 +75,8 @@ function nirup_enqueue_assets() {
     
     wp_enqueue_style('nirup-breadcrumbs', get_template_directory_uri() . '/assets/css/breadcrumbs.css', array(), '1.0.2');
     
+    wp_enqueue_style('nirup-map-section', get_template_directory_uri() . '/assets/css/map-section.css', array('nirup-main'), '1.0.2');
+
     // === GOOGLE FONTS ===
     wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Albert+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap', array(), null);
     
@@ -174,6 +176,14 @@ function nirup_enqueue_assets() {
         '1.0.2', 
         true
     );
+
+    wp_enqueue_script(
+    'nirup-map-section', 
+    get_template_directory_uri() . '/assets/js/map-section.js', 
+    array('jquery'), 
+    '1.0.2', 
+    true
+);
     
     if (current_user_can('manage_options')) {
         echo '<script>console.log("✅ All JavaScript files enqueued!");</script>';
@@ -197,10 +207,18 @@ function nirup_enqueue_assets() {
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('nirup_carousel_nonce')
     ));
+
+    wp_localize_script('nirup-map-section', 'nirup_map', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('nirup_map_nonce'),
+        'pins_enabled' => false
+    ));
     
     if (current_user_can('manage_options')) {
         echo '<script>console.log("✅ Script localization complete!");</script>';
     }
+
+    
 }
 
 // Make sure the hook is properly registered
@@ -1515,5 +1533,69 @@ function nirup_experience_template($template) {
     return $template;
 }
 add_filter('single_template', 'nirup_experience_template');
+
+/**
+ * Map Section Customizer Options
+ */
+function nirup_map_section_customizer($wp_customize) {
+    $wp_customize->add_section('nirup_map_section', array(
+        'title'    => __('Map Section', 'nirup-island'),
+        'priority' => 40,
+        'description' => __('Customize the island map section settings', 'nirup-island'),
+    ));
+
+    $wp_customize->add_setting('nirup_map_display', array(
+        'default'           => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+
+    $wp_customize->add_control('nirup_map_display', array(
+        'label'    => __('Display Map Section', 'nirup-island'),
+        'section'  => 'nirup_map_section',
+        'type'     => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('nirup_map_title', array(
+        'default'           => __('Explore Our Island', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_map_title', array(
+        'label'    => __('Map Section Title', 'nirup-island'),
+        'section'  => 'nirup_map_section',
+        'type'     => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_map_subtitle', array(
+        'default'           => __('Discover amazing locations and experiences across Nirup Island', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('nirup_map_subtitle', array(
+        'label'    => __('Map Section Subtitle', 'nirup-island'),
+        'section'  => 'nirup_map_section',
+        'type'     => 'textarea',
+    ));
+
+    $wp_customize->add_setting('nirup_map_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_map_image', array(
+        'label'     => __('Map Image', 'nirup-island'),
+        'section'   => 'nirup_map_section',
+        'mime_type' => 'image',
+        'description' => __('Upload the main map image for your island. Recommended size: 1200x600px or larger.', 'nirup-island'),
+    )));
+}
+add_action('customize_register', 'nirup_map_section_customizer');
+
+/**
+ * Helper function to check if map section should be displayed
+ */
+function nirup_should_display_map_section() {
+    return get_theme_mod('nirup_map_display', true);
+}
 ?>
 

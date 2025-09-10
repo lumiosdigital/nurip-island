@@ -47,6 +47,17 @@ get_header(); ?>
      <!-- Experiences Carousel Section -->
     <?php get_template_part('template-parts/experiences-carousel'); ?>
 
+     <?php
+    /**
+     * Map Section
+     * Interactive island map with location pins
+     */
+    if (nirup_should_display_map_section()) {
+        get_template_part('template-parts/map-section');
+    }
+    ?>
+
+
 
 </main>
 

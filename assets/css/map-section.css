@@ -1,0 +1,380 @@
+/* ===========================
+   MAP SECTION STYLES
+   =========================== */
+
+.map-section {
+    padding: 120px 0;
+    /* background: #FCFAF6; */
+    position: relative;
+}
+
+.map-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    /* padding: 0 40px; */
+}
+
+/* ===========================
+   MAP HEADER
+   =========================== */
+
+.map-header {
+    text-align: center;
+    margin-bottom: 80px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.map-title {
+    font-family: 'Amiri', serif;
+    font-size: 72px;
+    font-weight: 400;
+    line-height: 1.1;
+    color: #3D332F;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin: 0 0 20px 0;
+}
+
+.map-subtitle {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #3D332F;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    opacity: 0.8;
+}
+
+/* ===========================
+   MAP INTERACTIVE WRAPPER
+   =========================== */
+
+.map-interactive-wrapper {
+    position: relative;
+    /* border-radius: 8px; */
+    overflow: hidden;
+    /* box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); */
+    /* background: #fff; */
+}
+
+.map-image-container {
+    position: relative;
+    width: 100%;
+    display: block;
+}
+
+.map-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* max-height: 600px; */
+    object-fit: cover;
+    object-position: center;
+}
+
+/* ===========================
+   MAP PINS
+   =========================== */
+
+.map-pins {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+.map-pin {
+    position: absolute;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transform: translate(-50%, -50%);
+    z-index: 15;
+    transition: transform 0.3s ease;
+}
+
+.map-pin:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.map-pin:focus {
+    outline: 2px solid #A48456;
+    outline-offset: 4px;
+    border-radius: 50%;
+}
+
+/* Pin Icon */
+.pin-icon {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    z-index: 20;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.pin-icon svg {
+    width: 100%;
+    height: 100%;
+    fill: #A48456;
+}
+
+/* Pin Pulse Animation */
+.pin-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #A48456;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.6;
+    animation: pulse 2s infinite;
+    z-index: 5;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.6);
+        opacity: 0;
+    }
+}
+
+/* ===========================
+   MAP TOOLTIP
+   =========================== */
+
+.map-tooltip {
+    position: absolute;
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(164, 132, 86, 0.2);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
+    max-width: 280px;
+    min-width: 200px;
+}
+
+.map-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tooltip-content {
+    text-align: left;
+}
+
+.tooltip-title {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: #3D332F;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+}
+
+.tooltip-description {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: #3D332F;
+    line-height: 1.4;
+    margin: 0;
+    opacity: 0.8;
+}
+
+.tooltip-arrow {
+    position: absolute;
+    bottom: -6px;
+    left: 20px;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-right: 1px solid rgba(164, 132, 86, 0.2);
+    border-bottom: 1px solid rgba(164, 132, 86, 0.2);
+    transform: rotate(45deg);
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+@media (max-width: 1200px) {
+    .map-container {
+        padding: 0 30px;
+    }
+
+    .map-title {
+        font-size: 60px;
+    }
+
+    .map-subtitle {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .map-section {
+        padding: 80px 0;
+    }
+
+    .map-container {
+        padding: 0 20px;
+    }
+
+    .map-header {
+        margin-bottom: 60px;
+    }
+
+    .map-title {
+        font-size: 48px;
+        line-height: 1.2;
+    }
+
+    .map-subtitle {
+        font-size: 14px;
+    }
+
+    .map-image {
+        max-height: 400px;
+    }
+
+    /* Adjust pin size for mobile */
+    .pin-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .pin-pulse {
+        width: 32px;
+        height: 32px;
+    }
+
+    .map-tooltip {
+        max-width: 220px;
+        min-width: 180px;
+        padding: 12px 16px;
+    }
+
+    .tooltip-title {
+        font-size: 16px;
+    }
+
+    .tooltip-description {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .map-section {
+        padding: 60px 0;
+    }
+
+    .map-header {
+        margin-bottom: 40px;
+    }
+
+    .map-title {
+        font-size: 36px;
+    }
+
+    .map-image {
+        max-height: 300px;
+    }
+
+    /* Smaller pins for very small screens */
+    .pin-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    .pin-pulse {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* ===========================
+   ACCESSIBILITY STYLES
+   =========================== */
+
+.map-pin:focus {
+    outline: 2px solid #A48456;
+    outline-offset: 4px;
+    border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pin-pulse {
+        animation: none;
+    }
+
+    .map-pin {
+        transition: none;
+    }
+
+    .map-tooltip {
+        transition: none;
+    }
+}
+
+/* ===========================
+   HIGH CONTRAST MODE
+   =========================== */
+
+@media (prefers-contrast: high) {
+    .map-tooltip {
+        border: 2px solid #000;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .pin-icon svg {
+        stroke-width: 3;
+    }
+
+    .pin-pulse {
+        border-width: 3px;
+    }
+}
+
+/* ===========================
+   PRINT STYLES
+   =========================== */
+
+@media print {
+    .map-section {
+        background: transparent !important;
+        padding: 40px 0;
+    }
+
+    .map-pins,
+    .map-tooltip {
+        display: none;
+    }
+
+    .map-image {
+        max-height: none;
+    }
+}
