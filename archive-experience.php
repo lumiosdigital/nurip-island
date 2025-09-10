@@ -1,12 +1,19 @@
 <?php get_header(); ?>
+
+<!-- Breadcrumbs -->
 <?php get_template_part('template-parts/breadcrumbs'); ?>
+
 <main class="experiences-archive-main">
     <div class="experiences-archive-container">
         
         <!-- Header Section -->
         <div class="experiences-archive-header">
-            <h1 class="experiences-archive-title">Island Experiences</h1>
-            <p class="experiences-archive-subtitle">Discover curated experiences that make every moment unforgettable — from family fun to wellness escapes</p>
+            <h1 class="experiences-archive-title">
+                <?php echo esc_html(get_theme_mod('nirup_experiences_archive_title', 'Island Experiences')); ?>
+            </h1>
+            <p class="experiences-archive-subtitle">
+                <?php echo esc_html(get_theme_mod('nirup_experiences_archive_subtitle', 'Discover curated experiences that make every moment unforgettable — from family fun to wellness escapes')); ?>
+            </p>
         </div>
 
         <!-- Experiences Grid -->

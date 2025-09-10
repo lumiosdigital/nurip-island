@@ -2,7 +2,7 @@
 
 .experiences-archive-main {
     /* background: #f8f6f3; */
-    padding: 120px 0 100px 0;
+    padding: 210px 0 100px 0;
     min-height: 100vh;
 }
 
@@ -15,7 +15,7 @@
 /* Header Section */
 .experiences-archive-header {
     text-align: center;
-    margin-bottom: 80px;
+    margin-bottom: 210px;
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
@@ -34,7 +34,7 @@
 
 .experiences-archive-subtitle {
     font-family: 'Albert Sans', sans-serif;
-    font-size: 24px;
+    font-size: 23px;
     color: #3D332F;
     line-height: 1.6;
     margin: 0;

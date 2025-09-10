@@ -1453,5 +1453,42 @@ function nirup_get_breadcrumbs() {
     
     return $breadcrumbs;
 }
+
+/**
+ * Add Experiences Archive Customizer Options
+ */
+function nirup_experiences_archive_customizer($wp_customize) {
+    // Experiences Archive Section
+    $wp_customize->add_section('nirup_experiences_archive', array(
+        'title' => __('Experiences Archive Page', 'nirup-island'),
+        'priority' => 37,
+        'description' => __('Customize the experiences archive page content', 'nirup-island'),
+    ));
+
+    // Archive Title
+    $wp_customize->add_setting('nirup_experiences_archive_title', array(
+        'default' => __('Island Experiences', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_experiences_archive_title', array(
+        'label' => __('Archive Page Title', 'nirup-island'),
+        'section' => 'nirup_experiences_archive',
+        'type' => 'text',
+    ));
+
+    // Archive Subtitle
+    $wp_customize->add_setting('nirup_experiences_archive_subtitle', array(
+        'default' => __('Discover curated experiences that make every moment unforgettable — from family fun to wellness escapes', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_experiences_archive_subtitle', array(
+        'label' => __('Archive Page Subtitle', 'nirup-island'),
+        'section' => 'nirup_experiences_archive',
+        'type' => 'textarea',
+    ));
+}
+add_action('customize_register', 'nirup_experiences_archive_customizer');
 ?>
 
