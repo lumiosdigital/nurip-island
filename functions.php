@@ -211,8 +211,10 @@ function nirup_enqueue_assets() {
     wp_localize_script('nirup-map-section', 'nirup_map', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('nirup_map_nonce'),
-        'pins_enabled' => false
+        'pins_enabled' => true
     ));
+
+    
     
     if (current_user_can('manage_options')) {
         echo '<script>console.log("✅ Script localization complete!");</script>';
@@ -1538,12 +1540,15 @@ add_filter('single_template', 'nirup_experience_template');
  * Map Section Customizer Options
  */
 function nirup_map_section_customizer($wp_customize) {
+    
+    // Add Map Section Panel
     $wp_customize->add_section('nirup_map_section', array(
         'title'    => __('Map Section', 'nirup-island'),
         'priority' => 40,
         'description' => __('Customize the island map section settings', 'nirup-island'),
     ));
 
+    // Map Section Display Toggle
     $wp_customize->add_setting('nirup_map_display', array(
         'default'           => true,
         'sanitize_callback' => 'wp_validate_boolean',
@@ -1553,8 +1558,10 @@ function nirup_map_section_customizer($wp_customize) {
         'label'    => __('Display Map Section', 'nirup-island'),
         'section'  => 'nirup_map_section',
         'type'     => 'checkbox',
+        'priority' => 5,
     ));
 
+    // Map Section Title
     $wp_customize->add_setting('nirup_map_title', array(
         'default'           => __('Explore Our Island', 'nirup-island'),
         'sanitize_callback' => 'sanitize_text_field',
@@ -1564,8 +1571,10 @@ function nirup_map_section_customizer($wp_customize) {
         'label'    => __('Map Section Title', 'nirup-island'),
         'section'  => 'nirup_map_section',
         'type'     => 'text',
+        'priority' => 10,
     ));
 
+    // Map Section Subtitle
     $wp_customize->add_setting('nirup_map_subtitle', array(
         'default'           => __('Discover amazing locations and experiences across Nirup Island', 'nirup-island'),
         'sanitize_callback' => 'sanitize_textarea_field',
@@ -1575,8 +1584,10 @@ function nirup_map_section_customizer($wp_customize) {
         'label'    => __('Map Section Subtitle', 'nirup-island'),
         'section'  => 'nirup_map_section',
         'type'     => 'textarea',
+        'priority' => 20,
     ));
 
+    // Map Image
     $wp_customize->add_setting('nirup_map_image', array(
         'default'           => '',
         'sanitize_callback' => 'absint',
@@ -1586,10 +1597,635 @@ function nirup_map_section_customizer($wp_customize) {
         'label'     => __('Map Image', 'nirup-island'),
         'section'   => 'nirup_map_section',
         'mime_type' => 'image',
+        'priority'  => 30,
         'description' => __('Upload the main map image for your island. Recommended size: 1200x600px or larger.', 'nirup-island'),
     )));
 }
 add_action('customize_register', 'nirup_map_section_customizer');
+
+function nirup_add_map_pins_menu() {
+    add_theme_page(
+        __('Map Pins', 'nirup-island'),
+        __('Map Pins', 'nirup-island'),
+        'manage_options',
+        'nirup-map-pins',
+        'nirup_map_pins_admin_page'
+    );
+}
+add_action('admin_menu', 'nirup_add_map_pins_menu');
+
+/**
+ * REPLACE the nirup_map_pins_admin_page function in functions.php with this
+ */
+function nirup_map_pins_admin_page() {
+    // Handle form submissions
+    if (isset($_POST['action']) && wp_verify_nonce($_POST['nirup_pins_nonce'], 'nirup_pins_action')) {
+        if ($_POST['action'] === 'add_pin') {
+            nirup_add_map_pin($_POST);
+        } elseif ($_POST['action'] === 'update_pin') {
+            nirup_update_map_pin($_POST);
+        } elseif ($_POST['action'] === 'delete_pin') {
+            nirup_delete_map_pin($_POST['pin_id']);
+        }
+    }
+    
+    $pins = nirup_get_map_pins();
+    $map_image_url = nirup_get_map_image_url();
+    ?>
+    
+    <div class="wrap nirup-map-admin">
+        <h1><?php _e('Map Pin Management', 'nirup-island'); ?></h1>
+        
+        <?php if (!$map_image_url): ?>
+            <div class="notice notice-warning">
+                <p>
+                    <?php _e('Please upload a map image first:', 'nirup-island'); ?>
+                    <a href="<?php echo admin_url('customize.php?autofocus[section]=nirup_map_section'); ?>" class="button button-small">
+                        <?php _e('Upload Map Image', 'nirup-island'); ?>
+                    </a>
+                </p>
+            </div>
+        <?php else: ?>
+            
+            <!-- Instructions -->
+            <div class="card" style="max-width: 800px; margin-bottom: 20px;">
+                <h2><?php _e('How to Add Pins', 'nirup-island'); ?></h2>
+                <ol>
+                    <li><strong><?php _e('Click anywhere on the map below', 'nirup-island'); ?></strong> <?php _e('to add a new pin', 'nirup-island'); ?></li>
+                    <li><strong><?php _e('Drag existing pins', 'nirup-island'); ?></strong> <?php _e('to reposition them', 'nirup-island'); ?></li>
+                    <li><strong><?php _e('Click on a pin', 'nirup-island'); ?></strong> <?php _e('to edit its details', 'nirup-island'); ?></li>
+                </ol>
+            </div>
+            
+            <!-- Interactive Map -->
+            <div class="card">
+                <h2><?php _e('Interactive Map - Click to Add Pins', 'nirup-island'); ?></h2>
+                <div class="map-editor-container">
+                    <img src="<?php echo esc_url($map_image_url); ?>" alt="Map" class="map-editor-image" id="map-editor">
+                    <div class="map-pins-overlay" id="map-pins-overlay">
+                        <?php foreach ($pins as $pin): ?>
+                            <div class="admin-pin admin-pin-<?php echo esc_attr($pin['pin_type']); ?>" 
+                                 data-pin-id="<?php echo esc_attr($pin['id']); ?>"
+                                 data-pin-type="<?php echo esc_attr($pin['pin_type']); ?>"
+                                 data-title="<?php echo esc_attr($pin['title']); ?>"
+                                 data-description="<?php echo esc_attr($pin['description']); ?>"
+                                 data-link="<?php echo esc_attr($pin['link']); ?>"
+                                 style="left: <?php echo esc_attr($pin['x']); ?>%; top: <?php echo esc_attr($pin['y']); ?>%;">
+                                <div class="pin-marker"></div>
+                                <div class="pin-label"><?php echo esc_html($pin['title']); ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                
+                <!-- Pin Type Selector -->
+                <div class="pin-controls">
+                    <label><?php _e('Pin Type for New Pins:', 'nirup-island'); ?></label>
+                    <label class="pin-type-option">
+                        <input type="radio" name="new_pin_type" value="public" checked>
+                        <span class="pin-preview pin-preview-public"></span>
+                        <?php _e('Public Areas', 'nirup-island'); ?>
+                    </label>
+                    <label class="pin-type-option">
+                        <input type="radio" name="new_pin_type" value="accommodation">
+                        <span class="pin-preview pin-preview-accommodation"></span>
+                        <?php _e('Accommodations', 'nirup-island'); ?>
+                    </label>
+                </div>
+            </div>
+        <?php endif; ?>
+        
+        <!-- Pin List -->
+        <div class="card">
+            <h2><?php _e('Pin List', 'nirup-island'); ?></h2>
+            
+            <?php if (empty($pins)): ?>
+                <p><?php _e('No pins created yet. Click on the map above to add your first pin!', 'nirup-island'); ?></p>
+            <?php else: ?>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;"><?php _e('Type', 'nirup-island'); ?></th>
+                            <th><?php _e('Title', 'nirup-island'); ?></th>
+                            <th><?php _e('Description', 'nirup-island'); ?></th>
+                            <th style="width: 100px;"><?php _e('Actions', 'nirup-island'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($pins as $pin): ?>
+                            <tr data-pin-id="<?php echo esc_attr($pin['id']); ?>">
+                                <td>
+                                    <div class="pin-type-indicator pin-type-<?php echo esc_attr($pin['pin_type']); ?>"></div>
+                                </td>
+                                <td>
+                                    <strong><?php echo esc_html($pin['title']); ?></strong>
+                                </td>
+                                <td>
+                                    <?php echo esc_html($pin['description']); ?>
+                                    <?php if (!empty($pin['link'])): ?>
+                                        <br><a href="<?php echo esc_url($pin['link']); ?>" target="_blank">
+                                            <?php echo esc_url($pin['link']); ?> <span class="dashicons dashicons-external"></span>
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <button type="button" class="button button-small edit-pin-btn" data-pin-id="<?php echo esc_attr($pin['id']); ?>">
+                                        <?php _e('Edit', 'nirup-island'); ?>
+                                    </button>
+                                    <button type="button" class="button button-small delete-pin-btn" data-pin-id="<?php echo esc_attr($pin['id']); ?>">
+                                        <?php _e('Delete', 'nirup-island'); ?>
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </div>
+        
+        <!-- Edit Pin Modal -->
+        <div id="edit-pin-modal" class="pin-modal" style="display: none;">
+            <div class="pin-modal-content">
+                <h2><?php _e('Edit Pin', 'nirup-island'); ?></h2>
+                <form id="edit-pin-form">
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">
+                                <label for="edit_pin_type"><?php _e('Pin Type', 'nirup-island'); ?></label>
+                            </th>
+                            <td>
+                                <label class="pin-type-option">
+                                    <input type="radio" name="edit_pin_type" value="public">
+                                    <span class="pin-preview pin-preview-public"></span>
+                                    <?php _e('Public Areas', 'nirup-island'); ?>
+                                </label>
+                                <label class="pin-type-option">
+                                    <input type="radio" name="edit_pin_type" value="accommodation">
+                                    <span class="pin-preview pin-preview-accommodation"></span>
+                                    <?php _e('Accommodations', 'nirup-island'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="edit_pin_title"><?php _e('Title', 'nirup-island'); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" id="edit_pin_title" name="pin_title" class="regular-text" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="edit_pin_description"><?php _e('Description', 'nirup-island'); ?></label>
+                            </th>
+                            <td>
+                                <textarea id="edit_pin_description" name="pin_description" rows="3" class="large-text"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="edit_pin_link"><?php _e('Link (Optional)', 'nirup-island'); ?></label>
+                            </th>
+                            <td>
+                                <input type="url" id="edit_pin_link" name="pin_link" class="regular-text">
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <p class="submit">
+                        <button type="button" class="button button-primary" id="save-pin-btn"><?php _e('Save Changes', 'nirup-island'); ?></button>
+                        <button type="button" class="button" id="cancel-edit-btn"><?php _e('Cancel', 'nirup-island'); ?></button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .nirup-map-admin .card {
+            max-width: 1000px;
+            margin-bottom: 20px;
+        }
+        
+        .map-editor-container {
+            position: relative;
+            display: inline-block;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: crosshair;
+            background: #f9f9f9;
+        }
+        
+        .map-editor-image {
+            display: block;
+            max-width: 100%;
+            width: 800px;
+            height: auto;
+        }
+        
+        .map-pins-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .admin-pin {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: move;
+            pointer-events: all;
+            z-index: 10;
+        }
+        
+        .admin-pin:hover {
+            z-index: 20;
+        }
+        
+        .pin-marker {
+            width: 20px;
+            height: 20px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            margin-bottom: 5px;
+        }
+        
+        .admin-pin-public .pin-marker {
+            background: #1E3673;
+        }
+        
+        .admin-pin-accommodation .pin-marker {
+            background: #C49A5D;
+        }
+        
+        .pin-label {
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            text-align: center;
+            margin-top: 5px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .admin-pin:hover .pin-label {
+            opacity: 1;
+        }
+        
+        .pin-controls {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .pin-type-option {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 20px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .pin-type-option input[type="radio"] {
+            margin-right: 8px;
+        }
+        
+        .pin-preview {
+            width: 16px;
+            height: 16px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            border: 2px solid #fff;
+            margin: 0 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .pin-preview-public {
+            background: #1E3673;
+        }
+        
+        .pin-preview-accommodation {
+            background: #C49A5D;
+        }
+        
+        .pin-type-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .pin-type-indicator.pin-type-public {
+            background: #1E3673;
+        }
+        
+        .pin-type-indicator.pin-type-accommodation {
+            background: #C49A5D;
+        }
+        
+        .pin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pin-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .admin-pin.ui-draggable-dragging {
+            z-index: 1000;
+        }
+        
+        .map-editor-container.adding-pin {
+            cursor: crosshair;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+    
+    <script>
+        jQuery(document).ready(function($) {
+            let currentEditPinId = null;
+            
+            // Make existing pins draggable
+            function makePinsDraggable() {
+                $('.admin-pin').draggable({
+                    containment: '.map-pins-overlay',
+                    stop: function(event, ui) {
+                        const pinId = $(this).data('pin-id');
+                        const container = $('.map-editor-image');
+                        const containerWidth = container.width();
+                        const containerHeight = container.height();
+                        
+                        const x = (ui.position.left / containerWidth) * 100;
+                        const y = (ui.position.top / containerHeight) * 100;
+                        
+                        // Save new position
+                        savePinPosition(pinId, x, y);
+                    }
+                });
+            }
+            
+            // Click on map to add new pin
+            $('#map-editor').on('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                const pinType = $('input[name="new_pin_type"]:checked').val();
+                
+                addNewPin(x, y, pinType);
+            });
+            
+            // Click on existing pin to edit
+            $(document).on('click', '.admin-pin', function(e) {
+                e.stopPropagation();
+                const pinId = $(this).data('pin-id');
+                editPin(pinId);
+            });
+            
+            // Edit pin from table
+            $('.edit-pin-btn').on('click', function() {
+                const pinId = $(this).data('pin-id');
+                editPin(pinId);
+            });
+            
+            // Delete pin
+            $('.delete-pin-btn').on('click', function() {
+                const pinId = $(this).data('pin-id');
+                if (confirm('<?php _e('Are you sure you want to delete this pin?', 'nirup-island'); ?>')) {
+                    deletePin(pinId);
+                }
+            });
+            
+            // Save pin changes
+            $('#save-pin-btn').on('click', function() {
+                savePinChanges();
+            });
+            
+            // Cancel edit
+            $('#cancel-edit-btn').on('click', function() {
+                $('#edit-pin-modal').hide();
+            });
+            
+            // Functions
+            function addNewPin(x, y, pinType) {
+                const title = prompt('<?php _e('Enter pin title:', 'nirup-island'); ?>');
+                if (!title) return;
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'nirup_add_pin_ajax',
+                        title: title,
+                        x: x,
+                        y: y,
+                        pin_type: pinType,
+                        nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Error: ' + response.data);
+                        }
+                    }
+                });
+            }
+            
+            function savePinPosition(pinId, x, y) {
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'nirup_update_pin_position',
+                        pin_id: pinId,
+                        x: x,
+                        y: y,
+                        nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            showMessage('Pin position updated!', 'success');
+                        }
+                    }
+                });
+            }
+            
+            function editPin(pinId) {
+                const $pin = $(`.admin-pin[data-pin-id="${pinId}"]`);
+                currentEditPinId = pinId;
+                
+                // Populate form
+                $('input[name="edit_pin_type"][value="' + $pin.data('pin-type') + '"]').prop('checked', true);
+                $('#edit_pin_title').val($pin.data('title'));
+                $('#edit_pin_description').val($pin.data('description'));
+                $('#edit_pin_link').val($pin.data('link'));
+                
+                $('#edit-pin-modal').show();
+            }
+            
+            function savePinChanges() {
+                const formData = {
+                    action: 'nirup_update_pin_ajax',
+                    pin_id: currentEditPinId,
+                    pin_type: $('input[name="edit_pin_type"]:checked').val(),
+                    title: $('#edit_pin_title').val(),
+                    description: $('#edit_pin_description').val(),
+                    link: $('#edit_pin_link').val(),
+                    nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
+                };
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            $('#edit-pin-modal').hide();
+                            location.reload();
+                        } else {
+                            alert('Error: ' + response.data);
+                        }
+                    }
+                });
+            }
+            
+            function deletePin(pinId) {
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'nirup_delete_pin_ajax',
+                        pin_id: pinId,
+                        nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Error: ' + response.data);
+                        }
+                    }
+                });
+            }
+            
+            function showMessage(message, type) {
+                const $message = $(`<div class="${type}-message">${message}</div>`);
+                $('.wrap h1').after($message);
+                setTimeout(() => $message.fadeOut(), 3000);
+            }
+            
+            // Initialize
+            makePinsDraggable();
+        });
+    </script>
+    
+    <?php
+}
+
+function nirup_get_map_pins() {
+    return get_option('nirup_map_pins', array());
+}
+
+function nirup_add_map_pin($data) {
+    $pins = nirup_get_map_pins();
+    
+    $new_pin = array(
+        'id' => uniqid('pin_'),
+        'title' => sanitize_text_field($data['pin_title']),
+        'description' => sanitize_textarea_field($data['pin_description']),
+        'x' => floatval($data['pin_x']),
+        'y' => floatval($data['pin_y']),
+        'link' => esc_url_raw($data['pin_link']),
+        'pin_type' => sanitize_text_field($data['pin_type']), // Changed from 'icon_type'
+        'created' => current_time('mysql')
+    );
+    
+    $pins[] = $new_pin;
+    update_option('nirup_map_pins', $pins);
+    
+    add_settings_error('nirup_pins', 'pin_added', __('Pin added successfully!', 'nirup-island'), 'updated');
+}
+
+function nirup_update_map_pin($data) {
+    $pins = nirup_get_map_pins();
+    $pin_id = sanitize_text_field($data['pin_id']);
+    
+    foreach ($pins as &$pin) {
+        if ($pin['id'] === $pin_id) {
+            $pin['title'] = sanitize_text_field($data['pin_title']);
+            $pin['description'] = sanitize_textarea_field($data['pin_description']);
+            $pin['x'] = floatval($data['pin_x']);
+            $pin['y'] = floatval($data['pin_y']);
+            $pin['link'] = esc_url_raw($data['pin_link']);
+            $pin['pin_type'] = sanitize_text_field($data['pin_type']); // Changed from 'icon_type'
+            $pin['updated'] = current_time('mysql');
+            break;
+        }
+    }
+    
+    update_option('nirup_map_pins', $pins);
+    add_settings_error('nirup_pins', 'pin_updated', __('Pin updated successfully!', 'nirup-island'), 'updated');
+}
+
+function nirup_delete_map_pin($pin_id) {
+    $pins = nirup_get_map_pins();
+    $pin_id = sanitize_text_field($pin_id);
+    
+    $pins = array_filter($pins, function($pin) use ($pin_id) {
+        return $pin['id'] !== $pin_id;
+    });
+    
+    update_option('nirup_map_pins', array_values($pins));
+    add_settings_error('nirup_pins', 'pin_deleted', __('Pin deleted successfully!', 'nirup-island'), 'updated');
+}
+
+function nirup_get_map_image_url() {
+    $image_id = get_theme_mod('nirup_map_image');
+    return $image_id ? wp_get_attachment_image_url($image_id, 'full') : false;
+}
 
 /**
  * Helper function to check if map section should be displayed
@@ -1597,5 +2233,150 @@ add_action('customize_register', 'nirup_map_section_customizer');
 function nirup_should_display_map_section() {
     return get_theme_mod('nirup_map_display', true);
 }
+
+function nirup_get_pin_icon_svg($pin_type) {
+    // Simple location pin icon for both types
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M21 10C21 17 12 23 12 23S3 17 3 10C3 5.02944 7.02944 1 12 1C16.9706 1 21 5.02944 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>';
+}
+
+
+/**
+ * ADD THESE NEW FUNCTIONS to your functions.php (in addition to the previous ones)
+ * These handle the AJAX for drag & drop functionality
+ */
+
+// ===========================
+// AJAX HANDLERS FOR DRAG & DROP
+// ===========================
+
+// AJAX: Add new pin
+function nirup_add_pin_ajax() {
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
+        wp_die('Security check failed');
+    }
+    
+    // Check permissions
+    if (!current_user_can('manage_options')) {
+        wp_die('Insufficient permissions');
+    }
+    
+    $pins = nirup_get_map_pins();
+    
+    $new_pin = array(
+        'id' => uniqid('pin_'),
+        'title' => sanitize_text_field($_POST['title']),
+        'description' => '', // Will be added in edit
+        'x' => floatval($_POST['x']),
+        'y' => floatval($_POST['y']),
+        'link' => '',
+        'pin_type' => sanitize_text_field($_POST['pin_type']), // 'public' or 'accommodation'
+        'created' => current_time('mysql')
+    );
+    
+    $pins[] = $new_pin;
+    update_option('nirup_map_pins', $pins);
+    
+    wp_send_json_success($new_pin);
+}
+add_action('wp_ajax_nirup_add_pin_ajax', 'nirup_add_pin_ajax');
+
+// AJAX: Update pin position
+function nirup_update_pin_position() {
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
+        wp_die('Security check failed');
+    }
+    
+    // Check permissions
+    if (!current_user_can('manage_options')) {
+        wp_die('Insufficient permissions');
+    }
+    
+    $pins = nirup_get_map_pins();
+    $pin_id = sanitize_text_field($_POST['pin_id']);
+    $x = floatval($_POST['x']);
+    $y = floatval($_POST['y']);
+    
+    foreach ($pins as &$pin) {
+        if ($pin['id'] === $pin_id) {
+            $pin['x'] = $x;
+            $pin['y'] = $y;
+            $pin['updated'] = current_time('mysql');
+            break;
+        }
+    }
+    
+    update_option('nirup_map_pins', $pins);
+    wp_send_json_success('Position updated');
+}
+add_action('wp_ajax_nirup_update_pin_position', 'nirup_update_pin_position');
+
+// AJAX: Update pin details
+function nirup_update_pin_ajax() {
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
+        wp_die('Security check failed');
+    }
+    
+    // Check permissions
+    if (!current_user_can('manage_options')) {
+        wp_die('Insufficient permissions');
+    }
+    
+    $pins = nirup_get_map_pins();
+    $pin_id = sanitize_text_field($_POST['pin_id']);
+    
+    foreach ($pins as &$pin) {
+        if ($pin['id'] === $pin_id) {
+            $pin['title'] = sanitize_text_field($_POST['title']);
+            $pin['description'] = sanitize_textarea_field($_POST['description']);
+            $pin['link'] = esc_url_raw($_POST['link']);
+            $pin['pin_type'] = sanitize_text_field($_POST['pin_type']);
+            $pin['updated'] = current_time('mysql');
+            break;
+        }
+    }
+    
+    update_option('nirup_map_pins', $pins);
+    wp_send_json_success('Pin updated');
+}
+add_action('wp_ajax_nirup_update_pin_ajax', 'nirup_update_pin_ajax');
+
+// AJAX: Delete pin
+function nirup_delete_pin_ajax() {
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
+        wp_die('Security check failed');
+    }
+    
+    // Check permissions
+    if (!current_user_can('manage_options')) {
+        wp_die('Insufficient permissions');
+    }
+    
+    $pins = nirup_get_map_pins();
+    $pin_id = sanitize_text_field($_POST['pin_id']);
+    
+    $pins = array_filter($pins, function($pin) use ($pin_id) {
+        return $pin['id'] !== $pin_id;
+    });
+    
+    update_option('nirup_map_pins', array_values($pins));
+    wp_send_json_success('Pin deleted');
+}
+add_action('wp_ajax_nirup_delete_pin_ajax', 'nirup_delete_pin_ajax');
+
+function nirup_enqueue_admin_assets() {
+    // Only on our admin page
+    $screen = get_current_screen();
+    if ($screen && $screen->id === 'appearance_page_nirup-map-pins') {
+        wp_enqueue_script('jquery-ui-draggable');
+    }
+}
+add_action('admin_enqueue_scripts', 'nirup_enqueue_admin_assets');
 ?>
 
