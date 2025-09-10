@@ -173,8 +173,9 @@
     right: 110px;
     /* Leave space for buttons on the right */
     height: 1px;
-    background: #a48456;
+    background: #A48456;
     transform: translateY(-50%);
+    opacity: 0.3;
 }
 
 .carousel-nav-buttons {
