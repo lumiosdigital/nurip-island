@@ -83,7 +83,7 @@ if (empty($map_pins)) {
                     loading="lazy"
                 />
                 
-                <!-- Map Pins -->
+                                <!-- Map Pins -->
                 <div class="map-pins">
                     <?php foreach ($map_pins as $pin): ?>
                         <button 

@@ -1617,6 +1617,10 @@ add_action('admin_menu', 'nirup_add_map_pins_menu');
 /**
  * REPLACE the nirup_map_pins_admin_page function in functions.php with this
  */
+/**
+ * UPDATED Map Pins Admin Page with Icon Library Integration
+ * REPLACE the entire nirup_map_pins_admin_page() function in your functions.php with this
+ */
 function nirup_map_pins_admin_page() {
     // Handle form submissions
     if (isset($_POST['action']) && wp_verify_nonce($_POST['nirup_pins_nonce'], 'nirup_pins_action')) {
@@ -1647,8 +1651,120 @@ function nirup_map_pins_admin_page() {
             </div>
         <?php else: ?>
             
+            <!-- NEW: Add Pin Form with Icon Library -->
+            <div class="card">
+                <h2><?php _e('Add New Pin', 'nirup-island'); ?></h2>
+                <form method="post" action="">
+                    <?php wp_nonce_field('nirup_pins_action', 'nirup_pins_nonce'); ?>
+                    <input type="hidden" name="action" value="add_pin">
+                    <input type="hidden" name="pin_x" id="pin_x" value="">
+                    <input type="hidden" name="pin_y" id="pin_y" value="">
+                    
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">
+                                <label for="pin_title"><?php _e('Pin Title', 'nirup-island'); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" id="pin_title" name="pin_title" class="regular-text" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="pin_description"><?php _e('Description', 'nirup-island'); ?></label>
+                            </th>
+                            <td>
+                                <textarea id="pin_description" name="pin_description" rows="3" class="large-text"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="pin_link"><?php _e('Link (Optional)', 'nirup-island'); ?></label>
+                            </th>
+                            <td>
+                                <input type="url" id="pin_link" name="pin_link" class="regular-text">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label><?php _e('Pin Type', 'nirup-island'); ?></label>
+                            </th>
+                            <td>
+                                <label>
+                                    <input type="radio" name="pin_type" value="public" checked>
+                                    <?php _e('Public Area', 'nirup-island'); ?>
+                                </label><br>
+                                <label>
+                                    <input type="radio" name="pin_type" value="accommodation">
+                                    <?php _e('Accommodation', 'nirup-island'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        
+                        <!-- NEW: Icon Selection with Visual Library -->
+                        <tr>
+                            <th scope="row">
+                                <label for="pin_icon"><?php _e('Pin Icon (Optional)', 'nirup-island'); ?></label>
+                            </th>
+                            <td>
+                                <div class="icon-picker-library">
+                                    <?php 
+                                    $custom_icons = nirup_get_custom_icons();
+                                    if (!empty($custom_icons)): ?>
+                                        <div class="icon-selection-grid">
+                                            <div class="icon-option no-icon-option active" data-icon="">
+                                                <div class="icon-preview-box">
+                                                    <span class="no-icon-text"><?php _e('No Icon', 'nirup-island'); ?></span>
+                                                </div>
+                                                <span class="icon-name"><?php _e('None', 'nirup-island'); ?></span>
+                                            </div>
+                                            
+                                            <?php foreach ($custom_icons as $filename => $icon): ?>
+                                                <div class="icon-option" data-icon="custom:<?php echo esc_attr($filename); ?>">
+                                                    <div class="icon-preview-box">
+                                                        <?php echo $icon['svg']; ?>
+                                                    </div>
+                                                    <span class="icon-name"><?php echo esc_html($icon['name']); ?></span>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        
+                                        <input type="hidden" id="pin_icon" name="pin_icon" value="">
+                                        
+                                        <!-- Icon Preview with Pin -->
+                                        <div class="selected-icon-preview" id="selected-icon-preview" style="margin-top: 15px; display: none;">
+                                            <label><?php _e('Preview:', 'nirup-island'); ?></label>
+                                            <div class="pin-with-icon-preview" id="pin-with-icon-preview"></div>
+                                        </div>
+                                        
+                                    <?php else: ?>
+                                        <div class="no-icons-message">
+                                            <p><?php _e('No icons available yet.', 'nirup-island'); ?></p>
+                                            <a href="<?php echo admin_url('themes.php?page=nirup-icon-library'); ?>" class="button">
+                                                <?php _e('Upload Icons', 'nirup-island'); ?>
+                                            </a>
+                                        </div>
+                                        <input type="hidden" id="pin_icon" name="pin_icon" value="">
+                                    <?php endif; ?>
+                                    
+                                    <p class="description" style="margin-top: 10px;">
+                                        <a href="<?php echo admin_url('themes.php?page=nirup-icon-library'); ?>" target="_blank">
+                                            <?php _e('Manage your icon library', 'nirup-island'); ?> →
+                                        </a>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <p class="submit">
+                        <input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e('Add Pin', 'nirup-island'); ?>" disabled>
+                    </p>
+                </form>
+            </div>
+            
             <!-- Instructions -->
-            <div class="card" style="max-width: 800px; margin-bottom: 20px;">
+            <div class="card" style="max-width: 1440px; margin-bottom: 20px;">
                 <h2><?php _e('How to Add Pins', 'nirup-island'); ?></h2>
                 <ol>
                     <li><strong><?php _e('Click anywhere on the map below', 'nirup-island'); ?></strong> <?php _e('to add a new pin', 'nirup-island'); ?></li>
@@ -1663,16 +1779,20 @@ function nirup_map_pins_admin_page() {
                 <div class="map-editor-container">
                     <img src="<?php echo esc_url($map_image_url); ?>" alt="Map" class="map-editor-image" id="map-editor">
                     <div class="map-pins-overlay" id="map-pins-overlay">
-                        <?php foreach ($pins as $pin): ?>
+                        <?php foreach ($pins as $pin): 
+                            $icon_key = isset($pin['icon']) ? $pin['icon'] : '';
+                            ?>
                             <div class="admin-pin admin-pin-<?php echo esc_attr($pin['pin_type']); ?>" 
                                  data-pin-id="<?php echo esc_attr($pin['id']); ?>"
                                  data-pin-type="<?php echo esc_attr($pin['pin_type']); ?>"
                                  data-title="<?php echo esc_attr($pin['title']); ?>"
                                  data-description="<?php echo esc_attr($pin['description']); ?>"
                                  data-link="<?php echo esc_attr($pin['link']); ?>"
+                                 data-icon="<?php echo esc_attr($icon_key); ?>"
                                  style="left: <?php echo esc_attr($pin['x']); ?>%; top: <?php echo esc_attr($pin['y']); ?>%;">
-                                <div class="pin-marker"></div>
-                                <div class="pin-label"><?php echo esc_html($pin['title']); ?></div>
+                                <div class="pin-icon">
+                                    <?php echo nirup_get_pin_icon_svg($pin['pin_type'], $icon_key); ?>
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -1719,6 +1839,9 @@ function nirup_map_pins_admin_page() {
                                 </td>
                                 <td>
                                     <strong><?php echo esc_html($pin['title']); ?></strong>
+                                    <?php if (!empty($pin['icon'])): ?>
+                                        <span class="has-icon-indicator">📌</span>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php echo esc_html($pin['description']); ?>
@@ -1742,68 +1865,11 @@ function nirup_map_pins_admin_page() {
                 </table>
             <?php endif; ?>
         </div>
-        
-        <!-- Edit Pin Modal -->
-        <div id="edit-pin-modal" class="pin-modal" style="display: none;">
-            <div class="pin-modal-content">
-                <h2><?php _e('Edit Pin', 'nirup-island'); ?></h2>
-                <form id="edit-pin-form">
-                    <table class="form-table">
-                        <tr>
-                            <th scope="row">
-                                <label for="edit_pin_type"><?php _e('Pin Type', 'nirup-island'); ?></label>
-                            </th>
-                            <td>
-                                <label class="pin-type-option">
-                                    <input type="radio" name="edit_pin_type" value="public">
-                                    <span class="pin-preview pin-preview-public"></span>
-                                    <?php _e('Public Areas', 'nirup-island'); ?>
-                                </label>
-                                <label class="pin-type-option">
-                                    <input type="radio" name="edit_pin_type" value="accommodation">
-                                    <span class="pin-preview pin-preview-accommodation"></span>
-                                    <?php _e('Accommodations', 'nirup-island'); ?>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="edit_pin_title"><?php _e('Title', 'nirup-island'); ?></label>
-                            </th>
-                            <td>
-                                <input type="text" id="edit_pin_title" name="pin_title" class="regular-text" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="edit_pin_description"><?php _e('Description', 'nirup-island'); ?></label>
-                            </th>
-                            <td>
-                                <textarea id="edit_pin_description" name="pin_description" rows="3" class="large-text"></textarea>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="edit_pin_link"><?php _e('Link (Optional)', 'nirup-island'); ?></label>
-                            </th>
-                            <td>
-                                <input type="url" id="edit_pin_link" name="pin_link" class="regular-text">
-                            </td>
-                        </tr>
-                    </table>
-                    
-                    <p class="submit">
-                        <button type="button" class="button button-primary" id="save-pin-btn"><?php _e('Save Changes', 'nirup-island'); ?></button>
-                        <button type="button" class="button" id="cancel-edit-btn"><?php _e('Cancel', 'nirup-island'); ?></button>
-                    </p>
-                </form>
-            </div>
-        </div>
     </div>
     
     <style>
         .nirup-map-admin .card {
-            max-width: 1000px;
+            max-width: 1440px;
             margin-bottom: 20px;
         }
         
@@ -1811,7 +1877,6 @@ function nirup_map_pins_admin_page() {
             position: relative;
             display: inline-block;
             border: 2px solid #ddd;
-            border-radius: 8px;
             overflow: hidden;
             cursor: crosshair;
             background: #f9f9f9;
@@ -1820,7 +1885,7 @@ function nirup_map_pins_admin_page() {
         .map-editor-image {
             display: block;
             max-width: 100%;
-            width: 800px;
+            width: 1440px; /* Bigger map size */
             height: auto;
         }
         
@@ -1835,7 +1900,7 @@ function nirup_map_pins_admin_page() {
         
         .admin-pin {
             position: absolute;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -100%);
             cursor: move;
             pointer-events: all;
             z-index: 10;
@@ -1845,39 +1910,9 @@ function nirup_map_pins_admin_page() {
             z-index: 20;
         }
         
-        .pin-marker {
-            width: 20px;
-            height: 20px;
-            border-radius: 50% 50% 50% 0;
-            transform: rotate(-45deg);
-            border: 2px solid #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            margin-bottom: 5px;
-        }
-        
-        .admin-pin-public .pin-marker {
-            background: #1E3673;
-        }
-        
-        .admin-pin-accommodation .pin-marker {
-            background: #C49A5D;
-        }
-        
-        .pin-label {
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            white-space: nowrap;
-            text-align: center;
-            margin-top: 5px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        
-        .admin-pin:hover .pin-label {
-            opacity: 1;
+        .admin-pin .pin-icon {
+            width: 35px;  
+            height: 42px;
         }
         
         .pin-controls {
@@ -1934,59 +1969,170 @@ function nirup_map_pins_admin_page() {
             background: #C49A5D;
         }
         
-        .pin-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 999999;
+        .has-icon-indicator {
+            color: #0073aa;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        /* Icon Library Picker Styles */
+        .icon-picker-library {
+            max-width: 600px;
+        }
+
+        .icon-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+
+        .icon-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .icon-option:hover {
+            border-color: #0073aa;
+            background: #f0f8ff;
+        }
+
+        .icon-option.active {
+            border-color: #0073aa;
+            background: #e3f2fd;
+            box-shadow: 0 2px 4px rgba(0,115,170,0.2);
+        }
+
+        .icon-preview-box {
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        
-        .pin-modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .admin-pin.ui-draggable-dragging {
-            z-index: 1000;
-        }
-        
-        .map-editor-container.adding-pin {
-            cursor: crosshair;
-        }
-        
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 10px 15px;
+            margin-bottom: 5px;
             border-radius: 4px;
-            margin-bottom: 15px;
-            border: 1px solid #c3e6cb;
+            background: #f9f9f9;
         }
-        
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 10px 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            border: 1px solid #f5c6cb;
+
+        .icon-preview-box svg {
+            max-width: 30px;
+            max-height: 30px;
+        }
+
+        .no-icon-option .icon-preview-box {
+            background: #e0e0e0;
+        }
+
+        .no-icon-text {
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .icon-name {
+            font-size: 11px;
+            text-align: center;
+            font-weight: 500;
+            color: #333;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .selected-icon-preview {
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .pin-with-icon-preview {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .pin-with-icon-preview svg {
+            width: 47px;
+            height: 56px;
+        }
+
+        .no-icons-message {
+            text-align: center;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .no-icons-message p {
+            margin: 0 0 15px 0;
+            color: #666;
         }
     </style>
     
     <script>
         jQuery(document).ready(function($) {
             let currentEditPinId = null;
+            
+            // Icon selection functionality
+            $('.icon-option').on('click', function() {
+                $('.icon-option').removeClass('active');
+                $(this).addClass('active');
+                
+                const iconValue = $(this).data('icon');
+                $('#pin_icon').val(iconValue);
+                
+                // Update preview
+                updateIconPreview(iconValue);
+            });
+            
+            // Update preview when pin type changes
+            $('input[name="pin_type"]').on('change', function() {
+                const currentIcon = $('#pin_icon').val();
+                updateIconPreview(currentIcon);
+            });
+            
+            function updateIconPreview(iconValue) {
+                const $preview = $('#selected-icon-preview');
+                const $previewPin = $('#pin-with-icon-preview');
+                
+                if (iconValue) {
+                    const pinType = $('input[name="pin_type"]:checked').val();
+                    const baseColor = pinType === 'accommodation' ? '#C49A5D' : '#1E3673';
+                    const selectedIconHtml = $('.icon-option.active .icon-preview-box').html();
+                    
+                    // Create simplified preview
+                    $previewPin.html(`
+                        <div style="position: relative; width: 47px; height: 56px;">
+                            <div style="width: 47px; height: 56px; background: ${baseColor}; clip-path: polygon(50% 100%, 0 0, 100% 0); position: relative; display: flex; align-items: center; justify-content: center;">
+                                <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <div style="width: 16px; height: 16px; color: ${baseColor}; transform: scale(0.6);">
+                                        ${selectedIconHtml}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                    $preview.show();
+                } else {
+                    $preview.hide();
+                }
+            }
             
             // Make existing pins draggable
             function makePinsDraggable() {
@@ -2001,7 +2147,6 @@ function nirup_map_pins_admin_page() {
                         const x = (ui.position.left / containerWidth) * 100;
                         const y = (ui.position.top / containerHeight) * 100;
                         
-                        // Save new position
                         savePinPosition(pinId, x, y);
                     }
                 });
@@ -2036,16 +2181,6 @@ function nirup_map_pins_admin_page() {
                 if (confirm('<?php _e('Are you sure you want to delete this pin?', 'nirup-island'); ?>')) {
                     deletePin(pinId);
                 }
-            });
-            
-            // Save pin changes
-            $('#save-pin-btn').on('click', function() {
-                savePinChanges();
-            });
-            
-            // Cancel edit
-            $('#cancel-edit-btn').on('click', function() {
-                $('#edit-pin-modal').hide();
             });
             
             // Functions
@@ -2095,41 +2230,27 @@ function nirup_map_pins_admin_page() {
             
             function editPin(pinId) {
                 const $pin = $(`.admin-pin[data-pin-id="${pinId}"]`);
-                currentEditPinId = pinId;
-                
-                // Populate form
-                $('input[name="edit_pin_type"][value="' + $pin.data('pin-type') + '"]').prop('checked', true);
-                $('#edit_pin_title').val($pin.data('title'));
-                $('#edit_pin_description').val($pin.data('description'));
-                $('#edit_pin_link').val($pin.data('link'));
-                
-                $('#edit-pin-modal').show();
-            }
-            
-            function savePinChanges() {
-                const formData = {
-                    action: 'nirup_update_pin_ajax',
-                    pin_id: currentEditPinId,
-                    pin_type: $('input[name="edit_pin_type"]:checked').val(),
-                    title: $('#edit_pin_title').val(),
-                    description: $('#edit_pin_description').val(),
-                    link: $('#edit_pin_link').val(),
-                    nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
-                };
-                
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        if (response.success) {
-                            $('#edit-pin-modal').hide();
-                            location.reload();
-                        } else {
-                            alert('Error: ' + response.data);
+                const newTitle = prompt('Edit pin title:', $pin.data('title'));
+                if (newTitle && newTitle !== $pin.data('title')) {
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'nirup_update_pin_ajax',
+                            pin_id: pinId,
+                            title: newTitle,
+                            description: $pin.data('description'),
+                            link: $pin.data('link'),
+                            pin_type: $pin.data('pin-type'),
+                            nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                location.reload();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             
             function deletePin(pinId) {
@@ -2159,6 +2280,9 @@ function nirup_map_pins_admin_page() {
             
             // Initialize
             makePinsDraggable();
+            
+            // Initialize with "No Icon" selected
+            $('.no-icon-option').trigger('click');
         });
     </script>
     
@@ -2180,6 +2304,7 @@ function nirup_add_map_pin($data) {
         'y' => floatval($data['pin_y']),
         'link' => esc_url_raw($data['pin_link']),
         'pin_type' => sanitize_text_field($data['pin_type']), // Changed from 'icon_type'
+        'icon' => sanitize_text_field($data['pin_icon'] ?? ''), // NEW: Icon field
         'created' => current_time('mysql')
     );
     
@@ -2201,6 +2326,7 @@ function nirup_update_map_pin($data) {
             $pin['y'] = floatval($data['pin_y']);
             $pin['link'] = esc_url_raw($data['pin_link']);
             $pin['pin_type'] = sanitize_text_field($data['pin_type']); // Changed from 'icon_type'
+            $pin['icon'] = sanitize_text_field($data['pin_icon'] ?? '');
             $pin['updated'] = current_time('mysql');
             break;
         }
@@ -2232,14 +2358,6 @@ function nirup_get_map_image_url() {
  */
 function nirup_should_display_map_section() {
     return get_theme_mod('nirup_map_display', true);
-}
-
-function nirup_get_pin_icon_svg($pin_type) {
-    // Simple location pin icon for both types
-    return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M21 10C21 17 12 23 12 23S3 17 3 10C3 5.02944 7.02944 1 12 1C16.9706 1 21 5.02944 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>';
 }
 
 
@@ -2378,5 +2496,383 @@ function nirup_enqueue_admin_assets() {
     }
 }
 add_action('admin_enqueue_scripts', 'nirup_enqueue_admin_assets');
+
+/**
+ * CUSTOM ICON LIBRARY SYSTEM
+ * Replace the icon-related functions in your functions.php with these
+ */
+
+// ===========================
+// UPDATED ICON SYSTEM - UPLOAD-ONLY LIBRARY
+// ===========================
+
+// Remove predefined icons - only use uploaded ones
+function nirup_get_predefined_icons() {
+    return array(); // Empty - no predefined icons
+}
+
+// Enhanced custom icon management
+function nirup_get_custom_icons() {
+    $upload_dir = wp_upload_dir();
+    $icon_dir = $upload_dir['basedir'] . '/pin-icons/';
+    $icon_url = $upload_dir['baseurl'] . '/pin-icons/';
+    
+    $custom_icons = array();
+    
+    if (is_dir($icon_dir)) {
+        $files = glob($icon_dir . '*.svg');
+        foreach ($files as $file) {
+            $filename = basename($file);
+            $name = pathinfo($filename, PATHINFO_FILENAME);
+            $file_size = filesize($file);
+            $file_modified = filemtime($file);
+            
+            $custom_icons[$filename] = array(
+                'name' => ucfirst(str_replace(array('-', '_'), ' ', $name)),
+                'filename' => $filename,
+                'url' => $icon_url . $filename,
+                'svg' => file_get_contents($file),
+                'size' => size_format($file_size),
+                'modified' => date('Y-m-d H:i:s', $file_modified)
+            );
+        }
+    }
+    
+    return $custom_icons;
+}
+
+// Enhanced icon upload with better validation
+function nirup_handle_custom_icon_upload() {
+    if (!isset($_FILES['custom_icon']) || $_FILES['custom_icon']['error'] !== UPLOAD_ERR_OK) {
+        return false;
+    }
+
+    $uploaded_file = $_FILES['custom_icon'];
+    
+    // Validate file type
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime_type = finfo_file($finfo, $uploaded_file['tmp_name']);
+    finfo_close($finfo);
+    
+    if ($mime_type !== 'image/svg+xml') {
+        add_settings_error('nirup_pins', 'invalid_file', __('Please upload only SVG files.', 'nirup-island'), 'error');
+        return false;
+    }
+    
+    // Validate file size (max 100KB)
+    if ($uploaded_file['size'] > 102400) {
+        add_settings_error('nirup_pins', 'file_too_large', __('Icon file must be smaller than 100KB.', 'nirup-island'), 'error');
+        return false;
+    }
+    
+    // Create icon directory if it doesn't exist
+    $upload_dir = wp_upload_dir();
+    $icon_dir = $upload_dir['basedir'] . '/pin-icons/';
+    
+    if (!file_exists($icon_dir)) {
+        wp_mkdir_p($icon_dir);
+    }
+    
+    // Generate unique filename to avoid conflicts
+    $filename = sanitize_file_name($uploaded_file['name']);
+    $name = pathinfo($filename, PATHINFO_FILENAME);
+    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    
+    $counter = 1;
+    $final_filename = $filename;
+    while (file_exists($icon_dir . $final_filename)) {
+        $final_filename = $name . '-' . $counter . '.' . $ext;
+        $counter++;
+    }
+    
+    $filepath = $icon_dir . $final_filename;
+    
+    if (move_uploaded_file($uploaded_file['tmp_name'], $filepath)) {
+        add_settings_error('nirup_pins', 'icon_uploaded', __('Icon uploaded successfully!', 'nirup-island'), 'updated');
+        return $final_filename;
+    }
+    
+    add_settings_error('nirup_pins', 'upload_failed', __('Failed to upload icon.', 'nirup-island'), 'error');
+    return false;
+}
+
+// Delete custom icon
+function nirup_delete_custom_icon($filename) {
+    $upload_dir = wp_upload_dir();
+    $icon_dir = $upload_dir['basedir'] . '/pin-icons/';
+    $filepath = $icon_dir . sanitize_file_name($filename);
+    
+    if (file_exists($filepath)) {
+        unlink($filepath);
+        
+        // Also remove this icon from any pins using it
+        $pins = nirup_get_map_pins();
+        $updated = false;
+        foreach ($pins as &$pin) {
+            if (isset($pin['icon']) && $pin['icon'] === 'custom:' . $filename) {
+                $pin['icon'] = '';
+                $updated = true;
+            }
+        }
+        
+        if ($updated) {
+            update_option('nirup_map_pins', $pins);
+        }
+        
+        return true;
+    }
+    
+    return false;
+}
+
+// Updated pin icon function - only handles custom icons
+function nirup_get_pin_icon_svg($pin_type, $custom_icon = '') {
+    if ($pin_type === 'accommodation') {
+        $base_svg = '<g filter="url(#filter0_d_433_1358)">
+                <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6846C46.6555 87.1051 47.3445 87.1051 47.7763 86.6846C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#C49A5D"/>
+                <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79.3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79.3491 33:3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_433_1358)" stroke-width="1.5"/>
+            </g>';
+        $defs = '<defs>
+                <filter id="filter0_d_433_1358" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                    <feOffset dy="5"/>
+                    <feGaussianBlur stdDeviation="10"/>
+                    <feComposite in2="hardAlpha" operator="out"/>
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_433_1358"/>
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_433_1358" result="shape"/>
+                </filter>
+                <linearGradient id="paint0_linear_433_1358" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#D8AE72"/>
+                    <stop offset="1" stop-color="#A48456"/>
+                </linearGradient>
+            </defs>';
+    } else {
+        $base_svg = '<g filter="url(#filter0_d_433_1373)">
+                <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6847C46.6555 87.1051 47.3445 87.1051 47.7763 86.6847C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#1E3673"/>
+                <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79:3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79:3491 33:3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_433_1373)" stroke-width="1.5"/>
+            </g>';
+        $defs = '<defs>
+                <filter id="filter0_d_433_1373" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                    <feOffset dy="5"/>
+                    <feGaussianBlur stdDeviation="10"/>
+                    <feComposite in2="hardAlpha" operator="out"/>
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_433_1373"/>
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_anta_1373" result="shape"/>
+                </filter>
+                <linearGradient id="paint0_linear_433_1373" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#6E9CE0"/>
+                    <stop offset="1" stop-color="#1E3673"/>
+                </linearGradient>
+            </defs>';
+    }
+    
+    // Add custom icon overlay if provided
+    $icon_overlay = '';
+    if (!empty($custom_icon) && strpos($custom_icon, 'custom:') === 0) {
+        $filename = str_replace('custom:', '', $custom_icon);
+        $custom_icons = nirup_get_custom_icons();
+        if (isset($custom_icons[$filename])) {
+            $icon_svg = $custom_icons[$filename]['svg'];
+            $icon_overlay = '<g transform="translate(47, 35)">
+                <circle cx="0" cy="0" r="12" fill="white" opacity="0.9"/>
+                <g transform="translate(-8, -8) scale(0.7)" fill="' . ($pin_type === 'accommodation' ? '#C49A5D' : '#1E3673') . '">
+                    ' . $icon_svg . '
+                </g>
+            </g>';
+        }
+    }
+    
+    return '<svg width="94" height="112" viewBox="0 0 94 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+        ' . $base_svg . '
+        ' . $icon_overlay . '
+        ' . $defs . '
+    </svg>';
+}
+
+// AJAX handler for icon management
+function nirup_manage_icon_ajax() {
+    if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
+        wp_die('Security check failed');
+    }
+    
+    if (!current_user_can('manage_options')) {
+        wp_die('Insufficient permissions');
+    }
+    
+    $action_type = sanitize_text_field($_POST['action_type']);
+    
+    if ($action_type === 'delete_icon') {
+        $filename = sanitize_text_field($_POST['filename']);
+        if (nirup_delete_custom_icon($filename)) {
+            wp_send_json_success('Icon deleted successfully');
+        } else {
+            wp_send_json_error('Failed to delete icon');
+        }
+    }
+}
+add_action('wp_ajax_nirup_manage_icon_ajax', 'nirup_manage_icon_ajax');
+
+// Add icon library management to admin page
+function nirup_add_icon_library_menu() {
+    add_theme_page(
+        __('Icon Library', 'nirup-island'),
+        __('Icon Library', 'nirup-island'),
+        'manage_options',
+        'nirup-icon-library',
+        'nirup_icon_library_admin_page'
+    );
+}
+add_action('admin_menu', 'nirup_add_icon_library_menu');
+
+function nirup_icon_library_admin_page() {
+    // Handle icon upload
+    if (isset($_POST['action']) && $_POST['action'] === 'upload_icon' && wp_verify_nonce($_POST['nirup_icon_nonce'], 'nirup_icon_action')) {
+        nirup_handle_custom_icon_upload();
+    }
+    
+    // Handle icon deletion
+    if (isset($_POST['action']) && $_POST['action'] === 'delete_icon' && wp_verify_nonce($_POST['nirup_icon_nonce'], 'nirup_icon_action')) {
+        $filename = sanitize_text_field($_POST['icon_filename']);
+        if (nirup_delete_custom_icon($filename)) {
+            add_settings_error('nirup_icons', 'icon_deleted', __('Icon deleted successfully!', 'nirup-island'), 'updated');
+        } else {
+            add_settings_error('nirup_icons', 'delete_failed', __('Failed to delete icon.', 'nirup-island'), 'error');
+        }
+    }
+    
+    $custom_icons = nirup_get_custom_icons();
+    
+    ?>
+    <div class="wrap">
+        <h1><?php _e('Icon Library Management', 'nirup-island'); ?></h1>
+        
+        <?php settings_errors('nirup_icons'); ?>
+        
+        <!-- Upload New Icon -->
+        <div class="card">
+            <h2><?php _e('Upload New Icon', 'nirup-island'); ?></h2>
+            <form method="post" enctype="multipart/form-data">
+                <?php wp_nonce_field('nirup_icon_action', 'nirup_icon_nonce'); ?>
+                <input type="hidden" name="action" value="upload_icon">
+                
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="custom_icon"><?php _e('Select SVG Icon', 'nirup-island'); ?></label>
+                        </th>
+                        <td>
+                            <input type="file" name="custom_icon" id="custom_icon" accept=".svg,image/svg+xml" required>
+                            <p class="description">
+                                <?php _e('Upload SVG files only. Maximum size: 100KB. Icons work best when they are simple and clear at small sizes.', 'nirup-island'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                
+                <p class="submit">
+                    <input type="submit" name="submit" class="button button-primary" value="<?php _e('Upload Icon', 'nirup-island'); ?>">
+                </p>
+            </form>
+        </div>
+        
+        <!-- Icon Library -->
+        <div class="card">
+            <h2><?php _e('Your Icon Library', 'nirup-island'); ?></h2>
+            
+            <?php if (empty($custom_icons)): ?>
+                <p><?php _e('No icons uploaded yet. Upload your first icon above!', 'nirup-island'); ?></p>
+            <?php else: ?>
+                <div class="icon-library-grid">
+                    <?php foreach ($custom_icons as $filename => $icon): ?>
+                        <div class="icon-item" data-filename="<?php echo esc_attr($filename); ?>">
+                            <div class="icon-preview">
+                                <div class="icon-display"><?php echo $icon['svg']; ?></div>
+                            </div>
+                            <div class="icon-info">
+                                <strong><?php echo esc_html($icon['name']); ?></strong>
+                                <small><?php echo esc_html($icon['size']); ?></small>
+                                <small><?php echo esc_html($icon['modified']); ?></small>
+                            </div>
+                            <div class="icon-actions">
+                                <form method="post" style="display: inline;" onsubmit="return confirm('<?php _e('Are you sure you want to delete this icon?', 'nirup-island'); ?>');">
+                                    <?php wp_nonce_field('nirup_icon_action', 'nirup_icon_nonce'); ?>
+                                    <input type="hidden" name="action" value="delete_icon">
+                                    <input type="hidden" name="icon_filename" value="<?php echo esc_attr($filename); ?>">
+                                    <button type="submit" class="button button-small button-link-delete"><?php _e('Delete', 'nirup-island'); ?></button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    
+    <style>
+        .icon-library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .icon-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fff;
+            text-align: center;
+        }
+        
+        .icon-preview {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .icon-display {
+            max-width: 40px;
+            max-height: 40px;
+        }
+        
+        .icon-display svg {
+            width: 100%;
+            height: 100%;
+            max-width: 40px;
+            max-height: 40px;
+        }
+        
+        .icon-info {
+            margin-bottom: 10px;
+        }
+        
+        .icon-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .icon-info small {
+            display: block;
+            color: #666;
+            font-size: 11px;
+        }
+        
+        .icon-actions {
+            margin-top: 10px;
+        }
+    </style>
+    <?php
+}
+?>
+
 ?>
 

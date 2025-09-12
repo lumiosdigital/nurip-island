@@ -1,5 +1,5 @@
 /* ===========================
-   UPDATED MAP SECTION STYLES - NEW PIN COLORS
+   UPDATED MAP SECTION STYLES - CUSTOM SVG PINS
    REPLACE your existing map-section.css with this
    =========================== */
 
@@ -78,7 +78,7 @@
 }
 
 /* ===========================
-   MAP PINS - SIMPLIFIED TO 2 TYPES
+   MAP PINS - CUSTOM SVG PINS
    =========================== */
 
 .map-pins {
@@ -96,104 +96,158 @@
     border: none;
     cursor: pointer;
     padding: 0;
-    transform: translate(-50%, -50%);
     z-index: 15;
     transition: transform 0.3s ease, filter 0.3s ease;
+    outline: none;
+
+    /* Center the pin on the coordinates - tip of pin points to exact location */
+    transform: translate(-50%, -100%);
 }
 
 .map-pin:hover {
-    transform: translate(-50%, -50%) scale(1.15);
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+    z-index: 60;
+    transform: translate(-50%, -100%) scale(1.1);
 }
 
 /* .map-pin:focus {
-    outline: 3px solid #1E3673;
-    outline-offset: 6px;
-    border-radius: 50%;
+    outline: 3px solid #4A90E2;
+    outline-offset: 4px;
+    border-radius: 8px;
 } */
 
 .map-pin.pin-clicked {
-    transform: translate(-50%, -50%) scale(0.9);
+    transform: translate(-50%, -100%) scale(0.95);
 }
 
-/* Pin Icons */
+/* Pin Icons - Updated for Custom SVG Pins */
 .pin-icon {
-    width: 28px;
-    height: 28px;
+    width: 47px;
+    /* Half of the SVG width (94px) for proper sizing */
+    height: 56px;
+    /* Half of the SVG height (112px) for proper sizing */
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     z-index: 20;
-    border-radius: 50%;
     transition: all 0.3s ease;
-    border: 3px solid #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    /* Removed circular styling since we're using custom pin shapes */
 }
 
 .pin-icon svg {
-    width: 16px;
-    height: 16px;
-    color: #fff;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
 }
 
 .map-pin:hover .pin-icon {
-    transform: scale(1.1);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    filter: brightness(1.1);
 }
 
-/* NEW PIN TYPE COLORS */
-.map-pin-public .pin-icon {
-    background: #1E3673;
-    /* Blue for public areas */
+.map-pin:hover .pin-icon svg {
+    filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.25));
 }
 
+/* Pin type colors are now handled by the SVG itself, no additional CSS needed */
+.map-pin-public .pin-icon,
 .map-pin-accommodation .pin-icon {
-    background: #C49A5D;
-    /* Gold for accommodations */
+    background: none;
+    border: none;
+    box-shadow: none;
 }
 
-/* Pin Pulse Animation */
-/* .pin-pulse {
+/* Admin Interface Pins */
+.admin-pin {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.6;
-    animation: pinPulse 2.5s infinite;
-    z-index: 5;
+    cursor: pointer;
+    z-index: 50;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -100%);
 }
 
-.map-pin-public .pin-pulse {
-    border: 2px solid #1E3673;
+.admin-pin:hover {
+    transform: translate(-50%, -100%) scale(1.1);
+    z-index: 60;
 }
 
-.map-pin-accommodation .pin-pulse {
-    border: 2px solid #C49A5D;
+.admin-pin .pin-icon {
+    width: 35px;
+    /* Smaller for admin interface */
+    height: 42px;
 }
 
-@keyframes pinPulse {
-    0% {
-        transform: translate(-50%, -50%) scale(0.8);
-        opacity: 0.8;
+.admin-pin .pin-icon svg {
+    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+}
+
+.admin-pin:hover .pin-icon svg {
+    filter: drop-shadow(0 3px 12px rgba(0, 0, 0, 0.3));
+}
+
+/* Draggable Preview Pins (Admin Interface) */
+.draggable-preview-pin {
+    position: absolute;
+    cursor: move;
+    z-index: 50;
+    transform: translate(-50%, -100%);
+    transition: all 0.3s ease;
+}
+
+.draggable-preview-pin:hover {
+    transform: translate(-50%, -100%) scale(1.05);
+}
+
+.draggable-preview-pin.ui-draggable-dragging {
+    z-index: 100;
+    transform: translate(-50%, -100%) scale(1.1);
+    filter: brightness(1.2);
+}
+
+.draggable-preview-pin.highlighted {
+    animation: pinHighlight 2s ease-in-out;
+}
+
+@keyframes pinHighlight {
+
+    0%,
+    100% {
+        transform: translate(-50%, -100%) scale(1);
+        filter: brightness(1);
     }
 
     50% {
-        transform: translate(-50%, -50%) scale(1.3);
-        opacity: 0.4;
+        transform: translate(-50%, -100%) scale(1.2);
+        filter: brightness(1.3) drop-shadow(0 0 20px rgba(255, 255, 0, 0.8));
+    }
+}
+
+/* Pin Selection State (Admin) */
+.admin-pin.selected .pin-icon,
+.draggable-preview-pin.selected .pin-icon {
+    filter: brightness(1.2) drop-shadow(0 0 15px rgba(74, 144, 226, 0.6));
+}
+
+/* Pin Loading State */
+.pin-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.pin-loading .pin-icon {
+    animation: pinLoading 1.5s infinite ease-in-out;
+}
+
+@keyframes pinLoading {
+
+    0%,
+    100% {
+        opacity: 0.6;
     }
 
-    100% {
-        transform: translate(-50%, -50%) scale(1.8);
-        opacity: 0;
+    50% {
+        opacity: 1;
     }
-} */
+}
 
 /* ===========================
    MAP TOOLTIP
@@ -280,6 +334,27 @@
     transform: rotate(45deg);
 }
 
+.tooltip-type {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+}
+
+.tooltip-type.public {
+    background: rgba(30, 54, 115, 0.1);
+    color: #1E3673;
+}
+
+.tooltip-type.accommodation {
+    background: rgba(196, 154, 93, 0.1);
+    color: #C49A5D;
+}
+
 /* ===========================
    ADMIN NOTICE
    =========================== */
@@ -354,18 +429,13 @@
     }
 
     .pin-icon {
-        width: 24px;
-        height: 24px;
+        width: 35px;
+        height: 42px;
     }
 
-    .pin-icon svg {
-        width: 14px;
-        height: 14px;
-    }
-
-    .pin-pulse {
-        width: 40px;
-        height: 40px;
+    .admin-pin .pin-icon {
+        width: 28px;
+        height: 34px;
     }
 
     .map-tooltip {
@@ -401,18 +471,13 @@
     }
 
     .pin-icon {
-        width: 22px;
-        height: 22px;
+        width: 28px;
+        height: 34px;
     }
 
-    .pin-icon svg {
-        width: 12px;
-        height: 12px;
-    }
-
-    .pin-pulse {
-        width: 35px;
-        height: 35px;
+    .admin-pin .pin-icon {
+        width: 24px;
+        height: 29px;
     }
 
     .map-tooltip {
@@ -433,36 +498,38 @@
    ACCESSIBILITY
    =========================== */
 
+/* .map-pin:focus-visible {
+    outline: 3px solid #4A90E2;
+    outline-offset: 4px;
+    border-radius: 8px;
+} */
+
+/* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-    .pin-pulse {
+
+    .map-pin,
+    .pin-icon,
+    .map-tooltip,
+    .admin-pin,
+    .draggable-preview-pin {
+        transition: none;
+    }
+
+    .pinHighlight,
+    .pinLoading {
         animation: none;
-    }
-
-    .map-pin {
-        transition: none;
-    }
-
-    .map-tooltip {
-        transition: none;
-    }
-
-    .pin-icon {
-        transition: none;
     }
 }
 
+/* High contrast mode support */
 @media (prefers-contrast: high) {
     .map-tooltip {
         border: 2px solid #000;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     }
 
-    .pin-icon {
-        border: 3px solid #000;
-    }
-
-    .pin-pulse {
-        border-width: 3px;
+    .pin-icon svg {
+        filter: contrast(1.5);
     }
 }
 
