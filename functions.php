@@ -2873,6 +2873,3 @@ function nirup_icon_library_admin_page() {
     <?php
 }
 ?>
-
-?>
-
