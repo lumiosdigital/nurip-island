@@ -2956,4 +2956,314 @@ function nirup_icon_library_admin_page() {
     </style>
     <?php
 }
+
+function nirup_getting_here_customizer($wp_customize) {
+    // Getting Here Section
+    $wp_customize->add_section('nirup_getting_here', array(
+        'title' => __('Getting Here Section', 'nirup-island'),
+        'priority' => 45,
+        'description' => __('Customize the Getting Here section with interactive Google Maps', 'nirup-island'),
+    ));
+
+    // Section Content Settings
+    $wp_customize->add_setting('nirup_getting_here_title', array(
+        'default' => __('GETTING HERE', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_getting_here_title', array(
+        'label' => __('Section Title', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_getting_here_description', array(
+        'default' => __('Nirup Island is just a 20-minute ferry ride from Harbour Bay Ferry Terminal in Batam and 50 minutes from HarbourFront Centre in Singapore.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('nirup_getting_here_description', array(
+        'label' => __('Description', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'textarea',
+    ));
+
+    // Google Maps API Settings
+    $wp_customize->add_setting('nirup_google_maps_api_key', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_google_maps_api_key', array(
+        'label' => __('Google Maps API Key', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+        'description' => __('Enter your Google Maps JavaScript API key. Get one at: https://developers.google.com/maps/documentation/javascript/get-api-key', 'nirup-island'),
+    ));
+
+    // Map Settings
+    $wp_customize->add_setting('nirup_map_center_lat', array(
+        'default' => '1.1304753',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_map_center_lat', array(
+        'label' => __('Map Center Latitude (Nirup Island)', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+        'description' => __('Latitude coordinate for Nirup Island', 'nirup-island'),
+    ));
+
+    $wp_customize->add_setting('nirup_map_center_lng', array(
+        'default' => '104.0266055',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_map_center_lng', array(
+        'label' => __('Map Center Longitude (Nirup Island)', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+        'description' => __('Longitude coordinate for Nirup Island', 'nirup-island'),
+    ));
+
+    $wp_customize->add_setting('nirup_map_zoom', array(
+        'default' => '10',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control('nirup_map_zoom', array(
+        'label' => __('Map Zoom Level', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'number',
+        'input_attrs' => array(
+            'min' => 1,
+            'max' => 20,
+        ),
+        'description' => __('Map zoom level (1-20, recommended: 10-12)', 'nirup-island'),
+    ));
+
+    $wp_customize->add_setting('nirup_map_style', array(
+        'default' => 'terrain',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_map_style', array(
+        'label' => __('Map Style', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'select',
+        'choices' => array(
+            'roadmap' => __('Roadmap', 'nirup-island'),
+            'satellite' => __('Satellite', 'nirup-island'),
+            'hybrid' => __('Hybrid', 'nirup-island'),
+            'terrain' => __('Terrain', 'nirup-island'),
+        ),
+    ));
+
+    // Singapore Ferry Terminal Settings
+    $wp_customize->add_setting('nirup_singapore_lat', array(
+        'default' => '1.2650543',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_singapore_lat', array(
+        'label' => __('Singapore Terminal Latitude', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+        'description' => __('HarbourFront Centre coordinates', 'nirup-island'),
+    ));
+
+    $wp_customize->add_setting('nirup_singapore_lng', array(
+        'default' => '103.8232508',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_singapore_lng', array(
+        'label' => __('Singapore Terminal Longitude', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_singapore_departure', array(
+        'default' => __('HarbourFront Centre', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_singapore_departure', array(
+        'label' => __('Singapore Departure Point', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_singapore_time', array(
+        'default' => __('50 minutes', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_singapore_time', array(
+        'label' => __('Singapore Travel Time', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_singapore_ferry_info', array(
+        'default' => __('50 minutes from HarbourFront Centre', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_singapore_ferry_info', array(
+        'label' => __('Singapore Ferry Info (Map Tooltip)', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+    ));
+
+    // Batam Ferry Terminal Settings
+    $wp_customize->add_setting('nirup_batam_lat', array(
+        'default' => '1.1210997',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_batam_lat', array(
+        'label' => __('Batam Terminal Latitude', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+        'description' => __('Harbour Bay Ferry Terminal coordinates', 'nirup-island'),
+    ));
+
+    $wp_customize->add_setting('nirup_batam_lng', array(
+        'default' => '104.0538234',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_batam_lng', array(
+        'label' => __('Batam Terminal Longitude', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_batam_departure', array(
+        'default' => __('Harbour Bay Ferry Terminal', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_batam_departure', array(
+        'label' => __('Batam Departure Point', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_batam_time', array(
+        'default' => __('20 minutes', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_batam_time', array(
+        'label' => __('Batam Travel Time', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_batam_ferry_info', array(
+        'default' => __('20 minutes from Harbour Bay Terminal', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_batam_ferry_info', array(
+        'label' => __('Batam Ferry Info (Map Tooltip)', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+    ));
+
+    // Show/Hide Section
+    $wp_customize->add_setting('nirup_getting_here_show', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+
+    $wp_customize->add_control('nirup_getting_here_show', array(
+        'label' => __('Show Getting Here Section', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'checkbox',
+    ));
+}
+add_action('customize_register', 'nirup_getting_here_customizer');
+
+/**
+ * Helper function to check if Getting Here section should be displayed
+ */
+function nirup_should_display_getting_here_section() {
+    return get_theme_mod('nirup_getting_here_show', true);
+}
+
+/**
+ * Enqueue Getting Here Section specific styles and scripts (FIXED)
+ */
+function nirup_getting_here_assets() {
+    // Only load on pages where the section is displayed
+    if (nirup_should_display_getting_here_section()) {
+        
+        $google_maps_api_key = get_theme_mod('nirup_google_maps_api_key', '');
+        
+        if ($google_maps_api_key) {
+            // First enqueue our script that defines the callback
+            wp_enqueue_script(
+                'nirup-getting-here-js',
+                get_template_directory_uri() . '/assets/js/getting-here.js',
+                array('jquery'),
+                '1.0.1', // Updated version
+                false // Load in head to ensure callback is available
+            );
+            
+            // Then enqueue Google Maps API with callback
+            wp_enqueue_script(
+                'google-maps-api',
+                'https://maps.googleapis.com/maps/api/js?key=' . esc_attr($google_maps_api_key) . '&libraries=geometry&callback=initNirupMap&loading=async',
+                array('nirup-getting-here-js'), // Depend on our script
+                null,
+                false // Load in head
+            );
+        } else {
+            // Load our script even without API key for fallback functionality
+            wp_enqueue_script(
+                'nirup-getting-here-js',
+                get_template_directory_uri() . '/assets/js/getting-here.js',
+                array('jquery'),
+                '1.0.1',
+                true
+            );
+        }
+
+        // Localize script for any dynamic content
+        wp_localize_script('nirup-getting-here-js', 'nirupGettingHere', array(
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('nirup_getting_here_nonce'),
+            'hasApiKey' => !empty($google_maps_api_key),
+            'strings' => array(
+                'loadingMap' => __('Loading interactive map...', 'nirup-island'),
+                'nirupIsland' => __('Nirup Island', 'nirup-island'),
+                'singapore' => __('Singapore Terminal', 'nirup-island'),
+                'batam' => __('Batam Terminal', 'nirup-island'),
+                'ferryRoute' => __('Ferry Route', 'nirup-island'),
+            ),
+        ));
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_getting_here_assets');
+
+/**
+ * Add admin notice if Google Maps API key is missing
+ */
+function nirup_google_maps_admin_notice() {
+    $screen = get_current_screen();
+    if ($screen && ($screen->id === 'customize' || $screen->id === 'appearance_page_customize')) {
+        $api_key = get_theme_mod('nirup_google_maps_api_key', '');
+        if (empty($api_key)) {
+            echo '<div class="notice notice-warning"><p>';
+            echo '<strong>' . __('Nirup Island Theme:', 'nirup-island') . '</strong> ';
+            echo __('To enable interactive maps in the Getting Here section, please add your Google Maps API key in the Customizer.', 'nirup-island');
+            echo ' <a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">' . __('Get API Key', 'nirup-island') . '</a>';
+            echo '</p></div>';
+        }
+    }
+}
+add_action('admin_notices', 'nirup_google_maps_admin_notice');
 ?>

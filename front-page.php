@@ -59,7 +59,15 @@ get_header(); ?>
 
     <?php get_template_part('template-parts/wellness-retreat-section'); ?>
 
-
+    <?php
+    /**
+     * Getting Here Section
+     * Interactive ferry routes map
+     */
+    if (nirup_should_display_getting_here_section()) {
+        get_template_part('template-parts/getting-here-section');
+    }
+    ?>
 
 </main>
 
