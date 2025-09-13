@@ -1,6 +1,3 @@
-/* ===========================
-   ANNOUNCEMENT BAR STYLES
-   =========================== */
 
 .announcement-bar {
     background-color: var(--color-primary-blue);
@@ -57,10 +54,6 @@
     fill: currentColor;
 }
 
-/* ===========================
-   HEADER LAYOUT STYLES
-   =========================== */
-
 .site-header {
     background-color: var(--color-stone-50);
     border-bottom: 1px solid var(--color-border);
@@ -69,7 +62,6 @@
     align-items: center;
     position: fixed;
     top: 31px;
-    /* Height of announcement bar */
     left: 0;
     right: 0;
     z-index: 100;
@@ -78,10 +70,8 @@
 
 .site-header.header-hidden {
     transform: translateY(-111px);
-    /* FIXED: Complete hide including announcement bar */
 }
 
-/* Add subtle shadow when scrolling */
 .site-header.header-scrolled {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -90,17 +80,12 @@
     max-width: var(--container-max-width);
     width: 100%;
     margin: 0 auto;
-    /* padding: 0 20px; */
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: relative;
     height: 100%;
 }
-
-/* ===========================
-   SITE BRANDING STYLES
-   =========================== */
 
 .site-branding {
     position: absolute;
@@ -117,7 +102,6 @@
 .custom-logo-wrapper {
     width: 120px;
     height: 41px;
-    /* overflow: hidden; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,10 +145,6 @@
     opacity: 1 !important;
 }
 
-/* ===========================
-   NAVIGATION LAYOUT STYLES
-   =========================== */
-
 .nav-left,
 .nav-right {
     display: flex;
@@ -177,10 +157,6 @@
     align-items: center;
     gap: 20px;
 }
-
-/* ===========================
-   NAVIGATION MENU STYLES
-   =========================== */
 
 .primary-menu-left,
 .secondary-menu {
@@ -218,23 +194,6 @@
     opacity: 1;
 }
 
-/* Menu Focus States */
-/* .primary-menu-left li.focused,
-.secondary-menu li.focused {
-    background-color: rgba(139, 94, 29, 0.1);
-    border-radius: 4px;
-} */
-
-/* .primary-menu-left a:focus,
-.secondary-menu a:focus {
-    outline: 2px solid var(--color-golden);
-    outline-offset: 2px;
-} */
-
-/* ===========================
-   LANGUAGE SWITCHER STYLES - FIXED
-   =========================== */
-
 .language-switcher-container {
     position: relative;
     display: inline-block;
@@ -266,15 +225,9 @@
     color: var(--color-golden);
 }
 
-/* .language-current:focus {
-    outline: 2px solid var(--color-golden);
-    outline-offset: 2px;
-} */
-
 .lang-dropdown-arrow {
     width: 8px;
     height: 4px;
-    /* fill: currentColor; */
     transition: transform 0.3s ease;
 }
 
@@ -300,16 +253,13 @@
     transform: translateY(-10px);
     transition: all 0.3s ease;
     display: none;
-    /* FIXED: Start hidden */
 }
 
-/* FIXED: Show dropdown when active */
 .language-switcher-container.active .language-dropdown-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
     display: block !important;
-    /* FIXED: Force display */
 }
 
 .language-option {
@@ -344,7 +294,6 @@
     opacity: 0.9;
 }
 
-/* Language Switcher Fallback */
 .language-switcher-fallback {
     display: flex;
     align-items: center;
@@ -355,10 +304,6 @@
     letter-spacing: 0.5px;
     color: var(--color-black);
 }
-
-/* ===========================
-   SEARCH TOGGLE STYLES
-   =========================== */
 
 .search-toggle {
     background: none;
@@ -374,23 +319,13 @@
 
 .search-toggle:hover {
     color: var(--color-golden);
-    /* background-color: rgba(139, 94, 29, 0.1); */
 }
-
-/* .search-toggle:focus {
-    outline: 2px solid var(--color-golden);
-    outline-offset: 2px;
-} */
 
 .search-icon {
     width: 16px;
     height: 16px;
     fill: currentColor;
 }
-
-/* ===========================
-   BOOKING BUTTON STYLES
-   =========================== */
 
 .booking-button {
     background: transparent;
@@ -416,15 +351,6 @@
     opacity: 1;
 }
 
-/* .booking-button:focus {
-    outline: 2px solid var(--color-golden);
-    outline-offset: 2px;
-} */
-
-/* ===========================
-   MOBILE MENU TOGGLE STYLES
-   =========================== */
-
 .mobile-menu-toggle {
     display: none;
     background: none;
@@ -447,11 +373,6 @@
     background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* .mobile-menu-toggle:focus {
-    outline: 2px solid var(--color-golden);
-    outline-offset: 2px;
-} */
-
 .hamburger {
     display: flex;
     flex-direction: column;
@@ -466,7 +387,6 @@
     border-radius: 1px;
 }
 
-/* Mobile Menu Toggle Animation */
 .mobile-menu-toggle.active .hamburger span:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
 }
@@ -479,15 +399,10 @@
     transform: rotate(-45deg) translate(7px, -6px);
 }
 
-/* ===========================
-   MOBILE MENU STYLES
-   =========================== */
-
 .mobile-menu {
     display: none;
     position: fixed;
     top: 111px;
-    /* Height of announcement bar + header */
     left: 0;
     width: 100%;
     height: calc(100vh - 111px);
@@ -563,19 +478,9 @@
     opacity: 0.8;
 }
 
-/* .mobile-booking-button:focus {
-    outline: 2px solid var(--color-white);
-    outline-offset: 2px;
-} */
-
-/* Mobile Menu Open Body Class */
 body.mobile-menu-open {
     overflow: hidden;
 }
-
-/* ===========================
-   SEARCH OVERLAY STYLES
-   =========================== */
 
 .search-overlay {
     position: fixed;
@@ -627,14 +532,12 @@ body.mobile-menu-open {
 
 .search-close:hover {
     opacity: 0.7;
-    /* background-color: rgba(0, 0, 0, 0.05); */
 }
 
 .search-form-wrapper {
     margin-top: 20px;
 }
 
-/* Search Form */
 .search-form {
     display: flex;
     align-items: center;
@@ -650,12 +553,6 @@ body.mobile-menu-open {
     border-radius: 4px;
     transition: border-color 0.3s ease;
 }
-
-/* .search-field:focus {
-    border-color: var(--color-golden);
-    box-shadow: 0 0 0 2px rgba(139, 94, 29, 0.2);
-    outline: none;
-} */
 
 .search-submit {
     background: var(--color-golden);
@@ -673,12 +570,6 @@ body.mobile-menu-open {
     opacity: 0.8;
 }
 
-/* .search-submit:focus {
-    outline: 2px solid var(--color-white);
-    outline-offset: 2px;
-} */
-
-/* Loading State for Search */
 .search-overlay.loading .search-overlay-content::before {
     content: '';
     position: absolute;
@@ -693,18 +584,10 @@ body.mobile-menu-open {
     border-radius: 8px;
 }
 
-/* ===========================
-   BODY PADDING FOR FIXED HEADER
-   =========================== */
-
 body {
     padding-top: 111px;
-    /* announcement bar (31px) + header (80px) */
 }
 
-/* ===========================
-   RESPONSIVE STYLES
-   =========================== */
 
 @media (max-width: 1024px) {
     .nav-right-items {
@@ -766,7 +649,6 @@ body {
         width: calc(100% - 40px);
     }
 
-    /* Language dropdown mobile styles */
     .language-dropdown-menu {
         right: -10px;
         min-width: 100px;
@@ -798,16 +680,11 @@ body {
         height: 12px;
     }
 
-    /* Adjust language dropdown for very small screens */
     .language-dropdown-menu {
         right: -20px;
         min-width: 120px;
     }
 }
-
-/* ===========================
-   PRINT STYLES
-   =========================== */
 
 @media print {
 

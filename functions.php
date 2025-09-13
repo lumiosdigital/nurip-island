@@ -63,19 +63,13 @@ function nirup_enqueue_assets() {
     wp_enqueue_style('nirup-hero', get_template_directory_uri() . '/assets/css/hero.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-video', get_template_directory_uri() . '/assets/css/video.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-about-island', get_template_directory_uri() . '/assets/css/about-island.css', array('nirup-main'), '1.0.2');
-    
-    // Add accommodations CSS
     wp_enqueue_style('nirup-accommodations', get_template_directory_uri() . '/assets/css/accommodations.css', array('nirup-main'), '1.0.2');
-    
-    // NEW: Add experiences carousel CSS
     wp_enqueue_style('nirup-experiences-carousel', get_template_directory_uri() . '/assets/css/experiences-carousel.css', array('nirup-main'), '1.0.2');
-
-    // NEW: Add experiences archive CSS
     wp_enqueue_style('nirup-experiences-archive', get_template_directory_uri() . '/assets/css/archive-experiences.css', array('nirup-main'), '1.0.2');
-    
     wp_enqueue_style('nirup-breadcrumbs', get_template_directory_uri() . '/assets/css/breadcrumbs.css', array(), '1.0.2');
-    
     wp_enqueue_style('nirup-map-section', get_template_directory_uri() . '/assets/css/map-section.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-wellness-retreat', get_template_directory_uri() . '/assets/css/wellness-retreat.css', array('nirup-main'), '1.0.2');
+
 
     // === GOOGLE FONTS ===
     wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Albert+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap', array(), null);
@@ -806,6 +800,96 @@ function nirup_customize_register($wp_customize) {
         'section' => 'nirup_navigation',
         'type' => 'url',
     ));
+
+    // Wellness Retreat Section
+$wp_customize->add_section('nirup_wellness_retreat', array(
+    'title' => __('Wellness Retreat Section', 'nirup-island'),
+    'priority' => 35,
+));
+
+// Small Title
+$wp_customize->add_setting('nirup_wellness_small_title', array(
+    'default' => __('Wellness Retreat Package', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_text_field',
+));
+
+$wp_customize->add_control('nirup_wellness_small_title', array(
+    'label' => __('Small Title', 'nirup-island'),
+    'section' => 'nirup_wellness_retreat',
+    'type' => 'text',
+));
+
+// Main Title
+$wp_customize->add_setting('nirup_wellness_main_title', array(
+    'default' => __('WELLNESS RETREAT BY WESTIN', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_textarea_field',
+));
+
+$wp_customize->add_control('nirup_wellness_main_title', array(
+    'label' => __('Main Title', 'nirup-island'),
+    'section' => 'nirup_wellness_retreat',
+    'type' => 'textarea',
+));
+
+// Date Range
+$wp_customize->add_setting('nirup_wellness_date_range', array(
+    'default' => __('June 03, 2025 – September 02, 2025', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_text_field',
+));
+
+$wp_customize->add_control('nirup_wellness_date_range', array(
+    'label' => __('Date Range', 'nirup-island'),
+    'section' => 'nirup_wellness_retreat',
+    'type' => 'text',
+));
+
+// Description
+$wp_customize->add_setting('nirup_wellness_description', array(
+    'default' => __('The Nirup Wellness Retreat at The Westin Nirup Island Resort & Spa offers guests a holistic escape, featuring daily wellness and family activities, access to the WestinWORKOUT® Fitness Studio, and a curated program of rejuvenating experiences.', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_textarea_field',
+));
+
+$wp_customize->add_control('nirup_wellness_description', array(
+    'label' => __('Description', 'nirup-island'),
+    'section' => 'nirup_wellness_retreat',
+    'type' => 'textarea',
+));
+
+// Button Text
+$wp_customize->add_setting('nirup_wellness_button_text', array(
+    'default' => __('Book Your Stay', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_text_field',
+));
+
+$wp_customize->add_control('nirup_wellness_button_text', array(
+    'label' => __('Button Text', 'nirup-island'),
+    'section' => 'nirup_wellness_retreat',
+    'type' => 'text',
+));
+
+// Button Link
+$wp_customize->add_setting('nirup_wellness_button_link', array(
+    'default' => '#',
+    'sanitize_callback' => 'esc_url_raw',
+));
+
+$wp_customize->add_control('nirup_wellness_button_link', array(
+    'label' => __('Button Link', 'nirup-island'),
+    'section' => 'nirup_wellness_retreat',
+    'type' => 'url',
+));
+
+// Wellness Image
+$wp_customize->add_setting('nirup_wellness_image', array(
+    'default' => '',
+    'sanitize_callback' => 'absint',
+));
+
+$wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_wellness_image', array(
+    'label' => __('Wellness Image', 'nirup-island'),
+    'section' => 'nirup_wellness_retreat',
+    'mime_type' => 'image',
+)));
 }
 add_action('customize_register', 'nirup_customize_register');
 

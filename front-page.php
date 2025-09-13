@@ -57,6 +57,8 @@ get_header(); ?>
     }
     ?>
 
+    <?php get_template_part('template-parts/wellness-retreat-section'); ?>
+
 
 
 </main>
