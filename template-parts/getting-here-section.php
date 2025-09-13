@@ -90,10 +90,10 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
                 <div class="ferry-routes-info">
                     <div class="route-info singapore-route-info">
                         <div class="route-icon singapore-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <circle cx="12" cy="12" r="10" fill="#4285F4"/>
                                 <circle cx="12" cy="12" r="4" fill="white"/>
-                            </svg>
+                            </svg> -->
                         </div>
                         <div class="route-details">
                             <h4><?php _e('From Singapore', 'nirup-island'); ?></h4>
@@ -103,10 +103,10 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
                     
                     <div class="route-info batam-route-info">
                         <div class="route-icon batam-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <circle cx="12" cy="12" r="10" fill="#EA4335"/>
                                 <circle cx="12" cy="12" r="4" fill="white"/>
-                            </svg>
+                            </svg> -->
                         </div>
                         <div class="route-details">
                             <h4><?php _e('From Batam', 'nirup-island'); ?></h4>
@@ -131,7 +131,7 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
         </div>
         
         <!-- Ferry Schedule Information -->
-        <div class="ferry-schedule-info">
+        <!-- <div class="ferry-schedule-info">
             <div class="schedule-container">
                 <div class="schedule-item singapore-schedule">
                     <h3><?php _e('From Singapore', 'nirup-island'); ?></h3>
@@ -161,7 +161,7 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </section>
 
@@ -199,7 +199,7 @@ window.nirupMapData = {
     overflow: hidden;
 }
 
-.getting-here-pattern-bg {
+/* .getting-here-pattern-bg {
     position: absolute;
     top: -100px;
     left: 0;
@@ -210,12 +210,12 @@ window.nirupMapData = {
     background-repeat: repeat;
     opacity: 0.1;
     pointer-events: none;
-}
+} */
 
 .getting-here-container {
-    max-width: 1200px;
+    max-width: 1430px;
     margin: 0 auto;
-    padding: 0 20px;
+    /* padding: 0 20px; */
 }
 
 .getting-here-header {
@@ -247,12 +247,12 @@ window.nirupMapData = {
 
 .getting-here-map-container {
     position: relative;
-    max-width: 1400px;
+    max-width: 1430px;
     margin: 0 auto 60px;
     /* border-radius: 20px; */
     overflow: hidden;
     box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    height: 646px;
+    height: 700px;
 }
 
 /* Google Maps Styling */
@@ -268,7 +268,7 @@ window.nirupMapData = {
 }
 
 .google-maps-embed iframe {
-    border-radius: 20px;
+    /* border-radius: 20px; */
 }
 
 /* Map Loading */
@@ -315,7 +315,7 @@ window.nirupMapData = {
 .route-info {
     background: rgba(255,255,255,0.95);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
+    /* border-radius: 12px; */
     padding: 15px;
     display: flex;
     align-items: center;
@@ -357,7 +357,7 @@ window.nirupMapData = {
 .map-control-btn {
     background: rgba(255,255,255,0.95);
     border: 2px solid transparent;
-    border-radius: 25px;
+    border-radius: 0px;
     padding: 8px 16px;
     font-size: 12px;
     font-weight: 500;
@@ -389,22 +389,22 @@ window.nirupMapData = {
 
 .schedule-item {
     background: white;
-    border-radius: 16px;
+    /* border-radius: 16px; */
     padding: 25px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     transition: transform 0.2s ease;
 }
 
-.schedule-item:hover {
+/* .schedule-item:hover {
     transform: translateY(-2px);
-}
+} */
 
 .schedule-item h3 {
     margin: 0 0 15px 0;
     font-size: 18px;
     font-weight: 600;
     color: #3D332F;
-    border-bottom: 2px solid #A48456;
+    border-bottom: 1px solid #A48456;
     padding-bottom: 8px;
 }
 
