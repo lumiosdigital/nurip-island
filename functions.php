@@ -1848,7 +1848,7 @@ function nirup_map_pins_admin_page() {
             </div>
             
             <!-- Instructions -->
-            <div class="card" style="max-width: 1440px; margin-bottom: 20px;">
+            <div class="card" style="max-width: 1430px; margin-bottom: 20px;">
                 <h2><?php _e('How to Add Pins', 'nirup-island'); ?></h2>
                 <ol>
                     <li><strong><?php _e('Click anywhere on the map below', 'nirup-island'); ?></strong> <?php _e('to add a new pin', 'nirup-island'); ?></li>
@@ -1953,7 +1953,7 @@ function nirup_map_pins_admin_page() {
     
     <style>
         .nirup-map-admin .card {
-            max-width: 1440px;
+            max-width: 1430px;
             margin-bottom: 20px;
         }
         
@@ -1969,7 +1969,7 @@ function nirup_map_pins_admin_page() {
         .map-editor-image {
             display: block;
             max-width: 100%;
-            width: 1440px; /* Bigger map size */
+            width: 1430px; /* Bigger map size */
             height: auto;
         }
         
