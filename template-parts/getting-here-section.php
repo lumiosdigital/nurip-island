@@ -213,7 +213,7 @@ window.nirupMapData = {
 } */
 
 .getting-here-container {
-    max-width: 1430px;
+    max-width: 1400px;
     margin: 0 auto;
     /* padding: 0 20px; */
 }
@@ -247,7 +247,7 @@ window.nirupMapData = {
 
 .getting-here-map-container {
     position: relative;
-    max-width: 1430px;
+    max-width: 1400px;
     margin: 0 auto 60px;
     /* border-radius: 20px; */
     overflow: hidden;

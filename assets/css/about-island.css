@@ -74,7 +74,6 @@
     grid-template-columns: repeat(6, 1fr);
     gap: 8px;
     max-width: 1400px;
-    /* 6 * 217px + 5 * 20px gaps */
     margin: 0 auto;
 }
 

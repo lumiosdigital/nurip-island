@@ -12,7 +12,7 @@
     --color-white: #ffffff;
     --font-family: 'Albert Sans', sans-serif;
     --font-hero: 'Amiri', serif;
-    --container-max-width: 1440px;
+    --container-max-width: 1400px;
 }
 
 /* Reset and Base Styles */
@@ -274,13 +274,13 @@ th {
 }
 
 /* Content Sections with Background Overlay */
-.content-section {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(1px);
-    margin: 2rem 0;
-    padding: 2rem;
-    border-radius: 8px;
-}
+/* .content-section { */
+    /* background: rgba(255, 255, 255, 0.95); */
+    /* backdrop-filter: blur(1px); */
+    /* margin: 2rem 0; */
+    /* padding: 2rem; */
+    /* border-radius: 8px; */
+/* } */
 
 /* Alternative: Semi-transparent sections */
 .transparent-section {

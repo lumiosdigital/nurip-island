@@ -69,6 +69,8 @@ function nirup_enqueue_assets() {
     wp_enqueue_style('nirup-breadcrumbs', get_template_directory_uri() . '/assets/css/breadcrumbs.css', array(), '1.0.2');
     wp_enqueue_style('nirup-map-section', get_template_directory_uri() . '/assets/css/map-section.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-wellness-retreat', get_template_directory_uri() . '/assets/css/wellness-retreat.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-services', get_template_directory_uri() . '/assets/css/services.css', array('nirup-main'), '1.0.2');
+
 
 
     // === GOOGLE FONTS ===
@@ -3266,4 +3268,249 @@ function nirup_google_maps_admin_notice() {
     }
 }
 add_action('admin_notices', 'nirup_google_maps_admin_notice');
+
+function nirup_services_customize_register($wp_customize) {
+    
+    // ===========================
+    // SERVICES SECTION PANEL
+    // ===========================
+    
+    $wp_customize->add_section('nirup_services_section', array(
+        'title'       => __('Services Section', 'nirup-island'),
+        'description' => __('Configure the services section with Private Events, Marina, and Sustainability cards.', 'nirup-island'),
+        'priority'    => 40,
+    ));
+    
+    // Services Section Show/Hide
+    $wp_customize->add_setting('nirup_services_show', array(
+        'default'           => true,
+        'sanitize_callback' => 'nirup_sanitize_checkbox',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_services_show', array(
+        'label'       => __('Show Services Section', 'nirup-island'),
+        'description' => __('Toggle to show/hide the entire services section.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'type'        => 'checkbox',
+        'priority'    => 10,
+    ));
+    
+    // ===========================
+    // PRIVATE EVENTS CARD
+    // ===========================
+    
+    // Private Events Title
+    $wp_customize->add_setting('nirup_service_events_title', array(
+        'default'           => __('Private Events', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_service_events_title', array(
+        'label'       => __('Private Events Title', 'nirup-island'),
+        'description' => __('Title for the Private Events card.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'type'        => 'text',
+        'priority'    => 20,
+    ));
+    
+    // Private Events Description
+    $wp_customize->add_setting('nirup_service_events_desc', array(
+        'default'           => __('Nirup Island provides an exclusive and well-appointed setting for private team-building events, destination weddings, and other special occasions.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport'         => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_service_events_desc', array(
+        'label'       => __('Private Events Description', 'nirup-island'),
+        'description' => __('Description text for the Private Events card.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'type'        => 'textarea',
+        'priority'    => 30,
+    ));
+    
+    // Private Events Image
+    $wp_customize->add_setting('nirup_service_events_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'absint',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_service_events_image', array(
+        'label'       => __('Private Events Image', 'nirup-island'),
+        'description' => __('Upload an image for the Private Events card.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'mime_type'   => 'image',
+        'priority'    => 40,
+    )));
+    
+    // Private Events Link
+    $wp_customize->add_setting('nirup_service_events_link', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_service_events_link', array(
+        'label'       => __('Private Events Link', 'nirup-island'),
+        'description' => __('URL where the Private Events card should link to.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'type'        => 'url',
+        'priority'    => 45,
+    ));
+    
+    // ===========================
+    // MARINA CARD
+    // ===========================
+    
+    // Marina Title
+    $wp_customize->add_setting('nirup_service_marina_title', array(
+        'default'           => __('Marina', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_service_marina_title', array(
+        'label'       => __('Marina Title', 'nirup-island'),
+        'description' => __('Title for the Marina card.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'type'        => 'text',
+        'priority'    => 50,
+    ));
+    
+    // Marina Description
+    $wp_customize->add_setting('nirup_service_marina_desc', array(
+        'default'           => __('ONE°15 Marina at Nirup Island offers berthing facilities for up to 70 private yachts, along with private charters for scenic journeys or special events.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport'         => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_service_marina_desc', array(
+        'label'       => __('Marina Description', 'nirup-island'),
+        'description' => __('Description text for the Marina card.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'type'        => 'textarea',
+        'priority'    => 60,
+    ));
+    
+    // Marina Image
+    $wp_customize->add_setting('nirup_service_marina_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'absint',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_service_marina_image', array(
+        'label'       => __('Marina Image', 'nirup-island'),
+        'description' => __('Upload an image for the Marina card.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'mime_type'   => 'image',
+        'priority'    => 70,
+    )));
+    
+    // Marina Link
+    $wp_customize->add_setting('nirup_service_marina_link', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_service_marina_link', array(
+        'label'       => __('Marina Link', 'nirup-island'),
+        'description' => __('URL where the Marina card should link to.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'type'        => 'url',
+        'priority'    => 75,
+    ));
+    
+    // ===========================
+    // SUSTAINABILITY CARD
+    // ===========================
+    
+    // Sustainability Title
+    $wp_customize->add_setting('nirup_service_sustainability_title', array(
+        'default'           => __('Sustainability', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_service_sustainability_title', array(
+        'label'       => __('Sustainability Title', 'nirup-island'),
+        'description' => __('Title for the Sustainability card.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'type'        => 'text',
+        'priority'    => 80,
+    ));
+    
+    // Sustainability Description
+    $wp_customize->add_setting('nirup_service_sustainability_desc', array(
+        'default'           => __('From solar panels to rainwater harvesting and local sourcing, sustainability is central to Nirup Island\'s operations. Guests are encouraged to engage in eco-friendly habits and support local communities.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport'         => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_service_sustainability_desc', array(
+        'label'       => __('Sustainability Description', 'nirup-island'),
+        'description' => __('Description text for the Sustainability card.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'type'        => 'textarea',
+        'priority'    => 90,
+    ));
+    
+    // Sustainability Image
+    $wp_customize->add_setting('nirup_service_sustainability_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'absint',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_service_sustainability_image', array(
+        'label'       => __('Sustainability Image', 'nirup-island'),
+        'description' => __('Upload an image for the Sustainability card.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'mime_type'   => 'image',
+        'priority'    => 100,
+    )));
+    
+    // Sustainability Link
+    $wp_customize->add_setting('nirup_service_sustainability_link', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_service_sustainability_link', array(
+        'label'       => __('Sustainability Link', 'nirup-island'),
+        'description' => __('URL where the Sustainability card should link to.', 'nirup-island'),
+        'section'     => 'nirup_services_section',
+        'type'        => 'url',
+        'priority'    => 105,
+    ));
+}
+add_action('customize_register', 'nirup_services_customize_register');
+
+/**
+ * Customizer Live Preview for Services Section
+ */
+function nirup_services_customize_preview_js() {
+    wp_enqueue_script(
+        'nirup-services-customize-preview',
+        get_template_directory_uri() . '/assets/js/customize-preview-services.js',
+        array('customize-preview'),
+        '1.0.0',
+        true
+    );
+}
+add_action('customize_preview_init', 'nirup_services_customize_preview_js');
+
+/**
+ * Sanitize checkbox function (if not already exists)
+ */
+if (!function_exists('nirup_sanitize_checkbox')) {
+    function nirup_sanitize_checkbox($checked) {
+        return ((isset($checked) && true == $checked) ? true : false);
+    }
+}
+
 ?>

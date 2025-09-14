@@ -1,0 +1,190 @@
+/* ===========================
+   SERVICES SECTION STYLES - SIMPLE & CLEAN
+   File: assets/css/services.css
+   =========================== */
+
+.services-section {
+    padding: 80px 0;
+    position: relative;
+}
+
+/* ===========================
+   SERVICES CONTAINER
+   =========================== */
+
+.services-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    /* padding: 0 20px; */
+}
+
+/* ===========================
+   SERVICE CARDS - SIMPLE RECTANGULAR
+   =========================== */
+
+.service-card {
+    background-color: #fcfaf6;
+    width: 453px;
+    height: 620px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card-linked:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(61, 51, 47, 0.1);
+}
+
+/* .service-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(61, 51, 47, 0.1);
+} */
+
+/* ===========================
+   SERVICE IMAGE - CLEAN RECTANGULAR
+   =========================== */
+
+.service-image-container {
+    width: 100%;
+    height: 440px;
+    overflow: hidden;
+}
+
+.service-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* ===========================
+   SERVICE CONTENT
+   =========================== */
+
+.service-content {
+    padding: 20px 20px 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    gap: 5px;
+}
+
+/* ===========================
+   TYPOGRAPHY
+   =========================== */
+
+.service-title {
+    font-family: 'Amiri', serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0 0 15px 0;
+}
+
+.service-description {
+    width: 100%;
+}
+
+.service-description p {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 1.3;
+    color: #3d332f;
+    margin: 0;
+}
+
+/* ===========================
+   LINK STATES
+   =========================== */
+
+.service-card-linked {
+    display: flex;
+}
+
+.service-card-linked:visited,
+.service-card-linked:link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.service-card-linked:focus {
+    outline: 2px solid #a48456;
+    outline-offset: 2px;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+/* Tablets */
+@media (max-width: 992px) {
+    .services-section {
+        padding: 60px 0;
+    }
+
+    .services-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .service-card {
+        width: 100%;
+        max-width: 453px;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 768px) {
+    .services-section {
+        padding: 40px 0;
+    }
+
+    .services-container {
+        gap: 30px;
+        padding: 0 15px;
+    }
+
+    .service-card {
+        height: auto;
+        min-height: 500px;
+    }
+
+    .service-image-container {
+        height: 300px;
+    }
+
+    .service-title {
+        font-size: 24px;
+    }
+
+    .service-description p {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+}
+
+/* Small mobile phones */
+@media (max-width: 480px) {
+    .service-image-container {
+        height: 250px;
+    }
+
+    .service-title {
+        font-size: 22px;
+    }
+}
