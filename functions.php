@@ -30,7 +30,10 @@ function nirup_theme_setup() {
     register_nav_menus(array(
         'primary' => __('Primary Menu (Left Side)', 'nirup-island'),
         'secondary' => __('Secondary Menu (Right Side)', 'nirup-island'),
-        'footer' => __('Footer Menu', 'nirup-island'),
+        'footer_stay' => __('Footer - Stay Menu', 'nirup-island'),
+        'footer_experiences' => __('Footer - Experiences Menu', 'nirup-island'),
+        'footer_dining' => __('Footer - Dining Menu', 'nirup-island'),
+        'footer_information' => __('Footer - Information Menu', 'nirup-island'),
     ));
     
     // Set content width
@@ -73,6 +76,8 @@ function nirup_enqueue_assets() {
     wp_enqueue_style('nirup-events-offers-carousel', get_template_directory_uri() . '/assets/css/events-offers-carousel.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-events-offers-archive', get_template_directory_uri() . '/assets/css/events-offers-archive.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-single-event-offer', get_template_directory_uri() . '/assets/css/single-event-offer.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-footer', get_template_directory_uri() . '/assets/css/footer.css', array('nirup-main'), '1.0.2');
+
 
 
     // === GOOGLE FONTS ===
@@ -190,6 +195,15 @@ function nirup_enqueue_assets() {
         '1.0.2', 
         true
     );
+
+    wp_enqueue_script(
+        'nirup-footer', 
+        get_template_directory_uri() . '/assets/js/footer.js', 
+        array('jquery'), 
+        '1.0.2', 
+        true
+    );
+
     
     if (current_user_can('manage_options')) {
         echo '<script>console.log("✅ All JavaScript files enqueued!");</script>';
@@ -218,6 +232,15 @@ function nirup_enqueue_assets() {
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('nirup_map_nonce'),
         'pins_enabled' => true
+    ));
+
+    wp_localize_script('nirup-footer', 'nirup_footer_ajax', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('newsletter_nonce'),
+        'messages' => array(
+            'subscribing' => __('Subscribing...', 'nirup-island'),
+            'error' => __('Something went wrong. Please try again.', 'nirup-island'),
+        )
     ));
 
     
@@ -3905,4 +3928,166 @@ function nirup_experiences_carousel_customizer($wp_customize) {
     ));
 }
 add_action('customize_register', 'nirup_experiences_carousel_customizer');
+
+function nirup_footer_customizer($wp_customize) {
+    // Footer Section
+    $wp_customize->add_section('nirup_footer_settings', array(
+        'title' => __('Footer Settings', 'nirup-island'),
+        'priority' => 50,
+        'description' => __('Customize footer content, social media links, and contact information', 'nirup-island'),
+    ));
+
+    // === SOCIAL MEDIA SETTINGS ===
+    
+    // YouTube URL
+    $wp_customize->add_setting('nirup_social_youtube', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_social_youtube', array(
+        'label' => __('YouTube URL', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'url',
+        'description' => __('Enter your YouTube channel URL. Leave empty to hide the icon.', 'nirup-island'),
+    ));
+
+    // Instagram URL
+    $wp_customize->add_setting('nirup_social_instagram', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_social_instagram', array(
+        'label' => __('Instagram URL', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'url',
+        'description' => __('Enter your Instagram profile URL. Leave empty to hide the icon.', 'nirup-island'),
+    ));
+
+    // TikTok URL
+    $wp_customize->add_setting('nirup_social_tiktok', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_social_tiktok', array(
+        'label' => __('TikTok URL', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'url',
+        'description' => __('Enter your TikTok profile URL. Leave empty to hide the icon.', 'nirup-island'),
+    ));
+
+    // LinkedIn URL
+    $wp_customize->add_setting('nirup_social_linkedin', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_social_linkedin', array(
+        'label' => __('LinkedIn URL', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'url',
+        'description' => __('Enter your LinkedIn profile URL. Leave empty to hide the icon.', 'nirup-island'),
+    ));
+
+    // TripAdvisor URL
+    $wp_customize->add_setting('nirup_social_tripadvisor', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_social_tripadvisor', array(
+        'label' => __('TripAdvisor URL', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'url',
+        'description' => __('Enter your TripAdvisor listing URL. Leave empty to hide the icon.', 'nirup-island'),
+    ));
+
+    // === CONTACT INFORMATION SETTINGS ===
+
+    // Contact Email
+    $wp_customize->add_setting('nirup_contact_email', array(
+        'default' => 'info@nirupisland.com',
+        'sanitize_callback' => 'sanitize_email',
+    ));
+
+    $wp_customize->add_control('nirup_contact_email', array(
+        'label' => __('Contact Email', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'email',
+        'description' => __('Main contact email address displayed in the footer', 'nirup-island'),
+    ));
+
+    // Primary Phone Number
+    $wp_customize->add_setting('nirup_contact_phone_primary', array(
+        'default' => '+62 811 6220 999',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_contact_phone_primary', array(
+        'label' => __('Primary Phone Number', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'text',
+        'description' => __('Main phone number for contact', 'nirup-island'),
+    ));
+
+    // Hotel Direct Phone Number
+    $wp_customize->add_setting('nirup_contact_phone_direct', array(
+        'default' => '+62 778 210 8899',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_contact_phone_direct', array(
+        'label' => __('Hotel Direct Phone Number', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'text',
+        'description' => __('Direct hotel phone number', 'nirup-island'),
+    ));
+
+    // Contact Address
+    $wp_customize->add_setting('nirup_contact_address', array(
+        'default' => 'Nirup Island, Sekanak Raya, Belakang Padang, Batam, Riau Islands, Indonesia, 29416',
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+
+    $wp_customize->add_control('nirup_contact_address', array(
+        'label' => __('Contact Address', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'textarea',
+        'description' => __('Full address displayed in the footer', 'nirup-island'),
+    ));
+}
+add_action('customize_register', 'nirup_footer_customizer');
+
+function nirup_handle_newsletter_subscription() {
+    // Check nonce for security
+    if (!wp_verify_nonce($_POST['nonce'], 'newsletter_nonce')) {
+        wp_die('Security check failed');
+    }
+
+    $email = sanitize_email($_POST['email']);
+    
+    if (!is_email($email)) {
+        wp_send_json_error(array('message' => 'Please enter a valid email address.'));
+        return;
+    }
+
+    // For now, just store in WordPress options or add to a custom table
+    // Later this can be connected to your newsletter service (Mailchimp, etc.)
+    
+    // Placeholder - save to options table for now
+    $subscribers = get_option('nirup_newsletter_subscribers', array());
+    
+    if (!in_array($email, $subscribers)) {
+        $subscribers[] = $email;
+        update_option('nirup_newsletter_subscribers', $subscribers);
+        wp_send_json_success(array('message' => 'Thank you for subscribing!'));
+    } else {
+        wp_send_json_error(array('message' => 'You are already subscribed.'));
+    }
+}
+add_action('wp_ajax_nirup_newsletter_subscribe', 'nirup_handle_newsletter_subscription');
+add_action('wp_ajax_nopriv_nirup_newsletter_subscribe', 'nirup_handle_newsletter_subscription');
+
 ?>
