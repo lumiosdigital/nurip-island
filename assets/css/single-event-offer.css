@@ -6,7 +6,7 @@
 
 /* Hero Section */
 .single-event-offer-hero {
-    background: #FCFAF6;
+    /* background: #FCFAF6; */
     padding: 80px 0;
 }
 
@@ -155,7 +155,7 @@
 .single-event-offer-additional-info {
     margin-top: 60px;
     padding: 40px;
-    background: #f8f6f3;
+    /* background: #f8f6f3; */
     border-radius: 0;
 }
 
@@ -179,9 +179,9 @@
 
 /* Navigation Section */
 .single-event-offer-navigation {
-    background: #FCFAF6;
+    /* background: #FCFAF6; */
     padding: 60px 0;
-    border-top: 1px solid #E5E5E5;
+    /* border-top: 1px solid #E5E5E5; */
 }
 
 .event-offer-nav-links {
@@ -232,7 +232,7 @@
 .back-to-archive {
     text-align: center;
     padding-top: 40px;
-    border-top: 1px solid #E5E5E5;
+    /* border-top: 1px solid #E5E5E5; */
 }
 
 .back-to-archive-link {

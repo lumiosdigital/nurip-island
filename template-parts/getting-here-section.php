@@ -37,12 +37,29 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
         
         <!-- Header Content -->
         <div class="getting-here-header">
-            <?php if ($getting_here_title): ?>
-            <h2 class="getting-here-title"><?php echo esc_html($getting_here_title); ?></h2>
-            <?php endif; ?>
+            <?php 
+            $getting_here_title = get_theme_mod('nirup_getting_here_title', __('GETTING HERE', 'nirup-island'));
+            $getting_here_description = get_theme_mod('nirup_getting_here_description', __('Nirup Island is just a 20-minute ferry ride from Harbour Bay Ferry Terminal in Batam and 50 minutes from HarbourFront Centre in Singapore.', 'nirup-island'));
+            ?>
+            
+            <div class="getting-here-title-row">
+                <?php if ($getting_here_title): ?>
+                    <h2 class="getting-here-title"><?php echo esc_html($getting_here_title); ?></h2>
+                <?php endif; ?>
+                
+                <!-- See More Button -->
+                <div class="getting-here-see-more">
+                    <a href="<?php echo esc_url(get_permalink(get_page_by_path('getting-here'))); ?>" class="getting-here-see-more-link">
+                        <span>See More</span>
+                        <svg class="see-more-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="#A48456" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
             
             <?php if ($getting_here_description): ?>
-            <p class="getting-here-description"><?php echo esc_html($getting_here_description); ?></p>
+                <p class="getting-here-description"><?php echo esc_html($getting_here_description); ?></p>
             <?php endif; ?>
         </div>
         
@@ -219,11 +236,22 @@ window.nirupMapData = {
 }
 
 .getting-here-header {
+    /* position: relative; */
     text-align: center;
     margin-bottom: 60px;
-    max-width: 574px;
+    /* max-width: 574px; */
     margin-left: auto;
     margin-right: auto;
+    width: 100%;
+}
+
+.getting-here-title-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .getting-here-title {
@@ -234,7 +262,49 @@ window.nirupMapData = {
     letter-spacing: -1px;
     text-transform: uppercase;
     color: #3D332F;
-    margin: 0 0 24px 0;
+    margin: 0;
+}
+
+.getting-here-see-more {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.getting-here-see-more-link {
+    display: flex;
+    text-transform: uppercase;
+    gap: 10px;
+    /* justify-items: center; */
+    align-items: center;
+}
+
+.getting-here-see-more-link:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+    border-bottom-color: transparent;
+}
+
+.see-more-arrow {
+    transition: transform 0.2s ease;
+}
+
+.getting-here-see-more-link:hover {
+        opacity: 0.8;
+    transform: translateY(-1px);
+    border-bottom-color: transparent;
+}
+
+@media (max-width: 768px) {
+    .getting-here-see-more {
+        position: static;
+        text-align: center;
+        margin-top: 15px;
+    }
+    
+    .getting-here-title-row {
+        margin-bottom: 30px;
+    }
 }
 
 .getting-here-description {
@@ -243,6 +313,9 @@ window.nirupMapData = {
     line-height: 1.4;
     color: #3D332F;
     margin: 0;
+    max-width: 574px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .getting-here-map-container {

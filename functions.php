@@ -3235,6 +3235,42 @@ function nirup_getting_here_customizer($wp_customize) {
         'section' => 'nirup_getting_here',
         'type' => 'checkbox',
     ));
+
+        // See More Button Settings
+    $wp_customize->add_setting('nirup_getting_here_show_button', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+
+    $wp_customize->add_control('nirup_getting_here_show_button', array(
+        'label' => __('Show "See More" Button', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'checkbox',
+        'description' => __('Display the "See More" button in the header', 'nirup-island'),
+    ));
+
+    $wp_customize->add_setting('nirup_getting_here_button_text', array(
+        'default' => __('See More', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_getting_here_button_text', array(
+        'label' => __('Button Text', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_getting_here_button_url', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_getting_here_button_url', array(
+        'label' => __('Button Link URL', 'nirup-island'),
+        'section' => 'nirup_getting_here',
+        'type' => 'url',
+        'description' => __('Enter the full URL where the button should link (e.g., https://yoursite.com/getting-here)', 'nirup-island'),
+    ));
 }
 add_action('customize_register', 'nirup_getting_here_customizer');
 
