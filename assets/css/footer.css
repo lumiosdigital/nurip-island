@@ -4,16 +4,27 @@
     /* background-color: var(--color-white); */
     position: relative;
     margin-top: 20px;
-    margin-bottom: 60px;
+    /* margin-bottom: 60px; */
     padding-bottom: 0;
     /* border-top: 1px solid #DAD6CF; */
+
+    /* Palm leaf shadow background */
+    background-image: url('../images/footer-palm-shadow.png');
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-size: contain;
+    background-attachment: scroll;
+    /* background-attachment: fixed; */
+    /* z-index: 1; */
+    overflow: hidden;
+    /* box-sizing: border-box; */
 }
 
 
 .footer-line {
     width: 100%;
     max-width: 100%;
-    height: 1px;
+    height: 0.5px;
     background-color: #DAD6CF;
     transform: rotate(180deg);
 }
