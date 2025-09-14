@@ -350,7 +350,7 @@ window.nirupMapData = {
 .map-controls {
     display: flex;
     gap: 10px;
-    justify-content: center;
+    justify-content: flex-start;
     pointer-events: auto;
 }
 
