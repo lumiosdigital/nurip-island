@@ -36,15 +36,15 @@
     flex-direction: column;
     border-radius: 0;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    opacity: 0;
-    transform: translateY(30px);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    /* opacity: 0; */
+    /* transform: translateY(30px); */
 }
 
-.accommodation-card.animate-in {
+/* .accommodation-card.animate-in {
     opacity: 1;
     transform: translateY(0);
-}
+} */
 
 .accommodation-card:hover {
     transform: translateY(-5px);

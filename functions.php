@@ -634,7 +634,7 @@ function nirup_customize_register($wp_customize) {
     // Announcement Bar Section
     $wp_customize->add_section('nirup_announcement_bar', array(
         'title' => __('Announcement Bar', 'nirup-island'),
-        'priority' => 30,
+        'priority' => 20,
     ));
 
     // Show/Hide Announcement Bar
@@ -786,7 +786,7 @@ function nirup_customize_register($wp_customize) {
     // Navigation Settings Section
     $wp_customize->add_section('nirup_navigation', array(
         'title' => __('Navigation Settings', 'nirup-island'),
-        'priority' => 31,
+        'priority' => 21,
     ));
 
     // Book Your Stay Button Text
@@ -815,8 +815,8 @@ function nirup_customize_register($wp_customize) {
 
     // Wellness Retreat Section
 $wp_customize->add_section('nirup_wellness_retreat', array(
-    'title' => __('Wellness Retreat Section', 'nirup-island'),
-    'priority' => 35,
+    'title' => __('Promo Banner Section', 'nirup-island'),
+    'priority' => 36,
 ));
 
 // Small Title
@@ -912,7 +912,7 @@ function nirup_about_island_customizer($wp_customize) {
     // About Island Section
     $wp_customize->add_section('nirup_about_island', array(
         'title' => __('About Island Section', 'nirup-island'),
-        'priority' => 35,
+        'priority' => 32,
         'description' => __('Customize the About Island section content', 'nirup-island'),
     ));
 
@@ -1100,7 +1100,7 @@ function nirup_accommodations_customizer($wp_customize) {
     // Accommodations Section
     $wp_customize->add_section('nirup_accommodations', array(
         'title' => __('Accommodations Section', 'nirup-island'),
-        'priority' => 36,
+        'priority' => 33,
         'description' => __('Customize the accommodations comparison section', 'nirup-island'),
     ));
 
@@ -1599,7 +1599,7 @@ function nirup_experiences_archive_customizer($wp_customize) {
     // Experiences Archive Section
     $wp_customize->add_section('nirup_experiences_archive', array(
         'title' => __('Experiences Archive Page', 'nirup-island'),
-        'priority' => 37,
+        'priority' => 41,
         'description' => __('Customize the experiences archive page content', 'nirup-island'),
     ));
 
@@ -1656,7 +1656,7 @@ function nirup_map_section_customizer($wp_customize) {
     // Add Map Section Panel
     $wp_customize->add_section('nirup_map_section', array(
         'title'    => __('Map Section', 'nirup-island'),
-        'priority' => 40,
+        'priority' => 35,
         'description' => __('Customize the island map section settings', 'nirup-island'),
     ));
 
@@ -2989,7 +2989,7 @@ function nirup_getting_here_customizer($wp_customize) {
     // Getting Here Section
     $wp_customize->add_section('nirup_getting_here', array(
         'title' => __('Getting Here Section', 'nirup-island'),
-        'priority' => 45,
+        'priority' => 37,
         'description' => __('Customize the Getting Here section with interactive Google Maps', 'nirup-island'),
     ));
 
@@ -3304,7 +3304,7 @@ function nirup_services_customize_register($wp_customize) {
     $wp_customize->add_section('nirup_services_section', array(
         'title'       => __('Services Section', 'nirup-island'),
         'description' => __('Configure the services section with Private Events, Marina, and Sustainability cards.', 'nirup-island'),
-        'priority'    => 40,
+        'priority'    => 37,
     ));
     
     // Services Section Show/Hide
@@ -3795,7 +3795,7 @@ function nirup_events_offers_archive_customizer($wp_customize) {
     // Events & Offers Archive Section
     $wp_customize->add_section('nirup_events_offers_archive', array(
         'title' => __('Events & Offers Archive Page', 'nirup-island'),
-        'priority' => 38,
+        'priority' => 42,
         'description' => __('Customize the events and offers archive page content', 'nirup-island'),
     ));
 
@@ -3835,7 +3835,7 @@ function nirup_events_offers_carousel_customizer($wp_customize) {
     // Events & Offers Carousel Section
     $wp_customize->add_section('nirup_events_offers_carousel', array(
         'title' => __('Events & Offers Carousel', 'nirup-island'),
-        'priority' => 36,
+        'priority' => 40,
         'description' => __('Customize the events and offers carousel section on the homepage', 'nirup-island'),
     ));
 
@@ -3874,7 +3874,7 @@ function nirup_experiences_carousel_customizer($wp_customize) {
     // Experiences Carousel Section
     $wp_customize->add_section('nirup_experiences_carousel', array(
         'title' => __('Experiences Carousel', 'nirup-island'),
-        'priority' => 35,
+        'priority' => 34,
         'description' => __('Customize the experiences carousel section on the homepage', 'nirup-island'),
     ));
 
