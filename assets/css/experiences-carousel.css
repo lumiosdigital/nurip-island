@@ -371,3 +371,52 @@
         page-break-inside: avoid;
     }
 }
+
+/* Section Header Updates */
+.experiences-header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 60px;
+    width: 100%;
+}
+
+.experiences-subtitle-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.experiences-see-all-link {
+    display: flex;
+    text-transform: uppercase;
+    gap: 10px;
+    align-items: center;
+}
+
+.experiences-see-all-link:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+    border-bottom-color: transparent;
+}
+
+/* See All Button - ABSOLUTE POSITIONING TO FAR RIGHT */
+.experiences-see-all {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+@media (max-width: 768px) {
+    .experiences-see-all {
+        position: static;
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .experiences-subtitle-row {
+        margin-bottom: 30px;
+    }
+}

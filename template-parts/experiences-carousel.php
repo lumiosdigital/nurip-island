@@ -10,8 +10,30 @@ $featured_experiences = get_featured_experiences();
     <div class="experiences-container">
         <!-- Section Header -->
         <div class="experiences-header">
-            <div class="experiences-subtitle">Experiences</div>
-            <h2 class="experiences-title">Live the Island Lifestyle</h2>
+            <?php 
+            $experiences_subtitle = get_theme_mod('nirup_experiences_subtitle', '');
+            $experiences_title = get_theme_mod('nirup_experiences_title', '');
+            ?>
+            
+            <?php if (!empty($experiences_subtitle)) : ?>
+                <div class="experiences-subtitle"><?php echo esc_html($experiences_subtitle); ?></div>
+            <?php endif; ?>
+            
+            <div class="experiences-subtitle-row">
+                <?php if (!empty($experiences_title)) : ?>
+                    <h2 class="experiences-title"><?php echo esc_html($experiences_title); ?></h2>
+                <?php endif; ?>
+                
+                <!-- See All Button -->
+                <div class="experiences-see-all">
+                    <a href="<?php echo esc_url(get_post_type_archive_link('experience')); ?>" class="experiences-see-all-link">
+                        <span>See All Experiences</span>
+                        <svg class="see-all-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="#A48456" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
         </div>
         
         <!-- Carousel -->

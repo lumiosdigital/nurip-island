@@ -3867,4 +3867,42 @@ function nirup_events_offers_carousel_customizer($wp_customize) {
 }
 add_action('customize_register', 'nirup_events_offers_carousel_customizer');
 
+/**
+ * Experiences Carousel Customizer Options
+ */
+function nirup_experiences_carousel_customizer($wp_customize) {
+    // Experiences Carousel Section
+    $wp_customize->add_section('nirup_experiences_carousel', array(
+        'title' => __('Experiences Carousel', 'nirup-island'),
+        'priority' => 35,
+        'description' => __('Customize the experiences carousel section on the homepage', 'nirup-island'),
+    ));
+
+    // Carousel Subtitle
+    $wp_customize->add_setting('nirup_experiences_subtitle', array(
+        'default' => __('Experiences', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_experiences_subtitle', array(
+        'label' => __('Carousel Subtitle', 'nirup-island'),
+        'section' => 'nirup_experiences_carousel',
+        'type' => 'text',
+        'description' => __('Leave empty to hide the subtitle completely.', 'nirup-island'),
+    ));
+
+    // Carousel Title
+    $wp_customize->add_setting('nirup_experiences_title', array(
+        'default' => __('Live the Island Lifestyle', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_experiences_title', array(
+        'label' => __('Carousel Title', 'nirup-island'),
+        'section' => 'nirup_experiences_carousel',
+        'type' => 'text',
+        'description' => __('Leave empty to hide the title completely.', 'nirup-island'),
+    ));
+}
+add_action('customize_register', 'nirup_experiences_carousel_customizer');
 ?>
