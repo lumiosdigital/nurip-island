@@ -70,7 +70,9 @@ function nirup_enqueue_assets() {
     wp_enqueue_style('nirup-map-section', get_template_directory_uri() . '/assets/css/map-section.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-wellness-retreat', get_template_directory_uri() . '/assets/css/wellness-retreat.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-services', get_template_directory_uri() . '/assets/css/services.css', array('nirup-main'), '1.0.2');
-
+    wp_enqueue_style('nirup-events-offers-carousel', get_template_directory_uri() . '/assets/css/events-offers-carousel.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-events-offers-archive', get_template_directory_uri() . '/assets/css/events-offers-archive.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-single-event-offer', get_template_directory_uri() . '/assets/css/single-event-offer.css', array('nirup-main'), '1.0.2');
 
 
     // === GOOGLE FONTS ===
@@ -174,12 +176,20 @@ function nirup_enqueue_assets() {
     );
 
     wp_enqueue_script(
-    'nirup-map-section', 
-    get_template_directory_uri() . '/assets/js/map-section.js', 
-    array('jquery'), 
-    '1.0.2', 
-    true
-);
+        'nirup-map-section', 
+        get_template_directory_uri() . '/assets/js/map-section.js', 
+        array('jquery'), 
+        '1.0.2', 
+        true
+    );
+
+    wp_enqueue_script(
+        'nirup-events-offers-carousel', 
+        get_template_directory_uri() . '/assets/js/events-offers-carousel.js', 
+        array('jquery', 'nirup-utils'), 
+        '1.0.2', 
+        true
+    );
     
     if (current_user_can('manage_options')) {
         echo '<script>console.log("✅ All JavaScript files enqueued!");</script>';
@@ -1529,7 +1539,6 @@ add_action('init', 'nirup_register_experiences');
 function nirup_get_breadcrumbs() {
     $breadcrumbs = array();
     
-    // Always start with Home
     $breadcrumbs[] = array(
         'title' => 'Home',
         'url' => home_url('/')
@@ -1556,6 +1565,23 @@ function nirup_get_breadcrumbs() {
                 'url' => get_permalink($parent_id)
             );
         }
+        
+        $breadcrumbs[] = array(
+            'title' => get_the_title(),
+            'url' => ''
+        );
+    }
+
+    if (is_post_type_archive('event_offer')) {
+        $breadcrumbs[] = array(
+            'title' => 'Events & Offers',
+            'url' => ''
+        );
+    } elseif (is_singular('event_offer')) {
+        $breadcrumbs[] = array(
+            'title' => 'Events & Offers',
+            'url' => get_post_type_archive_link('event_offer')
+        );
         
         $breadcrumbs[] = array(
             'title' => get_the_title(),
@@ -3512,5 +3538,333 @@ if (!function_exists('nirup_sanitize_checkbox')) {
         return ((isset($checked) && true == $checked) ? true : false);
     }
 }
+
+
+function register_events_offers_post_type() {
+    $labels = array(
+        'name'                  => _x('Events & Offers', 'Post Type General Name', 'nirup-island'),
+        'singular_name'         => _x('Event/Offer', 'Post Type Singular Name', 'nirup-island'),
+        'menu_name'             => __('Events & Offers', 'nirup-island'),
+        'name_admin_bar'        => __('Event/Offer', 'nirup-island'),
+        'archives'              => __('Events & Offers Archives', 'nirup-island'),
+        'attributes'            => __('Event/Offer Attributes', 'nirup-island'),
+        'parent_item_colon'     => __('Parent Event/Offer:', 'nirup-island'),
+        'all_items'             => __('All Events & Offers', 'nirup-island'),
+        'add_new_item'          => __('Add New Event/Offer', 'nirup-island'),
+        'add_new'               => __('Add New', 'nirup-island'),
+        'new_item'              => __('New Event/Offer', 'nirup-island'),
+        'edit_item'             => __('Edit Event/Offer', 'nirup-island'),
+        'update_item'           => __('Update Event/Offer', 'nirup-island'),
+        'view_item'             => __('View Event/Offer', 'nirup-island'),
+        'view_items'            => __('View Events & Offers', 'nirup-island'),
+        'search_items'          => __('Search Events & Offers', 'nirup-island'),
+        'not_found'             => __('Not found', 'nirup-island'),
+        'not_found_in_trash'    => __('Not found in Trash.', 'nirup-island'),
+        'featured_image'        => _x('Event/Offer Featured Image', 'Overrides the "Featured Image" phrase', 'nirup-island'),
+        'set_featured_image'    => _x('Set featured image', 'Overrides the "Set featured image" phrase', 'nirup-island'),
+        'remove_featured_image' => _x('Remove featured image', 'Overrides the "Remove featured image" phrase', 'nirup-island'),
+        'use_featured_image'    => _x('Use as featured image', 'Overrides the "Use as featured image" phrase', 'nirup-island'),
+        'insert_into_item'      => _x('Insert into event/offer', 'Overrides the "Insert into post" phrase', 'nirup-island'),
+        'uploaded_to_this_item' => _x('Uploaded to this event/offer', 'Overrides the "Uploaded to this post" phrase', 'nirup-island'),
+        'items_list'            => _x('Events & Offers list', 'Screen reader text for the items list', 'nirup-island'),
+        'items_list_navigation' => _x('Events & Offers list navigation', 'Screen reader text for the pagination', 'nirup-island'),
+        'filter_items_list'     => _x('Filter events & offers list', 'Screen reader text for the filter links', 'nirup-island'),
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array('slug' => 'events-offers'),
+        'capability_type'    => 'post',
+        'has_archive'        => true,
+        'hierarchical'       => false, // Unlike experiences, events/offers don't have parent-child relationships
+        'menu_position'      => 21,
+        'menu_icon'          => 'dashicons-calendar-alt',
+        'supports'           => array('title', 'editor', 'excerpt', 'thumbnail', 'custom-fields', 'page-attributes'),
+        'show_in_rest'       => true,
+    );
+
+    register_post_type('event_offer', $args);
+}
+add_action('init', 'register_events_offers_post_type');
+
+/**
+ * Add custom fields for events and offers
+ */
+function add_event_offer_meta_boxes() {
+    add_meta_box(
+        'event_offer_details',
+        'Event/Offer Details',
+        'event_offer_details_callback',
+        'event_offer',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'add_event_offer_meta_boxes');
+
+function event_offer_details_callback($post) {
+    wp_nonce_field('save_event_offer_details', 'event_offer_details_nonce');
+    
+    $short_description = get_post_meta($post->ID, '_event_offer_short_description', true);
+    $featured_in_carousel = get_post_meta($post->ID, '_event_offer_featured_in_carousel', true);
+    $featured_in_archive = get_post_meta($post->ID, '_event_offer_featured_in_archive', true);
+    $event_date = get_post_meta($post->ID, '_event_offer_date', true);
+    $event_end_date = get_post_meta($post->ID, '_event_offer_end_date', true);
+    $event_type = get_post_meta($post->ID, '_event_offer_type', true);
+    
+    echo '<table class="form-table">';
+    echo '<tr>';
+    echo '<th><label for="event_offer_short_description">Short Description</label></th>';
+    echo '<td><input type="text" id="event_offer_short_description" name="event_offer_short_description" value="' . esc_attr($short_description) . '" class="widefat" placeholder="e.g., Limited time offer, Weekend special event" /></td>';
+    echo '</tr>';
+    
+    echo '<tr>';
+    echo '<th><label for="event_offer_type">Type</label></th>';
+    echo '<td>';
+    echo '<select id="event_offer_type" name="event_offer_type">';
+    echo '<option value="event"' . selected($event_type, 'event', false) . '>Event</option>';
+    echo '<option value="offer"' . selected($event_type, 'offer', false) . '>Special Offer</option>';
+    echo '</select>';
+    echo '<p class="description">Specify whether this is an event or a special offer.</p>';
+    echo '</td>';
+    echo '</tr>';
+    
+    echo '<tr>';
+    echo '<th><label for="event_offer_date">Start Date</label></th>';
+    echo '<td><input type="date" id="event_offer_date" name="event_offer_date" value="' . esc_attr($event_date) . '" /></td>';
+    echo '</tr>';
+    
+    echo '<tr>';
+    echo '<th><label for="event_offer_end_date">End Date (Optional)</label></th>';
+    echo '<td><input type="date" id="event_offer_end_date" name="event_offer_end_date" value="' . esc_attr($event_end_date) . '" />';
+    echo '<p class="description">Leave empty for single-day events or ongoing offers.</p></td>';
+    echo '</tr>';
+    
+    echo '<tr>';
+    echo '<th>Display Options</th>';
+    echo '<td>';
+    echo '<label><input type="checkbox" name="event_offer_featured_in_carousel" value="1"' . checked($featured_in_carousel, 1, false) . ' /> Display in Homepage Carousel</label><br>';
+    echo '<label><input type="checkbox" name="event_offer_featured_in_archive" value="1"' . checked($featured_in_archive, 1, false) . ' /> Display in Events & Offers Archive Page</label>';
+    echo '<p class="description">Choose where this event/offer should appear.</p>';
+    echo '</td>';
+    echo '</tr>';
+    echo '</table>';
+}
+
+function save_event_offer_details($post_id) {
+    if (!isset($_POST['event_offer_details_nonce']) || !wp_verify_nonce($_POST['event_offer_details_nonce'], 'save_event_offer_details')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (isset($_POST['event_offer_short_description'])) {
+        update_post_meta($post_id, '_event_offer_short_description', sanitize_text_field($_POST['event_offer_short_description']));
+    }
+
+    if (isset($_POST['event_offer_type'])) {
+        update_post_meta($post_id, '_event_offer_type', sanitize_text_field($_POST['event_offer_type']));
+    }
+
+    if (isset($_POST['event_offer_date'])) {
+        update_post_meta($post_id, '_event_offer_date', sanitize_text_field($_POST['event_offer_date']));
+    }
+
+    if (isset($_POST['event_offer_end_date'])) {
+        update_post_meta($post_id, '_event_offer_end_date', sanitize_text_field($_POST['event_offer_end_date']));
+    }
+
+    $featured_carousel = isset($_POST['event_offer_featured_in_carousel']) ? 1 : 0;
+    update_post_meta($post_id, '_event_offer_featured_in_carousel', $featured_carousel);
+    
+    $featured_archive = isset($_POST['event_offer_featured_in_archive']) ? 1 : 0;
+    update_post_meta($post_id, '_event_offer_featured_in_archive', $featured_archive);
+}
+add_action('save_post', 'save_event_offer_details');
+
+/**
+ * Get featured events and offers for carousel
+ */
+function get_featured_events_offers($limit = -1) {
+    $args = array(
+        'post_type' => 'event_offer',
+        'posts_per_page' => $limit,
+        'post_status' => 'publish',
+        'meta_query' => array(
+            array(
+                'key' => '_event_offer_featured_in_carousel',
+                'value' => '1',
+                'compare' => '='
+            )
+        ),
+        'orderby' => 'menu_order',
+        'order' => 'ASC'
+    );
+    
+    return new WP_Query($args);
+}
+
+/**
+ * Get all events and offers (for archive page)
+ */
+function get_all_events_offers() {
+    $args = array(
+        'post_type' => 'event_offer',
+        'posts_per_page' => -1,
+        'post_status' => 'publish',
+        'meta_query' => array(
+            array(
+                'key' => '_event_offer_featured_in_archive',
+                'value' => '1',
+                'compare' => '='
+            )
+        ),
+        'orderby' => 'menu_order',
+        'order' => 'ASC'
+    );
+    
+    return new WP_Query($args);
+}
+
+/**
+ * Add custom columns to events and offers admin list
+ */
+function set_custom_event_offer_columns($columns) {
+    $columns['featured_carousel'] = __('Featured in Carousel', 'nirup-island');
+    $columns['featured_archive'] = __('Featured in Archive', 'nirup-island');
+    $columns['type'] = __('Type', 'nirup-island');
+    $columns['event_date'] = __('Date', 'nirup-island');
+    $columns['short_desc'] = __('Short Description', 'nirup-island');
+    return $columns;
+}
+add_filter('manage_event_offer_posts_columns', 'set_custom_event_offer_columns');
+
+function custom_event_offer_column($column, $post_id) {
+    switch ($column) {
+        case 'featured_carousel':
+            $featured = get_post_meta($post_id, '_event_offer_featured_in_carousel', true);
+            echo $featured ? '<span style="color: green; font-weight: bold;">✓ Yes</span>' : '<span style="color: #888;">No</span>';
+            break;
+        case 'featured_archive':
+            $featured = get_post_meta($post_id, '_event_offer_featured_in_archive', true);
+            echo $featured ? '<span style="color: green; font-weight: bold;">✓ Yes</span>' : '<span style="color: #888;">No</span>';
+            break;
+        case 'type':
+            $type = get_post_meta($post_id, '_event_offer_type', true);
+            $color = $type === 'event' ? '#0073aa' : '#d63638';
+            echo $type ? '<span style="background: ' . $color . '; color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px;">' . ucfirst($type) . '</span>' : '<span style="background: #ddd; color: #555; padding: 2px 6px; border-radius: 3px; font-size: 11px;">Event</span>';
+            break;
+        case 'event_date':
+            $start_date = get_post_meta($post_id, '_event_offer_date', true);
+            $end_date = get_post_meta($post_id, '_event_offer_end_date', true);
+            if ($start_date) {
+                $formatted_start = date('M j, Y', strtotime($start_date));
+                if ($end_date) {
+                    $formatted_end = date('M j, Y', strtotime($end_date));
+                    echo $formatted_start . ' - ' . $formatted_end;
+                } else {
+                    echo $formatted_start;
+                }
+            } else {
+                echo '-';
+            }
+            break;
+        case 'short_desc':
+            $desc = get_post_meta($post_id, '_event_offer_short_description', true);
+            echo $desc ? '<em>' . esc_html(wp_trim_words($desc, 8)) . '</em>' : '<span style="color: #888;">No description</span>';
+            break;
+    }
+}
+add_action('manage_event_offer_posts_custom_column', 'custom_event_offer_column', 10, 2);
+
+/**
+ * Events and Offers Archive Customizer Options
+ */
+function nirup_events_offers_archive_customizer($wp_customize) {
+    // Events & Offers Archive Section
+    $wp_customize->add_section('nirup_events_offers_archive', array(
+        'title' => __('Events & Offers Archive Page', 'nirup-island'),
+        'priority' => 38,
+        'description' => __('Customize the events and offers archive page content', 'nirup-island'),
+    ));
+
+    // Archive Title
+    $wp_customize->add_setting('nirup_events_offers_archive_title', array(
+        'default' => __('Events & Offers', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_events_offers_archive_title', array(
+        'label' => __('Archive Page Title', 'nirup-island'),
+        'section' => 'nirup_events_offers_archive',
+        'type' => 'text',
+    ));
+
+    // Archive Subtitle
+    $wp_customize->add_setting('nirup_events_offers_archive_subtitle', array(
+        'default' => __('Discover special events and exclusive offers that make your island experience even more memorable', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_events_offers_archive_subtitle', array(
+        'label' => __('Archive Page Subtitle', 'nirup-island'),
+        'section' => 'nirup_events_offers_archive',
+        'type' => 'textarea',
+    ));
+}
+add_action('customize_register', 'nirup_events_offers_archive_customizer');
+
+function nirup_flush_rewrite_rules_on_activation() {
+    register_events_offers_post_type();
+    flush_rewrite_rules();
+}
+register_activation_hook(__FILE__, 'nirup_flush_rewrite_rules_on_activation');
+
+function nirup_events_offers_carousel_customizer($wp_customize) {
+    // Events & Offers Carousel Section
+    $wp_customize->add_section('nirup_events_offers_carousel', array(
+        'title' => __('Events & Offers Carousel', 'nirup-island'),
+        'priority' => 36,
+        'description' => __('Customize the events and offers carousel section on the homepage', 'nirup-island'),
+    ));
+
+    // Carousel Subtitle
+    $wp_customize->add_setting('nirup_events_offers_subtitle', array(
+        'default' => __('Events & Offers', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_events_offers_subtitle', array(
+        'label' => __('Carousel Subtitle', 'nirup-island'),
+        'section' => 'nirup_events_offers_carousel',
+        'type' => 'text',
+        'description' => __('Leave empty to hide the subtitle completely.', 'nirup-island'),
+    ));
+
+    // Carousel Title
+    $wp_customize->add_setting('nirup_events_offers_title', array(
+        'default' => __('Discover Special Moments', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_events_offers_title', array(
+        'label' => __('Carousel Title', 'nirup-island'),
+        'section' => 'nirup_events_offers_carousel',
+        'type' => 'text',
+        'description' => __('Leave empty to hide the title completely.', 'nirup-island'),
+    ));
+}
+add_action('customize_register', 'nirup_events_offers_carousel_customizer');
 
 ?>

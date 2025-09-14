@@ -30,6 +30,9 @@ get_header(); ?>
 
     <?php get_template_part('template-parts/services-section'); ?>
 
+    <?php get_template_part('template-parts/events-offers-carousel'); ?>
+
+
 </main>
 
 <?php get_footer(); ?>
