@@ -32,9 +32,10 @@
 /* Footer Container */
 .footer-container {
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 0 auto 60px;
     /* padding: 0 40px; */
     position: relative;
+    
 }
 
 .footer-content {
