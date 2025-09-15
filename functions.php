@@ -204,6 +204,14 @@ function nirup_enqueue_assets() {
         true
     );
 
+    wp_enqueue_script(
+        'single-event-offer-gallery', 
+        get_template_directory_uri() . '/assets/js/single-event-offer-gallery.js', 
+        array('jquery'), 
+        '1.0.2', 
+        true
+    );
+
     
     if (current_user_can('manage_options')) {
         echo '<script>console.log("✅ All JavaScript files enqueued!");</script>';
@@ -3663,6 +3671,16 @@ function add_event_offer_meta_boxes() {
         'normal',
         'high'
     );
+    
+    // Add gallery meta box
+    add_meta_box(
+        'event_offer_gallery',
+        'Event/Offer Gallery',
+        'event_offer_gallery_callback',
+        'event_offer',
+        'normal',
+        'high'
+    );
 }
 add_action('add_meta_boxes', 'add_event_offer_meta_boxes');
 
@@ -3675,11 +3693,20 @@ function event_offer_details_callback($post) {
     $event_date = get_post_meta($post->ID, '_event_offer_date', true);
     $event_end_date = get_post_meta($post->ID, '_event_offer_end_date', true);
     $event_type = get_post_meta($post->ID, '_event_offer_type', true);
+    $event_location = get_post_meta($post->ID, '_event_offer_location', true);
+    $event_location_description = get_post_meta($post->ID, '_event_offer_location_description', true);
+    $additional_info = get_post_meta($post->ID, '_event_offer_additional_info', true);
     
     echo '<table class="form-table">';
     echo '<tr>';
-    echo '<th><label for="event_offer_short_description">Short Description</label></th>';
-    echo '<td><input type="text" id="event_offer_short_description" name="event_offer_short_description" value="' . esc_attr($short_description) . '" class="widefat" placeholder="e.g., Limited time offer, Weekend special event" /></td>';
+    echo '<td colspan="2" style="padding: 15px 0; border-bottom: 1px solid #ddd;">';
+    echo '<p style="margin: 0; font-style: italic; color: #666;"><strong>Note:</strong> Make sure to add content in the main editor above to display the event description on the page.</p>';
+    echo '</td>';
+    echo '</tr>';
+    echo '<tr>';
+    echo '<th><label for="event_offer_short_description">Subtitle</label></th>';
+    echo '<td><input type="text" id="event_offer_short_description" name="event_offer_short_description" value="' . esc_attr($short_description) . '" class="widefat" placeholder="e.g., An Evening of Music & Magic" />';
+    echo '<p class="description">This will appear as the large subtitle under the hero section.</p></td>';
     echo '</tr>';
     
     echo '<tr>';
@@ -3695,13 +3722,31 @@ function event_offer_details_callback($post) {
     
     echo '<tr>';
     echo '<th><label for="event_offer_date">Start Date</label></th>';
-    echo '<td><input type="date" id="event_offer_date" name="event_offer_date" value="' . esc_attr($event_date) . '" /></td>';
+    echo '<td><input type="datetime-local" id="event_offer_date" name="event_offer_date" value="' . esc_attr($event_date) . '" /></td>';
     echo '</tr>';
     
     echo '<tr>';
-    echo '<th><label for="event_offer_end_date">End Date (Optional)</label></th>';
-    echo '<td><input type="date" id="event_offer_end_date" name="event_offer_end_date" value="' . esc_attr($event_end_date) . '" />';
+    echo '<th><label for="event_offer_end_date">End Date/Time (Optional)</label></th>';
+    echo '<td><input type="datetime-local" id="event_offer_end_date" name="event_offer_end_date" value="' . esc_attr($event_end_date) . '" />';
     echo '<p class="description">Leave empty for single-day events or ongoing offers.</p></td>';
+    echo '</tr>';
+    
+    echo '<tr>';
+    echo '<th><label for="event_offer_location">Location</label></th>';
+    echo '<td><input type="text" id="event_offer_location" name="event_offer_location" value="' . esc_attr($event_location) . '" class="widefat" placeholder="e.g., Constellate Rooftop Bar & Lounge" /></td>';
+    // echo '<p class="description"></p>';
+    echo '</tr>';
+    
+    echo '<tr>';
+    echo '<th><label for="event_offer_location_description">Location Description</label></th>';
+    echo '<td><textarea id="event_offer_location_description" name="event_offer_location_description" class="widefat" rows="2" placeholder="e.g., Located on the rooftop of The Westin Nirup Island">' . esc_textarea($event_location_description) . '</textarea>';
+    echo '<p class="description">Additional description for the location. Leave empty to hide.</p></td>';
+    echo '</tr>';
+    
+    echo '<tr>';
+    echo '<th><label for="event_offer_additional_info">Additional Information</label></th>';
+    echo '<td><textarea id="event_offer_additional_info" name="event_offer_additional_info" class="widefat" rows="3" placeholder="Additional details about the event/offer...">' . esc_textarea($additional_info) . '</textarea>';
+    echo '<p class="description">This text will appear below the main content description, after the divider line and before the "How to Book" button.</p></td>';
     echo '</tr>';
     
     echo '<tr>';
@@ -3713,6 +3758,132 @@ function event_offer_details_callback($post) {
     echo '</td>';
     echo '</tr>';
     echo '</table>';
+}
+
+function event_offer_gallery_callback($post) {
+    wp_nonce_field('save_event_offer_gallery', 'event_offer_gallery_nonce');
+    
+    $gallery_images = get_post_meta($post->ID, '_event_offer_gallery', true);
+    $gallery_images = is_array($gallery_images) ? $gallery_images : array();
+    
+    echo '<div class="event-offer-gallery-container">';
+    echo '<p class="description">Upload images for the event/offer gallery. These will be displayed in a carousel at the bottom of the single event/offer page.</p>';
+    
+    echo '<div class="gallery-images-wrapper">';
+    echo '<div id="gallery-images-container" class="gallery-images-grid">';
+    
+    // Display existing images
+    foreach ($gallery_images as $image_id) {
+        $image_url = wp_get_attachment_thumb_url($image_id);
+        if ($image_url) {
+            echo '<div class="gallery-image-item" data-attachment-id="' . esc_attr($image_id) . '">';
+            echo '<img src="' . esc_url($image_url) . '" alt="" style="max-width: 150px; height: 100px; object-fit: cover;">';
+            echo '<button type="button" class="remove-gallery-image" style="position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer;">×</button>';
+            echo '<input type="hidden" name="event_offer_gallery[]" value="' . esc_attr($image_id) . '">';
+            echo '</div>';
+        }
+    }
+    
+    echo '</div>';
+    echo '<button type="button" id="add-gallery-images" class="button button-secondary" style="margin-top: 10px;">Add Images to Gallery</button>';
+    echo '</div>';
+    
+    echo '</div>';
+    
+    // Add the media upload script
+    ?>
+    <style>
+    .gallery-images-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .gallery-image-item {
+        position: relative;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .gallery-image-item img {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        display: block;
+    }
+    .remove-gallery-image {
+        position: absolute !important;
+        top: 5px !important;
+        right: 5px !important;
+        background: #dc3232 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 50% !important;
+        width: 20px !important;
+        height: 20px !important;
+        cursor: pointer !important;
+        font-size: 12px !important;
+        line-height: 1 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    .remove-gallery-image:hover {
+        background: #a00 !important;
+    }
+    </style>
+    
+    <script>
+    jQuery(document).ready(function($) {
+        var galleryFrame;
+        
+        // Add images to gallery
+        $('#add-gallery-images').on('click', function(e) {
+            e.preventDefault();
+            
+            if (galleryFrame) {
+                galleryFrame.open();
+                return;
+            }
+            
+            galleryFrame = wp.media({
+                title: 'Select Gallery Images',
+                button: {
+                    text: 'Add to Gallery'
+                },
+                multiple: true,
+                library: {
+                    type: 'image'
+                }
+            });
+            
+            galleryFrame.on('select', function() {
+                var selection = galleryFrame.state().get('selection');
+                var container = $('#gallery-images-container');
+                
+                selection.map(function(attachment) {
+                    attachment = attachment.toJSON();
+                    var imageHtml = '<div class="gallery-image-item" data-attachment-id="' + attachment.id + '">' +
+                        '<img src="' + (attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url) + '" alt="" style="max-width: 150px; height: 100px; object-fit: cover;">' +
+                        '<button type="button" class="remove-gallery-image" style="position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer;">×</button>' +
+                        '<input type="hidden" name="event_offer_gallery[]" value="' + attachment.id + '">' +
+                        '</div>';
+                    container.append(imageHtml);
+                });
+            });
+            
+            galleryFrame.open();
+        });
+        
+        // Remove image from gallery
+        $(document).on('click', '.remove-gallery-image', function(e) {
+            e.preventDefault();
+            $(this).closest('.gallery-image-item').remove();
+        });
+    });
+    </script>
+    <?php
 }
 
 function save_event_offer_details($post_id) {
@@ -3744,6 +3915,18 @@ function save_event_offer_details($post_id) {
         update_post_meta($post_id, '_event_offer_end_date', sanitize_text_field($_POST['event_offer_end_date']));
     }
 
+    if (isset($_POST['event_offer_location'])) {
+        update_post_meta($post_id, '_event_offer_location', sanitize_text_field($_POST['event_offer_location']));
+    }
+
+    if (isset($_POST['event_offer_location_description'])) {
+        update_post_meta($post_id, '_event_offer_location_description', sanitize_textarea_field($_POST['event_offer_location_description']));
+    }
+
+    if (isset($_POST['event_offer_additional_info'])) {
+        update_post_meta($post_id, '_event_offer_additional_info', wp_kses_post($_POST['event_offer_additional_info']));
+    }
+
     $featured_carousel = isset($_POST['event_offer_featured_in_carousel']) ? 1 : 0;
     update_post_meta($post_id, '_event_offer_featured_in_carousel', $featured_carousel);
     
@@ -3752,9 +3935,54 @@ function save_event_offer_details($post_id) {
 }
 add_action('save_post', 'save_event_offer_details');
 
-/**
- * Get featured events and offers for carousel
- */
+function save_event_offer_gallery($post_id) {
+    if (!isset($_POST['event_offer_gallery_nonce']) || !wp_verify_nonce($_POST['event_offer_gallery_nonce'], 'save_event_offer_gallery')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save gallery images
+    if (isset($_POST['event_offer_gallery']) && is_array($_POST['event_offer_gallery'])) {
+        $gallery_images = array_map('intval', $_POST['event_offer_gallery']);
+        update_post_meta($post_id, '_event_offer_gallery', $gallery_images);
+    } else {
+        delete_post_meta($post_id, '_event_offer_gallery');
+    }
+}
+add_action('save_post', 'save_event_offer_gallery');
+
+function enqueue_single_event_offer_gallery_script() {
+    if (is_singular('event_offer')) {
+        wp_enqueue_script(
+            'single-event-offer-gallery',
+            get_template_directory_uri() . '/assets/js/single-event-offer-gallery.js',
+            array('jquery'),
+            '1.0.0',
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'enqueue_single_event_offer_gallery_script');
+
+function load_media_scripts_for_event_offers($hook) {
+    global $post_type;
+    
+    if ($hook == 'post.php' || $hook == 'post-new.php') {
+        if ($post_type == 'event_offer') {
+            wp_enqueue_media();
+            wp_enqueue_script('jquery');
+        }
+    }
+}
+add_action('admin_enqueue_scripts', 'load_media_scripts_for_event_offers');
+
 function get_featured_events_offers($limit = -1) {
     $args = array(
         'post_type' => 'event_offer',
