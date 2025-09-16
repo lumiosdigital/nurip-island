@@ -33,9 +33,9 @@ $experience_link = get_permalink();
             <p class="experience-description"><?php echo esc_html(wp_trim_words(get_the_content(), 15, '...')); ?></p>
         <?php endif; ?>
         
-        <a href="<?php echo esc_url($experience_link); ?>" class="experience-link">
+        <span class="experience-link">
             Discover More
-        </a>
+        </span>
     </div>
     </a>
 </div>

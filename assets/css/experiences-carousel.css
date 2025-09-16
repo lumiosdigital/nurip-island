@@ -50,6 +50,7 @@
     position: relative;
     overflow: hidden;
     margin-bottom: 40px;
+    padding: 10px 0;
 }
 
 .experiences-carousel-track {
@@ -58,6 +59,7 @@
     transition: transform 0.3s ease-in-out;
     /* padding: 0 20px; */
     will-change: transform;
+    /* margin: -10px 0; */
 }
 
 /* Experience Card */
@@ -70,7 +72,17 @@
     position: relative;
     border-radius: 0;
     overflow: hidden;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-origin: center bottom;
+}
+
+.experience-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.experience-card:hover .experience-link {
+    border-bottom-color: transparent;
 }
 
 .experience-image-container {
