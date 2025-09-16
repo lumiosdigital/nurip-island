@@ -352,8 +352,26 @@ function experience_details_callback($post) {
     
     $short_description = get_post_meta($post->ID, '_experience_short_description', true);
     $experience_type = get_post_meta($post->ID, '_experience_type', true);
+    $category_template = get_post_meta($post->ID, '_category_template', true);
+    $hero_gallery = get_post_meta($post->ID, '_hero_banner_gallery', true);
     $featured_in_carousel = get_post_meta($post->ID, '_featured_in_carousel', true);
     $featured_in_archive = get_post_meta($post->ID, '_featured_in_archive', true);
+    
+    // New detailed template fields
+    $detailed_subtitle = get_post_meta($post->ID, '_detailed_subtitle', true);
+    $quote_title = get_post_meta($post->ID, '_quote_title', true);
+    $quote_text = get_post_meta($post->ID, '_quote_text', true);
+    $show_nature_section = get_post_meta($post->ID, '_show_nature_section', true);
+    $nature_section_text = get_post_meta($post->ID, '_nature_section_text', true);
+    $show_region_section = get_post_meta($post->ID, '_show_region_section', true);
+    $region_section_text = get_post_meta($post->ID, '_region_section_text', true);
+    
+    // Additional content section fields
+    $show_additional_section = get_post_meta($post->ID, '_show_additional_section', true);
+    $additional_images = get_post_meta($post->ID, '_additional_section_images', true);
+    $additional_quote_title = get_post_meta($post->ID, '_additional_quote_title', true);
+    $additional_quote_text = get_post_meta($post->ID, '_additional_quote_text', true);
+    $additional_content = get_post_meta($post->ID, '_additional_content', true);
     
     echo '<table class="form-table">';
     echo '<tr>';
@@ -363,22 +381,398 @@ function experience_details_callback($post) {
     echo '<tr>';
     echo '<th><label for="experience_type">Experience Type</label></th>';
     echo '<td>';
-    echo '<select id="experience_type" name="experience_type">';
+    echo '<select id="experience_type" name="experience_type" onchange="toggleCategoryFields()">';
     echo '<option value="single"' . selected($experience_type, 'single', false) . '>Single Experience</option>';
     echo '<option value="category"' . selected($experience_type, 'category', false) . '>Category (has sub-experiences)</option>';
     echo '</select>';
     echo '<p class="description">Choose "Category" if this experience contains multiple sub-experiences.</p>';
     echo '</td>';
     echo '</tr>';
+    
+    // Category Template Selection Row
+    echo '<tr id="category_template_row" style="' . ($experience_type !== 'category' ? 'display: none;' : '') . '">';
+    echo '<th><label for="category_template">Category Template</label></th>';
+    echo '<td>';
+    echo '<select id="category_template" name="category_template" onchange="toggleDetailedFields()">';
+    echo '<option value="listing"' . selected($category_template, 'listing', false) . '>Listing (Simple Grid)</option>';
+    echo '<option value="detailed"' . selected($category_template, 'detailed', false) . '>Detailed (Magazine Style)</option>';
+    echo '</select>';
+    echo '<p class="description">Choose the template style for displaying this category page.</p>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Detailed Template Fields
+    $show_detailed_fields = ($experience_type === 'category' && $category_template === 'detailed');
+    
+    // Subtitle Field
+    echo '<tr id="detailed_subtitle_row" style="' . (!$show_detailed_fields ? 'display: none;' : '') . '">';
+    echo '<th><label for="detailed_subtitle">Subtitle</label></th>';
+    echo '<td><input type="text" id="detailed_subtitle" name="detailed_subtitle" value="' . esc_attr($detailed_subtitle) . '" class="widefat" placeholder="e.g., Adventure, relaxation, and discovery await" />';
+    echo '<p class="description">Subtitle that appears under the main title (for detailed template).</p></td>';
+    echo '</tr>';
+    
+    // Quote Section
+    echo '<tr id="quote_section_row" style="' . (!$show_detailed_fields ? 'display: none;' : '') . '">';
+    echo '<th><label>Quote Section</label></th>';
+    echo '<td>';
+    echo '<input type="text" id="quote_title" name="quote_title" value="' . esc_attr($quote_title) . '" class="widefat" placeholder="e.g., ISLAND WISDOM" style="margin-bottom: 10px;" />';
+    echo '<label for="quote_title" style="display: block; margin-bottom: 10px; font-size: 12px; color: #666;">Quote Title</label>';
+    echo '<textarea id="quote_text" name="quote_text" class="widefat" rows="3" placeholder="e.g., The sea whispers secrets only travelers can hear.">' . esc_textarea($quote_text) . '</textarea>';
+    echo '<label for="quote_text" style="display: block; margin-top: 5px; font-size: 12px; color: #666;">Quote Text</label>';
+    echo '<p class="description">Quote section that appears in the content area (for detailed template).</p>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Nature Section
+    echo '<tr id="nature_section_row" style="' . (!$show_detailed_fields ? 'display: none;' : '') . '">';
+    echo '<th><label>Nature Section</label></th>';
+    echo '<td>';
+    echo '<label><input type="checkbox" name="show_nature_section" value="1"' . checked($show_nature_section, 1, false) . ' /> Show Nature Section</label><br>';
+    echo '<input type="text" id="nature_section_text" name="nature_section_text" value="' . esc_attr($nature_section_text) . '" class="widefat" placeholder="e.g., NATURE" style="margin-top: 10px;" />';
+    echo '<p class="description">Text for the nature section divider. Leave empty for default "NATURE".</p>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Region Section
+    echo '<tr id="region_section_row" style="' . (!$show_detailed_fields ? 'display: none;' : '') . '">';
+    echo '<th><label>Region Section</label></th>';
+    echo '<td>';
+    echo '<label><input type="checkbox" name="show_region_section" value="1"' . checked($show_region_section, 1, false) . ' /> Show Region Section</label><br>';
+    echo '<input type="text" id="region_section_text" name="region_section_text" value="' . esc_attr($region_section_text) . '" class="widefat" placeholder="e.g., REGION" style="margin-top: 10px;" />';
+    echo '<p class="description">Text for the region section divider. Leave empty for default "REGION".</p>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Hero Banner Gallery Row (only for detailed template)
+    echo '<tr id="hero_gallery_row" style="' . (!$show_detailed_fields ? 'display: none;' : '') . '">';
+    echo '<th><label for="hero_banner_gallery">Hero Banner Gallery</label></th>';
+    echo '<td>';
+    echo '<div id="hero_gallery_container">';
+    
+    // Display current gallery images
+    if ($hero_gallery && is_array($hero_gallery)) {
+        echo '<div class="hero-gallery-images" style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">';
+        foreach ($hero_gallery as $index => $image_id) {
+            $image_url = wp_get_attachment_image_url($image_id, 'thumbnail');
+            if ($image_url) {
+                echo '<div class="hero-gallery-item" style="position: relative; width: 100px; height: 100px;">';
+                echo '<img src="' . esc_url($image_url) . '" style="width: 100%; height: 100%; object-fit: cover; border: 2px solid #ddd;" />';
+                echo '<button type="button" class="remove-gallery-image" data-index="' . $index . '" style="position: absolute; top: -5px; right: -5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1;">×</button>';
+                echo '<input type="hidden" name="hero_banner_gallery[]" value="' . esc_attr($image_id) . '">';
+                echo '</div>';
+            }
+        }
+        echo '</div>';
+    } else {
+        echo '<div class="hero-gallery-images" style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;"></div>';
+    }
+    
+    echo '<button type="button" id="add_gallery_images" class="button button-primary">Select All Gallery Images (Up to 4)</button>';
+    echo '<button type="button" id="clear_gallery_images" class="button" style="margin-left: 10px;">Clear All Images</button>';
+    echo '<p class="description">Select up to 4 images for the hero banner gallery. You can select multiple images at once and they will replace the current gallery. Images are for the detailed template only.</p>';
+    echo '</div>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Additional Content Section
+    echo '<tr id="additional_section_toggle_row" style="' . (!$show_detailed_fields ? 'display: none;' : '') . '">';
+    echo '<th><label>Additional Content Section</label></th>';
+    echo '<td>';
+    echo '<label><input type="checkbox" id="show_additional_section" name="show_additional_section" value="1"' . checked($show_additional_section, 1, false) . ' onchange="toggleAdditionalSection()" /> Enable Additional Content Section</label>';
+    echo '<p class="description">Add an additional content section below the region divider with 2 images, quote, and content.</p>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Additional Section Images
+    echo '<tr id="additional_images_row" style="' . (!$show_detailed_fields || !$show_additional_section ? 'display: none;' : '') . '">';
+    echo '<th><label for="additional_section_images">Additional Section Images</label></th>';
+    echo '<td>';
+    echo '<div id="additional_images_container">';
+    
+    // Display current additional images
+    if ($additional_images && is_array($additional_images)) {
+        echo '<div class="additional-images" style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">';
+        foreach ($additional_images as $index => $image_id) {
+            $image_url = wp_get_attachment_image_url($image_id, 'thumbnail');
+            if ($image_url) {
+                echo '<div class="additional-image-item" style="position: relative; width: 100px; height: 100px;">';
+                echo '<img src="' . esc_url($image_url) . '" style="width: 100%; height: 100%; object-fit: cover; border: 2px solid #ddd;" />';
+                echo '<button type="button" class="remove-additional-image" style="position: absolute; top: -5px; right: -5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1;">×</button>';
+                echo '<input type="hidden" name="additional_section_images[]" value="' . esc_attr($image_id) . '">';
+                echo '</div>';
+            }
+        }
+        echo '</div>';
+    } else {
+        echo '<div class="additional-images" style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;"></div>';
+    }
+    
+    echo '<button type="button" id="add_additional_images" class="button button-primary">Select 2 Images for Additional Section</button>';
+    echo '<button type="button" id="clear_additional_images" class="button" style="margin-left: 10px;">Clear Images</button>';
+    echo '<p class="description">Select exactly 2 images for the additional content section.</p>';
+    echo '</div>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Additional Quote Section
+    echo '<tr id="additional_quote_row" style="' . (!$show_detailed_fields || !$show_additional_section ? 'display: none;' : '') . '">';
+    echo '<th><label>Additional Quote Section</label></th>';
+    echo '<td>';
+    echo '<input type="text" id="additional_quote_title" name="additional_quote_title" value="' . esc_attr($additional_quote_title) . '" class="widefat" placeholder="e.g., TIDES & TIME" style="margin-bottom: 10px;" />';
+    echo '<label for="additional_quote_title" style="display: block; margin-bottom: 10px; font-size: 12px; color: #666;">Additional Quote Title</label>';
+    echo '<textarea id="additional_quote_text" name="additional_quote_text" class="widefat" rows="3" placeholder="e.g., Islands remind us that stillness can be the greatest adventure.">' . esc_textarea($additional_quote_text) . '</textarea>';
+    echo '<label for="additional_quote_text" style="display: block; margin-top: 5px; font-size: 12px; color: #666;">Additional Quote Text</label>';
+    echo '<p class="description">Quote for the additional content section.</p>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Additional Content
+    echo '<tr id="additional_content_row" style="' . (!$show_detailed_fields || !$show_additional_section ? 'display: none;' : '') . '">';
+    echo '<th><label for="additional_content">Additional Content</label></th>';
+    echo '<td>';
+    wp_editor($additional_content, 'additional_content', array(
+        'textarea_name' => 'additional_content',
+        'textarea_rows' => 8,
+        'teeny' => false,
+        'media_buttons' => true,
+    ));
+    echo '<p class="description">Content for the additional section. If left empty, will continue from main content.</p>';
+    echo '</td>';
+    echo '</tr>';
+    
     echo '<tr>';
     echo '<th>Display Options</th>';
     echo '<td>';
     echo '<label><input type="checkbox" name="featured_in_carousel" value="1"' . checked($featured_in_carousel, 1, false) . ' /> Display in Homepage Carousel</label><br>';
     echo '<label><input type="checkbox" name="featured_in_archive" value="1"' . checked($featured_in_archive, 1, false) . ' /> Display in Experiences Archive Page</label>';
-    echo '<p class="description">Choose where this experience should appear. Child experiences typically only need "Archive Page" checked.</p>';
+    echo '<p class="description">Choose where this experience should appear.</p>';
     echo '</td>';
     echo '</tr>';
     echo '</table>';
+    
+    // Add JavaScript for gallery management
+    ?>
+    <script>
+    function toggleCategoryFields() {
+        var experienceType = document.getElementById("experience_type").value;
+        var categoryTemplateRow = document.getElementById("category_template_row");
+        
+        if (experienceType === "category") {
+            categoryTemplateRow.style.display = "table-row";
+            toggleDetailedFields(); // Check if detailed fields should be shown
+        } else {
+            categoryTemplateRow.style.display = "none";
+            hideDetailedFields();
+        }
+    }
+    
+    function toggleDetailedFields() {
+        var experienceType = document.getElementById("experience_type").value;
+        var categoryTemplate = document.getElementById("category_template").value;
+        var showFields = (experienceType === "category" && categoryTemplate === "detailed");
+        
+        var detailedRows = [
+            "detailed_subtitle_row",
+            "quote_section_row", 
+            "nature_section_row",
+            "region_section_row",
+            "hero_gallery_row",
+            "additional_section_toggle_row"
+        ];
+        
+        detailedRows.forEach(function(rowId) {
+            var row = document.getElementById(rowId);
+            if (row) {
+                row.style.display = showFields ? "table-row" : "none";
+            }
+        });
+    }
+    
+    function hideDetailedFields() {
+        var detailedRows = [
+            "detailed_subtitle_row",
+            "quote_section_row", 
+            "nature_section_row",
+            "region_section_row",
+            "hero_gallery_row",
+            "additional_section_toggle_row",
+            "additional_images_row",
+            "additional_quote_row",
+            "additional_content_row"
+        ];
+        
+        detailedRows.forEach(function(rowId) {
+            var row = document.getElementById(rowId);
+            if (row) {
+                row.style.display = "none";
+            }
+        });
+    }
+    
+    function toggleAdditionalSection() {
+        var showAdditional = document.getElementById("show_additional_section").checked;
+        var additionalRows = [
+            "additional_images_row",
+            "additional_quote_row",
+            "additional_content_row"
+        ];
+        
+        additionalRows.forEach(function(rowId) {
+            var row = document.getElementById(rowId);
+            if (row) {
+                row.style.display = showAdditional ? "table-row" : "none";
+            }
+        });
+    }
+    
+    jQuery(document).ready(function($) {
+        var mediaUploader;
+        
+        $('#add_gallery_images').on('click', function(e) {
+            e.preventDefault();
+            
+            if (mediaUploader) {
+                mediaUploader.open();
+                return;
+            }
+            
+            mediaUploader = wp.media({
+                title: 'Select Hero Banner Images (Up to 4)',
+                button: {
+                    text: 'Use Selected Images'
+                },
+                multiple: true,
+                library: {
+                    type: 'image'
+                }
+            });
+            
+            mediaUploader.on('select', function() {
+                var attachments = mediaUploader.state().get('selection').toJSON();
+                var maxImages = 4;
+                
+                // Clear existing images
+                $('.hero-gallery-images').empty();
+                
+                // Add selected images (up to 4)
+                attachments.slice(0, maxImages).forEach(function(attachment, index) {
+                    var imageHtml = '<div class="hero-gallery-item" style="position: relative; width: 100px; height: 100px;">';
+                    imageHtml += '<img src="' + attachment.sizes.thumbnail.url + '" style="width: 100%; height: 100%; object-fit: cover; border: 2px solid #ddd;" />';
+                    imageHtml += '<button type="button" class="remove-gallery-image" style="position: absolute; top: -5px; right: -5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1;">×</button>';
+                    imageHtml += '<input type="hidden" name="hero_banner_gallery[]" value="' + attachment.id + '">';
+                    imageHtml += '</div>';
+                    
+                    $('.hero-gallery-images').append(imageHtml);
+                });
+                
+                if (attachments.length > maxImages) {
+                    alert('Only the first 4 images were added. Maximum of 4 images allowed for hero banner gallery.');
+                }
+            });
+            
+            mediaUploader.open();
+        });
+        
+        // Clear all gallery images
+        $('#clear_gallery_images').on('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to clear all gallery images?')) {
+                $('.hero-gallery-images').empty();
+            }
+        });
+        
+        // Remove image functionality
+        $(document).on('click', '.remove-gallery-image', function() {
+            $(this).closest('.hero-gallery-item').remove();
+        });
+        
+        // Additional images uploader
+        var additionalMediaUploader;
+        
+        $('#add_additional_images').on('click', function(e) {
+            e.preventDefault();
+            
+            if (additionalMediaUploader) {
+                additionalMediaUploader.open();
+                return;
+            }
+            
+            additionalMediaUploader = wp.media({
+                title: 'Select 2 Images for Additional Section',
+                button: {
+                    text: 'Use Selected Images'
+                },
+                multiple: true,
+                library: {
+                    type: 'image'
+                }
+            });
+            
+            additionalMediaUploader.on('select', function() {
+                var attachments = additionalMediaUploader.state().get('selection').toJSON();
+                var maxImages = 2;
+                
+                // Clear existing images
+                $('.additional-images').empty();
+                
+                // Add selected images (up to 2)
+                attachments.slice(0, maxImages).forEach(function(attachment, index) {
+                    var imageHtml = '<div class="additional-image-item" style="position: relative; width: 100px; height: 100px;">';
+                    imageHtml += '<img src="' + attachment.sizes.thumbnail.url + '" style="width: 100%; height: 100%; object-fit: cover; border: 2px solid #ddd;" />';
+                    imageHtml += '<button type="button" class="remove-additional-image" style="position: absolute; top: -5px; right: -5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1;">×</button>';
+                    imageHtml += '<input type="hidden" name="additional_section_images[]" value="' + attachment.id + '">';
+                    imageHtml += '</div>';
+                    
+                    $('.additional-images').append(imageHtml);
+                });
+                
+                if (attachments.length > maxImages) {
+                    alert('Only the first 2 images were added. Maximum of 2 images allowed for additional section.');
+                }
+            });
+            
+            additionalMediaUploader.open();
+        });
+        
+        // Clear additional images
+        $('#clear_additional_images').on('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to clear all additional images?')) {
+                $('.additional-images').empty();
+            }
+        });
+        
+        // Remove additional image functionality
+        $(document).on('click', '.remove-additional-image', function() {
+            $(this).closest('.additional-image-item').remove();
+        });
+        
+        // Make additional images sortable
+        $('.additional-images').sortable({
+            items: '.additional-image-item',
+            cursor: 'move',
+            update: function() {
+                // Update order in hidden inputs
+                $(this).find('.additional-image-item').each(function(index) {
+                    $(this).find('input[type="hidden"]').attr('name', 'additional_section_images[' + index + ']');
+                });
+            }
+        });
+        
+        // Make gallery sortable
+        $('.hero-gallery-images').sortable({
+            items: '.hero-gallery-item',
+            cursor: 'move',
+            update: function() {
+                // Update order in hidden inputs
+                $(this).find('.hero-gallery-item').each(function(index) {
+                    $(this).find('input[type="hidden"]').attr('name', 'hero_banner_gallery[' + index + ']');
+                });
+            }
+        });
+    });
+    </script>
+    <?php
 }
 
 function save_experience_details($post_id) {
@@ -401,6 +795,75 @@ function save_experience_details($post_id) {
     if (isset($_POST['experience_type'])) {
         update_post_meta($post_id, '_experience_type', sanitize_text_field($_POST['experience_type']));
     }
+    
+    // Save category template selection
+    if (isset($_POST['category_template'])) {
+        update_post_meta($post_id, '_category_template', sanitize_text_field($_POST['category_template']));
+    }
+    
+    // Save detailed template fields
+    if (isset($_POST['detailed_subtitle'])) {
+        update_post_meta($post_id, '_detailed_subtitle', sanitize_text_field($_POST['detailed_subtitle']));
+    }
+    
+    if (isset($_POST['quote_title'])) {
+        update_post_meta($post_id, '_quote_title', sanitize_text_field($_POST['quote_title']));
+    }
+    
+    if (isset($_POST['quote_text'])) {
+        update_post_meta($post_id, '_quote_text', sanitize_textarea_field($_POST['quote_text']));
+    }
+    
+    // Save section toggles and text
+    $show_nature_section = isset($_POST['show_nature_section']) ? 1 : 0;
+    update_post_meta($post_id, '_show_nature_section', $show_nature_section);
+    
+    if (isset($_POST['nature_section_text'])) {
+        update_post_meta($post_id, '_nature_section_text', sanitize_text_field($_POST['nature_section_text']));
+    }
+    
+    $show_region_section = isset($_POST['show_region_section']) ? 1 : 0;
+    update_post_meta($post_id, '_show_region_section', $show_region_section);
+    
+    if (isset($_POST['region_section_text'])) {
+        update_post_meta($post_id, '_region_section_text', sanitize_text_field($_POST['region_section_text']));
+    }
+    
+    // Save additional content section
+    $show_additional_section = isset($_POST['show_additional_section']) ? 1 : 0;
+    update_post_meta($post_id, '_show_additional_section', $show_additional_section);
+    
+    if (isset($_POST['additional_quote_title'])) {
+        update_post_meta($post_id, '_additional_quote_title', sanitize_text_field($_POST['additional_quote_title']));
+    }
+    
+    if (isset($_POST['additional_quote_text'])) {
+        update_post_meta($post_id, '_additional_quote_text', sanitize_textarea_field($_POST['additional_quote_text']));
+    }
+    
+    if (isset($_POST['additional_content'])) {
+        update_post_meta($post_id, '_additional_content', wp_kses_post($_POST['additional_content']));
+    }
+    
+    // Save additional section images
+    if (isset($_POST['additional_section_images']) && is_array($_POST['additional_section_images'])) {
+        $additional_image_ids = array_map('intval', $_POST['additional_section_images']);
+        $additional_image_ids = array_filter($additional_image_ids); // Remove empty values
+        $additional_image_ids = array_slice($additional_image_ids, 0, 2); // Limit to 2 images
+        update_post_meta($post_id, '_additional_section_images', $additional_image_ids);
+    } else {
+        delete_post_meta($post_id, '_additional_section_images');
+    }
+    
+    // Save hero banner gallery
+    if (isset($_POST['hero_banner_gallery']) && is_array($_POST['hero_banner_gallery'])) {
+        $gallery_ids = array_map('intval', $_POST['hero_banner_gallery']);
+        $gallery_ids = array_filter($gallery_ids); // Remove empty values
+        $gallery_ids = array_slice($gallery_ids, 0, 4); // Limit to 4 images
+        update_post_meta($post_id, '_hero_banner_gallery', $gallery_ids);
+    } else {
+        delete_post_meta($post_id, '_hero_banner_gallery');
+    }
 
     $featured_carousel = isset($_POST['featured_in_carousel']) ? 1 : 0;
     update_post_meta($post_id, '_featured_in_carousel', $featured_carousel);
@@ -409,6 +872,36 @@ function save_experience_details($post_id) {
     update_post_meta($post_id, '_featured_in_archive', $featured_archive);
 }
 add_action('save_post', 'save_experience_details');
+
+function nirup_enqueue_detailed_category_css() {
+    if (is_singular('experience')) {
+        global $post;
+        $experience_type = get_post_meta($post->ID, '_experience_type', true);
+        $category_template = get_post_meta($post->ID, '_category_template', true);
+        
+        if ($experience_type === 'category' && $category_template === 'detailed') {
+            wp_enqueue_style(
+                'nirup-detailed-category', 
+                get_template_directory_uri() . '/assets/css/experience-category-detailed.css', 
+                array('nirup-main'), 
+                '1.0.0'
+            );
+        }
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_detailed_category_css');
+
+function nirup_admin_enqueue_scripts($hook) {
+    global $post_type;
+    
+    if ($hook == 'post-new.php' || $hook == 'post.php') {
+        if ($post_type == 'experience') {
+            wp_enqueue_media();
+            wp_enqueue_script('jquery-ui-sortable');
+        }
+    }
+}
+add_action('admin_enqueue_scripts', 'nirup_admin_enqueue_scripts');
 
 /**
  * NEW: Get featured experiences for carousel
@@ -470,6 +963,9 @@ function get_child_experiences($parent_id) {
 function set_custom_experience_columns($columns) {
     $columns['featured'] = __('Featured in Carousel', 'nirup-island');
     $columns['type'] = __('Type', 'nirup-island');
+    $columns['template'] = __('Template', 'nirup-island');
+    $columns['gallery'] = __('Hero Gallery', 'nirup-island');
+    $columns['additional'] = __('Additional Section', 'nirup-island');
     $columns['short_desc'] = __('Short Description', 'nirup-island');
     $columns['parent'] = __('Parent', 'nirup-island');
     return $columns;
@@ -486,14 +982,58 @@ function custom_experience_column($column, $post_id) {
             $type = get_post_meta($post_id, '_experience_type', true);
             echo $type ? '<span style="background: #0073aa; color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px;">' . ucfirst($type) . '</span>' : '<span style="background: #ddd; color: #555; padding: 2px 6px; border-radius: 3px; font-size: 11px;">Single</span>';
             break;
+        case 'template':
+            $type = get_post_meta($post_id, '_experience_type', true);
+            if ($type === 'category') {
+                $template = get_post_meta($post_id, '_category_template', true);
+                $template = $template ? $template : 'listing'; // Default to listing
+                $color = $template === 'detailed' ? '#8b5e1d' : '#666';
+                echo '<span style="background: ' . $color . '; color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px;">' . ucfirst($template) . '</span>';
+            } else {
+                echo '<span style="color: #ccc;">—</span>';
+            }
+            break;
+        case 'gallery':
+            $type = get_post_meta($post_id, '_experience_type', true);
+            $template = get_post_meta($post_id, '_category_template', true);
+            if ($type === 'category' && $template === 'detailed') {
+                $gallery = get_post_meta($post_id, '_hero_banner_gallery', true);
+                $count = is_array($gallery) ? count($gallery) : 0;
+                if ($count > 0) {
+                    echo '<span style="color: green; font-weight: bold;">' . $count . '/4 images</span>';
+                } else {
+                    echo '<span style="color: #dc3232;">No images</span>';
+                }
+            } else {
+                echo '<span style="color: #ccc;">—</span>';
+            }
+            break;
+        case 'additional':
+            $type = get_post_meta($post_id, '_experience_type', true);
+            $template = get_post_meta($post_id, '_category_template', true);
+            if ($type === 'category' && $template === 'detailed') {
+                $show_additional = get_post_meta($post_id, '_show_additional_section', true);
+                if ($show_additional) {
+                    $additional_images = get_post_meta($post_id, '_additional_section_images', true);
+                    $img_count = is_array($additional_images) ? count($additional_images) : 0;
+                    echo '<span style="color: green; font-weight: bold;">✓ Enabled (' . $img_count . '/2)</span>';
+                } else {
+                    echo '<span style="color: #888;">Disabled</span>';
+                }
+            } else {
+                echo '<span style="color: #ccc;">—</span>';
+            }
+            break;
         case 'short_desc':
             $desc = get_post_meta($post_id, '_experience_short_description', true);
-            echo $desc ? '<em>' . esc_html(wp_trim_words($desc, 8)) . '</em>' : '<span style="color: #888;">—</span>';
+            echo $desc ? '<em>' . esc_html(wp_trim_words($desc, 8)) . '</em>' : '<span style="color: #888;">No description</span>';
             break;
         case 'parent':
             $parent_id = wp_get_post_parent_id($post_id);
             if ($parent_id) {
-                echo '<a href="' . get_edit_post_link($parent_id) . '">' . get_the_title($parent_id) . '</a>';
+                $parent_title = get_the_title($parent_id);
+                $parent_link = get_edit_post_link($parent_id);
+                echo '<a href="' . esc_url($parent_link) . '">' . esc_html($parent_title) . '</a>';
             } else {
                 echo '<span style="color: #888;">—</span>';
             }
