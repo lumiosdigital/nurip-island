@@ -210,7 +210,7 @@
     gap: 48px;
     font-family: 'Albert Sans', sans-serif;
     font-weight: 300;
-    font-size: 23px;
+    font-size: 20px;
     line-height: 1.4;
     color: #3d332f;
     align-items: start;
@@ -223,18 +223,21 @@
 
 .detailed-content-quote {
     text-align: right;
+    font-family: 'Amiri', serif;
 }
 
 .detailed-content-quote-title {
     margin: 0;
     text-transform: uppercase;
     font-weight: 300;
+    font-size: 24px;
 }
 
 .detailed-content-quote-text {
-    margin: 16px 0 0 0;
+    margin: 10px 0 0 0;
     font-style: italic;
     font-weight: 300;
+    font-size: 22px;
 }
 
 .detailed-content-text {
@@ -326,9 +329,8 @@
     flex-direction: column;
     justify-content: flex-end;
     text-align: right;
-    font-family: 'Albert Sans', sans-serif;
+    font-family: 'Amiri', serif;
     font-weight: 300;
-    font-size: 23px;
     line-height: 1.4;
     color: #3d332f;
     margin-right: 20px;
@@ -336,15 +338,17 @@
 }
 
 .detailed-additional-quote-title {
-    margin: 0 0 16px 0;
+    margin: 0 0 10px 0;
     text-transform: uppercase;
     font-weight: 300;
+    font-size: 24px;
 }
 
 .detailed-additional-quote-text {
     margin: 0;
     font-style: italic;
     font-weight: 300;
+    font-size: 22px;
 }
 
 .detailed-additional-image-small {
@@ -365,7 +369,7 @@
     /* justify-content: center; */
     font-family: 'Albert Sans', sans-serif;
     font-weight: 300;
-    font-size: 23px;
+    font-size: 20px;
     line-height: 1.4;
     color: #3d332f;
 }
@@ -405,6 +409,7 @@
     position: relative;
     overflow: hidden;
     margin-bottom: 40px;
+    padding-top: 10px;
 }
 
 .detailed-recommendations-carousel-track {
