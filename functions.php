@@ -536,7 +536,7 @@ function experience_details_callback($post) {
         'teeny' => false,
         'media_buttons' => true,
     ));
-    echo '<p class="description">Content for the additional section. If left empty, will continue from main content.</p>';
+    echo '<p class="description">Content for the additional section. If left empty, no content will be displayed in this section.</p>';
     echo '</td>';
     echo '</tr>';
     

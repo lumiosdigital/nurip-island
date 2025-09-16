@@ -299,35 +299,31 @@ if (empty($region_section_text)) {
             <div class="detailed-additional-right">
                 <div class="detailed-additional-content">
                     <?php 
-                    // Use additional content if provided, otherwise continue from main content
+                    // Only display content if additional_content is provided and not empty
                     if (!empty($additional_content)) {
                         $content_to_display = apply_filters('the_content', $additional_content);
-                    } else {
-                        // Use main content as continuation
-                        $main_content = get_the_content();
-                        $main_content = apply_filters('the_content', $main_content);
-                        $content_to_display = $main_content;
-                    }
-                    
-                    if (!empty(strip_tags($content_to_display))) {
-                        // Extract paragraphs
-                        preg_match_all('/<p[^>]*>(.*?)<\/p>/is', $content_to_display, $matches);
-                        $paragraphs = $matches[1];
                         
-                        if (empty($paragraphs)) {
-                            $content_clean = strip_tags($content_to_display);
-                            $paragraphs = explode("\n\n", $content_clean);
-                            $paragraphs = array_filter(array_map('trim', $paragraphs));
-                        }
-                        
-                        // Display paragraphs
-                        foreach ($paragraphs as $paragraph) {
-                            $cleaned = trim(strip_tags($paragraph));
-                            if (!empty($cleaned)) {
-                                echo '<p>' . wp_kses_post($paragraph) . '</p>';
+                        if (!empty(strip_tags($content_to_display))) {
+                            // Extract paragraphs
+                            preg_match_all('/<p[^>]*>(.*?)<\/p>/is', $content_to_display, $matches);
+                            $paragraphs = $matches[1];
+                            
+                            if (empty($paragraphs)) {
+                                $content_clean = strip_tags($content_to_display);
+                                $paragraphs = explode("\n\n", $content_clean);
+                                $paragraphs = array_filter(array_map('trim', $paragraphs));
+                            }
+                            
+                            // Display paragraphs
+                            foreach ($paragraphs as $paragraph) {
+                                $cleaned = trim(strip_tags($paragraph));
+                                if (!empty($cleaned)) {
+                                    echo '<p>' . wp_kses_post($paragraph) . '</p>';
+                                }
                             }
                         }
                     }
+                    // If additional_content is empty, show nothing (no fallback to main content)
                     ?>
                 </div>
             </div>
