@@ -70,7 +70,6 @@ if (empty($region_section_text)) {
     <!-- Hero Section -->
     <section class="detailed-hero-section">
         <div class="detailed-hero-container">
-            <!-- Title and Subtitle -->
             <div class="detailed-hero-content">
                 <h1 class="detailed-hero-title"><?php the_title(); ?></h1>
                 
@@ -79,9 +78,8 @@ if (empty($region_section_text)) {
                 <?php elseif (has_excerpt()) : ?>
                     <p class="detailed-hero-subtitle"><?php echo esc_html(get_the_excerpt()); ?></p>
                 <?php endif; ?>
-            </div>   
+            </div>            
 
-            <!-- Category Tag (Nature Section) -->
             <?php if ($show_nature_section) : ?>
             <div class="detailed-category-tag">
                 <div class="detailed-category-tag-flex">
@@ -89,7 +87,7 @@ if (empty($region_section_text)) {
                     <div class="detailed-category-tag-line"></div>
                 </div>
             </div>
-            <?php endif; ?>  
+            <?php endif; ?>
         </div>
     </section>
     
@@ -342,42 +340,74 @@ if (empty($region_section_text)) {
         <h2 class="detailed-recommendations-title">Recommendations</h2>
         
         <?php if ($child_experiences->have_posts()) : ?>
-            <div class="detailed-recommendations-grid">
-                <?php while ($child_experiences->have_posts()) : $child_experiences->the_post(); ?>
-                    <article class="detailed-recommendation-card">
-                        <!-- Card Image -->
-                        <div class="detailed-recommendation-image">
-                            <?php if (has_post_thumbnail()) : ?>
-                                <?php the_post_thumbnail('large'); ?>
-                            <?php endif; ?>
-                        </div>
-                        
-                        <!-- Card Content -->
-                        <div class="detailed-recommendation-content">
-                            <?php $short_description = get_post_meta(get_the_ID(), '_experience_short_description', true); ?>
-                            
-                            <p class="detailed-recommendation-category">
-                                <?php echo $short_description ? esc_html($short_description) : 'Unique experience'; ?>
-                            </p>
-                            
-                            <h3 class="detailed-recommendation-title"><?php the_title(); ?></h3>
-                            
-                            <p class="detailed-recommendation-description">
-                                <?php 
-                                if (has_excerpt()) {
-                                    echo esc_html(get_the_excerpt());
-                                } else {
-                                    echo esc_html(wp_trim_words(get_the_content(), 20, '...'));
-                                }
-                                ?>
-                            </p>
-                            
-                            <a href="<?php the_permalink(); ?>" class="detailed-recommendation-link">
-                                BOOK VIA WHATSAPP
-                            </a>
-                        </div>
-                    </article>
-                <?php endwhile; ?>
+            <!-- Carousel Container -->
+            <div class="detailed-recommendations-carousel" id="detailedRecommendationsCarousel">
+                <div class="detailed-recommendations-carousel-track" id="detailedRecommendationsCarouselTrack">
+                    <?php while ($child_experiences->have_posts()) : $child_experiences->the_post(); ?>
+<div class="detailed-recommendation-card">
+    <a href="<?php the_permalink(); ?>" class="detailed-recommendation-card-link">
+        <!-- Card Image -->
+        <div class="detailed-recommendation-image-container">
+            <?php if (has_post_thumbnail()) : ?>
+                <?php the_post_thumbnail('large', array(
+                    'class' => 'detailed-recommendation-image',
+                    'alt' => get_the_title() . ' - ' . get_bloginfo('name')
+                )); ?>
+            <?php else : ?>
+                <div class="detailed-recommendation-image-placeholder">
+                    <span>No Image Available</span>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <!-- Card Content -->
+        <div class="detailed-recommendation-content">
+            <h3 class="detailed-recommendation-title"><?php the_title(); ?></h3>
+            
+            <?php $short_description = get_post_meta(get_the_ID(), '_experience_short_description', true); ?>
+            <?php if ($short_description) : ?>
+                <p class="detailed-recommendation-description"><?php echo esc_html($short_description); ?></p>
+            <?php elseif (has_excerpt()) : ?>
+                <p class="detailed-recommendation-description"><?php echo esc_html(get_the_excerpt()); ?></p>
+            <?php else : ?>
+                <p class="detailed-recommendation-description"><?php echo esc_html(wp_trim_words(get_the_content(), 15, '...')); ?></p>
+            <?php endif; ?>
+            
+            <span class="detailed-recommendation-link">
+                View Excursion
+            </span>
+        </div>
+    </a>
+</div>
+                    <?php endwhile; ?>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <?php if ($child_experiences->found_posts > 1) : ?>
+            <div class="detailed-recommendations-navigation">
+                <div class="detailed-recommendations-line"></div>
+                <div class="detailed-recommendations-nav-buttons">
+                    <button class="detailed-recommendations-nav-btn prev" id="detailedRecommendationsPrevBtn" aria-label="Previous recommendations">
+                        <svg class="nav-arrow" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0.5" y="0.5" width="37" height="37" rx="18.5" stroke="#A48456"/>
+                            <path d="M26.5 18.7917H11.9167M11.9167 18.7917L19.2083 11.5M11.9167 18.7917L19.2083 26.0833" stroke="#A48456" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button class="detailed-recommendations-nav-btn next" id="detailedRecommendationsNextBtn" aria-label="Next recommendations">
+                        <svg class="nav-arrow" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0.5" y="0.5" width="39" height="39" rx="19.5" stroke="#A48456"/>
+                            <path d="M12.5 19.7917H27.0833M27.0833 19.7917L19.7917 12.5M27.0833 19.7917L19.7917 27.0833" stroke="#A48456" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="detailed-recommendations-line"></div>
+            </div>
+            <?php endif; ?>
+            
+        <?php else : ?>
+            <div class="no-recommendations-message">
+                <p>No recommendations available for this category.</p>
             </div>
         <?php endif; ?>
         

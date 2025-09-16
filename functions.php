@@ -891,6 +891,25 @@ function nirup_enqueue_detailed_category_css() {
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_detailed_category_css');
 
+function nirup_enqueue_detailed_recommendations_js() {
+    if (is_singular('experience')) {
+        global $post;
+        $experience_type = get_post_meta($post->ID, '_experience_type', true);
+        $category_template = get_post_meta($post->ID, '_category_template', true);
+        
+        if ($experience_type === 'category' && $category_template === 'detailed') {
+            wp_enqueue_script(
+                'nirup-detailed-recommendations-carousel',
+                get_template_directory_uri() . '/assets/js/detailed-recommendations-carousel.js',
+                array(),
+                '1.0.0',
+                true
+            );
+        }
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_detailed_recommendations_js');
+
 function nirup_admin_enqueue_scripts($hook) {
     global $post_type;
     
