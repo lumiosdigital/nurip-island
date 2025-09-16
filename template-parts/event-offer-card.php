@@ -7,7 +7,7 @@ $short_description = get_post_meta(get_the_ID(), '_event_offer_short_description
 $event_offer_link = get_permalink();
 ?>
 
-<div class="event-offer-card">
+<a href="<?php echo esc_url($event_offer_link); ?>" class="event-offer-card">
     <div class="event-offer-image-container">
         <?php if (has_post_thumbnail()) : ?>
             <?php the_post_thumbnail('full', array(
@@ -32,8 +32,8 @@ $event_offer_link = get_permalink();
             <p class="event-offer-description"><?php echo esc_html(wp_trim_words(get_the_content(), 15, '...')); ?></p>
         <?php endif; ?>
         
-        <a href="<?php echo esc_url($event_offer_link); ?>" class="event-offer-link">
+        <span class="event-offer-link">
             View Details
-        </a>
+        </span>
     </div>
-</div>
+</a>

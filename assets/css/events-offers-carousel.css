@@ -76,6 +76,7 @@
     position: relative;
     overflow: hidden;
     margin-bottom: 40px;
+    padding: 10px 0;
 }
 
 .events-offers-carousel-track {
@@ -95,7 +96,17 @@
     position: relative;
     border-radius: 0;
     overflow: hidden;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    /* color: inherit; */
+    transform-origin: center bottom;
+}
+
+.event-offer-card:hover {
+    transform: translateY(-5px);
+    /* text-decoration: none; */
+    /* color: inherit; */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
 .event-offer-image-container {
@@ -176,10 +187,12 @@
     display: inline-block;
 }
 
-.event-offer-link:hover {
+
+.event-offer-card:hover .event-offer-link {
     opacity: 0.8;
     transform: translateY(-1px);
     border-bottom-color: transparent;
+    /* box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); */
 }
 
 /* Navigation */

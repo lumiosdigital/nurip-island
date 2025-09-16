@@ -112,13 +112,9 @@
     overflow: hidden;
     border-radius: 0;
     position: relative;
-    cursor: pointer;
-    transition: transform 0.3s ease;
+    /* cursor: pointer; */
+    /* transition: transform 0.3s ease; */
     height: 670px;
-}
-
-.detailed-gallery-large:hover {
-    transform: scale(1.02);
 }
 
 .detailed-gallery-large img {
@@ -140,13 +136,13 @@
     background-color: #9a9a9a;
     overflow: hidden;
     position: relative;
-    cursor: pointer;
-    transition: transform 0.3s ease;
+    /* cursor: pointer; */
+    /* transition: transform 0.3s ease; */
 }
 
-.detailed-gallery-top:hover {
+/* .detailed-gallery-top:hover {
     transform: scale(1.02);
-}
+} */
 
 .detailed-gallery-top img {
     width: 100%;
@@ -166,13 +162,13 @@
     background-color: #9a9a9a;
     overflow: hidden;
     position: relative;
-    cursor: pointer;
-    transition: transform 0.3s ease;
+    /* cursor: pointer; */
+    /* transition: transform 0.3s ease; */
 }
 
-.detailed-gallery-small:hover {
+/* .detailed-gallery-small:hover {
     transform: scale(1.02);
-}
+} */
 
 .detailed-gallery-small img {
     width: 100%;
