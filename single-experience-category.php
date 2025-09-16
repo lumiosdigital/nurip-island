@@ -103,7 +103,7 @@ if (empty($category_template)) {
             <?php else : ?>
                 <div class="no-experiences-found">
                     <p>No experiences found in this category.</p>
-                    <a href="<?php echo get_post_type_archive_link('experience'); ?>" class="back-to-experiences">← Back to All Experiences</a>
+                    <a href="<?php echo get_post_type_archive_link('experience'); ?>" class="back-to-experiences">Back to All Experiences</a>
                 </div>
             <?php endif; ?>
             

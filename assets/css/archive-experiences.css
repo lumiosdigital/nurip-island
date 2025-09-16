@@ -177,6 +177,25 @@
     margin: 0;
 }
 
+.back-to-experiences {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #8B5E1D;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 1px;
+    border-bottom: 0.5px solid #8B5E1D;
+    transition: all 0.2s ease;
+}
+
+.back-to-experiences:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+    border-bottom-color: transparent;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .experiences-archive-container {
