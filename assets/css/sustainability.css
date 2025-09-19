@@ -1,0 +1,476 @@
+
+.sustainability-hero-section {
+    padding-top: 210px;
+    text-align: center;
+}
+
+.sustainability-hero-container {
+    max-width: 705px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.sustainability-hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+.sustainability-hero-subtitle {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 23px;
+    line-height: 1.4;
+    color: #3d332f;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0;
+    width: 100%;
+}
+
+.sustainability-hero-title {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 72px;
+    line-height: 72px;
+    color: #3d332f;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: -1px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.sustainability-hero-line {
+    width: 80px;
+    height: 1px;
+    background: #A48456;
+    transform: rotate(90deg);
+    margin: 48px auto 32px auto;
+}
+
+.sustainability-description-section {
+    padding-top: 30px;
+    text-align: center;
+}
+
+.sustainability-description-container {
+    max-width: 752px;
+    margin: 0 auto;
+}
+
+.sustainability-description-text {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.4;
+    color: #3d332f;
+    opacity: 0.8;
+    text-align: center;
+    margin: 0;
+}
+
+.sustainability-gallery-section {
+    padding-top: 100px;
+    overflow: hidden;
+}
+
+.sustainability-gallery-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.sustainability-gallery-grid {
+    display: flex;
+    gap: 12px;
+    height: 670px;
+}
+
+.sustainability-gallery-large {
+    flex: 1;
+    background-color: #9a9a9a;
+    overflow: hidden;
+    position: relative;
+}
+
+.sustainability-gallery-large .sustainability-gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.sustainability-gallery-small-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sustainability-gallery-small-top {
+    flex: 1;
+    background-color: #9a9a9a;
+    overflow: hidden;
+    position: relative;
+}
+
+.sustainability-gallery-small-top .sustainability-gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.sustainability-gallery-small-bottom {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+}
+
+.sustainability-gallery-small-bottom-left,
+.sustainability-gallery-small-bottom-right {
+    flex: 1;
+    background-color: #9a9a9a;
+    overflow: hidden;
+    position: relative;
+}
+
+.sustainability-gallery-small-bottom-left .sustainability-gallery-img,
+.sustainability-gallery-small-bottom-right .sustainability-gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.sustainability-gallery-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    color: #888;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    text-align: center;
+}
+
+.sustainability-practices-section {
+    padding-top: 130px;
+}
+
+.sustainability-practices-container {
+    max-width: 1283px;
+    margin: 0 auto 100px auto;
+    padding: 0 20px;
+}
+
+.sustainability-practices-title {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 1;
+    color: #3d332f;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: -1px;
+    margin: 0 0 100px 0;
+    white-space: nowrap;
+}
+
+.sustainability-practices-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.sustainability-practice-item {
+    width: 331px;
+    height: 160px;
+    position: relative;
+}
+
+.sustainability-practice-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 160px;
+    height: 1px;
+    background: #DAD6CF;
+    transform: rotate(90deg);
+    transform-origin: left top;
+}
+
+.sustainability-practice-content {
+    margin-left: 30px;
+    width: 301px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sustainability-practice-top,
+.sustainability-practice-bottom {
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sustainability-practice-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.sustainability-practice-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sustainability-practice-title {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0;
+    flex: 1;
+}
+
+.sustainability-practice-descriptions {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.sustainability-practice-desc {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1440px) {
+    .sustainability-practices-container {
+        max-width: 100%;
+        padding: 0 40px;
+    }
+
+    .sustainability-practices-grid {
+        gap: 20px;
+    }
+
+    .sustainability-practice-item {
+        width: calc(25% - 15px);
+        min-width: 280px;
+    }
+
+    .sustainability-practice-content {
+        width: calc(100% - 30px);
+    }
+}
+
+@media (max-width: 1024px) {
+    .sustainability-hero-title {
+        font-size: 56px;
+        line-height: 56px;
+    }
+
+    .sustainability-hero-subtitle {
+        font-size: 20px;
+    }
+
+    .sustainability-description-text {
+        font-size: 18px;
+    }
+
+    .sustainability-gallery-section {
+        padding-top: 100px;
+    }
+
+    .sustainability-gallery-grid {
+        height: 500px;
+    }
+
+    .sustainability-practices-section {
+        padding-top: 120px;
+    }
+
+    .sustainability-practices-title {
+        font-size: 42px;
+        margin-bottom: 80px;
+    }
+
+    .sustainability-practices-grid {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 40px 20px;
+    }
+
+    .sustainability-practice-item {
+        width: calc(50% - 10px);
+        min-width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sustainability-main {
+        padding-top: 60px;
+    }
+
+    .sustainability-breadcrumbs {
+        position: relative;
+        top: 0;
+        left: 0;
+        padding: 20px;
+    }
+
+    .sustainability-hero-section {
+        padding-top: 40px;
+    }
+
+    .sustainability-hero-container {
+        padding: 0 20px;
+        gap: 30px;
+    }
+
+    .sustainability-hero-title {
+        font-size: 42px;
+        line-height: 42px;
+    }
+
+    .sustainability-hero-subtitle {
+        font-size: 18px;
+    }
+
+    .sustainability-description-section {
+        padding-top: 20px;
+    }
+
+    .sustainability-description-container {
+        padding: 0 20px;
+    }
+
+    .sustainability-description-text {
+        font-size: 16px;
+    }
+
+    .sustainability-gallery-section {
+        padding-top: 60px;
+    }
+
+    .sustainability-gallery-container {
+        padding: 0 20px;
+    }
+
+    .sustainability-gallery-grid {
+        flex-direction: column;
+        height: auto;
+        gap: 20px;
+    }
+
+    .sustainability-gallery-large {
+        height: 300px;
+    }
+
+    .sustainability-gallery-small-container {
+        flex-direction: row;
+        height: 200px;
+    }
+
+    .sustainability-gallery-small-top {
+        flex: 1;
+    }
+
+    .sustainability-gallery-small-bottom {
+        flex: 2;
+        flex-direction: column;
+    }
+
+    .sustainability-practices-section {
+        padding-top: 80px;
+    }
+
+    .sustainability-practices-title {
+        font-size: 36px;
+        margin-bottom: 60px;
+    }
+
+    .sustainability-practices-grid {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .sustainability-practice-item {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .sustainability-practice-content {
+        width: calc(100% - 20px);
+        margin-left: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sustainability-hero-title {
+        font-size: 32px;
+        line-height: 32px;
+    }
+
+    .sustainability-hero-subtitle {
+        font-size: 16px;
+    }
+
+    .sustainability-description-text {
+        font-size: 14px;
+    }
+
+    .sustainability-gallery-small-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sustainability-gallery-small-top,
+    .sustainability-gallery-small-bottom-left,
+    .sustainability-gallery-small-bottom-right {
+        height: 150px;
+    }
+
+    .sustainability-gallery-small-bottom {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .sustainability-practices-title {
+        font-size: 28px;
+        white-space: normal;
+        line-height: 1.2;
+    }
+
+    .sustainability-practice-content {
+        margin-left: 15px;
+    }
+
+    .sustainability-practice-title {
+        font-size: 16px;
+    }
+
+    .sustainability-practice-desc {
+        font-size: 11px;
+    }
+}

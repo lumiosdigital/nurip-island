@@ -121,10 +121,10 @@
     text-decoration: none;
 }
 
-.service-card-linked:focus {
+/* .service-card-linked:focus {
     outline: 2px solid #a48456;
     outline-offset: 2px;
-}
+} */
 
 /* ===========================
    RESPONSIVE DESIGN

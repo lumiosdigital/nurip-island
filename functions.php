@@ -2134,6 +2134,14 @@ function nirup_get_breadcrumbs() {
         'url' => home_url('/')
     );
     
+    // Handle sustainability page
+    if (is_page_template('page-sustainability.php')) {
+        $breadcrumbs[] = array(
+            'title' => 'Sustainability',
+            'url' => ''
+        );
+    }
+    
     if (is_post_type_archive('experience')) {
         $breadcrumbs[] = array(
             'title' => 'Experiences',
@@ -4913,4 +4921,221 @@ function nirup_handle_newsletter_subscription() {
 add_action('wp_ajax_nirup_newsletter_subscribe', 'nirup_handle_newsletter_subscription');
 add_action('wp_ajax_nopriv_nirup_newsletter_subscribe', 'nirup_handle_newsletter_subscription');
 
-?>
+function nirup_sustainability_customizer($wp_customize) {
+    
+    // Add Sustainability Page Section
+    $wp_customize->add_section('nirup_sustainability_page', array(
+        'title'    => __('Sustainability Page', 'nirup-island'),
+        'priority' => 40,
+        'description' => __('Customize the sustainability page content and images', 'nirup-island'),
+    ));
+
+    // Hero Section Settings
+    // Hero Subtitle
+    $wp_customize->add_setting('nirup_sustainability_hero_subtitle', array(
+        'default'           => __('Balancing comfort with care for the planet', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_sustainability_hero_subtitle', array(
+        'label'    => __('Hero Subtitle', 'nirup-island'),
+        'section'  => 'nirup_sustainability_page',
+        'type'     => 'text',
+        'priority' => 10,
+    ));
+
+    // Hero Title
+    $wp_customize->add_setting('nirup_sustainability_hero_title', array(
+        'default'           => __('Sustainability', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_sustainability_hero_title', array(
+        'label'    => __('Hero Title', 'nirup-island'),
+        'section'  => 'nirup_sustainability_page',
+        'type'     => 'text',
+        'priority' => 20,
+    ));
+
+    // Description Text
+    $wp_customize->add_setting('nirup_sustainability_description', array(
+        'default'           => __('Nirup Island has been designed with sustainability at its core. Every aspect of the resort — from building design to energy, water, and community engagement — is crafted to harmonize with nature while offering a refined guest experience.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_sustainability_description', array(
+        'label'       => __('Description Text', 'nirup-island'),
+        'description' => __('Paragraph text below the hero title', 'nirup-island'),
+        'section'     => 'nirup_sustainability_page',
+        'type'        => 'textarea',
+        'priority'    => 30,
+    ));
+
+    // Gallery Images
+    for ($i = 1; $i <= 4; $i++) {
+        $wp_customize->add_setting("nirup_sustainability_gallery_image_{$i}", array(
+            'default'           => '',
+            'sanitize_callback' => 'absint',
+            'transport'         => 'refresh',
+        ));
+
+        $description = '';
+        if ($i === 1) {
+            $description = __('Large gallery image (left side)', 'nirup-island');
+        } elseif ($i === 2) {
+            $description = __('Top right gallery image', 'nirup-island');
+        } elseif ($i === 3) {
+            $description = __('Bottom left small gallery image', 'nirup-island');
+        } else {
+            $description = __('Bottom right small gallery image', 'nirup-island');
+        }
+
+        $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, "nirup_sustainability_gallery_image_{$i}", array(
+            'label'       => sprintf(__('Gallery Image %d', 'nirup-island'), $i),
+            'description' => $description,
+            'section'     => 'nirup_sustainability_page',
+            'mime_type'   => 'image',
+            'priority'    => 30 + $i,
+        )));
+    }
+
+    // Practices Section Title
+    $wp_customize->add_setting('nirup_sustainability_practices_title', array(
+        'default'           => __('Key Sustainability Practices', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_sustainability_practices_title', array(
+        'label'    => __('Practices Section Title', 'nirup-island'),
+        'section'  => 'nirup_sustainability_page',
+        'type'     => 'text',
+        'priority' => 50,
+    ));
+
+    // Practice Items (8 practices with exact content)
+    $default_practices = array(
+        1 => array(
+            'title' => 'Building Design',
+            'desc1' => 'Passive cooling & natural airflow',
+            'desc2' => 'Energy-efficient architecture'
+        ),
+        2 => array(
+            'title' => 'Renewable Energy',
+            'desc1' => '1 MW solar panels',
+            'desc2' => 'Reducing fossil fuel reliance'
+        ),
+        3 => array(
+            'title' => 'Water Conservation',
+            'desc1' => '20,000 m³ rainwater reservoir',
+            'desc2' => 'Recycling & efficient fixtures'
+        ),
+        4 => array(
+            'title' => 'Waste Management',
+            'desc1' => 'Recycling & composting',
+            'desc2' => 'Food scraps into fertilizer'
+        ),
+        5 => array(
+            'title' => 'Green Landscaping',
+            'desc1' => 'Native, drought-resistant plants',
+            'desc2' => 'Low-maintenance greenery'
+        ),
+        6 => array(
+            'title' => 'Sustainable Transportation',
+            'desc1' => 'Electric buggies on island',
+            'desc2' => 'Bicycles for eco-exploration'
+        ),
+        7 => array(
+            'title' => 'Environmental Education',
+            'desc1' => 'Water refill stations',
+            'desc2' => 'Guest eco-awareness programs'
+        ),
+        8 => array(
+            'title' => 'Local Sourcing & Community',
+            'desc1' => 'Local ingredients & materials',
+            'desc2' => 'Jobs for nearby communities'
+        ),
+    );
+
+    for ($i = 1; $i <= 8; $i++) {
+        // Practice Title
+        $wp_customize->add_setting("nirup_sustainability_practice_{$i}_title", array(
+            'default'           => isset($default_practices[$i]) ? $default_practices[$i]['title'] : '',
+            'sanitize_callback' => 'sanitize_text_field',
+            'transport'         => 'postMessage',
+        ));
+
+        $wp_customize->add_control("nirup_sustainability_practice_{$i}_title", array(
+            'label'    => sprintf(__('Practice %d Title', 'nirup-island'), $i),
+            'section'  => 'nirup_sustainability_page',
+            'type'     => 'text',
+            'priority' => 50 + ($i * 3) - 2,
+        ));
+
+        // Practice Description 1
+        $wp_customize->add_setting("nirup_sustainability_practice_{$i}_desc1", array(
+            'default'           => isset($default_practices[$i]) ? $default_practices[$i]['desc1'] : '',
+            'sanitize_callback' => 'sanitize_text_field',
+            'transport'         => 'postMessage',
+        ));
+
+        $wp_customize->add_control("nirup_sustainability_practice_{$i}_desc1", array(
+            'label'    => sprintf(__('Practice %d Description 1', 'nirup-island'), $i),
+            'section'  => 'nirup_sustainability_page',
+            'type'     => 'text',
+            'priority' => 50 + ($i * 3) - 1,
+        ));
+
+        // Practice Description 2
+        $wp_customize->add_setting("nirup_sustainability_practice_{$i}_desc2", array(
+            'default'           => isset($default_practices[$i]) ? $default_practices[$i]['desc2'] : '',
+            'sanitize_callback' => 'sanitize_text_field',
+            'transport'         => 'postMessage',
+        ));
+
+        $wp_customize->add_control("nirup_sustainability_practice_{$i}_desc2", array(
+            'label'    => sprintf(__('Practice %d Description 2', 'nirup-island'), $i),
+            'section'  => 'nirup_sustainability_page',
+            'type'     => 'text',
+            'priority' => 50 + ($i * 3),
+        ));
+    }
+}
+add_action('customize_register', 'nirup_sustainability_customizer');
+
+function nirup_sustainability_styles() {
+    if (is_page_template('page-sustainability.php')) {
+        wp_enqueue_style(
+            'nirup-sustainability-styles',
+            get_template_directory_uri() . '/assets/css/sustainability.css',
+            array(),
+            '1.0.0'
+        );
+        
+        // Ensure breadcrumbs CSS is loaded
+        wp_enqueue_style(
+            'nirup-breadcrumbs',
+            get_template_directory_uri() . '/assets/css/breadcrumbs.css',
+            array(),
+            '1.0.0'
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_sustainability_styles');
+
+/**
+ * Customizer Live Preview for Sustainability Page
+ */
+function nirup_sustainability_customize_preview_js() {
+    wp_enqueue_script(
+        'nirup-sustainability-customize-preview',
+        get_template_directory_uri() . '/assets/js/customize-preview-sustainability.js',
+        array('customize-preview'),
+        '1.0.0',
+        true
+    );
+}
+add_action('customize_preview_init', 'nirup_sustainability_customize_preview_js');
