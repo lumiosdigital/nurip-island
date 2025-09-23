@@ -119,19 +119,15 @@
     transform: translate(-50%, -100%) scale(0.95);
 }
 
-/* Pin Icons - Updated for Custom SVG Pins */
 .pin-icon {
     width: 47px;
-    /* Half of the SVG width (94px) for proper sizing */
     height: 56px;
-    /* Half of the SVG height (112px) for proper sizing */
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     z-index: 20;
     transition: all 0.3s ease;
-    /* Removed circular styling since we're using custom pin shapes */
 }
 
 .pin-icon svg {
@@ -148,7 +144,6 @@
     filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.25));
 }
 
-/* Pin type colors are now handled by the SVG itself, no additional CSS needed */
 .map-pin-public .pin-icon,
 .map-pin-accommodation .pin-icon {
     background: none;
@@ -156,7 +151,6 @@
     box-shadow: none;
 }
 
-/* Admin Interface Pins */
 .admin-pin {
     position: absolute;
     cursor: pointer;
