@@ -100,7 +100,7 @@
 /* CTA Button Styles */
 .wellness-content .cta-button a {
     display: inline-block;
-    border: 1px solid #a48456;
+    border: 1px solid #8B5E1D;
     padding: 0.625rem 0.9375rem;
     min-width: 323px;
     text-decoration: none;
@@ -109,7 +109,7 @@
 }
 
 .wellness-content .cta-button a:hover {
-    background-color: #a48456;
+    background-color: #8B5E1D;
     box-shadow: 0 4px 12px rgba(164, 132, 86, 0.2);
 }
 
