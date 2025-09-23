@@ -144,7 +144,7 @@
 
 .single-event-offer-book-btn {
     display: inline-block;
-    background: #A48456;
+    background: #8B5E1D;
     color: white;
     font-family: 'Albert Sans', sans-serif;
     font-weight: 300;
@@ -163,7 +163,7 @@
 }
 
 .single-event-offer-book-btn:hover {
-    background: #8B5E1D;
+    background: #a48456;
     transform: translateY(-1px);
 }
 

@@ -248,7 +248,7 @@
 .newsletter-submit-btn {
     width: 131px;
     height: 100%;
-    background-color: #a48456;
+    background-color: #8B5E1D;
     border: none;
     color: white;
     font-family: var(--font-family);
@@ -265,7 +265,7 @@
 }
 
 .newsletter-submit-btn:hover {
-    background-color: #8b5e1d;
+    background-color: #a48456;
     transform: translateY(-1px);
 }
 

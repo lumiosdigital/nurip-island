@@ -501,11 +501,12 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: opacity 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .single-cta-button-primary:hover {
-    opacity: 0.9;
+    background-color: #a48456;
+    transform: translateY(-1px);
 }
 
 /* Responsive Design */
