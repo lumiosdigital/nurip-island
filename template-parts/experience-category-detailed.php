@@ -333,7 +333,7 @@ if (empty($region_section_text)) {
     
     <!-- Recommendations Section -->
     <section class="detailed-recommendations-section">
-        <h2 class="detailed-recommendations-title">Recommendations</h2>
+        <h2 class="detailed-recommendations-title">Available Excursions</h2>
         
         <?php if ($child_experiences->have_posts()) : ?>
             <!-- Carousel Container -->
