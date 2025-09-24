@@ -241,8 +241,12 @@
 }
 
 .detailed-content-text {
-    margin: 0;
+    font-family: 'Albert Sans', sans-serif;
     font-weight: 300;
+    font-size: 20px;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0 0 24px 0;
 }
 
 .detailed-content-text:last-child {
