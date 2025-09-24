@@ -77,6 +77,8 @@ function nirup_enqueue_assets() {
     wp_enqueue_style('nirup-events-offers-archive', get_template_directory_uri() . '/assets/css/events-offers-archive.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-single-event-offer', get_template_directory_uri() . '/assets/css/single-event-offer.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-footer', get_template_directory_uri() . '/assets/css/footer.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-dining', get_template_directory_uri() . '/assets/css/dining.css', array('nirup-main'), '1.0.2');
+        wp_enqueue_style('nirup-single-restaurant', get_template_directory_uri() . '/assets/css/single-restaurant.css', array('nirup-main'), '1.0.2');
 
 
 
@@ -2370,6 +2372,24 @@ function nirup_get_breadcrumbs() {
         $breadcrumbs[] = array(
             'title' => 'Events & Offers',
             'url' => get_post_type_archive_link('event_offer')
+        );
+        
+        $breadcrumbs[] = array(
+            'title' => get_the_title(),
+            'url' => ''
+        );
+    }
+
+    // Restaurant post type support
+    if (is_post_type_archive('restaurant')) {
+        $breadcrumbs[] = array(
+            'title' => 'Dining',
+            'url' => ''
+        );
+    } elseif (is_singular('restaurant')) {
+        $breadcrumbs[] = array(
+            'title' => 'Dining',
+            'url' => get_post_type_archive_link('restaurant')
         );
         
         $breadcrumbs[] = array(
@@ -5354,3 +5374,571 @@ function nirup_enqueue_single_experience_css() {
     }
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_single_experience_css');
+
+// Register Restaurant Custom Post Type
+function nirup_register_restaurant_post_type() {
+    $labels = array(
+        'name'                  => _x('Restaurants', 'Post type general name', 'nirup-island'),
+        'singular_name'         => _x('Restaurant', 'Post type singular name', 'nirup-island'),
+        'menu_name'             => _x('Restaurants', 'Admin Menu text', 'nirup-island'),
+        'name_admin_bar'        => _x('Restaurant', 'Add New on Toolbar', 'nirup-island'),
+        'add_new'               => __('Add New', 'nirup-island'),
+        'add_new_item'          => __('Add New Restaurant', 'nirup-island'),
+        'new_item'              => __('New Restaurant', 'nirup-island'),
+        'edit_item'             => __('Edit Restaurant', 'nirup-island'),
+        'view_item'             => __('View Restaurant', 'nirup-island'),
+        'all_items'             => __('All Restaurants', 'nirup-island'),
+        'search_items'          => __('Search Restaurants', 'nirup-island'),
+        'parent_item_colon'     => __('Parent Restaurants:', 'nirup-island'),
+        'not_found'             => __('No restaurants found.', 'nirup-island'),
+        'not_found_in_trash'    => __('No restaurants found in Trash.', 'nirup-island'),
+        'featured_image'        => _x('Restaurant Main Image', 'Overrides the "Featured Image" phrase', 'nirup-island'),
+        'set_featured_image'    => _x('Set restaurant main image', 'Overrides the "Set featured image" phrase', 'nirup-island'),
+        'remove_featured_image' => _x('Remove restaurant main image', 'Overrides the "Remove featured image" phrase', 'nirup-island'),
+        'use_featured_image'    => _x('Use as restaurant main image', 'Overrides the "Use as featured image" phrase', 'nirup-island'),
+        'archives'              => _x('Restaurant archives', 'The post type archive label', 'nirup-island'),
+        'insert_into_item'      => _x('Insert into restaurant', 'Overrides the "Insert into post" phrase', 'nirup-island'),
+        'uploaded_to_this_item' => _x('Uploaded to this restaurant', 'Overrides the "Uploaded to this post" phrase', 'nirup-island'),
+        'filter_items_list'     => _x('Filter restaurants list', 'Screen reader text for the filter links', 'nirup-island'),
+        'items_list_navigation' => _x('Restaurants list navigation', 'Screen reader text for the pagination', 'nirup-island'),
+        'items_list'            => _x('Restaurants list', 'Screen reader text for the items list', 'nirup-island'),
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array('slug' => 'restaurant'),
+        'capability_type'    => 'post',
+        'has_archive'        => 'dining',
+        'hierarchical'       => false,
+        'menu_position'      => 21,
+        'menu_icon'          => 'dashicons-food',
+        'supports'           => array('title', 'editor', 'excerpt', 'thumbnail', 'page-attributes'),
+        'show_in_rest'       => true,
+    );
+
+    register_post_type('restaurant', $args);
+}
+add_action('init', 'nirup_register_restaurant_post_type');
+
+// Restaurant Meta Boxes
+function nirup_add_restaurant_meta_boxes() {
+    add_meta_box(
+        'restaurant-archive-card-info',
+        __('📋 Archive Card Information', 'nirup-island'),
+        'nirup_restaurant_archive_card_callback',
+        'restaurant',
+        'normal',
+        'high'
+    );
+    
+    add_meta_box(
+        'restaurant-single-page-info',
+        __('📄 Single Page Information', 'nirup-island'),
+        'nirup_restaurant_single_page_callback',
+        'restaurant',
+        'normal',
+        'high'
+    );
+    
+    add_meta_box(
+        'restaurant-gallery',
+        __('🖼️ Restaurant Gallery', 'nirup-island'),
+        'nirup_restaurant_gallery_callback',
+        'restaurant',
+        'normal',
+        'default'
+    );
+    
+    add_meta_box(
+        'restaurant-archive-settings',
+        __('⚙️ Archive Display Settings', 'nirup-island'),
+        'nirup_restaurant_archive_settings_callback',
+        'restaurant',
+        'side'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_restaurant_meta_boxes');
+
+
+// Restaurant Details Meta Box Callback
+function nirup_restaurant_details_callback($post) {
+    wp_nonce_field('nirup_restaurant_details', 'nirup_restaurant_details_nonce');
+    
+    $restaurant_category = get_post_meta($post->ID, '_restaurant_category', true);
+    $short_description = get_post_meta($post->ID, '_restaurant_short_description', true);
+    $operating_hours = get_post_meta($post->ID, '_restaurant_operating_hours', true);
+    $additional_info = get_post_meta($post->ID, '_restaurant_additional_info', true);
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="restaurant_category"><?php _e('Category', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="restaurant_category" name="restaurant_category" value="<?php echo esc_attr($restaurant_category); ?>" class="regular-text" />
+                <p class="description"><?php _e('e.g., "All-day Dining / Multiple Cuisines"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="restaurant_short_description"><?php _e('Short Description', 'nirup-island'); ?></label></th>
+            <td>
+                <textarea id="restaurant_short_description" name="restaurant_short_description" rows="3" class="large-text"><?php echo esc_textarea($short_description); ?></textarea>
+                <p class="description"><?php _e('Brief description shown on archive cards.', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="restaurant_operating_hours"><?php _e('Operating Hours', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="restaurant_operating_hours" name="restaurant_operating_hours" value="<?php echo esc_attr($operating_hours); ?>" class="regular-text" />
+                <p class="description"><?php _e('e.g., "Open daily: 6:00 AM – 10:30 PM"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="restaurant_additional_info"><?php _e('Additional Information', 'nirup-island'); ?></label></th>
+            <td>
+                <textarea id="restaurant_additional_info" name="restaurant_additional_info" rows="3" class="large-text"><?php echo esc_textarea($additional_info); ?></textarea>
+                <p class="description"><?php _e('Any additional details about the restaurant.', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+
+function nirup_restaurant_archive_card_callback($post) {
+    wp_nonce_field('nirup_restaurant_card_info', 'nirup_restaurant_card_info_nonce');
+    
+    $card_category = get_post_meta($post->ID, '_restaurant_card_category', true);
+    $card_short_description = get_post_meta($post->ID, '_restaurant_card_short_description', true);
+    $card_operating_hours = get_post_meta($post->ID, '_restaurant_card_operating_hours', true);
+    ?>
+    <p><strong>⚠️ These fields are used ONLY for the restaurant cards on the dining archive page.</strong></p>
+    <table class="form-table">
+        <tr>
+            <th><label for="restaurant_card_category"><?php _e('Category (for card)', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="restaurant_card_category" name="restaurant_card_category" value="<?php echo esc_attr($card_category); ?>" class="regular-text" />
+                <p class="description"><?php _e('e.g., "Seafood Specialty Restaurant" - shown on archive cards only', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="restaurant_card_short_description"><?php _e('Short Description (for card)', 'nirup-island'); ?></label></th>
+            <td>
+                <textarea id="restaurant_card_short_description" name="restaurant_card_short_description" rows="3" class="large-text"><?php echo esc_textarea($card_short_description); ?></textarea>
+                <p class="description"><?php _e('Brief description shown on archive cards only.', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="restaurant_card_operating_hours"><?php _e('Operating Hours (for card)', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="restaurant_card_operating_hours" name="restaurant_card_operating_hours" value="<?php echo esc_attr($card_operating_hours); ?>" class="large-text" />
+                <p class="description"><?php _e('e.g., "Open daily: 6:00 AM – 10:30 PM" - shown on archive cards only', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+    </table>
+    <p><em>Note: The featured image is also used for the archive cards.</em></p>
+    <?php
+}
+
+function nirup_restaurant_single_page_callback($post) {
+    wp_nonce_field('nirup_restaurant_page_info', 'nirup_restaurant_page_info_nonce');
+    
+    $page_subtitle = get_post_meta($post->ID, '_restaurant_page_subtitle', true);
+    $page_category_title = get_post_meta($post->ID, '_restaurant_page_category_title', true);
+    $page_cuisine_type = get_post_meta($post->ID, '_restaurant_page_cuisine_type', true);
+    $page_operating_hours = get_post_meta($post->ID, '_restaurant_page_operating_hours', true);
+    $page_menu_pdf = get_post_meta($post->ID, '_restaurant_menu_pdf', true);
+    ?>
+    <p><strong>ℹ️ These fields are used ONLY for the individual restaurant page.</strong></p>
+    <table class="form-table">
+        <tr>
+            <th><label for="restaurant_page_subtitle"><?php _e('Page Subtitle', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="restaurant_page_subtitle" name="restaurant_page_subtitle" value="<?php echo esc_attr($page_subtitle); ?>" class="large-text" />
+                <p class="description"><?php _e('e.g., "Fresh from the Ocean, Served with Elegance" - shown under main title on single page', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="restaurant_page_category_title"><?php _e('Category Title (for single page)', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="restaurant_page_category_title" name="restaurant_page_category_title" value="<?php echo esc_attr($page_category_title); ?>" class="regular-text" />
+                <p class="description"><?php _e('e.g., "Seafood Specialty Restaurant" - shown as section title on single page', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="restaurant_page_cuisine_type"><?php _e('Cuisine Type (sidebar)', 'nirup-island'); ?></label></th>
+            <td>
+                <textarea id="restaurant_page_cuisine_type" name="restaurant_page_cuisine_type" rows="2" class="regular-text"><?php echo esc_textarea($page_cuisine_type); ?></textarea>
+                <p class="description"><?php _e('e.g., "Seafood Specialty, Farm-to-Table Concept" - shown in sidebar', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="restaurant_page_operating_hours"><?php _e('Operating Hours (sidebar)', 'nirup-island'); ?></label></th>
+            <td>
+                <textarea id="restaurant_page_operating_hours" name="restaurant_page_operating_hours" rows="3" class="regular-text"><?php echo esc_textarea($page_operating_hours); ?></textarea>
+                <p class="description"><?php _e('e.g., "Friday – Sunday: 11:00 AM – 10:00 PM<br>Closed: Monday – Thursday" - shown in sidebar', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="restaurant_menu_pdf"><?php _e('Menu PDF', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="restaurant_menu_pdf" name="restaurant_menu_pdf" value="<?php echo esc_attr($page_menu_pdf); ?>" class="regular-text" />
+                <button type="button" class="button" id="upload_menu_pdf_button"><?php _e('Upload/Select PDF', 'nirup-island'); ?></button>
+                <button type="button" class="button" id="remove_menu_pdf_button" <?php echo empty($page_menu_pdf) ? 'style="display:none;"' : ''; ?>><?php _e('Remove PDF', 'nirup-island'); ?></button>
+                <p class="description"><?php _e('Upload a PDF file for the "Discover Menu" button. Visitors will download this file.', 'nirup-island'); ?></p>
+                <?php if (!empty($page_menu_pdf)) : ?>
+                    <p><a href="<?php echo esc_url($page_menu_pdf); ?>" target="_blank">View current PDF</a></p>
+                <?php endif; ?>
+            </td>
+        </tr>
+    </table>
+    <p><em>Note: The main content editor above is used as the restaurant description paragraph on the single page.</em></p>
+    
+    <script>
+    jQuery(document).ready(function($) {
+        var frame;
+        
+        $('#upload_menu_pdf_button').on('click', function(e) {
+            e.preventDefault();
+            
+            if (frame) {
+                frame.open();
+                return;
+            }
+            
+            frame = wp.media({
+                title: 'Select Menu PDF',
+                multiple: false,
+                library: {
+                    type: 'application/pdf'
+                }
+            });
+            
+            frame.on('select', function() {
+                var attachment = frame.state().get('selection').first().toJSON();
+                $('#restaurant_menu_pdf').val(attachment.url);
+                $('#remove_menu_pdf_button').show();
+            });
+            
+            frame.open();
+        });
+        
+        $('#remove_menu_pdf_button').on('click', function(e) {
+            e.preventDefault();
+            $('#restaurant_menu_pdf').val('');
+            $(this).hide();
+        });
+    });
+    </script>
+    <?php
+}
+
+function nirup_restaurant_gallery_callback($post) {
+    wp_nonce_field('nirup_restaurant_gallery', 'nirup_restaurant_gallery_nonce');
+    
+    $gallery_images = get_post_meta($post->ID, '_restaurant_gallery', true);
+    $gallery_images = $gallery_images ? $gallery_images : array();
+    ?>
+    <p><strong>🖼️ Restaurant Gallery - Upload images for the restaurant gallery (displays 5 photos with "see more" option if more are uploaded)</strong></p>
+    
+    <div class="restaurant-gallery-container">
+        <div id="restaurant-gallery-images" class="gallery-images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px;">
+            <?php foreach ($gallery_images as $image_id) : ?>
+                <?php $image_url = wp_get_attachment_thumb_url($image_id); ?>
+                <?php if ($image_url) : ?>
+                    <div class="gallery-image-item" data-attachment-id="<?php echo esc_attr($image_id); ?>" style="position: relative;">
+                        <img src="<?php echo esc_url($image_url); ?>" alt="" style="width: 100%; height: 100px; object-fit: cover; border: 2px solid #ddd;">
+                        <button type="button" class="remove-gallery-image" style="position: absolute; top: 5px; right: 5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px;">×</button>
+                        <input type="hidden" name="restaurant_gallery[]" value="<?php echo esc_attr($image_id); ?>">
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+        
+        <button type="button" class="button button-primary" id="add-gallery-images"><?php _e('Add Gallery Images', 'nirup-island'); ?></button>
+        <p class="description"><?php _e('The first 5 images will be displayed in the gallery layout. If more than 5 images are uploaded, a "See All Photos" button will appear.', 'nirup-island'); ?></p>
+    </div>
+    
+    <script>
+    jQuery(document).ready(function($) {
+        var frame;
+        
+        // Add images
+        $('#add-gallery-images').on('click', function(e) {
+            e.preventDefault();
+            
+            if (frame) {
+                frame.open();
+                return;
+            }
+            
+            frame = wp.media({
+                title: 'Select Gallery Images',
+                multiple: true,
+                library: {
+                    type: 'image'
+                }
+            });
+            
+            frame.on('select', function() {
+                var attachments = frame.state().get('selection').toJSON();
+                
+                attachments.forEach(function(attachment) {
+                    var html = '<div class="gallery-image-item" data-attachment-id="' + attachment.id + '" style="position: relative;">' +
+                               '<img src="' + attachment.sizes.thumbnail.url + '" alt="" style="width: 100%; height: 100px; object-fit: cover; border: 2px solid #ddd;">' +
+                               '<button type="button" class="remove-gallery-image" style="position: absolute; top: 5px; right: 5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px;">×</button>' +
+                               '<input type="hidden" name="restaurant_gallery[]" value="' + attachment.id + '">' +
+                               '</div>';
+                    
+                    $('#restaurant-gallery-images').append(html);
+                });
+            });
+            
+            frame.open();
+        });
+        
+        // Remove images
+        $(document).on('click', '.remove-gallery-image', function(e) {
+            e.preventDefault();
+            $(this).closest('.gallery-image-item').remove();
+        });
+    });
+    </script>
+    <?php
+}
+
+function nirup_restaurant_archive_settings_callback($post) {
+    wp_nonce_field('nirup_restaurant_archive_settings', 'nirup_restaurant_archive_settings_nonce');
+    
+    $featured_in_archive = get_post_meta($post->ID, '_featured_in_archive', true);
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="featured_in_archive"><?php _e('Show in Archive', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="checkbox" id="featured_in_archive" name="featured_in_archive" value="1" <?php checked($featured_in_archive, 1); ?> />
+                <label for="featured_in_archive"><?php _e('Display this restaurant on the dining archive page', 'nirup-island'); ?></label>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+
+// Save Restaurant Meta
+function nirup_save_restaurant_meta($post_id) {
+    // Verify nonces
+    $nonces_valid = 
+        (isset($_POST['nirup_restaurant_card_info_nonce']) && wp_verify_nonce($_POST['nirup_restaurant_card_info_nonce'], 'nirup_restaurant_card_info')) ||
+        (isset($_POST['nirup_restaurant_page_info_nonce']) && wp_verify_nonce($_POST['nirup_restaurant_page_info_nonce'], 'nirup_restaurant_page_info')) ||
+        (isset($_POST['nirup_restaurant_gallery_nonce']) && wp_verify_nonce($_POST['nirup_restaurant_gallery_nonce'], 'nirup_restaurant_gallery')) ||
+        (isset($_POST['nirup_restaurant_archive_settings_nonce']) && wp_verify_nonce($_POST['nirup_restaurant_archive_settings_nonce'], 'nirup_restaurant_archive_settings'));
+    
+    if (!$nonces_valid) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save archive card info
+    if (isset($_POST['restaurant_card_category'])) {
+        update_post_meta($post_id, '_restaurant_card_category', sanitize_text_field($_POST['restaurant_card_category']));
+    }
+
+    if (isset($_POST['restaurant_card_short_description'])) {
+        update_post_meta($post_id, '_restaurant_card_short_description', sanitize_textarea_field($_POST['restaurant_card_short_description']));
+    }
+
+    if (isset($_POST['restaurant_card_operating_hours'])) {
+        update_post_meta($post_id, '_restaurant_card_operating_hours', sanitize_text_field($_POST['restaurant_card_operating_hours']));
+    }
+
+    // Save single page info
+    if (isset($_POST['restaurant_page_subtitle'])) {
+        update_post_meta($post_id, '_restaurant_page_subtitle', sanitize_text_field($_POST['restaurant_page_subtitle']));
+    }
+
+    if (isset($_POST['restaurant_page_category_title'])) {
+        update_post_meta($post_id, '_restaurant_page_category_title', sanitize_text_field($_POST['restaurant_page_category_title']));
+    }
+
+    if (isset($_POST['restaurant_page_cuisine_type'])) {
+        update_post_meta($post_id, '_restaurant_page_cuisine_type', sanitize_textarea_field($_POST['restaurant_page_cuisine_type']));
+    }
+
+    if (isset($_POST['restaurant_page_operating_hours'])) {
+        update_post_meta($post_id, '_restaurant_page_operating_hours', sanitize_textarea_field($_POST['restaurant_page_operating_hours']));
+    }
+
+    if (isset($_POST['restaurant_menu_pdf'])) {
+        update_post_meta($post_id, '_restaurant_menu_pdf', esc_url_raw($_POST['restaurant_menu_pdf']));
+    }
+
+    // Save gallery
+    if (isset($_POST['restaurant_gallery'])) {
+        $gallery_images = array_map('intval', $_POST['restaurant_gallery']);
+        update_post_meta($post_id, '_restaurant_gallery', $gallery_images);
+    } else {
+        delete_post_meta($post_id, '_restaurant_gallery');
+    }
+
+    // Save archive settings
+    if (isset($_POST['nirup_restaurant_archive_settings_nonce']) && wp_verify_nonce($_POST['nirup_restaurant_archive_settings_nonce'], 'nirup_restaurant_archive_settings')) {
+        $featured_in_archive = isset($_POST['featured_in_archive']) ? 1 : 0;
+        update_post_meta($post_id, '_featured_in_archive', $featured_in_archive);
+    }
+}
+add_action('save_post', 'nirup_save_restaurant_meta');
+
+// Add Dining Archive Customizer Options
+function nirup_dining_archive_customizer($wp_customize) {
+    // Dining Archive Section
+    $wp_customize->add_section('nirup_dining_archive', array(
+        'title' => __('Dining Archive Page', 'nirup-island'),
+        'priority' => 42,
+        'description' => __('Customize the dining archive page content', 'nirup-island'),
+    ));
+
+    // Hero Section Settings
+    $wp_customize->add_setting('dining_hero_image', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'dining_hero_image', array(
+        'label' => __('Hero Background Image', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'settings' => 'dining_hero_image',
+    )));
+
+    $wp_customize->add_setting('dining_hero_alt', array(
+        'default' => __('Dining Experience', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('dining_hero_alt', array(
+        'label' => __('Hero Image Alt Text', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('dining_hero_subtitle', array(
+        'default' => __('Welcome to our restaurants', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('dining_hero_subtitle', array(
+        'label' => __('Hero Subtitle', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('dining_hero_title', array(
+        'default' => __('Savor Royal Flavors', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('dining_hero_title', array(
+        'label' => __('Hero Title', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    // About Section Settings
+    $wp_customize->add_setting('dining_about_category', array(
+        'default' => __('About the dining', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('dining_about_category', array(
+        'label' => __('About Section Category', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('dining_about_title', array(
+        'default' => __('Celebrate The Art of Dining', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('dining_about_title', array(
+        'label' => __('About Section Title', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('dining_about_description', array(
+        'default' => __('Step into a world where fine cuisine and refined ambiance come together. Our restaurants feature signature dishes crafted by world-class chefs, complemented by curated wine collections and exceptional service. From intimate dinners to grand celebrations, every detail is designed to create an unforgettable dining journey.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('dining_about_description', array(
+        'label' => __('About Section Description', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'textarea',
+    ));
+
+    // Signature Experiences Section
+    $wp_customize->add_setting('signature_experiences_category', array(
+        'default' => __('For Connoisseurs', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('signature_experiences_category', array(
+        'label' => __('Signature Experiences Category', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('signature_experiences_title', array(
+        'default' => __('Signature Experience', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('signature_experiences_title', array(
+        'label' => __('Signature Experiences Title', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+}
+add_action('customize_register', 'nirup_dining_archive_customizer');
+
+function nirup_restaurant_admin_columns($columns) {
+    $new_columns = array();
+    foreach ($columns as $key => $value) {
+        $new_columns[$key] = $value;
+        if ($key == 'title') {
+            $new_columns['restaurant_card_category'] = __('Card Category', 'nirup-island');
+            $new_columns['featured_archive'] = __('In Archive', 'nirup-island');
+            $new_columns['gallery_count'] = __('Gallery Images', 'nirup-island');
+        }
+    }
+    return $new_columns;
+}
+add_filter('manage_restaurant_posts_columns', 'nirup_restaurant_admin_columns');
+
+function nirup_restaurant_admin_column_content($column, $post_id) {
+    switch ($column) {
+        case 'restaurant_card_category':
+            $category = get_post_meta($post_id, '_restaurant_card_category', true);
+            echo $category ? esc_html($category) : '—';
+            break;
+        case 'featured_archive':
+            $featured = get_post_meta($post_id, '_featured_in_archive', true);
+            echo $featured ? '✓' : '—';
+            break;
+        case 'gallery_count':
+            $gallery = get_post_meta($post_id, '_restaurant_gallery', true);
+            $count = is_array($gallery) ? count($gallery) : 0;
+            echo $count . ' ' . ($count === 1 ? 'image' : 'images');
+            break;
+    }
+}
+add_action('manage_restaurant_posts_custom_column', 'nirup_restaurant_admin_column_content', 10, 2);

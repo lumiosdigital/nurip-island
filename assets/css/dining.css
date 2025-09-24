@@ -1,0 +1,585 @@
+/* Dining Archive Page Styles */
+
+.dining-archive-main {
+    /* background: white; */
+    position: relative;
+    overflow: hidden;
+}
+
+.dining-archive-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Hero Section - Matching Single Event Offer Layout */
+.dining-hero-section {
+    position: relative;
+    height: 780px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 100px;
+}
+
+.dining-hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.dining-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* .dining-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(41, 26, 26, 0.24);
+    z-index: 2;
+} */
+
+.dining-hero-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    color: white;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.dining-hero-subtitle {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 23px;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+.dining-hero-title {
+    font-family: 'Amiri', serif;
+    font-size: 72px;
+    font-weight: 400;
+    line-height: 72px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* About Dining Section */
+.dining-about-section {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    margin-bottom: 180px;
+    padding: 0 20px;
+}
+
+.dining-about-content {
+    max-width: 574px;
+    margin: 0 auto 80px auto;
+}
+
+.dining-about-category {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: #3D332F;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+.dining-about-title {
+    font-family: 'Amiri', serif;
+    font-size: 60px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3D332F;
+    margin: 0 0 30px 0;
+}
+
+.dining-about-description p {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3D332F;
+    opacity: 0.8;
+    margin: 0;
+}
+
+/* Features Section */
+.dining-features {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.dining-feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 217px;
+    gap: 20px;
+}
+
+.dining-feature-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dining-feature-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dining-feature-title {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3D332F;
+    margin: 0;
+}
+
+.dining-feature-description {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #3D332F;
+    margin: 0;
+}
+
+/* Restaurants Section */
+.dining-restaurants-section {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 150px;
+    padding: 0 20px;
+}
+
+.restaurants-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Individual Restaurant Card - Copied from Experience Cards */
+.restaurant-archive-card {
+    background: #FCFAF6;
+    display: block;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 0;
+    overflow: hidden;
+    height: 850px;
+}
+
+.restaurant-archive-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-archive-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+/* Card Image */
+.restaurant-archive-image {
+    width: 100%;
+    height: 510px;
+    overflow: hidden;
+    position: relative;
+}
+
+.restaurant-archive-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+.restaurant-archive-card:hover .restaurant-archive-img {
+    transform: scale(1.05);
+}
+
+.restaurant-archive-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 14px;
+    font-family: 'Albert Sans', sans-serif;
+}
+
+/* Card Content */
+.restaurant-archive-content {
+    padding: 40px 30px;
+    text-align: center;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.restaurant-archive-card-title {
+    font-family: 'Amiri', serif;
+    font-size: 40px;
+    color: #555250;
+    margin: 0 0 20px 0;
+    line-height: 1.2;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+.restaurant-archive-description {
+    margin-bottom: 16px;
+    flex: 1;
+}
+
+.restaurant-archive-description p {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 16px;
+    color: #555250;
+    line-height: 1.6;
+    margin: 0;
+    font-weight: 300;
+}
+
+/* Restaurant Info */
+.restaurant-archive-info {
+    margin-bottom: 8px;
+}
+
+.restaurant-archive-category,
+.restaurant-archive-hours {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #555250;
+    line-height: 1.4;
+    margin: 0;
+    font-weight: 300;
+    opacity: 0.8;
+}
+
+/* CTA Link */
+.restaurant-archive-cta {
+    margin-top: auto;
+}
+
+.restaurant-archive-link-text {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    color: #8B5E1D;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 400;
+    border-bottom: 0.5px solid #8B5E1D;
+    padding-bottom: 2px;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.restaurant-archive-card:hover .restaurant-archive-link-text {
+    opacity: 0.8;
+    border-bottom-color: transparent;
+}
+
+
+/* Signature Experiences Section */
+.signature-experiences-section {
+    position: relative;
+    z-index: 2;
+    background: #F3EEEA;
+    padding: 150px 20px;
+    margin-top: 200px;
+}
+
+
+.signature-experiences-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.signature-experiences-category {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: #3D332F;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+}
+
+.signature-experiences-title {
+    font-family: 'Amiri', serif;
+    font-size: 60px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3D332F;
+    margin: 0;
+}
+
+.signature-experiences-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.signature-experience-card {
+    background: #FCFAF6;
+    height: 604px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.signature-experience-image {
+    width: 100%;
+    height: 467px;
+    overflow: hidden;
+}
+
+.signature-experience-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.signature-experience-content {
+    padding: 30px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+}
+
+.signature-experience-title {
+    font-family: 'Amiri', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #3D332F;
+    line-height: 1.4;
+    margin: 0 0 15px 0;
+}
+
+.signature-experience-description {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 1.3;
+    color: #3D332F;
+    margin: 0;
+}
+
+/* No Restaurants State */
+.no-restaurants-found {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.no-restaurants-found p {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 16px;
+    color: #3D332F;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .dining-hero-section {
+        height: 600px;
+    }
+
+    .dining-hero-title {
+        font-size: 56px;
+        line-height: 56px;
+    }
+
+    .dining-about-title {
+        font-size: 50px;
+    }
+
+    .dining-restaurants-section {
+        padding: 0 30px;
+    }
+
+    .restaurants-grid {
+        gap: 50px 30px;
+    }
+
+    .restaurant-archive-image {
+        height: 280px;
+    }
+
+    .restaurant-archive-content {
+        padding: 30px 25px;
+        min-height: 200px;
+    }
+
+    .signature-experiences-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dining-archive-main {
+        padding-top: 100px;
+    }
+
+    .dining-hero-section {
+        height: 500px;
+    }
+
+    .dining-hero-title {
+        font-size: 42px;
+        line-height: 42px;
+    }
+
+    .dining-hero-subtitle {
+        font-size: 18px;
+    }
+
+    .dining-about-title {
+        font-size: 40px;
+    }
+
+    .dining-features {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .dining-restaurants-section {
+        padding: 0 20px;
+    }
+
+    .restaurants-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .restaurant-archive-image {
+        height: 240px;
+    }
+
+    .restaurant-archive-content {
+        padding: 25px 20px;
+        min-height: 180px;
+    }
+
+    .restaurant-archive-card-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .restaurant-archive-description p {
+        font-size: 13px;
+    }
+
+    .signature-experiences-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .signature-experiences-title {
+        font-size: 40px;
+    }
+
+    .signature-experience-card {
+        height: 500px;
+    }
+
+    .signature-experience-image {
+        height: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dining-hero-section {
+        height: 400px;
+    }
+
+    .dining-hero-title {
+        font-size: 36px;
+        line-height: 36px;
+    }
+
+    .dining-hero-subtitle {
+        font-size: 16px;
+    }
+
+    .dining-about-title {
+        font-size: 32px;
+    }
+
+    .restaurant-archive-image {
+        height: 200px;
+    }
+
+    .restaurant-archive-content {
+        padding: 20px 15px;
+        min-height: 160px;
+    }
+
+    .restaurant-archive-card-title {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+
+    .restaurant-archive-description p {
+        font-size: 12px;
+    }
+
+    .signature-experiences-title {
+        font-size: 32px;
+    }
+
+    .signature-experience-card {
+        height: 450px;
+    }
+
+    .signature-experience-image {
+        height: 300px;
+    }
+
+    .signature-experience-title {
+        font-size: 24px;
+    }
+}

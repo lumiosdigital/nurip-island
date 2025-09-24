@@ -1,0 +1,574 @@
+/* Single Restaurant Page Styles - Based on Figma Design */
+
+.single-restaurant-main {
+    background: #f3eeea;
+    padding-top: 95px;
+    min-height: 100vh;
+}
+
+.single-restaurant-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* Override padding for gallery section only */
+.single-restaurant-hero,
+.single-restaurant-gallery {
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Add padding back for content section */
+.single-restaurant-content {
+    padding: 0 20px;
+}
+
+/* Hero Section */
+.single-restaurant-hero {
+    text-align: center;
+    margin-bottom: 56px;
+}
+
+.single-restaurant-hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    /* max-width: 705px; */
+    margin: 0 auto;
+}
+
+.single-restaurant-title {
+    font-family: 'Amiri', serif;
+    font-size: 72px;
+    font-weight: 400;
+    line-height: 72px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3D332F;
+    margin: 0;
+}
+
+.single-restaurant-subtitle {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 23px;
+    line-height: 1.4;
+    color: #3D332F;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* Gallery Section */
+.single-restaurant-gallery {
+    display: flex;
+    gap: 12px;
+    height: 470px;
+    margin-bottom: 56px;
+    width: 100%;
+    max-width: none;
+    /* Remove any max-width constraints */
+}
+
+.gallery-main-image {
+    flex: 1;
+    background: #9a9a9a;
+    overflow: hidden;
+    position: relative;
+}
+
+.gallery-main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.gallery-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+}
+
+.gallery-grid-item {
+    background: #9a9a9a;
+    overflow: hidden;
+    position: relative;
+}
+
+.gallery-grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.gallery-grid-item.has-overlay .gallery-overlay {
+    position: absolute;
+    inset: 0;
+    /* background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%); */
+    /* mix-blend-mode: multiply; */
+    display: flex;
+    align-items: flex-end;
+    justify-content: right;
+    margin-right: 10px;
+    padding-bottom: 10px;
+}
+
+.see-all-photos-btn {
+    background: #f3eeea;
+    border: 1px solid #8b5e1d;
+    color: #8b5e1d;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 15px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 0;
+    line-height: 120%;
+}
+
+.see-all-photos-btn:hover {
+    background: #8b5e1d;
+    color: white;
+}
+
+.gallery-placeholder,
+.gallery-placeholder-main {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 14px;
+    font-family: 'Albert Sans', sans-serif;
+}
+
+.gallery-placeholder-content {
+    text-align: center;
+}
+
+/* No Images Layout */
+.gallery-no-images {
+    display: flex;
+    gap: 12px;
+    height: 100%;
+    width: 100%;
+}
+
+.gallery-placeholder-main {
+    flex: 1;
+    height: 100%;
+}
+
+/* Content Section */
+.single-restaurant-content {
+    display: flex;
+    gap: 50px;
+    align-items: flex-start;
+    margin-bottom: 80px;
+}
+
+.restaurant-main-content {
+    flex: 1;
+    max-width: 971px;
+}
+
+.restaurant-category-title {
+    font-family: 'Amiri', serif;
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #555250;
+    margin: 0 0 30px 0;
+    text-align: center;
+}
+
+.restaurant-description {
+    opacity: 0.8;
+}
+
+.restaurant-description p {
+    font-family: 'Amiri', serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3D332F;
+    margin: 0;
+    text-align: center;
+}
+
+/* Content Divider */
+.content-divider {
+    width: 1px;
+    height: 240px;
+    background: url('data:image/svg+xml,<svg width="1" height="240" viewBox="0 0 1 240" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.5" y1="0" x2="0.5" y2="240" stroke="%23A48456" stroke-opacity="0.3"/></svg>') center/contain no-repeat;
+    flex-shrink: 0;
+    margin: 10px 0;
+}
+
+/* Sidebar */
+.restaurant-sidebar {
+    /* width: 301px; */
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 70px;
+}
+
+.sidebar-item-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sidebar-item-title {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3D332F;
+    margin: 0;
+    flex: 1;
+}
+
+.sidebar-item-content p {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #3D332F;
+    margin: 0;
+}
+
+/* Menu Button */
+.sidebar-menu-button {
+    margin-top: 20px;
+}
+
+.discover-menu-btn {
+    
+    background: #8b5e1d;
+    color: white;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    padding: 10px 20px;
+    height: 40px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.discover-menu-btn:hover {
+    background: #a48456;
+    color: white;
+    text-decoration: none;
+}
+
+/* Gallery Modal */
+.restaurant-gallery-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.restaurant-gallery-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.restaurant-gallery-modal-content {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 90vw;
+    max-height: 90vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.restaurant-gallery-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.restaurant-gallery-modal-header h3 {
+    font-family: 'Amiri', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: #3D332F;
+    margin: 0;
+}
+
+.restaurant-gallery-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #3D332F;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+
+.restaurant-gallery-modal-close:hover {
+    opacity: 0.7;
+}
+
+.restaurant-gallery-modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.restaurant-gallery-modal-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.restaurant-gallery-modal-item img:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+
+    .single-restaurant-container,
+    .single-restaurant-gallery-wrapper {
+        max-width: 100%;
+        padding: 0 40px;
+    }
+
+    .single-restaurant-title {
+        font-size: 56px;
+        line-height: 56px;
+    }
+
+    .single-restaurant-content {
+        gap: 30px;
+    }
+
+    .restaurant-sidebar {
+        width: 280px;
+    }
+}
+
+@media (max-width: 968px) {
+    .single-restaurant-main {
+        padding-top: 120px;
+    }
+
+    .single-restaurant-container,
+    .single-restaurant-gallery-wrapper {
+        padding: 0 20px;
+    }
+
+    .single-restaurant-title {
+        font-size: 48px;
+        line-height: 48px;
+    }
+
+    .single-restaurant-subtitle {
+        font-size: 20px;
+    }
+
+    .single-restaurant-gallery {
+        height: 350px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .gallery-main-image,
+    .gallery-placeholder-main {
+        height: 60%;
+    }
+
+    .gallery-grid {
+        height: 40%;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: 1fr;
+    }
+
+    .gallery-no-images {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .single-restaurant-content {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .content-divider {
+        height: 1px;
+        width: 100%;
+        margin: 0;
+        background: url('data:image/svg+xml,<svg width="240" height="1" viewBox="0 0 240 1" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0.5" x2="240" y2="0.5" stroke="%23A48456" stroke-opacity="0.3"/></svg>') center/contain no-repeat;
+    }
+
+    .restaurant-sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .sidebar-item {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .sidebar-menu-button {
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .single-restaurant-container,
+    .single-restaurant-gallery-wrapper {
+        padding: 0 20px;
+    }
+
+    .single-restaurant-hero-content {
+        max-width: 100%;
+    }
+
+    .single-restaurant-title {
+        font-size: 42px;
+        line-height: 42px;
+    }
+
+    .single-restaurant-subtitle {
+        font-size: 18px;
+    }
+
+    .single-restaurant-gallery {
+        height: 300px;
+    }
+
+    .restaurant-category-title {
+        font-size: 32px;
+    }
+
+    .restaurant-description p {
+        font-size: 18px;
+    }
+
+    .restaurant-sidebar {
+        flex-direction: column;
+    }
+
+    .sidebar-item {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .single-restaurant-main {
+        padding-top: 100px;
+    }
+
+    .single-restaurant-title {
+        font-size: 36px;
+        line-height: 36px;
+    }
+
+    .single-restaurant-subtitle {
+        font-size: 16px;
+    }
+
+    .single-restaurant-gallery {
+        height: 250px;
+    }
+
+    .restaurant-category-title {
+        font-size: 28px;
+    }
+
+    .restaurant-description p {
+        font-size: 16px;
+    }
+
+    .restaurant-gallery-modal-content {
+        max-width: 95vw;
+        max-height: 95vh;
+        padding: 15px;
+    }
+
+    .restaurant-gallery-modal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .restaurant-gallery-modal {
+        display: none !important;
+    }
+
+    .single-restaurant-gallery {
+        height: 300px;
+    }
+
+    .see-all-photos-btn {
+        display: none;
+    }
+
+    .discover-menu-btn {
+        display: none;
+    }
+}
