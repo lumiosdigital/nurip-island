@@ -18,7 +18,7 @@ $restaurant_link = get_permalink();
         <!-- Card Image -->
         <div class="restaurant-archive-image">
             <?php if (has_post_thumbnail()) : ?>
-                <?php the_post_thumbnail('large', array(
+                <?php the_post_thumbnail('master', array(
                     'class' => 'restaurant-archive-img',
                     'alt' => get_the_title() . ' - ' . get_bloginfo('name')
                 )); ?>

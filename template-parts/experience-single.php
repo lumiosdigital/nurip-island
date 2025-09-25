@@ -217,7 +217,7 @@ if (empty($region_section_text)) {
             $additional_image_data = array();
             if ($additional_images && is_array($additional_images)) {
                 foreach ($additional_images as $image_id) {
-                    $image_data = wp_get_attachment_image_src($image_id, 'full');
+                    $image_data = wp_get_attachment_image_src($image_id, 'master');
                     if ($image_data) {
                         $additional_image_data[] = array(
                             'id' => $image_id,

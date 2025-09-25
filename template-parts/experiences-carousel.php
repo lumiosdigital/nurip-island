@@ -61,9 +61,9 @@ $featured_experiences = get_featured_experiences();
             <div class="carousel-line"></div>
             <div class="carousel-nav-buttons">
                 <button class="carousel-nav-btn prev" id="prevBtn" aria-label="Previous experiences">
-<svg class="nav-arrow" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="37" height="37" rx="18.5" stroke="
-#A48456"/><path d="M26.5 18.7917H11.9167M11.9167 18.7917L19.2083 11.5M11.9167 18.7917L19.2083 26.0833" stroke="
-#A48456" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg class="nav-arrow" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="37" height="37" rx="18.5" stroke="    
+                #A48456"/><path d="M26.5 18.7917H11.9167M11.9167 18.7917L19.2083 11.5M11.9167 18.7917L19.2083 26.0833" stroke="
+                #A48456" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
                 <button class="carousel-nav-btn next" id="nextBtn" aria-label="Next experiences">
                     <svg class="nav-arrow" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">

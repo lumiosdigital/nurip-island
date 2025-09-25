@@ -10,7 +10,7 @@ $event_offer_link = get_permalink();
 <a href="<?php echo esc_url($event_offer_link); ?>" class="event-offer-card">
     <div class="event-offer-image-container">
         <?php if (has_post_thumbnail()) : ?>
-            <?php the_post_thumbnail('full', array(
+            <?php the_post_thumbnail('master', array(
                 'class' => 'event-offer-image',
                 'alt' => get_the_title() . ' - ' . get_bloginfo('name')
             )); ?>

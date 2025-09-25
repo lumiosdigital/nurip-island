@@ -40,7 +40,7 @@ get_header(); ?>
                             <!-- Main large image -->
                             <div class="gallery-main-image">
                                 <?php 
-                                $main_image = wp_get_attachment_image_src($display_images[0], 'large');
+                                $main_image = wp_get_attachment_image_src($display_images[0], 'master');
                                 if ($main_image) : ?>
                                     <img src="<?php echo esc_url($main_image[0]); ?>" alt="<?php the_title(); ?> - Main Gallery Image">
                                 <?php endif; ?>
@@ -51,7 +51,7 @@ get_header(); ?>
                                 <?php for ($i = 1; $i < 5 && $i < count($display_images); $i++) : ?>
                                     <div class="gallery-grid-item <?php echo ($i === 4 && $has_more_images) ? 'has-overlay' : ''; ?>">
                                         <?php 
-                                        $grid_image = wp_get_attachment_image_src($display_images[$i], 'medium');
+                                        $grid_image = wp_get_attachment_image_src($display_images[$i], 'master');
                                         if ($grid_image) : ?>
                                             <img src="<?php echo esc_url($grid_image[0]); ?>" alt="<?php the_title(); ?> - Gallery Image <?php echo $i + 1; ?>">
                                         <?php endif; ?>

@@ -10,7 +10,7 @@ $experience_link = get_permalink();
     <a href="<?php echo esc_url($experience_link); ?>" class="experience-card-link">
     <div class="experience-image-container">
         <?php if (has_post_thumbnail()) : ?>
-            <?php the_post_thumbnail('full', array(
+            <?php the_post_thumbnail('master', array(
                 'class' => 'experience-image',
                 'alt' => get_the_title() . ' - ' . get_bloginfo('name')
             )); ?>

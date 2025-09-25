@@ -162,8 +162,8 @@ get_header(); ?>
                             <div class="gallery-carousel" id="galleryCarousel">
                                 <div class="gallery-carousel-track" id="galleryCarouselTrack">
                                     <?php foreach ($gallery_images as $image_id) : 
-                                        $image_url = wp_get_attachment_image_url($image_id, 'large');
-                                        $image_full_url = wp_get_attachment_image_url($image_id, 'full');
+                                        $image_url = wp_get_attachment_image_url($image_id, 'master');
+                                        $image_full_url = wp_get_attachment_image_url($image_id, 'master');
                                         $image_alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
                                         if ($image_url) : ?>
                                             <div class="gallery-item">

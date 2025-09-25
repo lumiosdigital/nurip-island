@@ -17,7 +17,7 @@ $event_offer_link = get_permalink();
         <!-- Card Image -->
         <div class="archive-event-offer-image">
             <?php if (has_post_thumbnail()) : ?>
-                <?php the_post_thumbnail('large', array('class' => 'archive-event-offer-img')); ?>
+                <?php the_post_thumbnail('master', array('class' => 'archive-event-offer-img')); ?>
             <?php else : ?>
                 <div class="archive-event-offer-placeholder">
                     <span>No Image Available</span>

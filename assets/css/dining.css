@@ -20,16 +20,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 100px;
 }
 
 .dining-hero-bg {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
+        top: 0;
+        /* left: 0; */
+        /* right: 0; */
+        bottom: 0;
+        z-index: 1;
 }
 
 .dining-hero-image {
@@ -39,7 +38,7 @@
     object-position: center;
 }
 
-/* .dining-hero-overlay {
+.dining-hero-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -47,7 +46,7 @@
     bottom: 0;
     background: rgba(41, 26, 26, 0.24);
     z-index: 2;
-} */
+}
 
 .dining-hero-content {
     position: relative;
@@ -56,7 +55,7 @@
     color: white;
     max-width: 900px;
     margin: 0 auto;
-    padding: 0 20px;
+    /* padding: 0 20px; */
 }
 
 .dining-hero-subtitle {
@@ -84,7 +83,7 @@
     z-index: 2;
     text-align: center;
     margin-bottom: 180px;
-    padding: 0 20px;
+    /* padding: 0 20px; */
 }
 
 .dining-about-content {
@@ -176,7 +175,7 @@
     position: relative;
     z-index: 2;
     margin-bottom: 150px;
-    padding: 0 20px;
+    /* padding: 0 20px; */
 }
 
 .restaurants-grid {
@@ -322,7 +321,7 @@
     position: relative;
     z-index: 2;
     background: #F3EEEA;
-    padding: 150px 20px;
+    padding: 150px 0px;
     margin-top: 200px;
 }
 

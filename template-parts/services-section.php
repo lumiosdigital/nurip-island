@@ -44,7 +44,7 @@ if (!$show_section) {
         <?php 
         // Get image URL
         $image_url = $service['image_id'] ? 
-            wp_get_attachment_image_url($service['image_id'], 'full') : 
+            wp_get_attachment_image_url($service['image_id'], 'master') : 
             get_template_directory_uri() . '/assets/images/' . $service['fallback_image'];
         
         // Check if service has a link

@@ -60,7 +60,7 @@ if (isset($_GET['parent']) && !empty($_GET['parent'])) {
                             <!-- Card Image -->
                             <div class="experience-archive-image">
                                 <?php if (has_post_thumbnail()) : ?>
-                                    <?php the_post_thumbnail('large', array('class' => 'experience-archive-img')); ?>
+                                    <?php the_post_thumbnail('master', array('class' => 'experience-archive-img')); ?>
                                 <?php else : ?>
                                     <div class="experience-archive-placeholder">
                                         <span>No Image Available</span>

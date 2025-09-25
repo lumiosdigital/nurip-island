@@ -54,7 +54,7 @@ get_header(); ?>
                 <!-- Large image (left side) -->
                 <div class="sustainability-gallery-large">
                     <?php if ($gallery_image_1): ?>
-                        <img src="<?php echo esc_url(wp_get_attachment_image_url($gallery_image_1, 'full')); ?>" 
+                        <img src="<?php echo esc_url(wp_get_attachment_image_url($gallery_image_1, 'master')); ?>" 
                              alt="<?php echo esc_attr(get_post_meta($gallery_image_1, '_wp_attachment_image_alt', true)); ?>" 
                              class="sustainability-gallery-img">
                     <?php else: ?>
@@ -68,7 +68,7 @@ get_header(); ?>
                 <div class="sustainability-gallery-small-container">
                     <div class="sustainability-gallery-small-top">
                         <?php if ($gallery_image_2): ?>
-                            <img src="<?php echo esc_url(wp_get_attachment_image_url($gallery_image_2, 'large')); ?>" 
+                            <img src="<?php echo esc_url(wp_get_attachment_image_url($gallery_image_2, 'master')); ?>" 
                                  alt="<?php echo esc_attr(get_post_meta($gallery_image_2, '_wp_attachment_image_alt', true)); ?>" 
                                  class="sustainability-gallery-img">
                         <?php else: ?>
@@ -81,7 +81,7 @@ get_header(); ?>
                     <div class="sustainability-gallery-small-bottom">
                         <div class="sustainability-gallery-small-bottom-left">
                             <?php if ($gallery_image_3): ?>
-                                <img src="<?php echo esc_url(wp_get_attachment_image_url($gallery_image_3, 'medium')); ?>" 
+                                <img src="<?php echo esc_url(wp_get_attachment_image_url($gallery_image_3, 'master')); ?>" 
                                      alt="<?php echo esc_attr(get_post_meta($gallery_image_3, '_wp_attachment_image_alt', true)); ?>" 
                                      class="sustainability-gallery-img">
                             <?php else: ?>
@@ -93,7 +93,7 @@ get_header(); ?>
                         
                         <div class="sustainability-gallery-small-bottom-right">
                             <?php if ($gallery_image_4): ?>
-                                <img src="<?php echo esc_url(wp_get_attachment_image_url($gallery_image_4, 'medium')); ?>" 
+                                <img src="<?php echo esc_url(wp_get_attachment_image_url($gallery_image_4, 'master')); ?>" 
                                      alt="<?php echo esc_attr(get_post_meta($gallery_image_4, '_wp_attachment_image_alt', true)); ?>" 
                                      class="sustainability-gallery-img">
                             <?php else: ?>
