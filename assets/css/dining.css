@@ -332,8 +332,9 @@
     position: relative;
     z-index: 2;
     background: #F3EEEA;
-    padding: 150px 0px;
+    /* padding: 0px 0px 150px; */
     margin-top: 200px;
+    margin-bottom: 150px;
 }
 
 
@@ -348,7 +349,7 @@
     font-weight: 400;
     color: #3D332F;
     text-transform: uppercase;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .signature-experiences-title {
