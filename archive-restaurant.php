@@ -168,74 +168,75 @@
             <?php endif; ?>
         </div>
 
-<!-- Dynamic Signature Experiences Section -->
-        <div class="signature-experiences-section">
-            <div class="signature-experiences-header">
-                <div class="signature-experiences-category">
-                    <?php echo esc_html(get_theme_mod('signature_experiences_category', 'For Connoisseurs')); ?>
-                </div>
-                <h2 class="signature-experiences-title">
-                    <?php echo esc_html(get_theme_mod('signature_experiences_title', 'Signature Experience')); ?>
-                </h2>
-            </div>
-            
-            <!-- Dynamic Experience Cards -->
-            <div class="signature-experiences-grid">
-                <?php
-                // Get experiences marked for dining page display
-                $dining_experiences = get_dining_experiences(3); // Limit to 3 cards as shown in design
-                
-                if ($dining_experiences->have_posts()) :
-                    while ($dining_experiences->have_posts()) : $dining_experiences->the_post();
-                        $short_description = get_post_meta(get_the_ID(), '_experience_short_description', true);
-                        $experience_type = get_post_meta(get_the_ID(), '_experience_type', true);
-                        
-                        // Determine the link based on experience type
-                        if ($experience_type === 'category') {
-                            $experience_link = get_post_type_archive_link('experience') . '?parent=' . get_the_ID();
-                        } else {
-                            $experience_link = get_permalink();
-                        }
-                        ?>
-                        <div class="signature-experience-card">
-                            <a href="<?php echo esc_url($experience_link); ?>" class="signature-experience-link">
-                                <div class="signature-experience-image">
-                                    <?php if (has_post_thumbnail()) : ?>
-                                        <?php the_post_thumbnail('full', array(
-                                            'alt' => get_the_title()
-                                        )); ?>
-                                    <?php else : ?>
-                                        <!-- Fallback image -->
-                                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/signature-placeholder.jpg" 
-                                             alt="<?php echo esc_attr(get_the_title()); ?>">
-                                    <?php endif; ?>
-                                </div>
-                                <div class="signature-experience-content">
-                                    <h3 class="signature-experience-title"><?php the_title(); ?></h3>
-                                    <p class="signature-experience-description">
-                                        <?php 
-                                        if ($short_description) {
-                                            echo esc_html($short_description);
-                                        } else {
-                                            // Fallback to excerpt if no short description
-                                            echo esc_html(wp_trim_words(get_the_excerpt(), 20));
-                                        }
-                                        ?>
-                                    </p>
-                                </div>
-                            </a>
-                        </div>
-                        <?php
-                    endwhile;
-                    wp_reset_postdata();
-                else : ?>
-                    <!-- Fallback: Show placeholder if no experiences are marked for dining display -->
-                    <div class="no-signature-experiences">
-                        <p>No signature experiences configured. Please add experiences and mark them for dining page display in the admin.</p>
+        <?php if (get_theme_mod('show_signature_experiences', true)) : ?>
+            <div class="signature-experiences-section">
+                <div class="signature-experiences-header">
+                    <div class="signature-experiences-category">
+                        <?php echo esc_html(get_theme_mod('signature_experiences_category', 'For Connoisseurs')); ?>
                     </div>
-                <?php endif; ?>
+                    <h2 class="signature-experiences-title">
+                        <?php echo esc_html(get_theme_mod('signature_experiences_title', 'Signature Experience')); ?>
+                    </h2>
+                </div>
+                
+                <!-- Dynamic Experience Cards -->
+                <div class="signature-experiences-grid">
+                    <?php
+                    // Get experiences marked for dining page display
+                    $dining_experiences = get_dining_experiences(3); // Limit to 3 cards as shown in design
+                    
+                    if ($dining_experiences->have_posts()) :
+                        while ($dining_experiences->have_posts()) : $dining_experiences->the_post();
+                            $short_description = get_post_meta(get_the_ID(), '_experience_short_description', true);
+                            $experience_type = get_post_meta(get_the_ID(), '_experience_type', true);
+                            
+                            // Determine the link based on experience type
+                            if ($experience_type === 'category') {
+                                $experience_link = get_post_type_archive_link('experience') . '?parent=' . get_the_ID();
+                            } else {
+                                $experience_link = get_permalink();
+                            }
+                            ?>
+                            <div class="signature-experience-card">
+                                <a href="<?php echo esc_url($experience_link); ?>" class="signature-experience-link">
+                                    <div class="signature-experience-image">
+                                        <?php if (has_post_thumbnail()) : ?>
+                                            <?php the_post_thumbnail('full', array(
+                                                'alt' => get_the_title()
+                                            )); ?>
+                                        <?php else : ?>
+                                            <!-- Fallback image -->
+                                            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/signature-placeholder.jpg" 
+                                                alt="<?php echo esc_attr(get_the_title()); ?>">
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="signature-experience-content">
+                                        <h3 class="signature-experience-title"><?php the_title(); ?></h3>
+                                        <p class="signature-experience-description">
+                                            <?php 
+                                            if ($short_description) {
+                                                echo esc_html($short_description);
+                                            } else {
+                                                // Fallback to excerpt if no short description
+                                                echo esc_html(wp_trim_words(get_the_excerpt(), 20));
+                                            }
+                                            ?>
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <?php
+                        endwhile;
+                        wp_reset_postdata();
+                    else : ?>
+                        <!-- Fallback: Show placeholder if no experiences are marked for dining display -->
+                        <div class="no-signature-experiences">
+                            <p>No signature experiences configured. Please add experiences and mark them for dining page display in the admin.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
 
         
     </div>

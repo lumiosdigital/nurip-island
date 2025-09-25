@@ -5951,6 +5951,43 @@ function nirup_dining_archive_customizer($wp_customize) {
         'section' => 'nirup_dining_archive',
         'type' => 'text',
     ));
+
+      // Toggle to show/hide signature experiences section
+    $wp_customize->add_setting('show_signature_experiences', array(
+        'default' => true, // Show by default
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('show_signature_experiences', array(
+        'label' => __('Show Signature Experiences Section', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'checkbox',
+        'description' => __('Check to display the signature experiences section on the dining page.', 'nirup-island'),
+    ));
+
+    // Existing signature experiences category setting
+    $wp_customize->add_setting('signature_experiences_category', array(
+        'default' => __('For Connoisseurs', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('signature_experiences_category', array(
+        'label' => __('Signature Experiences Category', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    // Existing signature experiences title setting  
+    $wp_customize->add_setting('signature_experiences_title', array(
+        'default' => __('Signature Experience', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('signature_experiences_title', array(
+        'label' => __('Signature Experiences Title', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
 }
 add_action('customize_register', 'nirup_dining_archive_customizer');
 
