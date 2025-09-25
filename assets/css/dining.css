@@ -198,7 +198,7 @@
 }
 
 .restaurant-archive-card:hover {
-    transform: translateY(-8px);
+    transform: translateY(-5px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
@@ -287,7 +287,7 @@
     color: #555250;
     line-height: 1.4;
     margin: 0;
-    font-weight: 300;
+    font-weight: 400;
     opacity: 0.8;
     text-transform: uppercase;
 }
@@ -369,6 +369,7 @@
     gap: 20px;
     max-width: 1400px;
     margin: 0 auto;
+    padding: 10px 0 0;
 }
 
 .signature-experience-card {
@@ -377,12 +378,20 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.signature-experience-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .signature-experience-image {
     width: 100%;
     height: 467px;
     overflow: hidden;
+    position: relative;
 }
 
 .signature-experience-image img {
@@ -390,10 +399,11 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
+    transition: transform 0.3s ease;
 }
 
 .signature-experience-content {
-    padding: 30px 20px;
+    padding: 20px 20px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -407,7 +417,38 @@
     font-weight: 400;
     color: #3D332F;
     line-height: 1.4;
-    margin: 0 0 15px 0;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+
+/* Signature Experience Card Link Styling */
+.signature-experience-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    /* padding-top: 10px; */
+}
+
+.signature-experience-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+
+
+
+.signature-experience-card:hover .signature-experience-image img {
+    transform: scale(1.05);
+}
+
+
+.signature-experience-card:hover .signature-experience-title {
+    color: #8B5E1D;
 }
 
 .signature-experience-description {
@@ -417,6 +458,60 @@
     line-height: 1.3;
     color: #3D332F;
     margin: 0;
+}
+
+/* No Signature Experiences State */
+.no-signature-experiences {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background: #FCFAF6;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+}
+
+.no-signature-experiences p {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    font-style: italic;
+}
+
+/* Responsive Updates */
+@media (max-width: 1024px) {
+    .signature-experiences-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .signature-experiences-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .signature-experience-card {
+        height: 500px;
+    }
+
+    .signature-experience-image {
+        height: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .signature-experience-card {
+        height: 450px;
+    }
+
+    .signature-experience-image {
+        height: 300px;
+    }
+
+    .signature-experience-title {
+        font-size: 24px;
+    }
 }
 
 /* No Restaurants State */

@@ -383,6 +383,15 @@ function experience_details_callback($post) {
     
     echo '<table class="form-table">';
     echo '<tr>';
+    echo '<th>Display Options</th>';
+    echo '<td>';
+    echo '<label><input type="checkbox" name="featured_in_carousel" value="1"' . checked($featured_in_carousel, 1, false) . ' /> Display in Homepage Carousel</label><br>';
+    echo '<label><input type="checkbox" name="featured_in_archive" value="1"' . checked($featured_in_archive, 1, false) . ' /> Display in Experiences Archive Page</label><br>';
+    echo '<label><input type="checkbox" name="display_in_dining" value="1"' . checked(get_post_meta($post->ID, '_display_in_dining', true), 1, false) . ' /> Display in Dining Page</label>';
+    echo '<p class="description">Choose where this experience should appear.</p>';
+    echo '</td>';
+    echo '</tr>';
+    echo '<tr>';
     echo '<th><label for="experience_short_description">Short Description</label></th>';
     echo '<td><input type="text" id="experience_short_description" name="experience_short_description" value="' . esc_attr($short_description) . '" class="widefat" placeholder="e.g., Banana boat, flying donut, kayak, paddle boat" /></td>';
     echo '</tr>';
@@ -576,14 +585,6 @@ function experience_details_callback($post) {
     echo '</td>';
     echo '</tr>';
     
-    echo '<tr>';
-    echo '<th>Display Options</th>';
-    echo '<td>';
-    echo '<label><input type="checkbox" name="featured_in_carousel" value="1"' . checked($featured_in_carousel, 1, false) . ' /> Display in Homepage Carousel</label><br>';
-    echo '<label><input type="checkbox" name="featured_in_archive" value="1"' . checked($featured_in_archive, 1, false) . ' /> Display in Experiences Archive Page</label>';
-    echo '<p class="description">Choose where this experience should appear.</p>';
-    echo '</td>';
-    echo '</tr>';
     echo '</table>';
     
     // Add JavaScript for gallery management and field toggling
@@ -1053,8 +1054,51 @@ function save_experience_details($post_id) {
     
     $featured_archive = isset($_POST['featured_in_archive']) ? 1 : 0;
     update_post_meta($post_id, '_featured_in_archive', $featured_archive);
+
+    $display_in_dining = isset($_POST['display_in_dining']) ? 1 : 0;
+    update_post_meta($post_id, '_display_in_dining', $display_in_dining);
 }
 add_action('save_post', 'save_experience_details');
+
+function get_dining_experiences($limit = 3) {
+    $args = array(
+        'post_type' => 'experience',
+        'posts_per_page' => $limit,
+        'post_status' => 'publish',
+        'meta_query' => array(
+            array(
+                'key' => '_display_in_dining',
+                'value' => '1',
+                'compare' => '='
+            )
+        ),
+        'orderby' => 'menu_order',
+        'order' => 'ASC'
+    );
+    
+    return new WP_Query($args);
+}
+
+function add_dining_column_to_experiences($columns) {
+    // Insert the new column after the 'featured' column
+    $new_columns = array();
+    foreach ($columns as $key => $value) {
+        $new_columns[$key] = $value;
+        if ($key === 'featured') {
+            $new_columns['dining_page'] = __('Dining Page', 'nirup-island');
+        }
+    }
+    return $new_columns;
+}
+add_filter('manage_experience_posts_columns', 'add_dining_column_to_experiences');
+
+function display_dining_column_content($column, $post_id) {
+    if ($column === 'dining_page') {
+        $display_in_dining = get_post_meta($post_id, '_display_in_dining', true);
+        echo $display_in_dining ? '<span style="color: green; font-weight: bold;">✓ Yes</span>' : '<span style="color: #888;">No</span>';
+    }
+}
+add_action('manage_experience_posts_custom_column', 'display_dining_column_content', 10, 2);
 
 function nirup_enqueue_detailed_category_css() {
     if (is_singular('experience')) {
