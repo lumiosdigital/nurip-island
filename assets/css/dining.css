@@ -82,13 +82,13 @@
     position: relative;
     z-index: 2;
     text-align: center;
-    margin-bottom: 180px;
+    margin-bottom: 130px;
     /* padding: 0 20px; */
 }
 
 .dining-about-content {
-    max-width: 574px;
-    margin: 0 auto 80px auto;
+    max-width: 600px;
+    margin: 100px auto 80px auto;
 }
 
 .dining-about-category {
@@ -194,7 +194,7 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-radius: 0;
     overflow: hidden;
-    height: 850px;
+    height: 880px;
 }
 
 .restaurant-archive-card:hover {
@@ -278,13 +278,24 @@
 
 /* Restaurant Info */
 .restaurant-archive-info {
-    margin-bottom: 8px;
+    margin-bottom: 20px;
 }
 
-.restaurant-archive-category,
+.restaurant-archive-category {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 18px;
+    color: #555250;
+    line-height: 1.4;
+    margin: 0;
+    font-weight: 300;
+    opacity: 0.8;
+    text-transform: uppercase;
+}
+
+
 .restaurant-archive-hours {
     font-family: 'Albert Sans', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     color: #555250;
     line-height: 1.4;
     margin: 0;
