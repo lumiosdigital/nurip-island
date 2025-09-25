@@ -198,8 +198,8 @@ get_header(); ?>
                             <?php if (!empty($gallery_images)) : ?>
                                 <?php foreach ($gallery_images as $image_id) : ?>
                                     <?php 
-                                    $full_image = wp_get_attachment_image_src($image_id, 'large');
-                                    $thumb_image = wp_get_attachment_image_src($image_id, 'medium');
+                                    $full_image = wp_get_attachment_image_src($image_id, 'master');
+                                    $thumb_image = wp_get_attachment_image_src($image_id, 'master');
                                     if ($full_image && $thumb_image) : ?>
                                         <div class="restaurant-gallery-modal-item">
                                             <img src="<?php echo esc_url($thumb_image[0]); ?>" alt="<?php the_title(); ?> Gallery" 
