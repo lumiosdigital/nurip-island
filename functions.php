@@ -78,7 +78,8 @@ function nirup_enqueue_assets() {
     wp_enqueue_style('nirup-single-event-offer', get_template_directory_uri() . '/assets/css/single-event-offer.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-footer', get_template_directory_uri() . '/assets/css/footer.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-dining', get_template_directory_uri() . '/assets/css/dining.css', array('nirup-main'), '1.0.2');
-        wp_enqueue_style('nirup-single-restaurant', get_template_directory_uri() . '/assets/css/single-restaurant.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-single-restaurant', get_template_directory_uri() . '/assets/css/single-restaurant.css', array('nirup-main'), '1.0.2');
+    wp_enqueue_style('nirup-legal-pages', get_template_directory_uri() . '/assets/css/legal-pages.css', array('nirup-main'), '1.0.2');
 
 
 
@@ -2438,6 +2439,23 @@ function nirup_get_breadcrumbs() {
         
         $breadcrumbs[] = array(
             'title' => get_the_title(),
+            'url' => ''
+        );
+    }
+
+    if (is_page_template('page-terms-conditions.php') || is_page('terms-conditions')) {
+    $breadcrumbs[] = array(
+        'title' => 'Terms & Conditions',
+        'url' => ''
+    );
+    } elseif (is_page_template('page-privacy-policy.php') || is_page('privacy-policy')) {
+        $breadcrumbs[] = array(
+            'title' => 'Privacy Policy', 
+            'url' => ''
+        );
+    } elseif (is_page_template('page-cookies-policy.php') || is_page('cookies-policy')) {
+        $breadcrumbs[] = array(
+            'title' => 'Cookies Policy',
             'url' => ''
         );
     }
