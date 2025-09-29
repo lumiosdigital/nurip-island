@@ -284,7 +284,7 @@
 </footer>
 
 </div>
-    
+<?php get_template_part('template-parts/booking-modal'); ?>
 <?php wp_footer(); ?>
 </body>
 </html>

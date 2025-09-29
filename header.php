@@ -97,7 +97,7 @@
                         $booking_link = get_theme_mod('nirup_booking_button_link', '');
                         if ($booking_text) :
                         ?>
-                        <a href="<?php echo esc_url($booking_link ? $booking_link : '#'); ?>" class="booking-button">
+                        <a href="#" class="booking-button">
                             <?php echo esc_html($booking_text); ?>
                         </a>
                         <?php endif; ?>
@@ -138,7 +138,7 @@
                     
                     <?php if ($booking_text) : ?>
                     <div class="mobile-booking">
-                        <a href="<?php echo esc_url($booking_link ? $booking_link : '#'); ?>" class="mobile-booking-button">
+                        <a href="#" class="mobile-booking-button">
                             <?php echo esc_html($booking_text); ?>
                         </a>
                     </div>

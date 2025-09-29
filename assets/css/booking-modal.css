@@ -1,0 +1,335 @@
+/**
+ * Booking Modal Styles
+ * File: assets/css/booking-modal.css
+ */
+
+/* Modal Wrapper */
+.booking-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.booking-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* Modal Backdrop */
+.booking-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.53);
+    backdrop-filter: blur(4px);
+    z-index: 1;
+}
+
+/* Modal Container */
+.booking-modal-container {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    max-height: 90vh;
+    background-color: #FCFAF6;
+    z-index: 2;
+    /* overflow: hidden; */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.4s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Close Button */
+.booking-modal-close {
+    position: absolute;
+    top: 0;
+    right: -40px;
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    /* overflow: visible; */
+}
+
+.booking-modal-close:hover {
+    color: #A48456;
+    /* transform: rotate(90deg); */
+}
+
+.booking-modal-close svg {
+    width: 30px;
+    height: 30px;
+}
+
+/* Modal Header */
+.booking-modal-header {
+    background-color: #F2EDEA;
+    padding: 60px 40px 20px 40px;
+    text-align: center;
+    position: relative;
+}
+
+.booking-modal-title {
+    font-family: 'Amiri', serif;
+    font-size: 50px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3D332F;
+    margin: 0;
+    line-height: 1;
+}
+
+/* Modal Content */
+.booking-modal-content {
+    display: flex;
+    position: relative;
+    overflow-y: auto;
+    max-height: calc(90vh - 100px);
+}
+
+/* Vertical Divider */
+.booking-modal-divider {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background-color: rgba(61, 51, 47, 0.2);
+    transform: translateX(-50%);
+    z-index: 5;
+}
+
+/* Booking Options */
+.booking-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Image Wrapper */
+.booking-option-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    overflow: hidden;
+}
+
+.booking-option-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.booking-option-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 210px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.80), rgba(0, 0, 0, 0));
+    pointer-events: none;
+}
+
+/* Option Info */
+.booking-option-info {
+    padding: 20px 25px 40px 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    height: 186px;
+}
+
+.booking-option-labels {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 210px;
+    /* bottom: 195px; */
+    left: 40px;
+    right: 40px;
+    text-align: center;
+
+}
+
+.booking-option-label {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    line-height: 1.4;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.booking-option-name {
+    font-family: 'Amiri', serif;
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -1px;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* Option Details */
+.booking-option-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    /* margin-top: auto; */
+    /* margin-bottom: auto; */
+}
+
+.booking-option-description {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #555250;
+    margin: 0;
+    max-width: 450px;
+    /* height: 150px; */
+}
+
+/* Booking Button */
+.booking-option-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: #8B5E1D;
+    color: #FFFFFF;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 10px 15px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.booking-option-button:hover {
+    background-color: #a48456;
+    transform: translateY(-2px);
+    /* box-shadow: 0 4px 12px rgba(164, 132, 86, 0.3); */
+}
+
+.booking-option-button svg {
+    width: 12px;
+    height: 12px;
+    transition: transform 0.3s ease;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .booking-modal {
+        padding: 10px;
+    }
+
+    .booking-modal-container {
+        max-height: 95vh;
+    }
+
+    .booking-modal-header {
+        padding: 40px 20px;
+    }
+
+    .booking-modal-title {
+        font-size: 32px;
+    }
+
+    .booking-modal-content {
+        flex-direction: column;
+        max-height: calc(95vh - 80px);
+    }
+
+    .booking-modal-divider {
+        display: none;
+    }
+
+    .booking-option-image-wrapper {
+        height: 300px;
+    }
+
+    .booking-option-info {
+        padding: 30px 20px;
+    }
+
+    .booking-option-labels {
+        bottom: 100px;
+        left: 20px;
+        right: 20px;
+    }
+
+    .booking-option-label {
+        font-size: 16px;
+    }
+
+    .booking-option-name {
+        font-size: 24px;
+    }
+
+    .booking-option-description {
+        font-size: 14px;
+    }
+
+    .booking-modal-close {
+        top: 10px;
+        right: 10px;
+    }
+}
+
+/* Prevent body scroll when modal is open */
+body.booking-modal-open {
+    overflow: hidden;
+}
+
+/* Print styles - hide modal when printing */
+@media print {
+    .booking-modal {
+        display: none !important;
+    }
+}

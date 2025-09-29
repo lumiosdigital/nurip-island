@@ -6054,3 +6054,212 @@ function nirup_restaurant_admin_column_content($column, $post_id) {
     }
 }
 add_action('manage_restaurant_posts_custom_column', 'nirup_restaurant_admin_column_content', 10, 2);
+
+function nirup_booking_modal_customizer($wp_customize) {
+    // Booking Modal Section
+    $wp_customize->add_section('nirup_booking_modal', array(
+        'title' => __('Booking Modal', 'nirup-island'),
+        'priority' => 22,
+        'description' => __('Customize the booking modal content and images', 'nirup-island'),
+    ));
+
+    // Modal Title
+    $wp_customize->add_setting('nirup_booking_modal_title', array(
+        'default' => __('BOOK YOUR STAY', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_booking_modal_title', array(
+        'label' => __('Modal Title', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'text',
+    ));
+
+    // --- RESORT HOTEL SECTION ---
+    
+    // Resort Label
+    $wp_customize->add_setting('nirup_booking_resort_label', array(
+        'default' => __('RESORT HOTEL', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_booking_resort_label', array(
+        'label' => __('Resort Label', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'text',
+        'description' => __('Small label above resort name', 'nirup-island'),
+    ));
+
+    // Resort Name
+    $wp_customize->add_setting('nirup_booking_resort_name', array(
+        'default' => __('The Westin Nirup Island Resort & Spa', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_booking_resort_name', array(
+        'label' => __('Resort Name', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'text',
+    ));
+
+    // Resort Description
+    $wp_customize->add_setting('nirup_booking_resort_description', array(
+        'default' => __('Unwind in elegant guest rooms and overwater villas with panoramic sea views. Enjoy Heavenly Spa by Westin™, the WestinWORKOUT® Fitness Studio, and family-friendly Kids Club.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_booking_resort_description', array(
+        'label' => __('Resort Description', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'textarea',
+        'input_attrs' => array(
+            'rows' => 4,
+        ),
+    ));
+
+    // Resort Button Text
+    $wp_customize->add_setting('nirup_booking_resort_button_text', array(
+        'default' => __('Book on Westin Website', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_booking_resort_button_text', array(
+        'label' => __('Resort Button Text', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'text',
+    ));
+
+    // Resort Button Link
+    $wp_customize->add_setting('nirup_booking_resort_button_link', array(
+        'default' => 'https://www.marriott.com/',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_booking_resort_button_link', array(
+        'label' => __('Resort Button Link', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'url',
+    ));
+
+    // Resort Image
+    $wp_customize->add_setting('nirup_booking_resort_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_booking_resort_image', array(
+        'label' => __('Resort Image', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'mime_type' => 'image',
+        'description' => __('Recommended size: 896x504px', 'nirup-island'),
+    )));
+
+    // --- PRIVATE VILLAS SECTION ---
+    
+    // Villas Label
+    $wp_customize->add_setting('nirup_booking_villas_label', array(
+        'default' => __('PRIVATE VILLAS', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_booking_villas_label', array(
+        'label' => __('Villas Label', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'text',
+        'description' => __('Small label above villas name', 'nirup-island'),
+    ));
+
+    // Villas Name
+    $wp_customize->add_setting('nirup_booking_villas_name', array(
+        'default' => __('Riahi Residences', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_booking_villas_name', array(
+        'label' => __('Villas Name', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'text',
+    ));
+
+    // Villas Description
+    $wp_customize->add_setting('nirup_booking_villas_description', array(
+        'default' => __('Spacious 1–4 bedroom villas with private pools and full kitchens. Designed for privacy and comfort, with access to Westin resort amenities and in-villa dining options.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_booking_villas_description', array(
+        'label' => __('Villas Description', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'textarea',
+        'input_attrs' => array(
+            'rows' => 4,
+        ),
+    ));
+
+    // Villas Button Text
+    $wp_customize->add_setting('nirup_booking_villas_button_text', array(
+        'default' => __('Book Now', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+
+    $wp_customize->add_control('nirup_booking_villas_button_text', array(
+        'label' => __('Villas Button Text', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'text',
+    ));
+
+    // Villas Button Link
+    $wp_customize->add_setting('nirup_booking_villas_button_link', array(
+        'default' => '#',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_booking_villas_button_link', array(
+        'label' => __('Villas Button Link', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'type' => 'url',
+    ));
+
+    // Villas Image
+    $wp_customize->add_setting('nirup_booking_villas_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_booking_villas_image', array(
+        'label' => __('Villas Image', 'nirup-island'),
+        'section' => 'nirup_booking_modal',
+        'mime_type' => 'image',
+        'description' => __('Recommended size: 896x489px', 'nirup-island'),
+    )));
+}
+add_action('customize_register', 'nirup_booking_modal_customizer');
+
+function nirup_enqueue_booking_modal_assets() {
+    // Enqueue booking modal CSS
+    wp_enqueue_style(
+        'nirup-booking-modal',
+        get_template_directory_uri() . '/assets/css/booking-modal.css',
+        array(),
+        '1.0.0'
+    );
+    
+    // Enqueue booking modal JavaScript
+    wp_enqueue_script(
+        'nirup-booking-modal',
+        get_template_directory_uri() . '/assets/js/booking-modal.js',
+        array('jquery'),
+        '1.0.0',
+        true
+    );
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_booking_modal_assets');
