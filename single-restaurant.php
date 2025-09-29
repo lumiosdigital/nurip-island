@@ -27,7 +27,6 @@ get_header(); ?>
                         </div>
                     </div>
                     
-                    <!-- Gallery Section -->
                     <div class="single-restaurant-gallery">
                         <?php 
                         $gallery_images = get_post_meta(get_the_ID(), '_restaurant_gallery', true);
@@ -37,23 +36,31 @@ get_header(); ?>
                         ?>
                         
                         <?php if (!empty($display_images)) : ?>
-                            <!-- Main large image -->
+                            <!-- Main large image - ADD data-full attribute -->
                             <div class="gallery-main-image">
                                 <?php 
                                 $main_image = wp_get_attachment_image_src($display_images[0], 'master');
-                                if ($main_image) : ?>
-                                    <img src="<?php echo esc_url($main_image[0]); ?>" alt="<?php the_title(); ?> - Main Gallery Image">
+                                if ($main_image) : 
+                                    $main_image_full = wp_get_attachment_image_src($display_images[0], 'master');
+                                ?>
+                                    <img src="<?php echo esc_url($main_image[0]); ?>" 
+                                        data-full="<?php echo esc_url($main_image_full ? $main_image_full[0] : $main_image[0]); ?>"
+                                        alt="<?php the_title(); ?> - Main Gallery Image">
                                 <?php endif; ?>
                             </div>
                             
-                            <!-- Grid of 4 smaller images -->
+                            <!-- Grid of 4 smaller images - ADD data-full attribute -->
                             <div class="gallery-grid">
                                 <?php for ($i = 1; $i < 5 && $i < count($display_images); $i++) : ?>
                                     <div class="gallery-grid-item <?php echo ($i === 4 && $has_more_images) ? 'has-overlay' : ''; ?>">
                                         <?php 
                                         $grid_image = wp_get_attachment_image_src($display_images[$i], 'master');
-                                        if ($grid_image) : ?>
-                                            <img src="<?php echo esc_url($grid_image[0]); ?>" alt="<?php the_title(); ?> - Gallery Image <?php echo $i + 1; ?>">
+                                        if ($grid_image) : 
+                                            $grid_image_full = wp_get_attachment_image_src($display_images[$i], 'master');
+                                        ?>
+                                            <img src="<?php echo esc_url($grid_image[0]); ?>" 
+                                                data-full="<?php echo esc_url($grid_image_full ? $grid_image_full[0] : $grid_image[0]); ?>"
+                                                alt="<?php the_title(); ?> - Gallery Image <?php echo $i + 1; ?>">
                                         <?php endif; ?>
                                         
                                         <?php if ($i === 4 && $has_more_images) : ?>
@@ -69,9 +76,9 @@ get_header(); ?>
                                             <div class="gallery-overlay">
                                                 <button class="see-all-photos-btn" data-restaurant-id="<?php echo get_the_ID(); ?>">
                                                     <span>See All Photos</span>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                                            <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="#8B5E1D" stroke-linecap="round" stroke-linejoin="round"/>
-                                                        </svg>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                                        <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="#8B5E1D" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
                                                 </button>
                                             </div>
                                         <?php endif; ?>
@@ -187,31 +194,16 @@ get_header(); ?>
                     
                 </div>
                 
-                <div id="restaurant-gallery-modal" class="restaurant-gallery-modal" style="display: none;">
-                    <div class="restaurant-gallery-modal-overlay"></div>
-                    <div class="restaurant-gallery-modal-content">
-                        <div class="restaurant-gallery-modal-header">
-                            <h3><?php the_title(); ?> - Gallery</h3>
-                            <button class="restaurant-gallery-modal-close">&times;</button>
-                        </div>
-                        <div class="restaurant-gallery-modal-grid">
-                            <?php if (!empty($gallery_images)) : ?>
-                                <?php foreach ($gallery_images as $image_id) : ?>
-                                    <?php 
-                                    $full_image = wp_get_attachment_image_src($image_id, 'master');
-                                    $thumb_image = wp_get_attachment_image_src($image_id, 'master');
-                                    if ($full_image && $thumb_image) : ?>
-                                        <div class="restaurant-gallery-modal-item">
-                                            <img src="<?php echo esc_url($thumb_image[0]); ?>" alt="<?php the_title(); ?> Gallery" 
-                                                 data-full="<?php echo esc_url($full_image[0]); ?>"
-                                                 onclick="openImageViewer('<?php echo esc_url($full_image[0]); ?>')">
-                                        </div>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </div>
-                    </div>
+            <!-- Updated Fullscreen Gallery Modal (like Event Offer) -->
+            <div id="restaurantGalleryModal" class="restaurant-gallery-fullscreen-modal" onclick="closeRestaurantGalleryModal()">
+                <span class="restaurant-gallery-modal-close" onclick="closeRestaurantGalleryModal()">&times;</span>
+                <img class="restaurant-gallery-modal-content" id="restaurantGalleryModalImage" onclick="event.stopPropagation()">
+                <div class="restaurant-gallery-modal-nav">
+                    <button class="restaurant-gallery-modal-prev" onclick="prevRestaurantModalImage(event)">&lsaquo;</button>
+                    <button class="restaurant-gallery-modal-next" onclick="nextRestaurantModalImage(event)">&rsaquo;</button>
                 </div>
+            </div>
+
                 
             </article>
             
@@ -220,42 +212,108 @@ get_header(); ?>
     
 </main>
 
-<!-- Gallery JavaScript -->
 <script>
+let currentRestaurantModalImageIndex = 0;
+let restaurantModalImages = [];
+
 document.addEventListener('DOMContentLoaded', function() {
     // See All Photos button
     const seeAllBtn = document.querySelector('.see-all-photos-btn');
-    const restaurantGalleryModal = document.getElementById('restaurant-gallery-modal');
-    const modalClose = document.querySelector('.restaurant-gallery-modal-close');
-    const modalOverlay = document.querySelector('.restaurant-gallery-modal-overlay');
     
-    if (seeAllBtn && restaurantGalleryModal) {
+    if (seeAllBtn) {
+        // Collect all gallery images
+        const galleryImages = document.querySelectorAll('.single-restaurant-gallery img[data-full]');
+        restaurantModalImages = Array.from(galleryImages);
+        
         seeAllBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            restaurantGalleryModal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            // Open modal starting from first image
+            if (restaurantModalImages.length > 0) {
+                openRestaurantGalleryModal(restaurantModalImages[0]);
+            }
         });
-    }
-    
-    if (modalClose) {
-        modalClose.addEventListener('click', function() {
-            restaurantGalleryModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        });
-    }
-    
-    if (modalOverlay) {
-        modalOverlay.addEventListener('click', function() {
-            restaurantGalleryModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+        
+        // Add click handlers to all gallery images
+        restaurantModalImages.forEach((img) => {
+            img.style.cursor = 'pointer';
+            img.addEventListener('click', function() {
+                openRestaurantGalleryModal(this);
+            });
         });
     }
 });
 
-function openImageViewer(imageSrc) {
-    // You can implement a lightbox here if desired
-    window.open(imageSrc, '_blank');
+function openRestaurantGalleryModal(imgElement) {
+    const modal = document.getElementById('restaurantGalleryModal');
+    const modalImg = document.getElementById('restaurantGalleryModalImage');
+    
+    currentRestaurantModalImageIndex = restaurantModalImages.indexOf(imgElement);
+    
+    modal.style.display = 'block';
+    modalImg.src = imgElement.getAttribute('data-full') || imgElement.src;
+    modalImg.alt = imgElement.alt;
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
 }
+
+function closeRestaurantGalleryModal() {
+    const modal = document.getElementById('restaurantGalleryModal');
+    modal.style.display = 'none';
+    
+    // Restore body scroll
+    document.body.style.overflow = 'auto';
+}
+
+function prevRestaurantModalImage(event) {
+    event.stopPropagation();
+    
+    if (currentRestaurantModalImageIndex > 0) {
+        currentRestaurantModalImageIndex--;
+    } else {
+        currentRestaurantModalImageIndex = restaurantModalImages.length - 1;
+    }
+    
+    updateRestaurantModalImage();
+}
+
+function nextRestaurantModalImage(event) {
+    event.stopPropagation();
+    
+    if (currentRestaurantModalImageIndex < restaurantModalImages.length - 1) {
+        currentRestaurantModalImageIndex++;
+    } else {
+        currentRestaurantModalImageIndex = 0;
+    }
+    
+    updateRestaurantModalImage();
+}
+
+function updateRestaurantModalImage() {
+    const modalImg = document.getElementById('restaurantGalleryModalImage');
+    const currentImg = restaurantModalImages[currentRestaurantModalImageIndex];
+    
+    modalImg.src = currentImg.getAttribute('data-full') || currentImg.src;
+    modalImg.alt = currentImg.alt;
+}
+
+// Keyboard navigation for modal
+document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('restaurantGalleryModal');
+    if (modal && modal.style.display === 'block') {
+        switch(e.key) {
+            case 'Escape':
+                closeRestaurantGalleryModal();
+                break;
+            case 'ArrowLeft':
+                prevRestaurantModalImage(e);
+                break;
+            case 'ArrowRight':
+                nextRestaurantModalImage(e);
+                break;
+        }
+    }
+});
 </script>
 
 <?php get_footer(); ?>
