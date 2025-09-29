@@ -61,7 +61,7 @@
 
 .legal-content-body {
     font-family: 'Albert Sans', sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 300;
     line-height: 1.4;
     color: #3D332F;
@@ -80,15 +80,15 @@
 }
 
 .legal-content-body h1 {
-    font-size: 32px;
+    font-size: 30px;
 }
 
 .legal-content-body h2 {
-    font-size: 23px;
+    font-size: 20px;
 }
 
 .legal-content-body h3 {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .legal-content-body p {

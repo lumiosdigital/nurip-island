@@ -1543,6 +1543,19 @@ function nirup_customize_register($wp_customize) {
         'mime_type' => 'image',
     )));
 
+    // Hero Logo Link
+    $wp_customize->add_setting('nirup_hero_logo_link', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_hero_logo_link', array(
+        'label' => __('Hero Logo Link URL', 'nirup-island'),
+        'section' => 'nirup_hero_section',
+        'type' => 'url',
+        'description' => __('Enter the URL where the logo should link to (e.g., homepage or Westin website)', 'nirup-island'),
+    ));
+
     // Hero CTA Button Text
     $wp_customize->add_setting('nirup_hero_cta_text', array(
         'default' => __('Book Your Stay', 'nirup-island'),

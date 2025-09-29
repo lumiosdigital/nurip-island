@@ -11,6 +11,8 @@ $hero_title = get_theme_mod('nirup_hero_title', __('Your Island Escape', 'nirup-
 $hero_subtitle = get_theme_mod('nirup_hero_subtitle', __('Just 50 minutes from Singapore', 'nirup-island'));
 $hero_cta_text = get_theme_mod('nirup_hero_cta_text', __('Book Your Stay', 'nirup-island'));
 $hero_cta_link = get_theme_mod('nirup_hero_cta_link', '');
+$hero_logo_id = get_theme_mod('nirup_hero_logo');
+$hero_logo_link = get_theme_mod('nirup_hero_logo_link', '');
 
 // Get image URLs
 $hero_bg_url = $hero_bg_image_id ? wp_get_attachment_image_url($hero_bg_image_id, 'full') : '';
@@ -33,6 +35,13 @@ if ($inline_styles) {
 
 <section class="hero-section" id="hero">
     
+    <!-- <div class="palm-shadow-animation">
+        <div class="palm-shadow palm-shadow-1"></div>
+        <div class="palm-shadow palm-shadow-2"></div>
+        <div class="palm-shadow palm-shadow-3"></div>
+        <div class="palm-shadow palm-shadow-2-return"></div>
+    </div> -->
+
     <!-- Hero Content -->
     <div class="hero-content">
         <!-- Text Content -->
@@ -49,11 +58,23 @@ if ($inline_styles) {
         <!-- Decorative Line -->
         <div class="hero-divider"></div>
         
-        <!-- Hardcoded Hero Logo -->
+        <!-- Hero Logo -->
         <div class="hero-bottom">
             <div class="hero-logo">
-                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/the-westin-logo.png" 
-                    alt="The Westin Logo">
+                <?php 
+                // Get logo URL or fallback to default
+                $hero_logo_url = $hero_logo_id ? wp_get_attachment_image_url($hero_logo_id, 'full') : get_template_directory_uri() . '#';
+                $hero_logo_alt = $hero_logo_id ? get_post_meta($hero_logo_id, '_wp_attachment_image_alt', true) : 'The Westin Logo';
+                
+                if ($hero_logo_link): ?>
+                    <a href="<?php echo esc_url($hero_logo_link); ?>" title="<?php echo esc_attr($hero_logo_alt); ?>">
+                        <img src="<?php echo esc_url($hero_logo_url); ?>" 
+                             alt="<?php echo esc_attr($hero_logo_alt); ?>">
+                    </a>
+                <?php else: ?>
+                    <img src="<?php echo esc_url($hero_logo_url); ?>" 
+                         alt="<?php echo esc_attr($hero_logo_alt); ?>">
+                <?php endif; ?>
             </div>
             
             <?php if ($hero_cta_text): ?>
