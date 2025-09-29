@@ -1,18 +1,8 @@
-/* ===========================
-   ABOUT ISLAND SECTION STYLES
-   File: assets/css/about-island.css
-   =========================== */
 
 .about-island-section {
     padding: 100px 0;
     position: relative;
-    /* background: rgba(255, 255, 255, 0.95); */
-    /* backdrop-filter: blur(1px); */
 }
-
-/* ===========================
-   SECTION HEADER STYLES
-   =========================== */
 
 .about-island-header {
     display: flex;
@@ -22,7 +12,6 @@
     margin-bottom: 80px;
     margin-left: auto;
     margin-right: auto;
-    /* max-width: 670px; */
 }
 
 .about-section-title {
@@ -64,10 +53,6 @@
     width: 600px;
 }
 
-/* ===========================
-   FEATURES GRID STYLES
-   =========================== */
-
 .about-features-grid {
     display: grid;
     align-items: stretch;
@@ -76,10 +61,6 @@
     max-width: 1400px;
     margin: 0 auto;
 }
-
-/* ===========================
-   FEATURE ITEM STYLES
-   =========================== */
 
 .feature-item {
     display: flex;
@@ -91,7 +72,6 @@
     transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: 0;
     transform: translateY(20px);
-    /* cursor: pointer; */
 }
 
 .feature-item.animate-in {
@@ -103,7 +83,6 @@
     transform: translateY(-5px);
 }
 
-/* Feature Icon Container */
 .feature-icon {
     width: 50px;
     height: 50px;
@@ -129,7 +108,6 @@
     color: var(--color-golden);
 }
 
-/* Feature Content */
 .feature-content {
     display: flex;
     flex-direction: column;
@@ -161,38 +139,6 @@
     opacity: 0.8;
     
 }
-
-/* ===========================
-   ANIMATION DELAYS
-   =========================== */
-
-/* .feature-item:nth-child(1) {
-    transition-delay: 0.1s;
-}
-
-.feature-item:nth-child(2) {
-    transition-delay: 0.2s;
-}
-
-.feature-item:nth-child(3) {
-    transition-delay: 0.3s;
- }
-
-.feature-item:nth-child(4) {
-    transition-delay: 0.4s;
-}
-
-.feature-item:nth-child(5) {
-    transition-delay: 0.5s;
-}
-
-.feature-item:nth-child(6) {
-    transition-delay: 0.6s;
-}  */
-
-/* ===========================
-   RESPONSIVE STYLES
-   =========================== */
 
 @media (max-width: 1400px) {
     .about-features-grid {
@@ -311,10 +257,6 @@
     }
 }
 
-/* ===========================
-   ACCESSIBILITY STYLES
-   =========================== */
-
 .feature-item:focus {
     outline: 2px solid var(--color-golden);
     outline-offset: 4px;
@@ -342,10 +284,6 @@
         transform: none;
     }
 }
-
-/* ===========================
-   PRINT STYLES
-   =========================== */
 
 @media print {
     .about-island-section {
