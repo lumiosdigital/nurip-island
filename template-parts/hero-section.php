@@ -113,13 +113,5 @@ jQuery(document).ready(function($) {
             });
         }
     });
-    
-    // Add loading class and fade in effect
-    $('.hero-section').addClass('loading');
-    
-    // Remove loading class once images are loaded
-    $(window).on('load', function() {
-        $('.hero-section').removeClass('loading');
-    });
 });
 </script>

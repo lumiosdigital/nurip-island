@@ -80,6 +80,7 @@ function nirup_enqueue_assets() {
     wp_enqueue_style('nirup-dining', get_template_directory_uri() . '/assets/css/dining.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-single-restaurant', get_template_directory_uri() . '/assets/css/single-restaurant.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-legal-pages', get_template_directory_uri() . '/assets/css/legal-pages.css', array('nirup-main'), '1.0.2');
+     wp_enqueue_style('nirup-contact', get_template_directory_uri() . '/assets/css/contact.css', array(), '1.0.2' );
 
 
 
@@ -215,6 +216,15 @@ function nirup_enqueue_assets() {
         true
     );
 
+    // Enqueue contact JS
+    wp_enqueue_script(
+        'nirup-contact',
+        get_template_directory_uri() . '/assets/js/contact.js',
+        array('jquery'),
+        '1.0.2',
+        true
+    );
+
     
     if (current_user_can('manage_options')) {
         echo '<script>console.log("✅ All JavaScript files enqueued!");</script>';
@@ -252,6 +262,11 @@ function nirup_enqueue_assets() {
             'subscribing' => __('Subscribing...', 'nirup-island'),
             'error' => __('Something went wrong. Please try again.', 'nirup-island'),
         )
+    ));
+
+    wp_localize_script('nirup-contact', 'nirup_contact_ajax', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('contact_form_nonce')
     ));
 
     
@@ -2469,6 +2484,13 @@ function nirup_get_breadcrumbs() {
     } elseif (is_page_template('page-cookies-policy.php') || is_page('cookies-policy')) {
         $breadcrumbs[] = array(
             'title' => 'Cookies Policy',
+            'url' => ''
+        );
+    }
+
+    if (is_page_template('page-contact.php')) {
+        $breadcrumbs[] = array(
+            'title' => 'Contact',
             'url' => ''
         );
     }
@@ -6263,3 +6285,266 @@ function nirup_enqueue_booking_modal_assets() {
     );
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_booking_modal_assets');
+
+function nirup_contact_form_submit() {
+    // Check nonce for security
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'contact_form_nonce')) {
+        wp_send_json_error(array('message' => 'Security check failed.'));
+        return;
+    }
+    
+    // Get and sanitize form data
+    $form_data = isset($_POST['form_data']) ? $_POST['form_data'] : array();
+    
+    $name = sanitize_text_field($form_data['name']);
+    $email = sanitize_email($form_data['email']);
+    $phone = sanitize_text_field($form_data['phone']);
+    $inquiry_type = sanitize_text_field($form_data['inquiry_type']);
+    $message = sanitize_textarea_field($form_data['message']);
+    
+    // Validate required fields
+    if (empty($name) || empty($email) || empty($inquiry_type) || empty($message)) {
+        wp_send_json_error(array('message' => 'Please fill in all required fields.'));
+        return;
+    }
+    
+    // Validate email
+    if (!is_email($email)) {
+        wp_send_json_error(array('message' => 'Please enter a valid email address.'));
+        return;
+    }
+    
+    // HARDCODED EMAIL - Change this line when you want to use the customizer setting
+    $to_email = 'lumiosdigital@gmail.com';
+    
+    // To use customizer setting instead, uncomment this line and comment out the line above:
+    // $to_email = get_theme_mod('nirup_contact_form_email', 'explore@nirupisland.com');
+    
+    // Debug log (remove after testing)
+    error_log('Contact Form - Sending to: ' . $to_email);
+    
+    // Email subject
+    $subject = sprintf('[%s] New Contact Form Submission from %s', get_bloginfo('name'), $name);
+    
+    // Email body
+    $email_body = sprintf(
+        "New contact form submission:\n\n" .
+        "Name: %s\n" .
+        "Email: %s\n" .
+        "Phone: %s\n" .
+        "Type of Inquiry: %s\n\n" .
+        "Message:\n%s\n\n" .
+        "---\n" .
+        "This email was sent from the contact form on %s",
+        $name,
+        $email,
+        !empty($phone) ? $phone : 'Not provided',
+        $inquiry_type,
+        $message,
+        get_bloginfo('url')
+    );
+    
+    // Email headers
+    $headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: ' . get_bloginfo('name') . ' <' . get_option('admin_email') . '>',
+        'Reply-To: ' . $name . ' <' . $email . '>'
+    );
+    
+    // Send email
+    $mail_sent = wp_mail($to_email, $subject, $email_body, $headers);
+    
+    // Debug log
+    error_log('Contact Form - Mail sent: ' . ($mail_sent ? 'YES' : 'NO'));
+    
+    // Store submission in database (backup)
+    nirup_store_contact_submission($name, $email, $phone, $inquiry_type, $message);
+    
+    if ($mail_sent) {
+        wp_send_json_success(array(
+            'message' => 'Your message has been sent successfully!'
+        ));
+    } else {
+        // Get the last error
+        global $phpmailer;
+        $error_message = 'Failed to send email.';
+        if (isset($phpmailer) && !empty($phpmailer->ErrorInfo)) {
+            $error_message .= ' Error: ' . $phpmailer->ErrorInfo;
+            error_log('Contact Form Error: ' . $phpmailer->ErrorInfo);
+        }
+        
+        wp_send_json_error(array(
+            'message' => 'Failed to send your message. Your submission has been saved and we will contact you soon.'
+        ));
+    }
+}
+add_action('wp_ajax_nirup_contact_form_submit', 'nirup_contact_form_submit');
+add_action('wp_ajax_nopriv_nirup_contact_form_submit', 'nirup_contact_form_submit');
+
+/**
+ * Store Contact Form Submission in Database (Optional)
+ * This creates a backup of all submissions in the database
+ */
+function nirup_store_contact_submission($name, $email, $phone, $inquiry_type, $message) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'contact_submissions';
+    
+    // Create table if it doesn't exist
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        nirup_create_contact_submissions_table();
+    }
+    
+    // Insert submission
+    $wpdb->insert(
+        $table_name,
+        array(
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'inquiry_type' => $inquiry_type,
+            'message' => $message,
+            'submission_date' => current_time('mysql')
+        ),
+        array('%s', '%s', '%s', '%s', '%s', '%s')
+    );
+}
+
+/**
+ * Create Contact Submissions Table
+ */
+function nirup_create_contact_submissions_table() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'contact_submissions';
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $sql = "CREATE TABLE $table_name (
+        id bigint(20) NOT NULL AUTO_INCREMENT,
+        name varchar(255) NOT NULL,
+        email varchar(255) NOT NULL,
+        phone varchar(100) DEFAULT '',
+        inquiry_type varchar(255) NOT NULL,
+        message text NOT NULL,
+        submission_date datetime NOT NULL,
+        PRIMARY KEY (id),
+        KEY email (email),
+        KEY submission_date (submission_date)
+    ) $charset_collate;";
+    
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+}
+
+/**
+ * Add Contact Form Settings to Customizer
+ * Separate section for clarity
+ */
+function nirup_contact_form_customizer($wp_customize) {
+    
+    // Add Contact Form Section (separate from footer)
+    $wp_customize->add_section('nirup_contact_form_settings', array(
+        'title' => __('Contact Form Settings', 'nirup-island'),
+        'priority' => 46,
+        'description' => __('Configure where contact form submissions are sent', 'nirup-island'),
+    ));
+    
+    // Contact Form Email Setting
+    $wp_customize->add_setting('nirup_contact_form_email', array(
+        'default' => 'explore@nirupisland.com',
+        'sanitize_callback' => 'sanitize_email',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_contact_form_email', array(
+        'label' => __('Contact Form Email', 'nirup-island'),
+        'section' => 'nirup_contact_form_settings',
+        'type' => 'email',
+        'description' => __('Email address where contact form submissions will be sent', 'nirup-island'),
+    ));
+}
+add_action('customize_register', 'nirup_contact_form_customizer');
+
+function nirup_contact_submissions_menu() {
+    add_menu_page(
+        'Contact Submissions',
+        'Contact Forms',
+        'manage_options',
+        'contact-submissions',
+        'nirup_contact_submissions_page',
+        'dashicons-email-alt',
+        25
+    );
+}
+add_action('admin_menu', 'nirup_contact_submissions_menu');
+
+/**
+ * Display Contact Submissions Admin Page
+ */
+function nirup_contact_submissions_page() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'contact_submissions';
+    
+    // Handle deletion
+    if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+        $id = intval($_GET['id']);
+        $wpdb->delete($table_name, array('id' => $id), array('%d'));
+        echo '<div class="notice notice-success"><p>Submission deleted successfully.</p></div>';
+    }
+    
+    // Get all submissions
+    $submissions = $wpdb->get_results(
+        "SELECT * FROM $table_name ORDER BY submission_date DESC"
+    );
+    
+    ?>
+    <div class="wrap">
+        <h1>Contact Form Submissions</h1>
+        
+        <?php if (empty($submissions)): ?>
+            <p>No submissions yet.</p>
+        <?php else: ?>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Inquiry Type</th>
+                        <th>Message</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($submissions as $submission): ?>
+                        <tr>
+                            <td><?php echo esc_html(date('M j, Y g:i A', strtotime($submission->submission_date))); ?></td>
+                            <td><?php echo esc_html($submission->name); ?></td>
+                            <td><a href="mailto:<?php echo esc_attr($submission->email); ?>"><?php echo esc_html($submission->email); ?></a></td>
+                            <td><?php echo esc_html($submission->phone ?: 'N/A'); ?></td>
+                            <td><?php echo esc_html($submission->inquiry_type); ?></td>
+                            <td><?php echo esc_html(wp_trim_words($submission->message, 15)); ?></td>
+                            <td>
+                                <a href="#" onclick="alert('<?php echo esc_js($submission->message); ?>'); return false;">View Full</a> |
+                                <a href="?page=contact-submissions&action=delete&id=<?php echo $submission->id; ?>" 
+                                   onclick="return confirm('Are you sure you want to delete this submission?');">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
+/**
+ * Create table on theme activation
+ */
+function nirup_contact_activation() {
+    nirup_create_contact_submissions_table();
+}
+register_activation_hook(__FILE__, 'nirup_contact_activation');
+
+// Also create table on theme switch
+add_action('after_switch_theme', 'nirup_create_contact_submissions_table');
+?>
