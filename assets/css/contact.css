@@ -1,11 +1,5 @@
-/**
- * Contact Page Styles
- * Nirup Island Theme
- */
 
-/* Contact Page Container */
 .contact-page {
-    background-color: #f5f0e8;
     min-height: 100vh;
 }
 
@@ -19,7 +13,6 @@
     padding: 0 20px;
 }
 
-/* Title */
 .contact-title {
     font-family: var(--font-hero);
     font-size: 72px;
@@ -31,7 +24,6 @@
     text-align: center;
 }
 
-/* Contact Info Text */
 .contact-info-text {
     max-width: 841px;
     margin: 0 auto 60px;
@@ -86,10 +78,8 @@
     color: #3d332f;
     text-transform: uppercase;
     letter-spacing: 0px;
-    /* margin-bottom: 6px; */
 }
 
-/* Form Inputs */
 .form-input,
 .form-select,
 .form-textarea {
@@ -117,7 +107,6 @@
     opacity: 1;
 }
 
-/* Custom Select Wrapper */
 .custom-select-wrapper {
     position: relative;
 }
@@ -150,7 +139,6 @@
     pointer-events: none;
 }
 
-/* Textarea */
 .form-textarea {
     resize: vertical;
     min-height: 120px;
@@ -164,7 +152,6 @@
     border-color: #a48456;
 }
 
-/* Submit Button */
 .contact-submit-btn {
     width: 301px;
     height: 40px;
@@ -228,7 +215,6 @@
     }
 }
 
-/* Form Messages */
 .form-message {
     margin-top: 20px;
     padding: 15px;
@@ -348,7 +334,6 @@
     color: #8b6f47;
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
     .contact-container {
         max-width: 100%;
