@@ -159,8 +159,6 @@
             console.log('❌ Contact form not found on this page');
             return;
         }
-
-        console.log('✅ Contact form initialized');
         
         // DEBUG: Check if localized data is available
         if (typeof nirup_contact_ajax === 'undefined') {
@@ -169,8 +167,6 @@
             return;
         }
         
-        console.log('✅ Ajax URL:', nirup_contact_ajax.ajax_url);
-        console.log('✅ Nonce available:', nirup_contact_ajax.nonce ? 'Yes' : 'No');
 
         // Form submission handler
         $form.on('submit', function(e) {
@@ -190,7 +186,6 @@
                 message: $('#contact-message').val().trim()
             };
             
-            console.log('📝 Form data:', formData);
             
             // Basic validation
             if (!formData.name || !formData.email || !formData.inquiry_type || !formData.message) {
@@ -205,7 +200,6 @@
                 return;
             }
             
-            console.log('✅ Validation passed');
             
             // Show loading state
             $submitBtn.addClass('loading');
@@ -216,27 +210,21 @@
                 nonce: nirup_contact_ajax.nonce,
                 form_data: formData
             };
-            
-            console.log('🚀 Sending AJAX request to:', nirup_contact_ajax.ajax_url);
-            console.log('📦 Request data:', ajaxData);
-            
-            // AJAX request
+
             $.ajax({
                 url: nirup_contact_ajax.ajax_url,
                 type: 'POST',
                 data: ajaxData,
                 success: function(response) {
-                    console.log('✅ AJAX Success:', response);
+                    
                     
                     if (response.success) {
-                        console.log('✅ Form submitted successfully!');
-                        // Clear form
+                        
                         $form[0].reset();
                         
-                        // Show thank you modal
+
                         showThankYouModal();
                     } else {
-                        console.log('❌ Server returned error:', response.data);
                         showMessage(response.data.message || 'Something went wrong. Please try again.', 'error');
                     }
                 },
@@ -325,7 +313,6 @@
      * Initialize on document ready
      */
     $(document).ready(function() {
-        console.log('🔧 Contact form script loaded');
         initContactForm();
     });
 
