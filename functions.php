@@ -80,8 +80,8 @@ function nirup_enqueue_assets() {
     wp_enqueue_style('nirup-dining', get_template_directory_uri() . '/assets/css/dining.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-single-restaurant', get_template_directory_uri() . '/assets/css/single-restaurant.css', array('nirup-main'), '1.0.2');
     wp_enqueue_style('nirup-legal-pages', get_template_directory_uri() . '/assets/css/legal-pages.css', array('nirup-main'), '1.0.2');
-     wp_enqueue_style('nirup-contact', get_template_directory_uri() . '/assets/css/contact.css', array(), '1.0.2' );
-
+    wp_enqueue_style('nirup-contact', get_template_directory_uri() . '/assets/css/contact.css', array(), '1.0.2' );
+    wp_enqueue_style('nirup-marina', get_template_directory_uri() . '/assets/css/marina.css', array('nirup-main'), '1.0.0');
 
 
     // === GOOGLE FONTS ===
@@ -2400,7 +2400,6 @@ function nirup_get_breadcrumbs() {
         'url' => home_url('/')
     );
     
-    // Handle sustainability page
     if (is_page_template('page-sustainability.php')) {
         $breadcrumbs[] = array(
             'title' => 'Sustainability',
@@ -2421,7 +2420,6 @@ function nirup_get_breadcrumbs() {
             'url' => get_post_type_archive_link('experience')
         );
         
-        // If this is a child experience, add the parent
         $parent_id = wp_get_post_parent_id(get_the_ID());
         if ($parent_id) {
             $breadcrumbs[] = array(
@@ -2453,7 +2451,6 @@ function nirup_get_breadcrumbs() {
         );
     }
 
-    // Restaurant post type support
     if (is_post_type_archive('restaurant')) {
         $breadcrumbs[] = array(
             'title' => 'Dining',
@@ -2491,6 +2488,13 @@ function nirup_get_breadcrumbs() {
     if (is_page_template('page-contact.php')) {
         $breadcrumbs[] = array(
             'title' => 'Contact',
+            'url' => ''
+        );
+    }
+
+    if (is_page_template('page-marina.php')) {
+        $breadcrumbs[] = array(
+            'title' => 'Marina',
             'url' => ''
         );
     }
@@ -7134,6 +7138,388 @@ function nirup_run_contact_table_update_once() {
         update_option('nirup_contact_table_updated', 'yes');
     }
 }
+
+function nirup_add_marina_meta_boxes() {
+    add_meta_box(
+        'marina_details',
+        '🏖️ Marina Page Settings',
+        'nirup_marina_meta_box_callback',
+        'page',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_marina_meta_boxes');
+
+function nirup_marina_meta_box_callback($post) {
+    // Only show for Marina page template
+    $template = get_post_meta($post->ID, '_wp_page_template', true);
+    if ($template !== 'page-marina.php') {
+        echo '<p>This meta box is only available when using the Marina Page template.</p>';
+        return;
+    }
+
+    wp_nonce_field('nirup_marina_meta_box', 'nirup_marina_meta_box_nonce');
+
+    // Get saved values
+    $subtitle = get_post_meta($post->ID, '_marina_subtitle', true);
+    $title = get_post_meta($post->ID, '_marina_title', true);
+    $berthing_desc_1 = get_post_meta($post->ID, '_marina_berthing_description_1', true);
+    $berthing_desc_2 = get_post_meta($post->ID, '_marina_berthing_description_2', true);
+    $gallery_images = get_post_meta($post->ID, '_marina_gallery', true);
+    $gallery_images = is_array($gallery_images) ? $gallery_images : array();
+    ?>
+
+    <div class="marina-meta-box">
+        <style>
+            .marina-meta-box .form-group { margin-bottom: 20px; }
+            .marina-meta-box label { display: block; font-weight: 600; margin-bottom: 8px; }
+            .marina-meta-box input[type="text"],
+            .marina-meta-box textarea { width: 100%; padding: 8px; }
+            .marina-meta-box textarea { min-height: 100px; }
+            .gallery-images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
+            .gallery-image-item { position: relative; }
+            .gallery-image-item img { width: 100%; height: 100px; object-fit: cover; border: 2px solid #ddd; }
+            .remove-gallery-image { position: absolute; top: 5px; right: 5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; }
+        </style>
+
+        <h3>Hero Section</h3>
+        <div class="form-group">
+            <label for="marina_subtitle">Subtitle</label>
+            <input type="text" id="marina_subtitle" name="marina_subtitle" value="<?php echo esc_attr($subtitle); ?>" placeholder="Seamless access, exclusive facilities">
+        </div>
+
+        <div class="form-group">
+            <label for="marina_title">Main Title</label>
+            <input type="text" id="marina_title" name="marina_title" value="<?php echo esc_attr($title); ?>" placeholder="Marina at Nirup Island">
+        </div>
+
+        <h3>🖼️ Gallery Images</h3>
+        <p><em>Upload images for the marina gallery (displays 5 photos with "see more" option if more are uploaded)</em></p>
+        <div id="marina-gallery-images" class="gallery-images-grid">
+            <?php foreach ($gallery_images as $image_id) : ?>
+                <?php $image_url = wp_get_attachment_thumb_url($image_id); ?>
+                <?php if ($image_url) : ?>
+                    <div class="gallery-image-item" data-attachment-id="<?php echo esc_attr($image_id); ?>">
+                        <img src="<?php echo esc_url($image_url); ?>" alt="">
+                        <button type="button" class="remove-gallery-image">×</button>
+                        <input type="hidden" name="marina_gallery[]" value="<?php echo esc_attr($image_id); ?>">
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+        <button type="button" class="button button-primary" id="add-marina-gallery-images">Add Gallery Images</button>
+
+        <h3>Berthing Section</h3>
+        <div class="form-group">
+            <label for="marina_berthing_description_1">Berthing Description - Paragraph 1</label>
+            <textarea id="marina_berthing_description_1" name="marina_berthing_description_1"><?php echo esc_textarea($berthing_desc_1); ?></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="marina_berthing_description_2">Berthing Description - Paragraph 2</label>
+            <textarea id="marina_berthing_description_2" name="marina_berthing_description_2"><?php echo esc_textarea($berthing_desc_2); ?></textarea>
+        </div>
+
+        <p style="background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 4px; margin-top: 20px;">
+            <strong>ℹ️ Private Charters:</strong> To add or edit private charters, go to <strong>Private Charters</strong> in the admin menu. 
+            All published charters will automatically appear on this Marina page.
+        </p>
+    </div>
+
+    <script>
+    jQuery(document).ready(function($) {
+        // Gallery Image Upload
+        let galleryFrame;
+        $('#add-marina-gallery-images').on('click', function(e) {
+            e.preventDefault();
+            
+            if (galleryFrame) {
+                galleryFrame.open();
+                return;
+            }
+            
+            galleryFrame = wp.media({
+                title: 'Select Gallery Images',
+                button: { text: 'Add to Gallery' },
+                multiple: true
+            });
+            
+            galleryFrame.on('select', function() {
+                const selection = galleryFrame.state().get('selection');
+                selection.map(function(attachment) {
+                    attachment = attachment.toJSON();
+                    const html = `
+                        <div class="gallery-image-item" data-attachment-id="${attachment.id}">
+                            <img src="${attachment.sizes.thumbnail.url}" alt="">
+                            <button type="button" class="remove-gallery-image">×</button>
+                            <input type="hidden" name="marina_gallery[]" value="${attachment.id}">
+                        </div>
+                    `;
+                    $('#marina-gallery-images').append(html);
+                });
+            });
+            
+            galleryFrame.open();
+        });
+
+        // Remove gallery image
+        $(document).on('click', '.remove-gallery-image', function() {
+            $(this).closest('.gallery-image-item').remove();
+        });
+    });
+    </script>
+    <?php
+}
+
+/**
+ * Save Marina Meta Data
+ */
+function nirup_save_marina_meta($post_id) {
+    // Security checks
+    if (!isset($_POST['nirup_marina_meta_box_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_marina_meta_box_nonce'], 'nirup_marina_meta_box')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save Hero Section
+    if (isset($_POST['marina_subtitle'])) {
+        update_post_meta($post_id, '_marina_subtitle', sanitize_text_field($_POST['marina_subtitle']));
+    }
+
+    if (isset($_POST['marina_title'])) {
+        update_post_meta($post_id, '_marina_title', sanitize_text_field($_POST['marina_title']));
+    }
+
+    // Save Gallery
+    if (isset($_POST['marina_gallery'])) {
+        $gallery_images = array_map('intval', $_POST['marina_gallery']);
+        update_post_meta($post_id, '_marina_gallery', $gallery_images);
+    } else {
+        delete_post_meta($post_id, '_marina_gallery');
+    }
+
+    // Save Berthing Descriptions
+    if (isset($_POST['marina_berthing_description_1'])) {
+        update_post_meta($post_id, '_marina_berthing_description_1', wp_kses_post($_POST['marina_berthing_description_1']));
+    }
+
+    if (isset($_POST['marina_berthing_description_2'])) {
+        update_post_meta($post_id, '_marina_berthing_description_2', wp_kses_post($_POST['marina_berthing_description_2']));
+    }
+
+    // Save Private Charters
+    if (isset($_POST['marina_charters']) && is_array($_POST['marina_charters'])) {
+        $charters = array();
+        foreach ($_POST['marina_charters'] as $charter) {
+            $charters[] = array(
+                'image' => intval($charter['image'] ?? 0),
+                'name' => sanitize_text_field($charter['name'] ?? ''),
+                'description' => wp_kses_post($charter['description'] ?? ''),
+                'bedrooms' => sanitize_text_field($charter['bedrooms'] ?? ''),
+                'bathrooms' => sanitize_text_field($charter['bathrooms'] ?? ''),
+                'kitchen' => sanitize_text_field($charter['kitchen'] ?? ''),
+                'meal_addon' => sanitize_text_field($charter['meal_addon'] ?? ''),
+                'length' => sanitize_text_field($charter['length'] ?? ''),
+                'capacity' => sanitize_text_field($charter['capacity'] ?? ''),
+                'top_speed' => sanitize_text_field($charter['top_speed'] ?? ''),
+                'travel_time' => sanitize_text_field($charter['travel_time'] ?? ''),
+                'pricing' => wp_kses_post($charter['pricing'] ?? ''),
+            );
+        }
+        update_post_meta($post_id, '_marina_private_charters', $charters);
+    } else {
+        delete_post_meta($post_id, '_marina_private_charters');
+    }
+}
+add_action('save_post', 'nirup_save_marina_meta');
+
+function nirup_register_private_charters() {
+    $labels = array(
+        'name'                  => 'Private Charters',
+        'singular_name'         => 'Private Charter',
+        'menu_name'             => 'Private Charters',
+        'add_new'               => 'Add New Charter',
+        'add_new_item'          => 'Add New Private Charter',
+        'edit_item'             => 'Edit Private Charter',
+        'new_item'              => 'New Private Charter',
+        'view_item'             => 'View Private Charter',
+        'search_items'          => 'Search Private Charters',
+        'not_found'             => 'No private charters found',
+        'not_found_in_trash'    => 'No private charters found in trash',
+    );
+
+    $args = array(
+        'labels'                => $labels,
+        'public'                => true,
+        'has_archive'           => false,
+        'publicly_queryable'    => false,
+        'show_ui'               => true,
+        'show_in_menu'          => true,
+        'menu_position'         => 26,
+        'menu_icon'             => 'dashicons-admin-multisite',
+        'supports'              => array('title', 'thumbnail'),
+        'hierarchical'          => false,
+        'rewrite'               => false,
+        'show_in_rest'          => false,
+    );
+
+    register_post_type('private_charter', $args);
+}
+add_action('init', 'nirup_register_private_charters');
+
+function nirup_add_charter_meta_boxes() {
+    add_meta_box(
+        'charter_details',
+        '⛵ Private Charter Details',
+        'nirup_charter_details_callback',
+        'private_charter',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_charter_meta_boxes');
+
+function nirup_charter_details_callback($post) {
+    wp_nonce_field('nirup_charter_meta_box', 'nirup_charter_meta_box_nonce');
+
+    $description = get_post_meta($post->ID, '_charter_description', true);
+    $specifications = get_post_meta($post->ID, '_charter_specifications', true);
+    $specifications = is_array($specifications) ? $specifications : array();
+    $pricing = get_post_meta($post->ID, '_charter_pricing', true);
+    ?>
+
+    <style>
+        .charter-meta-box .form-group { margin-bottom: 20px; }
+        .charter-meta-box label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .charter-meta-box input[type="text"],
+        .charter-meta-box textarea { width: 100%; padding: 8px; }
+        .charter-meta-box textarea { min-height: 100px; }
+        .charter-meta-box .description { color: #666; font-style: italic; margin-top: 5px; }
+        .spec-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; background: #f9f9f9; position: relative; }
+        .spec-item h4 { margin: 0 0 10px 0; padding-right: 100px; }
+        .remove-spec { position: absolute; top: 15px; right: 15px; }
+    </style>
+
+    <div class="charter-meta-box">
+        <p><strong>Note:</strong> The charter name is the post title. The featured image is the main charter image.</p>
+
+        <div class="form-group">
+            <label for="charter_description">Description</label>
+            <textarea id="charter_description" name="charter_description" rows="4"><?php echo esc_textarea($description); ?></textarea>
+            <p class="description">Brief description of the charter</p>
+        </div>
+
+        <h3>📋 Specifications</h3>
+        <p><em>Add specifications below. They will automatically split into two columns on the page.</em></p>
+        
+        <div id="charter-specifications-container">
+            <?php if (!empty($specifications)) : ?>
+                <?php foreach ($specifications as $index => $spec) : ?>
+                    <div class="spec-item" data-spec-index="<?php echo $index; ?>">
+                        <h4>Specification #<?php echo $index + 1; ?></h4>
+                        <button type="button" class="button button-secondary remove-spec">Remove</button>
+                        
+                        <div class="form-group">
+                            <label>Specification Text</label>
+                            <input type="text" name="charter_specifications[<?php echo $index; ?>][text]" value="<?php echo esc_attr($spec['text'] ?? ''); ?>" placeholder="e.g., 3 bedrooms, Length: 21.58 m, Capacity: 15 Max">
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+        
+        <button type="button" class="button button-primary" id="add-specification">Add Specification</button>
+
+        <h3>💵 Pricing</h3>
+
+        <div class="form-group">
+            <label for="charter_pricing">Pricing Information</label>
+            <textarea id="charter_pricing" name="charter_pricing" rows="5"><?php echo esc_textarea($pricing); ?></textarea>
+            <p class="description">Add pricing details. Use line breaks for multiple routes.</p>
+        </div>
+    </div>
+
+    <script>
+    jQuery(document).ready(function($) {
+        let specIndex = <?php echo count($specifications); ?>;
+
+        // Add Specification
+        $('#add-specification').on('click', function() {
+            const html = `
+                <div class="spec-item" data-spec-index="${specIndex}">
+                    <h4>Specification #${specIndex + 1}</h4>
+                    <button type="button" class="button button-secondary remove-spec">Remove</button>
+                    
+                    <div class="form-group">
+                        <label>Specification Text</label>
+                        <input type="text" name="charter_specifications[${specIndex}][text]" placeholder="e.g., 3 bedrooms, Length: 21.58 m, Capacity: 15 Max">
+                    </div>
+                </div>
+            `;
+            $('#charter-specifications-container').append(html);
+            specIndex++;
+        });
+
+        // Remove Specification
+        $(document).on('click', '.remove-spec', function() {
+            if (confirm('Are you sure you want to remove this specification?')) {
+                $(this).closest('.spec-item').remove();
+            }
+        });
+    });
+    </script>
+    <?php
+}
+
+function nirup_save_charter_meta($post_id) {
+    if (!isset($_POST['nirup_charter_meta_box_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_charter_meta_box_nonce'], 'nirup_charter_meta_box')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save Description
+    if (isset($_POST['charter_description'])) {
+        update_post_meta($post_id, '_charter_description', wp_kses_post($_POST['charter_description']));
+    }
+
+    // Save Specifications
+    if (isset($_POST['charter_specifications']) && is_array($_POST['charter_specifications'])) {
+        $specifications = array();
+        foreach ($_POST['charter_specifications'] as $spec) {
+            if (!empty($spec['text'])) {
+                $specifications[] = array(
+                    'text' => sanitize_text_field($spec['text'])
+                );
+            }
+        }
+        update_post_meta($post_id, '_charter_specifications', $specifications);
+    } else {
+        delete_post_meta($post_id, '_charter_specifications');
+    }
+
+    // Save Pricing
+    if (isset($_POST['charter_pricing'])) {
+        update_post_meta($post_id, '_charter_pricing', wp_kses_post($_POST['charter_pricing']));
+    }
+}
+add_action('save_post_private_charter', 'nirup_save_charter_meta');
 
 
 ?>
