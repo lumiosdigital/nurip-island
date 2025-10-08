@@ -1,6 +1,5 @@
-/* Getting Here Page Styles */
+
 .getting-here-page-main {
-    /* background: #FCFAF6; */
     min-height: 100vh;
 }
 
@@ -50,7 +49,7 @@
 
 .getting-here-map-wrapper {
     width: 100%;
-    height: 500px;
+    height: 646px;
     /* background: #e5e5e5; */
     margin-bottom: 0;
 }
@@ -68,7 +67,7 @@
 
 /* Ferry Departures Section */
 .ferry-departures-section {
-    padding: 80px 0 100px 0;
+    padding: 80px 0px 100px 0px;
 }
 
 .ferry-departures-title {
@@ -195,7 +194,7 @@
     font-size: 14px;
     color: #3D332F;
     padding: 20px;
-    border-bottom: 1px solid #F0F0F0;
+    /* border-bottom: 1px solid #F0F0F0; */
 }
 
 .ferry-schedule-table tbody tr:last-child td {
