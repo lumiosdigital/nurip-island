@@ -2498,6 +2498,13 @@ function nirup_get_breadcrumbs() {
             'url' => ''
         );
     }
+
+    if (is_page_template('page-getting-here.php') || is_page('getting-here')) {
+        $breadcrumbs[] = array(
+            'title' => 'Getting Here',
+            'url' => ''
+        );
+    }
     
     return $breadcrumbs;
 }
@@ -7521,5 +7528,444 @@ function nirup_save_charter_meta($post_id) {
 }
 add_action('save_post_private_charter', 'nirup_save_charter_meta');
 
+function nirup_getting_here_page_assets() {
+    // Only load on Getting Here page
+    if (is_page_template('page-getting-here.php')) {
+        
+        // Enqueue CSS
+        wp_enqueue_style(
+            'nirup-getting-here-page',
+            get_template_directory_uri() . '/assets/css/page-getting-here.css',
+            array(),
+            '1.0.0'
+        );
+    
+        
+        // Load Google Maps API if key is set - USES EXISTING CUSTOMIZER SETTINGS
+        $google_maps_api_key = get_theme_mod('nirup_google_maps_api_key', '');
+        
+        if ($google_maps_api_key) {
+            wp_enqueue_script(
+                'google-maps-getting-here',
+                'https://maps.googleapis.com/maps/api/js?key=' . esc_attr($google_maps_api_key) . '&callback=initGettingHereMap&loading=async',
+                array(),
+                null,
+                true
+            );
+        }
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_getting_here_page_assets');
+
+function nirup_getting_here_page_customizer($wp_customize) {
+    
+    // Add Getting Here Page Section
+    $wp_customize->add_section('nirup_getting_here_page', array(
+        'title' => __('Getting Here Page', 'nirup-island'),
+        'priority' => 35,
+    ));
+    
+    // ===== HERO SECTION =====
+    $wp_customize->add_setting('nirup_getting_here_hero_title', array(
+        'default' => __('Getting Here', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_getting_here_hero_title', array(
+        'label' => __('Hero Title', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_getting_here_hero_subtitle', array(
+        'default' => __('Find the easiest way to reach Nirup Island', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_getting_here_hero_subtitle', array(
+        'label' => __('Hero Subtitle', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    // ===== FERRY DEPARTURES SECTION =====
+    $wp_customize->add_setting('nirup_getting_here_ferry_title', array(
+        'default' => __('Ferry Departures', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_getting_here_ferry_title', array(
+        'label' => __('Ferry Departures Title', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_getting_here_ferry_subtitle', array(
+        'default' => __('Nirup Island is served by direct ferry links from both Singapore & Batam with 12 weekly trips from Singapore and daily trips from Batam.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    $wp_customize->add_control('nirup_getting_here_ferry_subtitle', array(
+        'label' => __('Ferry Departures Subtitle', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'textarea',
+    ));
+    
+    // ===== TAB LABELS =====
+    $wp_customize->add_setting('nirup_singapore_to_nirup_tab', array(
+        'default' => __('Singapore → Nirup', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_singapore_to_nirup_tab', array(
+        'label' => __('Singapore to Nirup Tab', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_nirup_to_singapore_tab', array(
+        'default' => __('Nirup → Singapore', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_nirup_to_singapore_tab', array(
+        'label' => __('Nirup to Singapore Tab', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_batam_to_nirup_tab', array(
+        'default' => __('Batam → Nirup', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_batam_to_nirup_tab', array(
+        'label' => __('Batam to Nirup Tab', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_nirup_to_batam_tab', array(
+        'default' => __('Nirup → Batam', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_nirup_to_batam_tab', array(
+        'label' => __('Nirup to Batam Tab', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    // ===== DEPARTURE POINTS =====
+    $wp_customize->add_setting('nirup_singapore_departure_point', array(
+        'default' => __('HarbourFront Centre', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_singapore_departure_point', array(
+        'label' => __('Singapore Departure Point', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_batam_departure_point', array(
+        'default' => __('HarbourBay Ferry Terminal', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_batam_departure_point', array(
+        'label' => __('Batam Departure Point', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_nirup_departure_point', array(
+        'default' => __('Nirup Island Ferry Terminal', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_nirup_departure_point', array(
+        'label' => __('Nirup Island Departure Point', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    // ===== TABLE HEADERS =====
+    $wp_customize->add_setting('nirup_ferry_table_route', array(
+        'default' => __('Route', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_ferry_table_route', array(
+        'label' => __('Table Header: Route', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_ferry_table_etd', array(
+        'default' => __('ETD', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_ferry_table_etd', array(
+        'label' => __('Table Header: ETD', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_ferry_table_eta', array(
+        'default' => __('ETA', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_ferry_table_eta', array(
+        'label' => __('Table Header: ETA', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_ferry_table_days', array(
+        'default' => __('Days', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_ferry_table_days', array(
+        'label' => __('Table Header: Days', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    // ===== SIDEBAR LABELS =====
+    $wp_customize->add_setting('nirup_sidebar_operator_label', array(
+        'default' => __('Operator', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_sidebar_operator_label', array(
+        'label' => __('Sidebar Label: Operator', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_sidebar_duration_label', array(
+        'default' => __('Duration', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_sidebar_duration_label', array(
+        'label' => __('Sidebar Label: Duration', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_sidebar_mode_label', array(
+        'default' => __('Mode/No.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_sidebar_mode_label', array(
+        'label' => __('Sidebar Label: Mode/No.', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_sidebar_checkin_label', array(
+        'default' => __('Check In', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_sidebar_checkin_label', array(
+        'label' => __('Sidebar Label: Check In', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_sidebar_checkout_label', array(
+        'default' => __('Check Out', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_sidebar_checkout_label', array(
+        'label' => __('Sidebar Label: Check Out', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_sidebar_ferry_label', array(
+        'default' => __('Ferry', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_sidebar_ferry_label', array(
+        'label' => __('Sidebar Label: Ferry', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    // ===== SIDEBAR VALUES - SINGAPORE =====
+    $wp_customize->add_setting('nirup_singapore_operator', array(
+        'default' => __('Sindo Ferry', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_singapore_operator', array(
+        'label' => __('Singapore Operator', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_singapore_duration', array(
+        'default' => __('1 hr', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_singapore_duration', array(
+        'label' => __('Singapore Duration', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_singapore_mode', array(
+        'default' => __('High Speed Ferry', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_singapore_mode', array(
+        'label' => __('Singapore Mode', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_singapore_ferry_info', array(
+        'default' => __('From 2024 (Dec) onwards', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_singapore_ferry_info', array(
+        'label' => __('Singapore Ferry Info', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    // ===== SIDEBAR VALUES - BATAM =====
+    $wp_customize->add_setting('nirup_batam_operator', array(
+        'default' => __('Sindo Ferry', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_batam_operator', array(
+        'label' => __('Batam Operator', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_batam_duration', array(
+        'default' => __('20 min', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_batam_duration', array(
+        'label' => __('Batam Duration', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_batam_mode', array(
+        'default' => __('High Speed Ferry', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_batam_mode', array(
+        'label' => __('Batam Mode', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_batam_ferry_info', array(
+        'default' => __('From 2024 (Dec) onwards', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_batam_ferry_info', array(
+        'label' => __('Batam Ferry Info', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    // ===== BOOK TICKET BUTTON =====
+    $wp_customize->add_setting('nirup_book_ticket_text', array(
+        'default' => __('Book Your Ticket', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_book_ticket_text', array(
+        'label' => __('Book Ticket Button Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    // ===== LUGGAGE SECTION =====
+    $wp_customize->add_setting('nirup_getting_here_luggage_title', array(
+        'default' => __('Luggage Information', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_getting_here_luggage_title', array(
+        'label' => __('Luggage Section Title', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_luggage_singapore_title', array(
+        'default' => __('Singapore Departure', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_singapore_title', array(
+        'label' => __('Luggage: Singapore Title', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_luggage_batam_title', array(
+        'default' => __('Batam Departure', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_batam_title', array(
+        'label' => __('Luggage: Batam Title', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    // ===== VISA SECTION =====
+    $wp_customize->add_setting('nirup_getting_here_visa_title', array(
+        'default' => __('Visa Requirements', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_getting_here_visa_title', array(
+        'label' => __('Visa Section Title', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_getting_here_visa_subtitle', array(
+        'default' => __('Entering Nirup Island follows the same process as any Indonesian island.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_getting_here_visa_subtitle', array(
+        'label' => __('Visa Section Subtitle', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_visa_free_text', array(
+        'default' => __('Visa Free Countries', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_visa_free_text', array(
+        'label' => __('Visa Free Button Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_visa_free_url', array(
+        'default' => '#',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control('nirup_visa_free_url', array(
+        'label' => __('Visa Free Button URL', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'url',
+    ));
+    
+    $wp_customize->add_setting('nirup_visa_on_arrival_text', array(
+        'default' => __('Visa-On-Arrival Countries', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_visa_on_arrival_text', array(
+        'label' => __('Visa On Arrival Button Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('nirup_visa_on_arrival_url', array(
+        'default' => '#',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control('nirup_visa_on_arrival_url', array(
+        'label' => __('Visa On Arrival Button URL', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'url',
+    ));
+}
+add_action('customize_register', 'nirup_getting_here_page_customizer');
 
 ?>
