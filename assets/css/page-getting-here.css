@@ -65,9 +65,9 @@
     border: 0;
 }
 
-/* Ferry Departures Section */
+/* Ferry Departures Section - Exact Match to Design */
 .ferry-departures-section {
-    padding: 80px 0px 100px 0px;
+    padding: 80px 0 100px 0;
 }
 
 .ferry-departures-title {
@@ -96,53 +96,65 @@
 
 /* Route Block */
 .route-block {
-    margin-bottom: 80px;
+    margin-bottom: 120px;
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 130px;
 }
 
 .route-block:last-child {
     margin-bottom: 0;
 }
 
-/* Route Header with Tabs */
-.route-header {
+/* Left Column - contains tabs and content */
+.route-left-column {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Route Tabs */
+.route-tabs {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
     margin-bottom: 30px;
 }
 
-.route-tabs {
-    display: flex;
-    gap: 0;
-    /* border-bottom: 1px solid #E0DCD7; */
-}
-
 .route-tab {
-    font-family: var(--font-family);
+    font-family: var(--family-font);
     font-size: 32px;
     font-weight: 400;
-    color: #999;
+    color: #999999;
     background: transparent;
     border: none;
-    padding: 12px 30px;
+    padding: 0;
     cursor: pointer;
     position: relative;
     transition: color 0.3s ease;
+    text-transform: none;
+    line-height: 1.2;
+}
+
+.route-tab span {
+    display: inline;
 }
 
 .route-tab:hover {
-    color: #AF845F;
+    color: #B89968;
 }
 
 .route-tab.active {
-    color: #AF845F;
+    color: #B89968;
 }
 
 .route-tab.active::after {
     content: '';
     position: absolute;
-    bottom: -1px;
+    bottom: -8px;
     left: 0;
     right: 0;
     height: 2px;
-    background: #AF845F;
+    background: #B89968;
 }
 
 /* Route Content */
@@ -155,121 +167,222 @@
 }
 
 .route-departure-point {
-    font-family: var(--font-family);
+    font-family: var(--family-font);
     font-size: 23px;
     color: #3D332F;
-    margin-bottom: 20px;
-    font-weight: 300;
+    margin-bottom: 30px;
+    font-weight: 200;
 }
 
-.route-table-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 40px;
-}
-
-/* Ferry Schedule Table */
+/* Ferry Schedule Table - NO WHITE BACKGROUND */
 .ferry-schedule-table {
     width: 100%;
     border-collapse: collapse;
-    /* background: white; */
-    border: 1px solid #E0DCD7;
+    background: transparent;
+    /* border: 1px solid #E0DCD7; */
 }
 
 .ferry-schedule-table thead th {
-    font-family: 'Albert Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
+    font-family: var(--font-hero);
+    font-size: 18px;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #666;
+    color: #3D332F;
     text-align: left;
-    padding: 20px;
-    border-bottom: 1px solid #E0DCD7;
-    /* background: #FAFAFA; */
+    padding: 24px 0px;
+    border-bottom: 1px solid #DAD6CF;
+    background: transparent;
 }
 
 .ferry-schedule-table tbody td {
     font-family: 'Albert Sans', sans-serif;
-    font-size: 14px;
+    font-size: 18px;
+    font-weight: 400;
     color: #3D332F;
-    padding: 20px;
-    /* border-bottom: 1px solid #F0F0F0; */
+    padding: 24px 0px;
+    background: transparent;
+    border-bottom: 1px solid #DAD6CF;
 }
 
 .ferry-schedule-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-.ferry-schedule-table tbody tr:hover {
-    background: #FAFAFA;
+.ferry-schedule-table tbody tr {
+    background: transparent;
 }
 
-/* Route Sidebar */
+.ferry-schedule-table tbody tr:hover {
+    background: rgba(184, 153, 104, 0.05);
+}
+
+/* Route Sidebar - spans full height */
 .route-sidebar {
-    /* background: white; */
-    border: 1px solid #E0DCD7;
-    padding: 25px;
+    background: transparent;
+    border-left: 1px solid #DAD6CF;
+    padding: 0px 30px;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    align-self: stretch;
 }
 
 .sidebar-item {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: column;
+    gap: 8px;
     margin-bottom: 20px;
 }
 
 .sidebar-item:last-of-type {
-    margin-bottom: 25px;
+    margin-bottom: 40px;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .sidebar-icon {
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.sidebar-info {
-    flex: 1;
+.sidebar-icon svg {
+    width: 24px;
+    height: 24px;
 }
 
 .sidebar-label {
-    font-family: 'Albert Sans', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #999;
-    margin-bottom: 5px;
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: #3D332F;
+    margin: 0;
+    line-height: 1.2;
 }
 
 .sidebar-value {
-    font-family: 'Amiri', serif;
-    font-size: 14px;
-    color: #3D332F;
-    line-height: 1.4;
-}
-
-.book-ticket-btn {
-    width: 100%;
-    padding: 12px 20px;
-    background: #AF845F;
-    color: white;
-    border: none;
     font-family: 'Albert Sans', sans-serif;
     font-size: 12px;
+    font-weight: 300;
+    color: #3D332F;
+    line-height: 1.5;
+    margin: 0;
+    /* padding-left: 36px; */
+}
+
+/* Book Button */
+.book-ticket-btn {
+    width: 100%;
+    padding: 16px 24px;
+    background: #8b5e1d;
+    color: #FFFFFF;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    border: none;
     cursor: pointer;
     transition: background 0.3s ease;
+    margin-top: auto;
+    border-radius: 0px;
 }
 
 .book-ticket-btn:hover {
-    background: #9A7350;
+    background: #a48456;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .route-block {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .route-sidebar {
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ferry-departures-section {
+        padding: 60px 0 80px 0;
+    }
+
+    .ferry-departures-title {
+        font-size: 36px;
+    }
+
+    .ferry-departures-subtitle {
+        font-size: 14px;
+    }
+
+    .route-tabs {
+        gap: 20px;
+    }
+
+    .route-tab {
+        font-size: 20px;
+    }
+
+    .route-departure-point {
+        font-size: 18px;
+    }
+
+    .ferry-schedule-table thead th,
+    .ferry-schedule-table tbody td {
+        padding: 16px 20px;
+        font-size: 12px;
+    }
+
+    .sidebar-item {
+        margin-bottom: 20px;
+    }
+
+    .sidebar-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .sidebar-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .sidebar-label {
+        font-size: 14px;
+    }
+
+    .sidebar-value {
+        font-size: 12px;
+        padding-left: 32px;
+    }
+}
+
+@media (max-width: 480px) {
+    .route-tabs {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .route-tab {
+        font-size: 18px;
+    }
+
+    .ferry-schedule-table thead th,
+    .ferry-schedule-table tbody td {
+        padding: 12px 16px;
+        font-size: 11px;
+    }
 }
 
 /* Luggage Information Section */
@@ -280,24 +393,25 @@
 
 .section-title {
     font-family: 'Amiri', serif;
-    font-size: 32px;
+    font-size: 48px;
     font-weight: 400;
     color: #3D332F;
     text-transform: uppercase;
     text-align: center;
-    margin: 0 0 80px 0;
+    margin: 0 0 100px 0;
     letter-spacing: -0.5px;
 }
 
 .luggage-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    /* grid-template-columns: 1fr 1fr; */
     gap: 100px;
+    justify-content: space-evenly;
 }
 
 .luggage-block-title {
     font-family: 'Amiri', serif;
-    font-size: 24px;
+    font-size: 32px;
     font-weight: 400;
     color: #3D332F;
     text-transform: uppercase;
@@ -308,7 +422,8 @@
 .luggage-items {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px 30px;
+    gap: 25px 80px;
+    max-width: fit-content;
 }
 
 .luggage-item {
@@ -317,13 +432,21 @@
     gap: 10px;
 }
 
+.luggage-icon-label {
+    display: flex;
+    direction: row;
+    align-items: center;
+    gap: 10px;
+    align-content: center;
+}
+
 .luggage-icon {
     width: 28px;
     height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
 }
 
 .luggage-info {
@@ -335,14 +458,14 @@
     font-size: 16px;
     font-weight: 400;
     color: #3D332F;
-    margin-bottom: 8px;
+    /* margin-bottom: 8px; */
 }
 
 .luggage-value {
     font-family: 'Albert Sans', sans-serif;
     font-size: 12px;
     font-weight: 300;
-    color: #6B6B6B;
+    color: #3D332F;
     line-height: 1.4;
 }
 
@@ -350,6 +473,20 @@
 .visa-requirements-section {
     padding: 80px 0 150px 0;
     /* background: #FCFAF6; */
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.visa-section-title {
+    font-family: 'Amiri', serif;
+    font-size: 48px;
+    font-weight: 400;
+    color: #3D332F;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 24px 0;
+    letter-spacing: -0.5px;
 }
 
 .section-subtitle {
@@ -357,12 +494,22 @@
     font-size: 16px;
     line-height: 1.6;
     color: #3D332F;
+    font-weight: 400;
     text-align: center;
-    margin: 0 0 40px 0;
+    margin: 0 0 24px 0;
+}
+
+.visa-section-divider {
+    height: 1px;
+    width: auto;
+    /* max-width: 574px; */
+    color: #DAD6CF;
+    background: #DAD6CF;
+    margin: 0 auto 24px auto;
 }
 
 .visa-buttons-wrapper {
-    max-width: 900px;
+    /* max-width: 900px; */
     margin: 0 auto;
     display: flex;
     gap: 20px;
@@ -371,7 +518,7 @@
 
 .visa-btn {
     flex: 1;
-    max-width: 440px;
+    max-width: fit-content;
     padding: 18px 40px;
     font-family: 'Albert Sans', sans-serif;
     font-size: 11px;
@@ -387,24 +534,24 @@
 
 .visa-btn-outline {
     background: transparent;
-    color: #AF845F;
-    border: 1px solid #AF845F;
+    color: #8b5e1d;
+    border: 1px solid #8b5e1d;
 }
 
 .visa-btn-outline:hover {
-    background: #AF845F;
+    background: #8b5e1d;
     color: white;
 }
 
 .visa-btn-filled {
-    background: #AF845F;
+    background: #8b5e1d;
     color: white;
-    border: 1px solid #AF845F;
+    border: 1px solid #8b5e1d;
 }
 
 .visa-btn-filled:hover {
-    background: #9A7350;
-    border-color: #9A7350;
+    background: #a48456;
+    border-color: #a48456;
 }
 
 /* Responsive */
