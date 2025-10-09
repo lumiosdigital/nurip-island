@@ -8227,9 +8227,6 @@ function nirup_create_private_event_submissions_table() {
     dbDelta($sql);
 }
 
-/**
- * Private Events Page Customizer Settings
- */
 function nirup_private_events_customizer($wp_customize) {
     
     // ===========================
@@ -8312,315 +8309,212 @@ function nirup_private_events_customizer($wp_customize) {
         'priority' => 26,
     ));
     
-    // === CARD 1: BALLROOM ===
+    // ===========================
+    // CARD 1: BALLROOM
+    // ===========================
     
-    $wp_customize->add_setting('nirup_private_event_wedding_title', array(
-        'default' => __('Weddings', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_event_wedding_title', array(
-        'label' => __('Wedding Card - Title', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'text',
-        'priority' => 30,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_event_wedding_description', array(
-        'default' => __('Exchange vows in paradise with our bespoke wedding packages. From intimate ceremonies to grand celebrations.', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_textarea_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_event_wedding_description', array(
-        'label' => __('Wedding Card - Description', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'textarea',
-        'priority' => 40,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_event_wedding_image', array(
+    $wp_customize->add_setting('nirup_event_ballroom_image', array(
         'default' => '',
         'sanitize_callback' => 'absint',
         'transport' => 'refresh',
     ));
     
-    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_private_event_wedding_image', array(
-        'label' => __('Wedding Card - Image', 'nirup-island'),
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_event_ballroom_image', array(
+        'label' => __('Ballroom - Image', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'mime_type' => 'image',
+        'priority' => 30,
+    )));
+    
+    $wp_customize->add_setting('nirup_event_ballroom_location', array(
+        'default' => __('Westin Nirup Island Resort & Spa', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_event_ballroom_location', array(
+        'label' => __('Ballroom - Venue Name', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 31,
+    ));
+    
+    $wp_customize->add_setting('nirup_event_ballroom_title', array(
+        'default' => __('BALLROOM', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_event_ballroom_title', array(
+        'label' => __('Ballroom - Title', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 32,
+    ));
+    
+    $wp_customize->add_setting('nirup_event_ballroom_description', array(
+        'default' => __('Celebrate life\'s most important moments at Nirup Island\'s elegant ballroom. Perfect for weddings, anniversaries, and milestone events, the ballroom offers a pillarless 450 sqm space that can be transformed to match your vision. With breathtaking views and access to the island\'s unique venues, your celebration becomes truly unforgettable.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_event_ballroom_description', array(
+        'label' => __('Ballroom - Description', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'textarea',
+        'priority' => 33,
+    ));
+    
+    // ===========================
+    // CARD 2: MEETING ROOMS
+    // ===========================
+    
+    $wp_customize->add_setting('nirup_event_meeting_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_event_meeting_image', array(
+        'label' => __('Meeting Rooms - Image', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'mime_type' => 'image',
+        'priority' => 40,
+    )));
+    
+    $wp_customize->add_setting('nirup_event_meeting_location', array(
+        'default' => __('Westin Nirup Island Resort & Spa', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_event_meeting_location', array(
+        'label' => __('Meeting Rooms - Venue Name', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 41,
+    ));
+    
+    $wp_customize->add_setting('nirup_event_meeting_title', array(
+        'default' => __('MEETING ROOMS', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_event_meeting_title', array(
+        'label' => __('Meeting Rooms - Title', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 42,
+    ));
+    
+    $wp_customize->add_setting('nirup_event_meeting_description', array(
+        'default' => __('Designed for productivity and collaboration, our meeting rooms combine a professional setting with the island\'s calming atmosphere. Ideal for board meetings, team workshops, or small conferences, each space offers flexible layouts, modern amenities, and the option to be combined for larger gatherings.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_event_meeting_description', array(
+        'label' => __('Meeting Rooms - Description', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'textarea',
+        'priority' => 43,
+    ));
+    
+    // ===========================
+    // CARD 3: WEDDINGS
+    // ===========================
+    
+    $wp_customize->add_setting('nirup_event_wedding_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_event_wedding_image', array(
+        'label' => __('Weddings - Image', 'nirup-island'),
         'section' => 'nirup_private_events_content',
         'mime_type' => 'image',
         'priority' => 50,
     )));
     
-    // === CARD 2: CORPORATE MEETINGS ===
-    
-    $wp_customize->add_setting('nirup_private_event_corporate_title', array(
-        'default' => __('Corporate Meetings', 'nirup-island'),
+    $wp_customize->add_setting('nirup_event_wedding_location', array(
+        'default' => __('Nirup Island', 'nirup-island'),
         'sanitize_callback' => 'sanitize_text_field',
         'transport' => 'postMessage',
     ));
     
-    $wp_customize->add_control('nirup_private_event_corporate_title', array(
-        'label' => __('Corporate Card - Title', 'nirup-island'),
+    $wp_customize->add_control('nirup_event_wedding_location', array(
+        'label' => __('Weddings - Venue Name', 'nirup-island'),
         'section' => 'nirup_private_events_content',
         'type' => 'text',
-        'priority' => 60,
+        'priority' => 51,
     ));
     
-    $wp_customize->add_setting('nirup_private_event_corporate_description', array(
-        'default' => __('Inspire collaboration with our corporate packages. Modern facilities and tranquil surroundings.', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_textarea_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_event_corporate_description', array(
-        'label' => __('Corporate Card - Description', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'textarea',
-        'priority' => 70,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_event_corporate_image', array(
-        'default' => '',
-        'sanitize_callback' => 'absint',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_private_event_corporate_image', array(
-        'label' => __('Corporate Card - Image', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'mime_type' => 'image',
-        'priority' => 80,
-    )));
-    
-    // === CARD 3: TEAM BUILDING ===
-    
-    $wp_customize->add_setting('nirup_private_event_teambuilding_title', array(
-        'default' => __('Team Building', 'nirup-island'),
+    $wp_customize->add_setting('nirup_event_wedding_title', array(
+        'default' => __('WEDDINGS', 'nirup-island'),
         'sanitize_callback' => 'sanitize_text_field',
         'transport' => 'postMessage',
     ));
     
-    $wp_customize->add_control('nirup_private_event_teambuilding_title', array(
-        'label' => __('Team Building Card - Title', 'nirup-island'),
+    $wp_customize->add_control('nirup_event_wedding_title', array(
+        'label' => __('Weddings - Title', 'nirup-island'),
         'section' => 'nirup_private_events_content',
         'type' => 'text',
-        'priority' => 90,
+        'priority' => 52,
     ));
     
-    $wp_customize->add_setting('nirup_private_event_teambuilding_description', array(
-        'default' => __('Strengthen your team with customizable activities in a unique island setting.', 'nirup-island'),
+    $wp_customize->add_setting('nirup_event_wedding_description', array(
+        'default' => __('Exchange vows against the backdrop of shimmering waters and lush landscapes. Nirup Island offers an enchanting setting for weddings of every scale — from intimate ceremonies to grand celebrations. Our team perfects every detail—from custom décor to curated dining—creating memories that last a lifetime.', 'nirup-island'),
         'sanitize_callback' => 'sanitize_textarea_field',
         'transport' => 'postMessage',
     ));
     
-    $wp_customize->add_control('nirup_private_event_teambuilding_description', array(
-        'label' => __('Team Building Card - Description', 'nirup-island'),
+    $wp_customize->add_control('nirup_event_wedding_description', array(
+        'label' => __('Weddings - Description', 'nirup-island'),
         'section' => 'nirup_private_events_content',
         'type' => 'textarea',
-        'priority' => 100,
+        'priority' => 53,
     ));
     
-    $wp_customize->add_setting('nirup_private_event_teambuilding_image', array(
-        'default' => '',
-        'sanitize_callback' => 'absint',
-        'transport' => 'refresh',
+    // ===========================
+    // FORM SECTION
+    // ===========================
+    
+    $wp_customize->add_section('nirup_private_events_form_settings', array(
+        'title' => __('Private Events Form Settings', 'nirup-island'),
+        'priority' => 48,
     ));
     
-    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_private_event_teambuilding_image', array(
-        'label' => __('Team Building Card - Image', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'mime_type' => 'image',
-        'priority' => 110,
-    )));
-    
-    // === FORM CONTENT ===
-    
+    // Form Title
     $wp_customize->add_setting('nirup_private_events_form_title', array(
-        'default' => __('PLAN YOUR EVENT WITH US', 'nirup-island'),
+        'default' => __('INQUIRE ABOUT AN EVENT', 'nirup-island'),
         'sanitize_callback' => 'sanitize_text_field',
         'transport' => 'postMessage',
     ));
     
     $wp_customize->add_control('nirup_private_events_form_title', array(
         'label' => __('Form Section Title', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
+        'section' => 'nirup_private_events_form_settings',
         'type' => 'text',
-        'priority' => 60,
+        'priority' => 10,
     ));
     
+    // Form Description
     $wp_customize->add_setting('nirup_private_events_form_description', array(
-        'default' => __('From corporate gatherings to once-in-a-lifetime celebrations, Nirup Island provides the perfect backdrop for unforgettable moments. Get in touch with our team today to start planning your event.', 'nirup-island'),
+        'default' => __('Ready to create an unforgettable experience? Get in touch with our team today to start planning your event.', 'nirup-island'),
         'sanitize_callback' => 'sanitize_textarea_field',
         'transport' => 'postMessage',
     ));
     
     $wp_customize->add_control('nirup_private_events_form_description', array(
         'label' => __('Form Section Description', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'textarea',
-        'priority' => 61,
-    ));
-    
-    // Form Labels (simplified)
-    $wp_customize->add_setting('nirup_private_events_label_name', array(
-        'default' => __('Name*', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_label_name', array(
-        'label' => __('Label: Name', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'text',
-        'priority' => 120,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_events_label_email', array(
-        'default' => __('E-mail*', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_label_email', array(
-        'label' => __('Label: Email', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'text',
-        'priority' => 130,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_events_label_phone', array(
-        'default' => __('Phone', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_label_phone', array(
-        'label' => __('Label: Phone', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'text',
-        'priority' => 140,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_events_label_event_type', array(
-        'default' => __('Type of Event*', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_label_event_type', array(
-        'label' => __('Label: Event Type', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'text',
-        'priority' => 150,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_events_label_date', array(
-        'default' => __('Preferred Date', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_label_date', array(
-        'label' => __('Label: Date', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'text',
-        'priority' => 160,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_events_label_guests', array(
-        'default' => __('Number of Guests', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_label_guests', array(
-        'label' => __('Label: Guests', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'text',
-        'priority' => 170,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_events_label_message', array(
-        'default' => __('Additional Details*', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_label_message', array(
-        'label' => __('Label: Message', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'text',
-        'priority' => 180,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_events_submit_text', array(
-        'default' => __('Submit Request', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_submit_text', array(
-        'label' => __('Submit Button Text', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'text',
-        'priority' => 190,
-    ));
-    
-    // Modal Content
-    $wp_customize->add_setting('nirup_private_events_modal_title', array(
-        'default' => __('THANK YOU!', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_modal_title', array(
-        'label' => __('Modal Title', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'text',
-        'priority' => 200,
-    ));
-    
-    $wp_customize->add_setting('nirup_private_events_modal_message', array(
-        'default' => __('Your event request has been received. Our events team will review your requirements and send you a proposal within 1-2 business days.', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_textarea_field',
-        'transport' => 'postMessage',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_modal_message', array(
-        'label' => __('Modal Message', 'nirup-island'),
-        'section' => 'nirup_private_events_content',
-        'type' => 'textarea',
-        'priority' => 210,
-    ));
-    
-    // ===========================
-    // FORM EMAIL SETTINGS
-    // ===========================
-    
-    $wp_customize->add_section('nirup_private_events_form_settings', array(
-        'title' => __('Private Events Form Settings', 'nirup-island'),
-        'priority' => 48,
-        'description' => __('Configure email addresses and email content for private events form', 'nirup-island'),
-    ));
-    
-    // Send FROM Email
-    $wp_customize->add_setting('nirup_private_events_form_from_email', array(
-        'default' => 'noreply@lumiosdigital.com',
-        'sanitize_callback' => 'sanitize_email',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('nirup_private_events_form_from_email', array(
-        'label' => __('Send From Email', 'nirup-island'),
         'section' => 'nirup_private_events_form_settings',
-        'type' => 'email',
-        'description' => __('Email address that will appear as the sender', 'nirup-island'),
-        'priority' => 10,
+        'type' => 'textarea',
+        'priority' => 15,
     ));
     
-    // Send TO Email
+    // Admin Recipient Email
     $wp_customize->add_setting('nirup_private_events_form_email', array(
         'default' => 'lumiosdigital@gmail.com',
         'sanitize_callback' => 'sanitize_email',
@@ -8628,11 +8522,26 @@ function nirup_private_events_customizer($wp_customize) {
     ));
     
     $wp_customize->add_control('nirup_private_events_form_email', array(
-        'label' => __('Send To Email', 'nirup-island'),
+        'label' => __('Admin Recipient Email', 'nirup-island'),
+        'description' => __('Where event inquiries will be sent', 'nirup-island'),
         'section' => 'nirup_private_events_form_settings',
         'type' => 'email',
-        'description' => __('Email address where event requests will be sent', 'nirup-island'),
         'priority' => 20,
+    ));
+    
+    // From Email Address
+    $wp_customize->add_setting('nirup_private_events_form_from_email', array(
+        'default' => 'noreply@lumiosdigital.com',
+        'sanitize_callback' => 'sanitize_email',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_form_from_email', array(
+        'label' => __('From Email Address', 'nirup-island'),
+        'description' => __('Email address that will appear in the "From" field', 'nirup-island'),
+        'section' => 'nirup_private_events_form_settings',
+        'type' => 'email',
+        'priority' => 25,
     ));
     
     // Confirmation Email Subject
@@ -8646,7 +8555,7 @@ function nirup_private_events_customizer($wp_customize) {
         'label' => __('Confirmation Email Subject', 'nirup-island'),
         'section' => 'nirup_private_events_form_settings',
         'type' => 'text',
-        'description' => __('Available tags: {site_name}, {user_name}, {event_type}', 'nirup-island'),
+        'description' => __('Available tag: {site_name}', 'nirup-island'),
         'priority' => 30,
     ));
     
@@ -8684,9 +8593,160 @@ function nirup_private_events_customizer($wp_customize) {
         ),
         'priority' => 50,
     ));
+
+    // ===========================
+// MODAL SETTINGS
+// ===========================
+
+$wp_customize->add_section('nirup_private_events_modal_settings', array(
+    'title' => __('Private Events Thank You Modal', 'nirup-island'),
+    'priority' => 49,
+    'description' => __('Customize the thank you modal that appears after form submission', 'nirup-island'),
+));
+
+// Preview Modal Toggle (hidden setting, just for preview)
+$wp_customize->add_setting('nirup_private_events_modal_preview', array(
+    'default' => false,
+    'transport' => 'postMessage',
+    'sanitize_callback' => 'wp_validate_boolean',
+));
+
+$wp_customize->add_control('nirup_private_events_modal_preview', array(
+    'label' => __('👁️ Show Modal Preview', 'nirup-island'),
+    'section' => 'nirup_private_events_modal_settings',
+    'type' => 'checkbox',
+    'priority' => 5,
+    'description' => __('Check this box to preview the modal while editing', 'nirup-island'),
+));
+
+// Modal Title
+$wp_customize->add_setting('nirup_private_events_modal_title', array(
+    'default' => __('THANK YOU FOR REACHING OUT', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_text_field',
+    'transport' => 'postMessage',
+));
+
+$wp_customize->add_control('nirup_private_events_modal_title', array(
+    'label' => __('Modal Title', 'nirup-island'),
+    'section' => 'nirup_private_events_modal_settings',
+    'type' => 'text',
+    'priority' => 10,
+));
+
+// Modal Intro Text
+$wp_customize->add_setting('nirup_private_events_modal_intro', array(
+    'default' => __('Your event request has been received. Our team will be in touch within 1-2 business days to discuss your plans in detail and guide you through the possibilities.', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_textarea_field',
+    'transport' => 'postMessage',
+));
+
+$wp_customize->add_control('nirup_private_events_modal_intro', array(
+    'label' => __('Modal Intro Text', 'nirup-island'),
+    'section' => 'nirup_private_events_modal_settings',
+    'type' => 'textarea',
+    'priority' => 20,
+));
+
+// Link 1 - URL
+$wp_customize->add_setting('nirup_private_events_modal_link1_url', array(
+    'default' => '/dining/',
+    'sanitize_callback' => 'esc_url_raw',
+    'transport' => 'refresh',
+));
+
+$wp_customize->add_control('nirup_private_events_modal_link1_url', array(
+    'label' => __('Link 1 - URL', 'nirup-island'),
+    'section' => 'nirup_private_events_modal_settings',
+    'type' => 'url',
+    'priority' => 30,
+));
+
+// Link 1 - Text
+$wp_customize->add_setting('nirup_private_events_modal_link1_text', array(
+    'default' => __('Explore our dining experiences', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_text_field',
+    'transport' => 'postMessage',
+));
+
+$wp_customize->add_control('nirup_private_events_modal_link1_text', array(
+    'label' => __('Link 1 - Text', 'nirup-island'),
+    'section' => 'nirup_private_events_modal_settings',
+    'type' => 'text',
+    'priority' => 40,
+));
+
+// Link 2 - URL
+$wp_customize->add_setting('nirup_private_events_modal_link2_url', array(
+    'default' => '/accommodations/',
+    'sanitize_callback' => 'esc_url_raw',
+    'transport' => 'refresh',
+));
+
+$wp_customize->add_control('nirup_private_events_modal_link2_url', array(
+    'label' => __('Link 2 - URL', 'nirup-island'),
+    'section' => 'nirup_private_events_modal_settings',
+    'type' => 'url',
+    'priority' => 50,
+));
+
+// Link 2 - Text
+$wp_customize->add_setting('nirup_private_events_modal_link2_text', array(
+    'default' => __('Discover accommodation for your guests', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_text_field',
+    'transport' => 'postMessage',
+));
+
+$wp_customize->add_control('nirup_private_events_modal_link2_text', array(
+    'label' => __('Link 2 - Text', 'nirup-island'),
+    'section' => 'nirup_private_events_modal_settings',
+    'type' => 'text',
+    'priority' => 60,
+));
+
+// Phone Text
+$wp_customize->add_setting('nirup_private_events_modal_phone_text', array(
+    'default' => __('Contact us directly for time-sensitive enquiries at +62 811-6220-999', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_text_field',
+    'transport' => 'postMessage',
+));
+
+$wp_customize->add_control('nirup_private_events_modal_phone_text', array(
+    'label' => __('Phone Link - Text', 'nirup-island'),
+    'section' => 'nirup_private_events_modal_settings',
+    'type' => 'text',
+    'priority' => 70,
+));
+
+// Phone Number
+$wp_customize->add_setting('nirup_private_events_modal_phone_number', array(
+    'default' => '+62 811-6220-999',
+    'sanitize_callback' => 'sanitize_text_field',
+    'transport' => 'refresh',
+));
+
+$wp_customize->add_control('nirup_private_events_modal_phone_number', array(
+    'label' => __('Phone Number', 'nirup-island'),
+    'section' => 'nirup_private_events_modal_settings',
+    'type' => 'text',
+    'description' => __('The actual phone number that will be dialed when clicked', 'nirup-island'),
+    'priority' => 80,
+));
+
+// Modal Closing Text
+$wp_customize->add_setting('nirup_private_events_modal_closing', array(
+    'default' => __('We look forward to helping you create an event that is both seamless and memorable.', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_text_field',
+    'transport' => 'postMessage',
+));
+
+$wp_customize->add_control('nirup_private_events_modal_closing', array(
+    'label' => __('Modal Closing Text', 'nirup-island'),
+    'section' => 'nirup_private_events_modal_settings',
+    'type' => 'text',
+    'priority' => 90,
+));
 }
 add_action('customize_register', 'nirup_private_events_customizer');
-
 /**
  * Admin Menu for Private Event Submissions
  */
@@ -8760,5 +8820,16 @@ function nirup_private_events_activation() {
 register_activation_hook(__FILE__, 'nirup_private_events_activation');
 
 add_action('after_switch_theme', 'nirup_create_private_event_submissions_table');
+
+function nirup_private_events_customizer_preview() {
+    wp_enqueue_script(
+        'nirup-private-events-customizer-preview',
+        get_template_directory_uri() . '/assets/js/private-events-customizer-preview.js',
+        array('jquery', 'customize-preview'),
+        '1.0.0',
+        true
+    );
+}
+add_action('customize_preview_init', 'nirup_private_events_customizer_preview');
 
 ?>

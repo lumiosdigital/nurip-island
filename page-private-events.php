@@ -52,7 +52,7 @@ get_header();
                     <?php 
                     $ballroom_image_id = get_theme_mod('nirup_event_ballroom_image');
                     if ($ballroom_image_id) {
-                        echo wp_get_attachment_image($ballroom_image_id, 'full', false, array('class' => 'card-img'));
+                        echo wp_get_attachment_image($ballroom_image_id, 'master', false, array('class' => 'card-img'));
                     }
                     ?>
                 </div>
@@ -98,7 +98,7 @@ get_header();
                     <?php 
                     $meeting_image_id = get_theme_mod('nirup_event_meeting_image');
                     if ($meeting_image_id) {
-                        echo wp_get_attachment_image($meeting_image_id, 'full', false, array('class' => 'card-img'));
+                        echo wp_get_attachment_image($meeting_image_id, 'master', false, array('class' => 'card-img'));
                     }
                     ?>
                 </div>
@@ -156,7 +156,7 @@ get_header();
                     <?php 
                     $wedding_image_id = get_theme_mod('nirup_event_wedding_image');
                     if ($wedding_image_id) {
-                        echo wp_get_attachment_image($wedding_image_id, 'full', false, array('class' => 'card-img'));
+                        echo wp_get_attachment_image($wedding_image_id, 'master', false, array('class' => 'card-img'));
                     }
                     ?>
                 </div>
@@ -221,12 +221,12 @@ get_header();
     <!-- Form Section -->
     <section class="private-form-section">
         <div class="private-form-section-container">
-            <h2 class="private-form-section-title">
-                <?php echo esc_html(get_theme_mod('nirup_private_events_form_title', 'PLAN YOUR EVENT WITH US')); ?>
-            </h2>
-            <p class="private-form-section-description">
-                <?php echo esc_html(get_theme_mod('nirup_private_events_form_description', 'From corporate gatherings to once-in-a-lifetime celebrations, Nirup Island provides the perfect backdrop for unforgettable moments. Get in touch with our team today to start planning your event.')); ?>
-            </p>
+        <h2 class="private-form-section-title">
+            <?php echo esc_html(get_theme_mod('nirup_private_events_form_title', __('INQUIRE ABOUT AN EVENT', 'nirup-island'))); ?>
+        </h2>
+        <p class="private-form-section-description">
+            <?php echo esc_html(get_theme_mod('nirup_private_events_form_description', __('Ready to create an unforgettable experience? Get in touch with our team today to start planning your event.', 'nirup-island'))); ?>
+        </p>
 
             <form id="private-events-form" class="private-events-form">
                 <div class="private-form-columns">
@@ -248,15 +248,20 @@ get_header();
                             <label class="private-form-label">Preferred Event Date</label>
                             <input type="text" name="event_date" class="private-form-input" id="event-date" placeholder="dd.mm.yyyy">
                         </div>
-                        <div class="private-form-field">
+                        <div class="private-form-field private-form-select-wrapper">
                             <label class="private-form-label">Event Type</label>
-                            <select name="event_type" id="event-type" class="private-form-select">
-                                <option value="">Choose event type</option>
-                                <option value="Wedding">Wedding</option>
-                                <option value="Corporate Meeting">Corporate Meeting</option>
-                                <option value="Team Building Event">Team Building Event</option>
-                                <option value="Other">Other</option>
-                            </select>
+                            <div class="select-container">
+                                <select name="event_type" id="event-type" class="private-form-select">
+                                    <option value="">Choose event type</option>
+                                    <option value="Wedding">Wedding</option>
+                                    <option value="Corporate Meeting">Corporate Meeting</option>
+                                    <option value="Team Building Event">Team Building Event</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <svg class="private-select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
+                                    <path d="M1 1L7 7L13 1" stroke="#A48456" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
                         </div>
                     </div>
 
@@ -298,9 +303,8 @@ get_header();
                 $link1_text = get_theme_mod('nirup_private_events_modal_link1_text', 'Explore our dining experiences');
                 if ($link1_url && $link1_text) : ?>
                 <a href="<?php echo esc_url($link1_url); ?>" class="modal-link">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#A48456" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#A48456" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <path d="M11.6659 15.1665C12.167 15.8363 12.8062 16.3905 13.5402 16.7916C14.2743 17.1926 15.086 17.4311 15.9203 17.4909C16.7547 17.5506 17.5921 17.4302 18.3758 17.1379C19.1595 16.8455 19.8712 16.388 20.4626 15.7965L23.9626 12.2965C25.0252 11.1963 25.6131 9.72277 25.5999 8.19329C25.5866 6.66381 24.9731 5.20074 23.8915 4.11919C22.81 3.03764 21.3469 2.42416 19.8174 2.41087C18.2879 2.39757 16.8144 2.98554 15.7143 4.04813L13.7076 6.04313M16.3326 12.8331C15.8316 12.1633 15.1923 11.6091 14.4583 11.208C13.7242 10.807 12.9125 10.5685 12.0782 10.5087C11.2438 10.449 10.4064 10.5694 9.62269 10.8617C8.83897 11.1541 8.12729 11.6115 7.53592 12.2031L4.03592 15.7031C2.97333 16.8033 2.38537 18.2768 2.39866 19.8063C2.41195 21.3358 3.02543 22.7989 4.10698 23.8804C5.18853 24.962 6.6516 25.5754 8.18108 25.5887C9.71056 25.602 11.1841 25.0141 12.2843 23.9515L14.2793 21.9565" stroke="#A48456" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <span><?php echo esc_html($link1_text); ?></span>
                 </a>
@@ -311,9 +315,8 @@ get_header();
                 $link2_text = get_theme_mod('nirup_private_events_modal_link2_text', 'Discover accommodation for your guests');
                 if ($link2_url && $link2_text) : ?>
                 <a href="<?php echo esc_url($link2_url); ?>" class="modal-link">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#A48456" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#A48456" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <path d="M11.6659 15.1665C12.167 15.8363 12.8062 16.3905 13.5402 16.7916C14.2743 17.1926 15.086 17.4311 15.9203 17.4909C16.7547 17.5506 17.5921 17.4302 18.3758 17.1379C19.1595 16.8455 19.8712 16.388 20.4626 15.7965L23.9626 12.2965C25.0252 11.1963 25.6131 9.72277 25.5999 8.19329C25.5866 6.66381 24.9731 5.20074 23.8915 4.11919C22.81 3.03764 21.3469 2.42416 19.8174 2.41087C18.2879 2.39757 16.8144 2.98554 15.7143 4.04813L13.7076 6.04313M16.3326 12.8331C15.8316 12.1633 15.1923 11.6091 14.4583 11.208C13.7242 10.807 12.9125 10.5685 12.0782 10.5087C11.2438 10.449 10.4064 10.5694 9.62269 10.8617C8.83897 11.1541 8.12729 11.6115 7.53592 12.2031L4.03592 15.7031C2.97333 16.8033 2.38537 18.2768 2.39866 19.8063C2.41195 21.3358 3.02543 22.7989 4.10698 23.8804C5.18853 24.962 6.6516 25.5754 8.18108 25.5887C9.71056 25.602 11.1841 25.0141 12.2843 23.9515L14.2793 21.9565" stroke="#A48456" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <span><?php echo esc_html($link2_text); ?></span>
                 </a>
@@ -322,14 +325,17 @@ get_header();
             
             <div class="modal-links-right">
                 <?php 
-                $phone_text = get_theme_mod('nirup_private_events_modal_phone_text', 'Contact us directly for time-sensitive enquiries at +62 811-6220-999');
+                $phone_text = get_theme_mod('nirup_private_events_modal_phone_text', 'Contact us directly for time-sensitive enquiries at');
                 $phone_number = get_theme_mod('nirup_private_events_modal_phone_number', '+62 811-6220-999');
                 if ($phone_text) : ?>
-                <a href="tel:<?php echo esc_attr(str_replace(' ', '', $phone_number)); ?>" class="modal-link modal-phone-link">
+                <a href="tel:<?php echo esc_attr(str_replace(' ', '', $phone_number)); ?>" class="modal-phone-link">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="#A48456" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <span><?php echo esc_html($phone_text); ?></span>
+                    <span class="modal-phone-text">
+                        <span class="modal-phone-label">Contact us directly for time-sensitive enquiries at</span>
+                        <span class="modal-phone-number"><?php echo esc_html($phone_number); ?></span>
+                    </span>
                 </a>
                 <?php endif; ?>
             </div>

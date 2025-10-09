@@ -114,7 +114,8 @@ get_header(); ?>
                             <div class="berthing-links">
                                 <a href="#" class="berthing-link">Berthing Rates</a>
                                 <a href="#" class="berthing-link">Arrival Procedure</a>
-                                <a href="#" class="berthing-link">Marina Rules and Regulations</a>
+                                <a href="#" class="berthing-link">Marina Rules and Regulations (EN)</a>
+                                <a href="#" class="berthing-link">Marina Rules and Regulations (ID)</a>
                             </div>
                     </div>
 
