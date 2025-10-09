@@ -2505,6 +2505,13 @@ function nirup_get_breadcrumbs() {
             'url' => ''
         );
     }
+
+    if (is_page_template('page-private-events.php')) {
+        $breadcrumbs[] = array(
+            'title' => 'Private Events',
+            'url' => ''
+        );
+    }
     
     return $breadcrumbs;
 }
@@ -7985,5 +7992,773 @@ function nirup_enqueue_ferry_map_styles() {
     }
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_ferry_map_styles');
+
+function nirup_enqueue_private_events_assets() {
+    if (is_page_template('page-private-events.php')) {
+        // CSS
+        wp_enqueue_style(
+            'nirup-private-events',
+            get_template_directory_uri() . '/assets/css/private-events.css',
+            array(),
+            '1.0.0'
+        );
+        
+        // JS
+        wp_enqueue_script(
+            'nirup-private-events',
+            get_template_directory_uri() . '/assets/js/private-events.js',
+            array('jquery'),
+            '1.0.0',
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_private_events_assets');
+
+/**
+ * Handle Private Events Form Submission
+ */
+function nirup_private_events_form_submit() {
+    // Check nonce for security
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'private_events_form_nonce')) {
+        wp_send_json_error(array('message' => 'Security check failed.'));
+        return;
+    }
+    
+    // Get and sanitize form data
+    $form_data = isset($_POST['form_data']) ? $_POST['form_data'] : array();
+    
+    $name = sanitize_text_field($form_data['name']);
+    $email = sanitize_email($form_data['email']);
+    $phone = sanitize_text_field($form_data['phone']);
+    $event_type = sanitize_text_field($form_data['event_type']);
+    $event_date = sanitize_text_field($form_data['event_date']);
+    $guest_count = sanitize_text_field($form_data['guest_count']);
+    $message = sanitize_textarea_field($form_data['message']);
+    
+    // Validate required fields
+    if (empty($name) || empty($email) || empty($event_type) || empty($message)) {
+        wp_send_json_error(array('message' => 'Please fill in all required fields.'));
+        return;
+    }
+    
+    // Validate email
+    if (!is_email($email)) {
+        wp_send_json_error(array('message' => 'Please enter a valid email address.'));
+        return;
+    }
+    
+    // Store submission in database FIRST
+    nirup_store_private_event_submission($name, $email, $phone, $event_type, $event_date, $guest_count, $message);
+    error_log('Private Events Form - Submission saved to database');
+    
+    // Get email settings from customizer
+    $admin_email = get_theme_mod('nirup_private_events_form_email', 'lumiosdigital@gmail.com');
+    $from_email = get_theme_mod('nirup_private_events_form_from_email', 'noreply@lumiosdigital.com');
+    $from_name = get_bloginfo('name');
+    
+    error_log('Private Events Form - Admin email: ' . $admin_email);
+    error_log('Private Events Form - From email: ' . $from_email);
+    error_log('Private Events Form - User email: ' . $email);
+    
+    // ==========================================
+    // EMAIL 1: ADMIN NOTIFICATION (Internal)
+    // ==========================================
+    $admin_subject = '[' . get_bloginfo('name') . '] New Private Event Request from ' . $name;
+    
+    $admin_body = "New private event request:\n\n";
+    $admin_body .= "Name: " . $name . "\n";
+    $admin_body .= "Email: " . $email . "\n";
+    $admin_body .= "Phone: " . (!empty($phone) ? $phone : 'Not provided') . "\n";
+    $admin_body .= "Event Type: " . $event_type . "\n";
+    $admin_body .= "Preferred Date: " . (!empty($event_date) ? date('F j, Y', strtotime($event_date)) : 'Not specified') . "\n";
+    $admin_body .= "Number of Guests: " . (!empty($guest_count) ? $guest_count : 'Not specified') . "\n\n";
+    $admin_body .= "Additional Details:\n" . $message . "\n\n";
+    $admin_body .= "---\n";
+    $admin_body .= "This email was sent from the private events form on " . get_bloginfo('url') . "\n";
+    $admin_body .= "Submitted on: " . current_time('F j, Y g:i A');
+    
+    $admin_headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: ' . $from_name . ' <' . $from_email . '>',
+        'Reply-To: ' . $name . ' <' . $email . '>'
+    );
+    
+    // ==========================================
+    // EMAIL 2: USER CONFIRMATION (Customer)
+    // ==========================================
+    
+    // Get customizable email content
+    $user_subject_template = get_theme_mod('nirup_private_events_confirmation_subject', 'Thank you for your event inquiry - {site_name}');
+    $user_body_template = get_theme_mod('nirup_private_events_confirmation_body', "Dear {user_name},\n\nThank you for your interest in hosting your event at {site_name}. We have received your request and our events team is reviewing the details.\n\nEvent Request Summary:\nEvent Type: {event_type}\nPreferred Date: {event_date}\nExpected Guests: {guest_count}\n\nOur events coordinator will contact you within 1-2 business days with a customized proposal tailored to your needs.\n\nIf you have any immediate questions, please don't hesitate to call us at {phone_number}.\n\nWe look forward to making your event extraordinary!\n\nWarm regards,\nThe {site_name} Events Team");
+    $user_footer_template = get_theme_mod('nirup_private_events_confirmation_footer', "---\nThis is an automated confirmation email. Please do not reply to this message.");
+    
+    // Replace placeholders with actual values
+    $replacements = array(
+        '{site_name}' => get_bloginfo('name'),
+        '{user_name}' => $name,
+        '{user_email}' => $email,
+        '{user_phone}' => !empty($phone) ? $phone : 'Not provided',
+        '{event_type}' => $event_type,
+        '{event_date}' => !empty($event_date) ? date('F j, Y', strtotime($event_date)) : 'Not specified',
+        '{guest_count}' => !empty($guest_count) ? $guest_count : 'Not specified',
+        '{phone_number}' => get_theme_mod('nirup_contact_phone_primary', '+62 811 6220 999')
+    );
+    
+    // Apply replacements
+    $user_subject = str_replace(array_keys($replacements), array_values($replacements), $user_subject_template);
+    $user_body = str_replace(array_keys($replacements), array_values($replacements), $user_body_template);
+    $user_footer = str_replace(array_keys($replacements), array_values($replacements), $user_footer_template);
+    
+    // Combine body and footer
+    $user_body = $user_body . "\n\n" . $user_footer;
+    
+    $user_headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: ' . $from_name . ' <' . $from_email . '>'
+    );
+    
+    // ==========================================
+    // SEND BOTH EMAILS
+    // ==========================================
+    
+    // Send admin notification
+    error_log('Private Events Form - Attempting to send admin email to: ' . $admin_email);
+    $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
+    error_log('Private Events Form - Admin email result: ' . ($admin_mail_sent ? 'SUCCESS' : 'FAILED'));
+    
+    // Send user confirmation
+    error_log('Private Events Form - Attempting to send user email to: ' . $email);
+    $user_mail_sent = wp_mail($email, $user_subject, $user_body, $user_headers);
+    error_log('Private Events Form - User email result: ' . ($user_mail_sent ? 'SUCCESS' : 'FAILED'));
+    
+    // Check for PHPMailer errors
+    if (!$admin_mail_sent || !$user_mail_sent) {
+        global $phpmailer;
+        if (isset($phpmailer) && !empty($phpmailer->ErrorInfo)) {
+            error_log('Private Events Form - PHPMailer Error: ' . $phpmailer->ErrorInfo);
+        }
+    }
+    
+    // ==========================================
+    // RETURN RESPONSE
+    // ==========================================
+    
+    // Return success if at least one email sent
+    if ($admin_mail_sent || $user_mail_sent) {
+        wp_send_json_success(array(
+            'message' => 'Your event request has been received! We will respond within 1-2 business days.',
+            'admin_sent' => $admin_mail_sent,
+            'user_sent' => $user_mail_sent
+        ));
+    } else {
+        // Both failed but data is saved
+        wp_send_json_success(array(
+            'message' => 'Your event request has been saved! We will respond within 1-2 business days.',
+            'admin_sent' => false,
+            'user_sent' => false
+        ));
+    }
+}
+add_action('wp_ajax_nirup_private_events_form_submit', 'nirup_private_events_form_submit');
+add_action('wp_ajax_nopriv_nirup_private_events_form_submit', 'nirup_private_events_form_submit');
+
+/**
+ * Store Private Event Submission in Database
+ */
+function nirup_store_private_event_submission($name, $email, $phone, $event_type, $event_date, $guest_count, $message) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'private_event_submissions';
+    
+    // Create table if it doesn't exist
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        nirup_create_private_event_submissions_table();
+    }
+    
+    // Insert submission
+    $result = $wpdb->insert(
+        $table_name,
+        array(
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'event_type' => $event_type,
+            'event_date' => $event_date,
+            'guest_count' => $guest_count,
+            'message' => $message,
+            'submission_date' => current_time('mysql')
+        ),
+        array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
+    );
+    
+    if ($result === false) {
+        error_log('Private Events Form - Database storage failed: ' . $wpdb->last_error);
+    } else {
+        error_log('Private Events Form - Submission saved to database successfully');
+    }
+}
+
+/**
+ * Create Private Event Submissions Table
+ */
+function nirup_create_private_event_submissions_table() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'private_event_submissions';
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $sql = "CREATE TABLE $table_name (
+        id bigint(20) NOT NULL AUTO_INCREMENT,
+        name varchar(255) NOT NULL,
+        email varchar(255) NOT NULL,
+        phone varchar(100) DEFAULT '',
+        event_type varchar(255) NOT NULL,
+        event_date date DEFAULT NULL,
+        guest_count varchar(50) DEFAULT '',
+        message text NOT NULL,
+        submission_date datetime NOT NULL,
+        status varchar(20) DEFAULT 'new',
+        PRIMARY KEY (id),
+        KEY email (email),
+        KEY submission_date (submission_date),
+        KEY status (status)
+    ) $charset_collate;";
+    
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+}
+
+/**
+ * Private Events Page Customizer Settings
+ */
+function nirup_private_events_customizer($wp_customize) {
+    
+    // ===========================
+    // PRIVATE EVENTS PAGE CONTENT
+    // ===========================
+    
+    $wp_customize->add_section('nirup_private_events_content', array(
+        'title' => __('Private Events Page Content', 'nirup-island'),
+        'priority' => 47,
+        'description' => __('Customize all text and images on the private events page', 'nirup-island'),
+    ));
+    
+    // Page Title
+    $wp_customize->add_setting('nirup_private_events_title', array(
+        'default' => __('PRIVATE EVENTS', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_title', array(
+        'label' => __('Page Title', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 10,
+    ));
+    
+    // Hero Image
+    $wp_customize->add_setting('nirup_private_events_hero_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_private_events_hero_image', array(
+        'label' => __('Hero Background Image', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'mime_type' => 'image',
+        'priority' => 15,
+    )));
+    
+    // Hero Subtitle
+    $wp_customize->add_setting('nirup_private_events_hero_subtitle', array(
+        'default' => __('Versatile venues where elegance meets island beauty — ideal for meetings, weddings, and celebrations', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_hero_subtitle', array(
+        'label' => __('Hero Subtitle', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'textarea',
+        'priority' => 20,
+    ));
+    
+    // Section Title
+    $wp_customize->add_setting('nirup_private_events_section_title', array(
+        'default' => __('EVENTS', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_section_title', array(
+        'label' => __('Section Title', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 25,
+    ));
+    
+    // Section Description
+    $wp_customize->add_setting('nirup_private_events_section_description', array(
+        'default' => __('Versatile venues for weddings, meetings, and private celebrations on Nirup Island, offering elegant spaces, breathtaking views, and tailored experiences to make every event truly unforgettable.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_section_description', array(
+        'label' => __('Section Description', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'textarea',
+        'priority' => 26,
+    ));
+    
+    // === CARD 1: BALLROOM ===
+    
+    $wp_customize->add_setting('nirup_private_event_wedding_title', array(
+        'default' => __('Weddings', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_event_wedding_title', array(
+        'label' => __('Wedding Card - Title', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 30,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_event_wedding_description', array(
+        'default' => __('Exchange vows in paradise with our bespoke wedding packages. From intimate ceremonies to grand celebrations.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_event_wedding_description', array(
+        'label' => __('Wedding Card - Description', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'textarea',
+        'priority' => 40,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_event_wedding_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_private_event_wedding_image', array(
+        'label' => __('Wedding Card - Image', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'mime_type' => 'image',
+        'priority' => 50,
+    )));
+    
+    // === CARD 2: CORPORATE MEETINGS ===
+    
+    $wp_customize->add_setting('nirup_private_event_corporate_title', array(
+        'default' => __('Corporate Meetings', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_event_corporate_title', array(
+        'label' => __('Corporate Card - Title', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 60,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_event_corporate_description', array(
+        'default' => __('Inspire collaboration with our corporate packages. Modern facilities and tranquil surroundings.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_event_corporate_description', array(
+        'label' => __('Corporate Card - Description', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'textarea',
+        'priority' => 70,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_event_corporate_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_private_event_corporate_image', array(
+        'label' => __('Corporate Card - Image', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'mime_type' => 'image',
+        'priority' => 80,
+    )));
+    
+    // === CARD 3: TEAM BUILDING ===
+    
+    $wp_customize->add_setting('nirup_private_event_teambuilding_title', array(
+        'default' => __('Team Building', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_event_teambuilding_title', array(
+        'label' => __('Team Building Card - Title', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 90,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_event_teambuilding_description', array(
+        'default' => __('Strengthen your team with customizable activities in a unique island setting.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_event_teambuilding_description', array(
+        'label' => __('Team Building Card - Description', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'textarea',
+        'priority' => 100,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_event_teambuilding_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_private_event_teambuilding_image', array(
+        'label' => __('Team Building Card - Image', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'mime_type' => 'image',
+        'priority' => 110,
+    )));
+    
+    // === FORM CONTENT ===
+    
+    $wp_customize->add_setting('nirup_private_events_form_title', array(
+        'default' => __('PLAN YOUR EVENT WITH US', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_form_title', array(
+        'label' => __('Form Section Title', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 60,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_events_form_description', array(
+        'default' => __('From corporate gatherings to once-in-a-lifetime celebrations, Nirup Island provides the perfect backdrop for unforgettable moments. Get in touch with our team today to start planning your event.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_form_description', array(
+        'label' => __('Form Section Description', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'textarea',
+        'priority' => 61,
+    ));
+    
+    // Form Labels (simplified)
+    $wp_customize->add_setting('nirup_private_events_label_name', array(
+        'default' => __('Name*', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_label_name', array(
+        'label' => __('Label: Name', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 120,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_events_label_email', array(
+        'default' => __('E-mail*', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_label_email', array(
+        'label' => __('Label: Email', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 130,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_events_label_phone', array(
+        'default' => __('Phone', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_label_phone', array(
+        'label' => __('Label: Phone', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 140,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_events_label_event_type', array(
+        'default' => __('Type of Event*', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_label_event_type', array(
+        'label' => __('Label: Event Type', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 150,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_events_label_date', array(
+        'default' => __('Preferred Date', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_label_date', array(
+        'label' => __('Label: Date', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 160,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_events_label_guests', array(
+        'default' => __('Number of Guests', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_label_guests', array(
+        'label' => __('Label: Guests', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 170,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_events_label_message', array(
+        'default' => __('Additional Details*', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_label_message', array(
+        'label' => __('Label: Message', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 180,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_events_submit_text', array(
+        'default' => __('Submit Request', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_submit_text', array(
+        'label' => __('Submit Button Text', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 190,
+    ));
+    
+    // Modal Content
+    $wp_customize->add_setting('nirup_private_events_modal_title', array(
+        'default' => __('THANK YOU!', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_modal_title', array(
+        'label' => __('Modal Title', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'text',
+        'priority' => 200,
+    ));
+    
+    $wp_customize->add_setting('nirup_private_events_modal_message', array(
+        'default' => __('Your event request has been received. Our events team will review your requirements and send you a proposal within 1-2 business days.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_modal_message', array(
+        'label' => __('Modal Message', 'nirup-island'),
+        'section' => 'nirup_private_events_content',
+        'type' => 'textarea',
+        'priority' => 210,
+    ));
+    
+    // ===========================
+    // FORM EMAIL SETTINGS
+    // ===========================
+    
+    $wp_customize->add_section('nirup_private_events_form_settings', array(
+        'title' => __('Private Events Form Settings', 'nirup-island'),
+        'priority' => 48,
+        'description' => __('Configure email addresses and email content for private events form', 'nirup-island'),
+    ));
+    
+    // Send FROM Email
+    $wp_customize->add_setting('nirup_private_events_form_from_email', array(
+        'default' => 'noreply@lumiosdigital.com',
+        'sanitize_callback' => 'sanitize_email',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_form_from_email', array(
+        'label' => __('Send From Email', 'nirup-island'),
+        'section' => 'nirup_private_events_form_settings',
+        'type' => 'email',
+        'description' => __('Email address that will appear as the sender', 'nirup-island'),
+        'priority' => 10,
+    ));
+    
+    // Send TO Email
+    $wp_customize->add_setting('nirup_private_events_form_email', array(
+        'default' => 'lumiosdigital@gmail.com',
+        'sanitize_callback' => 'sanitize_email',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_form_email', array(
+        'label' => __('Send To Email', 'nirup-island'),
+        'section' => 'nirup_private_events_form_settings',
+        'type' => 'email',
+        'description' => __('Email address where event requests will be sent', 'nirup-island'),
+        'priority' => 20,
+    ));
+    
+    // Confirmation Email Subject
+    $wp_customize->add_setting('nirup_private_events_confirmation_subject', array(
+        'default' => __('Thank you for your event inquiry - {site_name}', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_confirmation_subject', array(
+        'label' => __('Confirmation Email Subject', 'nirup-island'),
+        'section' => 'nirup_private_events_form_settings',
+        'type' => 'text',
+        'description' => __('Available tags: {site_name}, {user_name}, {event_type}', 'nirup-island'),
+        'priority' => 30,
+    ));
+    
+    // Confirmation Email Body
+    $wp_customize->add_setting('nirup_private_events_confirmation_body', array(
+        'default' => __("Dear {user_name},\n\nThank you for your interest in hosting your event at {site_name}. We have received your request and our events team is reviewing the details.\n\nEvent Request Summary:\nEvent Type: {event_type}\nPreferred Date: {event_date}\nExpected Guests: {guest_count}\n\nOur events coordinator will contact you within 1-2 business days with a customized proposal tailored to your needs.\n\nIf you have any immediate questions, please don't hesitate to call us at {phone_number}.\n\nWe look forward to making your event extraordinary!\n\nWarm regards,\nThe {site_name} Events Team", 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_confirmation_body', array(
+        'label' => __('Confirmation Email Body', 'nirup-island'),
+        'section' => 'nirup_private_events_form_settings',
+        'type' => 'textarea',
+        'description' => __('Available tags: {site_name}, {user_name}, {event_type}, {event_date}, {guest_count}, {phone_number}', 'nirup-island'),
+        'input_attrs' => array(
+            'rows' => 12,
+        ),
+        'priority' => 40,
+    ));
+    
+    // Confirmation Email Footer
+    $wp_customize->add_setting('nirup_private_events_confirmation_footer', array(
+        'default' => __("---\nThis is an automated confirmation email. Please do not reply to this message.", 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_private_events_confirmation_footer', array(
+        'label' => __('Confirmation Email Footer', 'nirup-island'),
+        'section' => 'nirup_private_events_form_settings',
+        'type' => 'textarea',
+        'input_attrs' => array(
+            'rows' => 3,
+        ),
+        'priority' => 50,
+    ));
+}
+add_action('customize_register', 'nirup_private_events_customizer');
+
+/**
+ * Admin Menu for Private Event Submissions
+ */
+function nirup_private_events_admin_menu() {
+    add_menu_page(
+        'Private Event Requests',
+        'Event Requests',
+        'manage_options',
+        'private-event-submissions',
+        'nirup_private_events_admin_page',
+        'dashicons-calendar-alt',
+        26
+    );
+}
+add_action('admin_menu', 'nirup_private_events_admin_menu');
+
+/**
+ * Display Private Event Submissions Admin Page
+ */
+function nirup_private_events_admin_page() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'private_event_submissions';
+    
+    // Get all submissions
+    $submissions = $wpdb->get_results("SELECT * FROM $table_name ORDER BY submission_date DESC");
+    
+    ?>
+    <div class="wrap">
+        <h1>Private Event Requests</h1>
+        
+        <?php if (empty($submissions)): ?>
+            <p>No event requests yet.</p>
+        <?php else: ?>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Event Type</th>
+                        <th>Event Date</th>
+                        <th>Guests</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($submissions as $submission): ?>
+                        <tr>
+                            <td><?php echo date('M j, Y', strtotime($submission->submission_date)); ?></td>
+                            <td><strong><?php echo esc_html($submission->name); ?></strong></td>
+                            <td><a href="mailto:<?php echo esc_attr($submission->email); ?>"><?php echo esc_html($submission->email); ?></a></td>
+                            <td><?php echo esc_html($submission->event_type); ?></td>
+                            <td><?php echo $submission->event_date ? date('M j, Y', strtotime($submission->event_date)) : 'Not specified'; ?></td>
+                            <td><?php echo $submission->guest_count ? esc_html($submission->guest_count) : 'Not specified'; ?></td>
+                            <td><?php echo esc_html($submission->status); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
+/**
+ * Create Private Event Submissions Table on Theme Activation
+ */
+function nirup_private_events_activation() {
+    nirup_create_private_event_submissions_table();
+}
+register_activation_hook(__FILE__, 'nirup_private_events_activation');
+
+add_action('after_switch_theme', 'nirup_create_private_event_submissions_table');
 
 ?>
