@@ -6,7 +6,7 @@
      */
     function initPrivateEventsForm() {
         const $form = $('#private-events-form');
-        const $submitBtn = $('.private-events-submit-btn');
+        const $submitBtn = $('.private-form-submit-btn');
         const $formMessage = $('#form-message');
         const $modal = $('#thank-you-modal');
         

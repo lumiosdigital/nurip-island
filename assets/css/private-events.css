@@ -1,7 +1,7 @@
 /* Private Events Page - Exact Figma Design (node 1291:4062) */
 
 .private-events-page {
-    background: #f3eeea;
+    /* background: #f3eeea; */
     min-height: 100vh;
 }
 
@@ -11,10 +11,13 @@
     height: 780px;
     width: 100%;
     max-width: 1400px;
-    margin: 0 auto 136px;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 120px;
 }
 
-.hero-bg-image {
+.private-hero-bg-image {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -22,13 +25,13 @@
     object-fit: cover;
 }
 
-.hero-overlay {
+.private-hero-overlay {
     position: absolute;
     inset: 0;
     background: rgba(41, 26, 26, 0.2);
 }
 
-.hero-content {
+.private-hero-content {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -39,17 +42,17 @@
     width: 100%;
 }
 
-.hero-title {
+.private-hero-title {
     font-family: 'Amiri', serif;
     font-size: 72px;
     font-weight: 400;
     line-height: 72px;
     letter-spacing: -1px;
     text-transform: uppercase;
-    margin: 0 0 15px 0;
+    /* margin: 0 0 15px 0; */
 }
 
-.hero-subtitle {
+.private-hero-subtitle {
     font-family: 'Albert Sans', sans-serif;
     font-size: 23px;
     font-weight: 300;
@@ -60,7 +63,7 @@
 
 /* Events Section Header */
 .events-section-header {
-    padding: 0 0 80px;
+    padding: 0 0 100px;
 }
 
 .events-header-container {
@@ -192,17 +195,17 @@
 }
 
 /* Form Section */
-.form-section {
-    padding: 116px 0 120px;
+.private-form-section {
+    padding: 116px 0 250px;
 }
 
-.form-section-container {
+.private-form-section-container {
     max-width: 1440px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-.form-section-title {
+.private-form-section-title {
     font-family: 'Amiri', serif;
     font-size: 48px;
     font-weight: 400;
@@ -214,14 +217,14 @@
     margin: 0 0 24px 0;
 }
 
-.form-section-description {
+.private-form-section-description {
     font-family: 'Amiri', serif;
     font-size: 16px;
     font-weight: 400;
     line-height: 1.4;
     color: #3d332f;
     text-align: center;
-    max-width: 642px;
+    max-width: 650px;
     margin: 0 auto 100px;
 }
 
@@ -230,25 +233,26 @@
     margin: 0 auto;
 }
 
-.form-columns {
+.private-form-columns {
     display: grid;
     grid-template-columns: 543px 543px;
     gap: 154px;
     justify-content: center;
 }
 
-.form-column-left,
-.form-column-right {
+.private-form-column-left,
+.private-form-column-right {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 24px;
+    justify-content: space-between;
 }
 
-.form-field {
+.private-form-field {
     position: relative;
 }
 
-.form-label {
+.private-form-label {
     display: block;
     font-family: 'Amiri', serif;
     font-size: 18px;
@@ -258,27 +262,33 @@
     margin-bottom: 7px;
 }
 
-.form-input,
-.form-select {
+.private-form-input,
+.private-form-select {
     width: 100%;
     font-family: 'Amiri', serif;
     font-size: 18px;
     font-weight: 400;
     line-height: 1.4;
     color: rgba(61, 51, 47, 0.2);
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #3d332f;
-    padding: 8px 0;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid #DAD6CF !important;
+    padding: 8px 0 !important;
     outline: none;
 }
 
-.form-input:focus,
-.form-select:focus {
-    color: #3d332f;
+.private-form-input::placeholder,
+.private-form-select::placeholder {
+    color: rgba(61, 51, 47, 0.2);
 }
 
-.form-select {
+.private-form-input:focus,
+.private-form-select:focus {
+    color: #3d332f;
+    background: white !important;
+}
+
+.private-form-select {
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9' stroke='%23A48456' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -288,29 +298,33 @@
     cursor: pointer;
 }
 
-.form-textarea {
+.private-form-textarea {
     width: 100%;
-    height: 284px;
+    height: 345px;
     font-family: 'Amiri', serif;
     font-size: 18px;
     font-weight: 400;
     line-height: 1.4;
     color: rgba(61, 51, 47, 0.2);
     background: transparent;
-    border: 1px solid #dad6cf;
+    border: 1px solid #DAD6CF !important;
     padding: 8px;
     outline: none;
     resize: none;
 }
 
-.form-textarea:focus {
+.private-form-textarea::placeholder {
+    color: rgba(61, 51, 47, 0.2);
+}
+
+.private-form-textarea:focus {
     color: #3d332f;
 }
 
-.form-submit-btn {
+.private-form-submit-btn {
     width: 301px;
     height: 40px;
-    background: #a48456;
+    background: #8b5e1d;
     border: none;
     font-family: 'Albert Sans', sans-serif;
     font-size: 11px;
@@ -322,28 +336,29 @@
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
-    margin-top: 32px;
+    /* margin-top: 32px; */
+    border-radius: 0px;
 }
 
-.form-submit-btn:hover {
-    background: #8b5e1d;
+.private-form-submit-btn:hover {
+    background: #a48456;
 }
 
-.form-submit-btn.loading {
+.private-form-submit-btn.loading {
     opacity: 0.7;
     pointer-events: none;
 }
 
-.form-submit-btn .btn-text {
+.private-form-submit-btn .private-btn-text {
     display: inline-block;
     transition: opacity 0.3s ease;
 }
 
-.form-submit-btn.loading .btn-text {
+.private-form-submit-btn.loading .private-btn-text {
     opacity: 0;
 }
 
-.form-submit-btn .btn-loader {
+.private-form-submit-btn .private-btn-loader {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -357,7 +372,7 @@
     opacity: 0;
 }
 
-.form-submit-btn.loading .btn-loader {
+.private-form-submit-btn.loading .private-btn-loader {
     opacity: 1;
 }
 
@@ -367,7 +382,7 @@
     }
 }
 
-.form-message {
+.private-form-message {
     margin-top: 30px;
     padding: 15px 20px;
     border-radius: 4px;
@@ -377,13 +392,13 @@
     display: none;
 }
 
-.form-message.success {
+.private-form-message.success {
     background: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
 }
 
-.form-message.error {
+.private-form-message.error {
     background: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
@@ -418,7 +433,7 @@
     z-index: 10001;
     background: white;
     padding: 60px 40px;
-    max-width: 600px;
+    max-width: 800px;
     width: 90%;
     text-align: center;
 }
@@ -439,6 +454,60 @@
     font-size: 18px;
     font-weight: 300;
     line-height: 1.6;
+    color: #3d332f;
+    margin: 0;
+}
+
+.modal-intro-text {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #3d332f;
+    margin: 0 0 40px 0;
+}
+
+.modal-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 40px;
+}
+
+.modal-links-left,
+.modal-links-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3d332f;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.modal-link:hover {
+    color: #A48456;
+}
+
+.modal-link svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.modal-closing-text {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
     color: #3d332f;
     margin: 0;
 }
