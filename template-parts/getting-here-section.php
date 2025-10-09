@@ -63,11 +63,11 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
             <?php endif; ?>
         </div>
         
-        <!-- Map Container -->
-        <div class="getting-here-map-container">
+
+       <!-- <div class="getting-here-map-container">
             
             <?php if ($google_maps_api_key): ?>
-            <!-- Google Maps Container -->
+
             <div id="nirup-ferry-map" class="nirup-google-map" 
                  data-center-lat="<?php echo esc_attr($map_center_lat); ?>"
                  data-center-lng="<?php echo esc_attr($map_center_lng); ?>"
@@ -80,7 +80,7 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
                  data-singapore-info="<?php echo esc_attr($singapore_ferry_info); ?>"
                  data-batam-info="<?php echo esc_attr($batam_ferry_info); ?>">
                 
-                <!-- Loading indicator -->
+
                 <div class="map-loading">
                     <div class="loading-spinner"></div>
                     <p><?php _e('Loading interactive map...', 'nirup-island'); ?></p>
@@ -88,7 +88,7 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
             </div>
             
             <?php else: ?>
-            <!-- Fallback: Google Maps Embed (no API key required) -->
+
             <div class="google-maps-embed">
                 <iframe
                     width="100%"
@@ -102,15 +102,12 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
             </div>
             <?php endif; ?>
             
-            <!-- Map Info Overlay -->
+
             <div class="map-info-overlay">
                 <div class="ferry-routes-info">
                     <div class="route-info singapore-route-info">
                         <div class="route-icon singapore-icon">
-                            <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="10" fill="#4285F4"/>
-                                <circle cx="12" cy="12" r="4" fill="white"/>
-                            </svg> -->
+
                         </div>
                         <div class="route-details">
                             <h4><?php _e('From Singapore', 'nirup-island'); ?></h4>
@@ -120,10 +117,7 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
                     
                     <div class="route-info batam-route-info">
                         <div class="route-icon batam-icon">
-                            <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="10" fill="#EA4335"/>
-                                <circle cx="12" cy="12" r="4" fill="white"/>
-                            </svg> -->
+
                         </div>
                         <div class="route-details">
                             <h4><?php _e('From Batam', 'nirup-island'); ?></h4>
@@ -132,7 +126,6 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
                     </div>
                 </div>
                 
-                <!-- Map Controls -->
                 <div class="map-controls">
                     <button class="map-control-btn" id="show-singapore-route" data-route="singapore">
                         <?php _e('Singapore Route', 'nirup-island'); ?>
@@ -145,41 +138,17 @@ $map_style = get_theme_mod('nirup_map_style', 'terrain'); // roadmap, satellite,
                     </button>
                 </div>
             </div>
-        </div>
-        
-        <!-- Ferry Schedule Information -->
-        <!-- <div class="ferry-schedule-info">
-            <div class="schedule-container">
-                <div class="schedule-item singapore-schedule">
-                    <h3><?php _e('From Singapore', 'nirup-island'); ?></h3>
-                    <div class="schedule-details">
-                        <div class="departure-point">
-                            <strong><?php _e('Departure:', 'nirup-island'); ?></strong>
-                            <span><?php echo esc_html(get_theme_mod('nirup_singapore_departure', 'HarbourFront Centre')); ?></span>
-                        </div>
-                        <div class="travel-time">
-                            <strong><?php _e('Travel Time:', 'nirup-island'); ?></strong>
-                            <span><?php echo esc_html(get_theme_mod('nirup_singapore_time', '50 minutes')); ?></span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="schedule-item batam-schedule">
-                    <h3><?php _e('From Batam', 'nirup-island'); ?></h3>
-                    <div class="schedule-details">
-                        <div class="departure-point">
-                            <strong><?php _e('Departure:', 'nirup-island'); ?></strong>
-                            <span><?php echo esc_html(get_theme_mod('nirup_batam_departure', 'Harbour Bay Ferry Terminal')); ?></span>
-                        </div>
-                        <div class="travel-time">
-                            <strong><?php _e('Travel Time:', 'nirup-island'); ?></strong>
-                            <span><?php echo esc_html(get_theme_mod('nirup_batam_time', '20 minutes')); ?></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-    </div>
+        </div> 
+    </div> -->
+
+    <?php 
+        get_template_part('template-parts/map-component', null, array(
+            'show_controls' => true,
+            'show_route_info' => true,
+            'map_height' => '700px',
+            'container_class' => 'getting-here-map-container'
+        )); 
+    ?>
 </section>
 
 <?php if ($google_maps_api_key): ?>

@@ -5,8 +5,12 @@
 
 // Define callback function immediately in global scope
 window.initNirupMap = function() {
-    console.log('✅ initNirupMap called - CUSTOM MARKERS VERSION');
+;
     
+    if (!window.nirupMapData) {
+        console.error('❌ Map data not available');
+        return;
+    }
     if (!window.nirupMapData) {
         console.error('❌ Map data not available');
         return;
@@ -17,8 +21,6 @@ window.initNirupMap = function() {
         console.error('❌ Map container not found');
         return;
     }
-
-    console.log('✅ Starting custom map initialization...');
 
     // Hide loading indicator
     const loadingElement = mapElement.querySelector('.map-loading');
@@ -42,7 +44,6 @@ window.initNirupMap = function() {
     try {
         // Create map
         const map = new google.maps.Map(mapElement, mapOptions);
-        console.log('✅ Map created successfully');
 
         // Create Nirup Island marker (large custom marker)
         const nirupMarker = new google.maps.Marker({
@@ -370,4 +371,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-console.log('✅ CUSTOM Getting Here script loaded successfully');
+// console.log('✅ CUSTOM Getting Here script loaded successfully');

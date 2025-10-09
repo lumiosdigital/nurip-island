@@ -4186,8 +4186,10 @@ function nirup_should_display_getting_here_section() {
  * Enqueue Getting Here Section specific styles and scripts (FIXED)
  */
 function nirup_getting_here_assets() {
-    // Only load on pages where the section is displayed
-    if (nirup_should_display_getting_here_section()) {
+    // Load on homepage Getting Here section OR full Getting Here page
+    $should_load = nirup_should_display_getting_here_section() || is_page_template('page-getting-here.php');
+    
+    if ($should_load) {
         
         $google_maps_api_key = get_theme_mod('nirup_google_maps_api_key', '');
         
@@ -4197,7 +4199,7 @@ function nirup_getting_here_assets() {
                 'nirup-getting-here-js',
                 get_template_directory_uri() . '/assets/js/getting-here.js',
                 array('jquery'),
-                '1.0.1', // Updated version
+                '1.0.1',
                 false // Load in head to ensure callback is available
             );
             
@@ -4205,7 +4207,7 @@ function nirup_getting_here_assets() {
             wp_enqueue_script(
                 'google-maps-api',
                 'https://maps.googleapis.com/maps/api/js?key=' . esc_attr($google_maps_api_key) . '&libraries=geometry&callback=initNirupMap&loading=async',
-                array('nirup-getting-here-js'), // Depend on our script
+                array('nirup-getting-here-js'),
                 null,
                 false // Load in head
             );
@@ -7547,7 +7549,7 @@ function nirup_getting_here_page_assets() {
         if ($google_maps_api_key) {
             wp_enqueue_script(
                 'google-maps-getting-here',
-                'https://maps.googleapis.com/maps/api/js?key=' . esc_attr($google_maps_api_key) . '&callback=initGettingHereMap&loading=async',
+                'https://maps.googleapis.com/maps/api/js?key=' . esc_attr($google_maps_api_key) . '&callback=initNirupMap&loading=async',
                 array(),
                 null,
                 true
@@ -7967,5 +7969,21 @@ function nirup_getting_here_page_customizer($wp_customize) {
     ));
 }
 add_action('customize_register', 'nirup_getting_here_page_customizer');
+
+// Include Ferry Map Customizer Settings
+require_once get_template_directory() . '/inc/customizer-map.php';
+
+function nirup_enqueue_ferry_map_styles() {
+    // Only load on pages that use the map
+    if (is_front_page() || is_page_template('page-templates/page-getting-here.php')) {
+        wp_enqueue_style(
+            'nirup-ferry-map',
+            get_template_directory_uri() . '/assets/css/ferry-map.css',
+            array(),
+            '1.0.0'
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_ferry_map_styles');
 
 ?>
