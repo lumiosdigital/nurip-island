@@ -200,8 +200,8 @@ get_header(); ?>
                         </ul>
 
                         <div class="berthing-buttons">
-                            <a href="#" class="btn-outline">Reserve a CIQ Slot</a>
-                            <a href="https://one15marina.com/marina/ciq-reservation-form/" target="_blank" rel="noopener noreferrer" class="btn-primary">Book a Berth</a>
+                            <!-- <a href="https://one15marina.com/marina/ciq-reservation-form/" target="_blank" rel="noopener noreferrer" class="btn-outline">Reserve a CIQ Slot</a> -->
+                            <a href="https://one15marina.com/marina/ciq-reservation-form/" target="_blank" rel="noopener noreferrer" class="btn-primary">Reserve a CIQ Slot</a>
                         </div>
                     </div>
                 </div>
