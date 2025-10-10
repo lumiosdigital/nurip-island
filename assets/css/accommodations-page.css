@@ -1,0 +1,592 @@
+
+.accommodations-page {
+    min-height: 100vh;
+}
+
+.accommodations-hero-section {
+    position: relative;
+    height: 780px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0px auto 0;
+    overflow: hidden;
+}
+
+.accommodations-hero-bg-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.accommodations-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(41, 26, 26, 0.4);
+}
+
+.accommodations-hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    max-width: 650px;
+    width: 100%;
+    z-index: 10;
+}
+
+.accommodations-hero-title {
+    font-family: 'Amiri', serif;
+    font-size: 72px;
+    font-weight: 400;
+    line-height: 72px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    margin: 0 0 15px 0;
+}
+
+.accommodations-hero-subtitle {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 23px;
+    font-weight: 300;
+    line-height: 1.4;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.riahi-section,
+.westin-section {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 140px 0 0;
+}
+
+.riahi-container,
+.westin-container {
+    max-width: 896px;
+    margin: 0 auto 100px;
+    text-align: center;
+}
+
+.riahi-header,
+.westin-header {
+    margin-bottom: 64px;
+}
+
+.riahi-title,
+.westin-title {
+    font-family: 'Amiri', serif;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3d332f;
+    margin: 0 0 30px 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.riahi-description,
+.westin-description {
+    font-family: 'Amiri', serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3d332f;
+    opacity: 0.8;
+    margin: 0;
+}
+
+/* ===========================
+   AMENITIES SECTION
+   =========================== */
+
+.riahi-amenities,
+.westin-amenities {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    align-items: center;
+    /* margin-top: 50px; */
+}
+
+.accpage-amenities-row {
+    display: flex;
+    gap: 36px;
+    align-items: flex-start;
+}
+
+.accpage-amenity-item {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    min-width: 223px;
+}
+
+.accpage-amenity-item svg {
+    flex-shrink: 0;
+}
+
+.accpage-amenity-item span {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3d332f;
+    text-align: left;
+}
+
+/* ===========================
+   WESTIN CTA BUTTON
+   =========================== */
+
+.westin-cta-wrapper {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.westin-cta-button {
+
+    background: #8b5e1d;    
+    color: white;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 16px 0;
+    width: 301px;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    display: inline-block;
+}
+
+.westin-cta-button:hover {
+    background: #a48456;
+}
+
+/* ===========================
+   CAROUSEL STRUCTURE
+   =========================== */
+
+.accpage-carousel {
+    position: relative;
+    width: 100%;
+    margin-bottom: 100px;
+}
+
+.accpage-carousel-wrapper {
+    overflow: hidden;
+    width: 100%;
+}
+
+.accpage-carousel-track {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.3s ease-in-out;
+    padding: 10px 0 0;
+}
+
+/* ===========================
+   ACCOMMODATION CARDS
+   =========================== */
+
+.accpage-card {
+    flex: 0 0 380px;
+    height: 598px;
+    background: #fcfaf6;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.accpage-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Westin cards are not clickable/hoverable */
+.westin-card {
+    cursor: default;
+}
+
+.westin-card:hover {
+    transform: none;
+}
+
+.accpage-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.accpage-image-container {
+    width: 380px;
+    height: 420px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.accpage-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.accpage-card:hover .accpage-image {
+    transform: scale(1.05);
+}
+
+.westin-card .accpage-image {
+    transform: none;
+}
+
+.accpage-details {
+    padding: 20px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+}
+
+.accpage-category {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.4;
+    color: #555250;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.accpage-name {
+    font-family: 'Amiri', serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #555250;
+    margin: 0;
+}
+
+.accpage-button {
+
+    background: #8b5e1d;    
+    color: white;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 16px 0;
+    width: 160px;
+    margin: 0 auto 20px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    border-radius: 0;
+}
+
+.accpage-button:hover {
+    background: #a48456;
+}
+
+/* ===========================
+   CAROUSEL NAVIGATION
+   =========================== */
+
+.accpage-carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+    /* padding: 0 20px; */
+    gap: 30px;
+}
+
+.accpage-carousel-line {
+    flex: 1;
+    height: 1px;
+    background: #A48456;
+    max-width: 1282px;
+    opacity: 0.3;
+}
+
+
+.accpage-nav-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.accpage-nav-btn {
+    width: 38px;
+    height: 38px;
+    /* border: 1px solid #a48456; */
+    border-radius: 40px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+
+.accpage-nav-btn:hover:not(:disabled) {
+    transform: scale(1.1);
+    /* background: rgba(164, 132, 86, 0.1); */
+}
+
+.accpage-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* ===========================
+   NO CONTENT MESSAGES
+   =========================== */
+
+.no-villas-message,
+.no-rooms-message {
+    text-align: center;
+    padding: 60px 20px;
+    width: 100%;
+}
+
+.no-villas-message p,
+.no-rooms-message p {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 16px;
+    color: #888;
+    margin: 0;
+}
+
+/* ===========================
+   RESPONSIVE STYLES
+   =========================== */
+
+@media (max-width: 1440px) {
+    .accpage-carousel-track {
+        padding: 0 40px;
+    }
+}
+
+@media (max-width: 968px) {
+    .accommodations-hero-section {
+        height: 600px;
+        margin: 40px 20px 0;
+    }
+
+    .accommodations-hero-title {
+        font-size: 56px;
+        line-height: 1.1;
+    }
+
+    .accommodations-hero-subtitle {
+        font-size: 20px;
+    }
+
+    .riahi-title,
+    .westin-title {
+        font-size: 40px;
+    }
+
+    .riahi-description,
+    .westin-description {
+        font-size: 18px;
+    }
+
+    .accpage-amenities-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .riahi-container,
+    .westin-container {
+        padding: 0 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .accommodations-hero-section {
+        height: 500px;
+    }
+
+    .accommodations-hero-title {
+        font-size: 48px;
+    }
+
+    .accommodations-hero-subtitle {
+        font-size: 18px;
+    }
+
+    .riahi-section,
+    .westin-section {
+        padding: 60px 0 0;
+    }
+
+    .riahi-title,
+    .westin-title {
+        font-size: 36px;
+    }
+
+    .riahi-description,
+    .westin-description {
+        font-size: 16px;
+    }
+
+    .accpage-card {
+        flex: 0 0 340px;
+        height: 550px;
+    }
+
+    .accpage-image-container {
+        width: 340px;
+        height: 380px;
+    }
+
+    .accpage-name {
+        font-size: 24px;
+    }
+
+    .accpage-carousel-nav {
+        margin-top: 30px;
+        gap: 20px;
+    }
+
+    .accpage-nav-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .accpage-nav-btn.next {
+        width: 38px;
+        height: 38px;
+    }
+
+    .westin-cta-button {
+        width: 250px;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .accommodations-hero-section {
+        height: 400px;
+    }
+
+    .accommodations-hero-title {
+        font-size: 36px;
+        line-height: 1.1;
+    }
+
+    .accommodations-hero-subtitle {
+        font-size: 16px;
+    }
+
+    .riahi-title,
+    .westin-title {
+        font-size: 32px;
+    }
+
+    .accpage-card {
+        flex: 0 0 300px;
+        height: 500px;
+    }
+
+    .accpage-image-container {
+        width: 300px;
+        height: 340px;
+    }
+
+    .accpage-name {
+        font-size: 22px;
+    }
+
+    .accpage-carousel-track {
+        padding: 0 20px;
+        gap: 15px;
+    }
+
+    .accpage-carousel-nav {
+        gap: 15px;
+    }
+
+    .accpage-carousel-line {
+        max-width: 100px;
+    }
+}
+
+/* ===========================
+   PRINT STYLES
+   =========================== */
+
+@media print {
+    .accpage-carousel-nav {
+        display: none;
+    }
+
+    .accpage-carousel-track {
+        display: block;
+    }
+
+    .accpage-card {
+        flex: none;
+        width: 100%;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+    }
+}
+
+.accpage-divider {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 50px;
+    /* padding: 0 20px; */
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.accpage-divider-text {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #8b5e1d;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.accpage-divider-line {
+    flex: 1;
+    height: 1px;
+    background: #d4c5b3;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .accpage-divider {
+        margin-bottom: 30px;
+    }
+}

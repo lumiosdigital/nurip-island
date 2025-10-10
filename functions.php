@@ -2540,6 +2540,13 @@ function nirup_get_breadcrumbs() {
         );
     }
 
+    if (is_page_template('page-accommodations.php') || is_page('page-accommodations')) {
+        $breadcrumbs[] = array(
+            'title' => 'Accommodations',
+            'url' => ''
+        );
+    }
+
 
     
     return $breadcrumbs;
@@ -9009,4 +9016,434 @@ function nirup_private_events_customizer_preview() {
 }
 add_action('customize_preview_init', 'nirup_private_events_customizer_preview');
 
+function nirup_enqueue_accommodations_page_assets() {
+    // Only on accommodations page template
+    if (is_page_template('page-accommodations.php')) {
+        // Enqueue CSS - NEW FILE
+        wp_enqueue_style(
+            'nirup-accommodations-page',
+            get_template_directory_uri() . '/assets/css/accommodations-page.css',
+            array(),
+            '1.0.0'
+        );
+        
+        // Enqueue JavaScript
+        wp_enqueue_script(
+            'nirup-accommodations-page-carousel',
+            get_template_directory_uri() . '/assets/js/accommodations-carousel.js',
+            array(),
+            '1.0.0',
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_accommodations_page_assets');
+
+/**
+ * Accommodations PAGE Customizer Options
+ * RENAMED to avoid conflicts with homepage accommodations section customizer
+ */
+function nirup_accommodations_page_customizer($wp_customize) {
+    // Accommodations PAGE Section
+    $wp_customize->add_section('nirup_accommodations_page', array(
+        'title' => __('Accommodations Page', 'nirup-island'),
+        'priority' => 36,
+        'description' => __('Customize the full accommodations page (not the homepage section)', 'nirup-island'),
+    ));
+
+    // === HERO SECTION ===
+    
+    // Hero Image
+    $wp_customize->add_setting('nirup_accommodations_hero_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_accommodations_hero_image', array(
+        'label' => __('Hero Background Image', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'mime_type' => 'image',
+        'description' => __('Recommended size: 1400x780px', 'nirup-island'),
+    )));
+
+    // Hero Title
+    $wp_customize->add_setting('nirup_accommodations_hero_title', array(
+        'default' => __('ACCOMMODATION', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_accommodations_hero_title', array(
+        'label' => __('Hero Title', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'type' => 'text',
+    ));
+
+    // Hero Subtitle
+    $wp_customize->add_setting('nirup_accommodations_hero_subtitle', array(
+        'default' => __('Find your perfect retreat on Nirup Island — from luxurious resort stays to private residences', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('nirup_accommodations_hero_subtitle', array(
+        'label' => __('Hero Subtitle', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'type' => 'textarea',
+    ));
+
+    // === RIAHI RESIDENCES SECTION ===
+    
+    // Riahi Section Title
+    $wp_customize->add_setting('nirup_riahi_section_title', array(
+        'default' => __('RIAHI RESIDENCES', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_riahi_section_title', array(
+        'label' => __('Riahi Section Title', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'type' => 'text',
+    ));
+
+    // Riahi Section Description
+    $wp_customize->add_setting('nirup_riahi_section_description', array(
+        'default' => __('Riahi Residences offers a tranquil and spacious retreat, with elegantly designed villas featuring fully equipped kitchens and private pools in select units—providing an exclusive sanctuary where guests can enjoy both comfort and privacy. While offering seclusion, the residences remain just a short walk from the island\'s restaurants and the amenities of The Westin Nirup Island Resort & Spa, accessible with day passes.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('nirup_riahi_section_description', array(
+        'label' => __('Riahi Section Description', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'type' => 'textarea',
+        'input_attrs' => array(
+            'rows' => 6,
+        ),
+    ));
+
+    // === WESTIN SECTION ===
+    
+    // Westin Section Title
+    $wp_customize->add_setting('nirup_westin_section_title', array(
+        'default' => __('THE WESTIN NIRUP ISLAND RESORT & SPA', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_westin_section_title', array(
+        'label' => __('Westin Section Title', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'type' => 'text',
+    ));
+
+    // Westin Section Description
+    $wp_customize->add_setting('nirup_westin_section_description', array(
+        'default' => __('Set atop the island\'s hill, each room features beautiful sea views of the Riau Islands. Relax with a soothing spa treatment, enjoy a session in the wellness center, or simply take in the serene surroundings. Families will appreciate the Kids Club, where children can enjoy engaging activities in a safe and fun environment, allowing parents to relax nearby. For those seeking more privacy, the island offers 1 to 3-bedroom villas over the water, each with a private pool, providing direct access to the sea and a closer connection to the island.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('nirup_westin_section_description', array(
+        'label' => __('Westin Section Description', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'type' => 'textarea',
+        'input_attrs' => array(
+            'rows' => 6,
+        ),
+    ));
+
+    // Westin CTA Text
+    $wp_customize->add_setting('nirup_westin_cta_text', array(
+        'default' => __('BOOK AT THE WESTIN', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_westin_cta_text', array(
+        'label' => __('Westin CTA Button Text', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'type' => 'text',
+    ));
+
+    // Westin CTA Link
+    $wp_customize->add_setting('nirup_westin_booking_link', array(
+        'default' => '#',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_westin_booking_link', array(
+        'label' => __('Westin Booking Link', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'type' => 'url',
+        'description' => __('External link to Westin booking website', 'nirup-island'),
+    ));
+}
+add_action('customize_register', 'nirup_accommodations_page_customizer');
+
+function nirup_register_villa_cpt() {
+    $labels = array(
+        'name'                  => _x('Villas', 'Post Type General Name', 'nirup-island'),
+        'singular_name'         => _x('Villa', 'Post Type Singular Name', 'nirup-island'),
+        'menu_name'             => __('Villas', 'nirup-island'),
+        'name_admin_bar'        => __('Villa', 'nirup-island'),
+        'archives'              => __('Villa Archives', 'nirup-island'),
+        'attributes'            => __('Villa Attributes', 'nirup-island'),
+        'parent_item_colon'     => __('Parent Villa:', 'nirup-island'),
+        'all_items'             => __('All Villas', 'nirup-island'),
+        'add_new_item'          => __('Add New Villa', 'nirup-island'),
+        'add_new'               => __('Add New', 'nirup-island'),
+        'new_item'              => __('New Villa', 'nirup-island'),
+        'edit_item'             => __('Edit Villa', 'nirup-island'),
+        'update_item'           => __('Update Villa', 'nirup-island'),
+        'view_item'             => __('View Villa', 'nirup-island'),
+        'view_items'            => __('View Villas', 'nirup-island'),
+        'search_items'          => __('Search Villa', 'nirup-island'),
+        'not_found'             => __('Not found', 'nirup-island'),
+        'not_found_in_trash'    => __('Not found in Trash', 'nirup-island'),
+        'featured_image'        => __('Villa Featured Image', 'nirup-island'),
+        'set_featured_image'    => __('Set villa featured image', 'nirup-island'),
+        'remove_featured_image' => __('Remove villa featured image', 'nirup-island'),
+        'use_featured_image'    => __('Use as villa featured image', 'nirup-island'),
+        'insert_into_item'      => __('Insert into villa', 'nirup-island'),
+        'uploaded_to_this_item' => __('Uploaded to this villa', 'nirup-island'),
+        'items_list'            => __('Villas list', 'nirup-island'),
+        'items_list_navigation' => __('Villas list navigation', 'nirup-island'),
+        'filter_items_list'     => __('Filter villas list', 'nirup-island'),
+    );
+
+    $args = array(
+        'label'                 => __('Villa', 'nirup-island'),
+        'description'           => __('Riahi Residences Villas', 'nirup-island'),
+        'labels'                => $labels,
+        'supports'              => array('title', 'editor', 'thumbnail', 'page-attributes'),
+        'hierarchical'          => false,
+        'public'                => true,
+        'show_ui'               => true,
+        'show_in_menu'          => true,
+        'menu_position'         => 26,
+        'menu_icon'             => 'dashicons-admin-home',
+        'show_in_admin_bar'     => true,
+        'show_in_nav_menus'     => true,
+        'can_export'            => true,
+        'has_archive'           => false,
+        'exclude_from_search'   => false,
+        'publicly_queryable'    => true,
+        'capability_type'       => 'post',
+        'show_in_rest'          => true,
+        'rewrite'               => array('slug' => 'villa'),
+    );
+
+    register_post_type('villa', $args);
+}
+add_action('init', 'nirup_register_villa_cpt');
+
+/**
+ * Register Westin Room Custom Post Type
+ * Simple display-only cards (no single page)
+ */
+function nirup_register_westin_room_cpt() {
+    $labels = array(
+        'name'                  => _x('Westin Rooms', 'Post Type General Name', 'nirup-island'),
+        'singular_name'         => _x('Westin Room', 'Post Type Singular Name', 'nirup-island'),
+        'menu_name'             => __('Westin Rooms', 'nirup-island'),
+        'name_admin_bar'        => __('Westin Room', 'nirup-island'),
+        'archives'              => __('Room Archives', 'nirup-island'),
+        'attributes'            => __('Room Attributes', 'nirup-island'),
+        'parent_item_colon'     => __('Parent Room:', 'nirup-island'),
+        'all_items'             => __('All Rooms', 'nirup-island'),
+        'add_new_item'          => __('Add New Room', 'nirup-island'),
+        'add_new'               => __('Add New', 'nirup-island'),
+        'new_item'              => __('New Room', 'nirup-island'),
+        'edit_item'             => __('Edit Room', 'nirup-island'),
+        'update_item'           => __('Update Room', 'nirup-island'),
+        'view_item'             => __('View Room', 'nirup-island'),
+        'view_items'            => __('View Rooms', 'nirup-island'),
+        'search_items'          => __('Search Room', 'nirup-island'),
+        'not_found'             => __('Not found', 'nirup-island'),
+        'not_found_in_trash'    => __('Not found in Trash', 'nirup-island'),
+        'featured_image'        => __('Room Image', 'nirup-island'),
+        'set_featured_image'    => __('Set room image', 'nirup-island'),
+        'remove_featured_image' => __('Remove room image', 'nirup-island'),
+        'use_featured_image'    => __('Use as room image', 'nirup-island'),
+        'insert_into_item'      => __('Insert into room', 'nirup-island'),
+        'uploaded_to_this_item' => __('Uploaded to this room', 'nirup-island'),
+        'items_list'            => __('Rooms list', 'nirup-island'),
+        'items_list_navigation' => __('Rooms list navigation', 'nirup-island'),
+        'filter_items_list'     => __('Filter rooms list', 'nirup-island'),
+    );
+
+    $args = array(
+        'label'                 => __('Westin Room', 'nirup-island'),
+        'description'           => __('Westin Hotel Room Types', 'nirup-island'),
+        'labels'                => $labels,
+        'supports'              => array('title', 'thumbnail', 'page-attributes'),
+        'hierarchical'          => false,
+        'public'                => false, // Not publicly accessible
+        'show_ui'               => true,
+        'show_in_menu'          => true,
+        'menu_position'         => 27,
+        'menu_icon'             => 'dashicons-building',
+        'show_in_admin_bar'     => true,
+        'show_in_nav_menus'     => false,
+        'can_export'            => true,
+        'has_archive'           => false,
+        'exclude_from_search'   => true,
+        'publicly_queryable'    => false, // No single page
+        'capability_type'       => 'post',
+        'show_in_rest'          => true,
+    );
+
+    register_post_type('westin_room', $args);
+}
+add_action('init', 'nirup_register_westin_room_cpt');
+
+/**
+ * Add Villa Meta Box
+ * For now just villa category field
+ */
+function nirup_add_villa_meta_boxes() {
+    add_meta_box(
+        'villa_details',
+        __('Villa Details', 'nirup-island'),
+        'nirup_villa_meta_box_callback',
+        'villa',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_villa_meta_boxes');
+
+/**
+ * Villa Meta Box Callback
+ */
+function nirup_villa_meta_box_callback($post) {
+    // Add nonce for security
+    wp_nonce_field('nirup_save_villa_meta', 'nirup_villa_meta_nonce');
+    
+    // Get current values
+    $villa_category = get_post_meta($post->ID, '_villa_category', true);
+    ?>
+    
+    <div style="margin-bottom: 20px;">
+        <label for="villa_category" style="display: block; margin-bottom: 5px; font-weight: 600;">
+            <?php _e('Villa Category', 'nirup-island'); ?>
+        </label>
+        <input 
+            type="text" 
+            id="villa_category" 
+            name="villa_category" 
+            value="<?php echo esc_attr($villa_category); ?>" 
+            style="width: 100%; max-width: 500px;"
+            placeholder="e.g., Riahi Residence, Villa 201"
+        />
+        <p class="description">
+            <?php _e('This appears above the villa type name on the card (e.g., "Riahi Residence, Villa 201").', 'nirup-island'); ?>
+        </p>
+    </div>
+    
+    <p style="padding: 15px; background: #f0f0f1; border-left: 4px solid #2271b1;">
+        <strong><?php _e('Note:', 'nirup-island'); ?></strong> 
+        <?php _e('More villa details (bedrooms, amenities, pricing, etc.) will be added in the next phase when we create the single villa page.', 'nirup-island'); ?>
+    </p>
+    
+    <?php
+}
+
+/**
+ * Save Villa Meta
+ */
+function nirup_save_villa_meta($post_id) {
+    // Check nonce
+    if (!isset($_POST['nirup_villa_meta_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_villa_meta_nonce'], 'nirup_save_villa_meta')) {
+        return;
+    }
+    
+    // Check autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    
+    // Check permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    
+    // Save villa category
+    if (isset($_POST['villa_category'])) {
+        update_post_meta(
+            $post_id,
+            '_villa_category',
+            sanitize_text_field($_POST['villa_category'])
+        );
+    }
+}
+add_action('save_post_villa', 'nirup_save_villa_meta');
+
+/**
+ * Add custom columns to Villa admin list
+ */
+function nirup_villa_admin_columns($columns) {
+    $new_columns = array();
+    $new_columns['cb'] = $columns['cb'];
+    $new_columns['featured_image'] = __('Image', 'nirup-island');
+    $new_columns['title'] = $columns['title'];
+    $new_columns['villa_category'] = __('Category', 'nirup-island');
+    $new_columns['date'] = $columns['date'];
+    return $new_columns;
+}
+add_filter('manage_villa_posts_columns', 'nirup_villa_admin_columns');
+
+/**
+ * Display custom column content for Villas
+ */
+function nirup_villa_admin_column_content($column, $post_id) {
+    switch ($column) {
+        case 'featured_image':
+            if (has_post_thumbnail($post_id)) {
+                echo get_the_post_thumbnail($post_id, array(60, 60));
+            } else {
+                echo '—';
+            }
+            break;
+        case 'villa_category':
+            $category = get_post_meta($post_id, '_villa_category', true);
+            echo $category ? esc_html($category) : '—';
+            break;
+    }
+}
+add_action('manage_villa_posts_custom_column', 'nirup_villa_admin_column_content', 10, 2);
+
+/**
+ * Add custom columns to Westin Room admin list
+ */
+function nirup_westin_room_admin_columns($columns) {
+    $new_columns = array();
+    $new_columns['cb'] = $columns['cb'];
+    $new_columns['featured_image'] = __('Image', 'nirup-island');
+    $new_columns['title'] = $columns['title'];
+    $new_columns['date'] = $columns['date'];
+    return $new_columns;
+}
+add_filter('manage_westin_room_posts_columns', 'nirup_westin_room_admin_columns');
+
+/**
+ * Display custom column content for Westin Rooms
+ */
+function nirup_westin_room_admin_column_content($column, $post_id) {
+    if ($column === 'featured_image') {
+        if (has_post_thumbnail($post_id)) {
+            echo get_the_post_thumbnail($post_id, array(60, 60));
+        } else {
+            echo '—';
+        }
+    }
+}
+add_action('manage_westin_room_posts_custom_column', 'nirup_westin_room_admin_column_content', 10, 2);
+
+/**
+ * Flush rewrite rules on theme activation
+ * Important for custom post types to work properly
+ */
+function nirup_flush_rewrites_on_activation() {
+    nirup_register_villa_cpt();
+    nirup_register_westin_room_cpt();
+    flush_rewrite_rules();
+}
+register_activation_hook(__FILE__, 'nirup_flush_rewrites_on_activation');
 ?>
