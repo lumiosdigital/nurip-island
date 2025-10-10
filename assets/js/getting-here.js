@@ -1,16 +1,12 @@
 /**
- * Getting Here Section JavaScript with Custom Markers (WORKING VERSION)
+ * Getting Here Section JavaScript with Custom Markers
  * File: assets/js/getting-here.js
  */
 
 // Define callback function immediately in global scope
 window.initNirupMap = function() {
-;
+    console.log('✅ Google Maps API loaded, initializing map...');
     
-    if (!window.nirupMapData) {
-        console.error('❌ Map data not available');
-        return;
-    }
     if (!window.nirupMapData) {
         console.error('❌ Map data not available');
         return;
@@ -44,8 +40,9 @@ window.initNirupMap = function() {
     try {
         // Create map
         const map = new google.maps.Map(mapElement, mapOptions);
+        console.log('✅ Map created successfully');
 
-        // Create Nirup Island marker (large custom marker)
+        // Create Nirup Island marker (large custom marker with logo)
         const nirupMarker = new google.maps.Marker({
             position: window.nirupMapData.center,
             map: map,
@@ -111,58 +108,25 @@ window.initNirupMap = function() {
             }
         });
 
-        // console.log('✅ Custom markers created successfully');
-
-        // Create info windows
-        // const nirupInfo = new google.maps.InfoWindow({
-        //     content: '<div style="font-family: Arial; padding: 5px;"><h4 style="margin: 0 0 5px 0;">Nirup Island</h4><p style="margin: 0;">Your luxury destination</p></div>'
-        // });
-
-        // const singaporeInfo = new google.maps.InfoWindow({
-        //     content: '<div style="font-family: Arial; padding: 5px;"><h4 style="margin: 0 0 5px 0;">Singapore Terminal</h4><p style="margin: 0;">' + window.nirupMapData.singapore.info + '</p></div>'
-        // });
-
-        // const batamInfo = new google.maps.InfoWindow({
-        //     content: '<div style="font-family: Arial; padding: 5px;"><h4 style="margin: 0 0 5px 0;">Batam Terminal</h4><p style="margin: 0;">' + window.nirupMapData.batam.info + '</p></div>'
-        // });
-
-        // Add click listeners
-        // nirupMarker.addListener('click', function() {
-        //     nirupInfo.open(map, nirupMarker);
-        // });
-        // singaporeMarker.addListener('click', function() {
-        //     singaporeInfo.open(map, singaporeMarker);
-        // });
-        // batamMarker.addListener('click', function() {
-        //     batamInfo.open(map, batamMarker);
-        // });
-
-        // --------- DOTTED ferry routes (white) ----------
-        // Use a fully transparent base stroke and render dots via symbols only.
-        // Squares instead of circles
+        // Create dotted ferry routes (white squares)
         const squareSymbol = {
-        // a 4×4 unit square centered on 0,0 (≈ 1 unit ≈ 1 px before scaling)
-        path: 'M -2,-2 L 2,-2 L 2,2 L -2,2 Z',
-        fillColor: '#ffffff',
-        fillOpacity: 1,
-        strokeOpacity: 0,   // set >0 for a white border
-        // strokeColor: '#ffffff',
-        // strokeWeight: 1,
-        scale: 1.5,         // size knob (try 1–3)
-        // fixedRotation: true, // uncomment to keep squares from rotating with the line
+            path: 'M -2,-2 L 2,-2 L 2,2 L -2,2 Z',
+            fillColor: '#ffffff',
+            fillOpacity: 1,
+            strokeOpacity: 0,
+            scale: 1.5
         };
-
 
         const singaporeRoute = new google.maps.Polyline({
             path: [window.nirupMapData.singapore, window.nirupMapData.center],
             geodesic: true,
             strokeColor: '#ffffff',
-            strokeOpacity: 0,   // hide base line to avoid solid white
+            strokeOpacity: 0,
             strokeWeight: 0,
             icons: [{
                 icon: squareSymbol,
                 offset: '0',
-                repeat: '12px'   // spacing between dots
+                repeat: '12px'
             }],
             map: map
         });
@@ -171,53 +135,14 @@ window.initNirupMap = function() {
             path: [window.nirupMapData.batam, window.nirupMapData.center],
             geodesic: true,
             strokeColor: '#ffffff',
-            strokeOpacity: 0,   // hide base line to avoid solid white
+            strokeOpacity: 0,
             strokeWeight: 0,
             icons: [{
                 icon: squareSymbol,
                 offset: '0',
-                repeat: '12px'   // spacing between dots
+                repeat: '12px'
             }],
             map: map
-        });
-        // -----------------------------------------------
-
-        // Add sailing boat icons on routes
-        function getMidpoint(point1, point2) {
-            return {
-                lat: (point1.lat + point2.lat) / 2,
-                lng: (point1.lng + point2.lng) / 2
-            };
-        }
-
-        const singaporeBoat = new google.maps.Marker({
-            position: getMidpoint(window.nirupMapData.singapore, window.nirupMapData.center),
-            map: map,
-            icon: {
-                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="84" height="86" viewBox="0 0 84 86" fill="none">
-                  <!-- (SVG content unchanged) -->
-                </svg>
-                `),
-                scaledSize: new google.maps.Size(30, 30),
-                anchor: new google.maps.Point(15, 15)
-            },
-            title: 'Ferry Route to Singapore'
-        });
-
-        const batamBoat = new google.maps.Marker({
-            position: getMidpoint(window.nirupMapData.batam, window.nirupMapData.center),
-            map: map,
-            icon: {
-                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="84" height="86" viewBox="0 0 84 86" fill="none">
-                  <!-- (SVG content unchanged) -->
-                </svg>
-                `),
-                scaledSize: new google.maps.Size(30, 30),
-                anchor: new google.maps.Point(15, 15)
-            },
-            title: 'Ferry Route to Batam'
         });
 
         // Fit map to show all locations
@@ -239,17 +164,22 @@ window.initNirupMap = function() {
                 singapore: singaporeRoute,
                 batam: batamRoute
             },
-            boats: {
-                singapore: singaporeBoat,
-                batam: batamBoat
-            },
+
             bounds: bounds
         };
 
-        // console.log('✅ CUSTOM MAP fully initialized with branded markers and routes');
+        console.log('✅ Map initialization complete');
 
     } catch (error) {
         console.error('❌ Error initializing map:', error);
+        mapElement.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f5f5f5; color: #666; text-align: center; padding: 20px;">
+                <div>
+                    <h4 style="margin: 0 0 10px 0;">Map Loading Error</h4>
+                    <p style="margin: 0;">Please try refreshing the page</p>
+                </div>
+            </div>
+        `;
     }
 };
 
@@ -258,8 +188,6 @@ function showSingaporeRoute() {
     if (window.nirupMapInstance) {
         window.nirupMapInstance.routes.singapore.setMap(window.nirupMapInstance.map);
         window.nirupMapInstance.routes.batam.setMap(null);
-        window.nirupMapInstance.boats.singapore.setMap(window.nirupMapInstance.map);
-        window.nirupMapInstance.boats.batam.setMap(null);
         
         const bounds = new google.maps.LatLngBounds();
         bounds.extend(window.nirupMapData.singapore);
@@ -272,8 +200,6 @@ function showBatamRoute() {
     if (window.nirupMapInstance) {
         window.nirupMapInstance.routes.batam.setMap(window.nirupMapInstance.map);
         window.nirupMapInstance.routes.singapore.setMap(null);
-        window.nirupMapInstance.boats.batam.setMap(window.nirupMapInstance.map);
-        window.nirupMapInstance.boats.singapore.setMap(null);
         
         const bounds = new google.maps.LatLngBounds();
         bounds.extend(window.nirupMapData.batam);
@@ -286,8 +212,6 @@ function showAllRoutes() {
     if (window.nirupMapInstance) {
         window.nirupMapInstance.routes.singapore.setMap(window.nirupMapInstance.map);
         window.nirupMapInstance.routes.batam.setMap(window.nirupMapInstance.map);
-        window.nirupMapInstance.boats.singapore.setMap(window.nirupMapInstance.map);
-        window.nirupMapInstance.boats.batam.setMap(window.nirupMapInstance.map);
         window.nirupMapInstance.map.fitBounds(window.nirupMapInstance.bounds);
     }
 }
@@ -310,8 +234,6 @@ window.gm_authFailure = function() {
 
 // DOM Ready functions
 document.addEventListener('DOMContentLoaded', function() {
-    // console.log('✅ DOM loaded, setting up CUSTOM controls');
-    
     // Set up route controls
     const controlButtons = document.querySelectorAll('.map-control-btn');
     controlButtons.forEach(function(button) {
@@ -371,4 +293,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// console.log('✅ CUSTOM Getting Here script loaded successfully');
+console.log('✅ Map script loaded, waiting for Google Maps API...');

@@ -280,6 +280,7 @@
 
 /* Book Button */
 .book-ticket-btn {
+    display: block;
     width: 100%;
     padding: 16px 24px;
     background: #8b5e1d;
@@ -289,6 +290,8 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
+    text-align: center;
+    text-decoration: none;
     border: none;
     cursor: pointer;
     transition: background 0.3s ease;
@@ -298,6 +301,7 @@
 
 .book-ticket-btn:hover {
     background: #a48456;
+    color: #FFFFFF;
 }
 
 /* Responsive Adjustments */

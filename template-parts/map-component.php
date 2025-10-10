@@ -123,27 +123,24 @@ $loading_text = get_theme_mod('nirup_map_loading_text', __('Loading interactive 
 
 <?php if ($google_maps_api_key): ?>
 <script>
-// Pass PHP data to JavaScript (only once per page)
-if (!window.nirupMapData) {
-    window.nirupMapData = {
-        apiKey: '<?php echo esc_js($google_maps_api_key); ?>',
-        center: {
-            lat: <?php echo floatval($map_center_lat); ?>,
-            lng: <?php echo floatval($map_center_lng); ?>
-        },
-        singapore: {
-            lat: <?php echo floatval($singapore_terminal_lat); ?>,
-            lng: <?php echo floatval($singapore_terminal_lng); ?>,
-            info: '<?php echo esc_js($singapore_ferry_info); ?>'
-        },
-        batam: {
-            lat: <?php echo floatval($batam_terminal_lat); ?>,
-            lng: <?php echo floatval($batam_terminal_lng); ?>,
-            info: '<?php echo esc_js($batam_ferry_info); ?>'
-        },
-        zoom: <?php echo intval($map_zoom); ?>,
-        style: '<?php echo esc_js($map_style); ?>'
-    };
-}
+// Define map data immediately in global scope BEFORE Google Maps loads
+window.nirupMapData = {
+    center: {
+        lat: <?php echo floatval($map_center_lat); ?>,
+        lng: <?php echo floatval($map_center_lng); ?>
+    },
+    singapore: {
+        lat: <?php echo floatval($singapore_terminal_lat); ?>,
+        lng: <?php echo floatval($singapore_terminal_lng); ?>
+    },
+    batam: {
+        lat: <?php echo floatval($batam_terminal_lat); ?>,
+        lng: <?php echo floatval($batam_terminal_lng); ?>
+    },
+    zoom: <?php echo intval($map_zoom); ?>,
+    singaporeInfo: <?php echo json_encode($singapore_ferry_info); ?>,
+    batamInfo: <?php echo json_encode($batam_ferry_info); ?>
+};
+console.log('✅ Map data initialized');
 </script>
 <?php endif; ?>

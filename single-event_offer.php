@@ -69,7 +69,7 @@ get_header(); ?>
                             
                             <!-- How to Book Button -->
                             <div class="single-event-offer-booking">
-                                <a href="#" class="single-event-offer-book-btn">How to Book</a>
+                                <a href="#" class="single-event-offer-book-btn">Book Now</a>
                             </div>
                         </div>
                         

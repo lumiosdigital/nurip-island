@@ -2506,12 +2506,41 @@ function nirup_get_breadcrumbs() {
         );
     }
 
+        // Visa-On-Arrival Countries Page
+    if (is_page_template('page-visa-on-arrival-countries.php')) {
+        // Add Getting Here as parent
+        $breadcrumbs[] = array(
+            'title' => 'Getting Here',
+            'url' => get_permalink(get_page_by_path('getting-here'))
+        );
+        
+        $breadcrumbs[] = array(
+            'title' => 'Visa-On-Arrival Countries',
+            'url' => ''
+        );
+    }
+
     if (is_page_template('page-private-events.php')) {
         $breadcrumbs[] = array(
             'title' => 'Private Events',
             'url' => ''
         );
     }
+
+    if (is_page_template('page-visa-free-countries.php')) {
+        // Add Getting Here as parent
+        $breadcrumbs[] = array(
+            'title' => 'Getting Here',
+            'url' => get_permalink(get_page_by_path('getting-here'))
+        );
+        
+        $breadcrumbs[] = array(
+            'title' => 'Visa Free Countries',
+            'url' => ''
+        );
+    }
+
+
     
     return $breadcrumbs;
 }
@@ -4193,43 +4222,46 @@ function nirup_should_display_getting_here_section() {
  * Enqueue Getting Here Section specific styles and scripts (FIXED)
  */
 function nirup_getting_here_assets() {
-    // Load on homepage Getting Here section OR full Getting Here page
-    $should_load = nirup_should_display_getting_here_section() || is_page_template('page-getting-here.php');
-    
-    if ($should_load) {
-        
+    if (is_page_template('page-getting-here.php')) {
+        // Enqueue CSS first
+        wp_enqueue_style(
+            'nirup-getting-here-css',
+            get_template_directory_uri() . '/assets/css/page-getting-here.css',
+            array('nirup-main'),
+            '1.0.3'
+        );
+
         $google_maps_api_key = get_theme_mod('nirup_google_maps_api_key', '');
         
-        if ($google_maps_api_key) {
-            // First enqueue our script that defines the callback
+        if (!empty($google_maps_api_key)) {
+            // Load our JavaScript FIRST (in footer, BEFORE Google Maps)
             wp_enqueue_script(
                 'nirup-getting-here-js',
                 get_template_directory_uri() . '/assets/js/getting-here.js',
                 array('jquery'),
-                '1.0.1',
-                false // Load in head to ensure callback is available
+                '1.0.3',
+                true // Load in footer
             );
             
-            // Then enqueue Google Maps API with callback
+            // Then load Google Maps API (depends on our script)
             wp_enqueue_script(
                 'google-maps-api',
-                'https://maps.googleapis.com/maps/api/js?key=' . esc_attr($google_maps_api_key) . '&libraries=geometry&callback=initNirupMap&loading=async',
-                array('nirup-getting-here-js'),
+                'https://maps.googleapis.com/maps/api/js?key=' . esc_attr($google_maps_api_key) . '&libraries=geometry&callback=initNirupMap',
+                array('nirup-getting-here-js'), // Depends on our script
                 null,
-                false // Load in head
+                true // Load in footer AFTER our script
             );
         } else {
-            // Load our script even without API key for fallback functionality
             wp_enqueue_script(
                 'nirup-getting-here-js',
                 get_template_directory_uri() . '/assets/js/getting-here.js',
                 array('jquery'),
-                '1.0.1',
+                '1.0.3',
                 true
             );
         }
 
-        // Localize script for any dynamic content
+        // Localize script with map data
         wp_localize_script('nirup-getting-here-js', 'nirupGettingHere', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('nirup_getting_here_nonce'),
@@ -4245,7 +4277,6 @@ function nirup_getting_here_assets() {
     }
 }
 add_action('wp_enqueue_scripts', 'nirup_getting_here_assets');
-
 /**
  * Add admin notice if Google Maps API key is missing
  */
@@ -7656,6 +7687,29 @@ function nirup_getting_here_page_customizer($wp_customize) {
         'section' => 'nirup_getting_here_page',
         'type' => 'text',
     ));
+
+    $wp_customize->add_setting('nirup_book_ticket_singapore_url', array(
+    'default' => '#',
+    'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control('nirup_book_ticket_singapore_url', array(
+        'label' => __('Singapore Ferry - Book Ticket Button URL', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'url',
+        'description' => __('URL for the Singapore route booking button', 'nirup-island'),
+    ));
+
+    // Batam Ferry Ticket Button URL
+    $wp_customize->add_setting('nirup_book_ticket_batam_url', array(
+        'default' => '#',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control('nirup_book_ticket_batam_url', array(
+        'label' => __('Batam Ferry - Book Ticket Button URL', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'url',
+        'description' => __('URL for the Batam route booking button', 'nirup-island'),
+    ));
     
     // ===== DEPARTURE POINTS =====
     $wp_customize->add_setting('nirup_singapore_departure_point', array(
@@ -8750,18 +8804,18 @@ add_action('customize_register', 'nirup_private_events_customizer');
 /**
  * Admin Menu for Private Event Submissions
  */
-function nirup_private_events_admin_menu() {
-    add_menu_page(
-        'Private Event Requests',
-        'Event Requests',
-        'manage_options',
-        'private-event-submissions',
-        'nirup_private_events_admin_page',
-        'dashicons-calendar-alt',
-        26
-    );
-}
-add_action('admin_menu', 'nirup_private_events_admin_menu');
+// function nirup_private_events_admin_menu() {
+//     add_menu_page(
+//         'Private Event Requests',
+//         'Event Requests',
+//         'manage_options',
+//         'private-event-submissions',
+//         'nirup_private_events_admin_page',
+//         'dashicons-calendar-alt',
+//         26
+//     );
+// }
+// add_action('admin_menu', 'nirup_private_events_admin_menu');
 
 /**
  * Display Private Event Submissions Admin Page

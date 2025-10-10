@@ -193,7 +193,12 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                     <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_singapore_to_nirup_checkin', __('Horizon Fast Ferry Counter (Harbour Front Centre, #03-47)', 'nirup-island'))); ?></p>
                 </div>
                 
-                <button class="book-ticket-btn"><?php echo esc_html(get_theme_mod('nirup_book_ticket_text', __('BOOK FERRY TICKET', 'nirup-island'))); ?></button>
+                <a href="<?php echo esc_url(get_theme_mod('nirup_book_ticket_singapore_url', '#')); ?>" 
+                class="book-ticket-btn" 
+                target="_blank" 
+                rel="noopener noreferrer">
+                    <?php echo esc_html(get_theme_mod('nirup_book_ticket_text', __('BOOK FERRY TICKET', 'nirup-island'))); ?>
+                </a>
             </div>
         </div>
         
@@ -363,7 +368,12 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                     <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_checkin', __('Horizon Fast Ferry counter (Bayfront Mall, 2nd floor)', 'nirup-island'))); ?></p>
                 </div>
                 
-                <button class="book-ticket-btn"><?php echo esc_html(get_theme_mod('nirup_book_ticket_text', __('BOOK FERRY TICKET', 'nirup-island'))); ?></button>
+                <a href="<?php echo esc_url(get_theme_mod('nirup_book_ticket_batam_url', '#')); ?>" 
+                class="book-ticket-btn" 
+                target="_blank" 
+                rel="noopener noreferrer">
+                    <?php echo esc_html(get_theme_mod('nirup_book_ticket_text', __('BOOK FERRY TICKET', 'nirup-island'))); ?>
+                </a>
             </div>
         </div>
     </div>
