@@ -67,7 +67,8 @@ if ($inline_styles) {
                 $hero_logo_alt = $hero_logo_id ? get_post_meta($hero_logo_id, '_wp_attachment_image_alt', true) : 'The Westin Logo';
                 
                 if ($hero_logo_link): ?>
-                    <a href="<?php echo esc_url($hero_logo_link); ?>" title="<?php echo esc_attr($hero_logo_alt); ?>">
+                    <a href="<?php echo esc_url($hero_logo_link); ?>" target="_blank" 
+                           rel="noopener noreferrer" title="<?php echo esc_attr($hero_logo_alt); ?>">
                         <img src="<?php echo esc_url($hero_logo_url); ?>" 
                              alt="<?php echo esc_attr($hero_logo_alt); ?>">
                     </a>
