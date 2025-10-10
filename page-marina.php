@@ -111,12 +111,47 @@ get_header(); ?>
                                 <p><?php echo wp_kses_post(get_post_meta(get_the_ID(), '_marina_berthing_description_2', true) ?: 'ONE°15 Marina provides premium berthing for guests arriving on their private vessels. With easy access to the island, guests can choose to stay aboard their yacht or enjoy the comfort of The Westin Nirup Island Resort & Spa or Riahi Residences. The marina combines privacy and convenience, allowing you to fully embrace the island\'s tranquil beauty while remaining close to refined resort amenities.'); ?></p>
                             </div>
                         </div>
-                            <div class="berthing-links">
-                                <a href="#" class="berthing-link">Berthing Rates</a>
-                                <a href="#" class="berthing-link">Arrival Procedure</a>
-                                <a href="#" class="berthing-link">Marina Rules and Regulations (EN)</a>
-                                <a href="#" class="berthing-link">Marina Rules and Regulations (ID)</a>
-                            </div>
+                        <div class="berthing-links">
+                            <?php
+                            // Get PDF file IDs
+                            $berthing_rates_pdf = get_post_meta(get_the_ID(), '_berthing_rates_pdf', true);
+                            $arrival_procedure_pdf = get_post_meta(get_the_ID(), '_arrival_procedure_pdf', true);
+                            $marina_rules_en_pdf = get_post_meta(get_the_ID(), '_marina_rules_en_pdf', true);
+                            $marina_rules_id_pdf = get_post_meta(get_the_ID(), '_marina_rules_id_pdf', true);
+                            
+                            // Berthing Rates
+                            if ($berthing_rates_pdf) {
+                                $pdf_url = wp_get_attachment_url($berthing_rates_pdf);
+                                echo '<a href="' . esc_url($pdf_url) . '" class="berthing-link" download>Berthing Rates</a>';
+                            } else {
+                                echo '<a href="#" class="berthing-link" onclick="alert(\'PDF not yet uploaded\'); return false;">Berthing Rates</a>';
+                            }
+                            
+                            // Arrival Procedure
+                            if ($arrival_procedure_pdf) {
+                                $pdf_url = wp_get_attachment_url($arrival_procedure_pdf);
+                                echo '<a href="' . esc_url($pdf_url) . '" class="berthing-link" download>Arrival Procedure</a>';
+                            } else {
+                                echo '<a href="#" class="berthing-link" onclick="alert(\'PDF not yet uploaded\'); return false;">Arrival Procedure</a>';
+                            }
+                            
+                            // Marina Rules (EN)
+                            if ($marina_rules_en_pdf) {
+                                $pdf_url = wp_get_attachment_url($marina_rules_en_pdf);
+                                echo '<a href="' . esc_url($pdf_url) . '" class="berthing-link" download>Marina Rules and Regulations (EN)</a>';
+                            } else {
+                                echo '<a href="#" class="berthing-link" onclick="alert(\'PDF not yet uploaded\'); return false;">Marina Rules and Regulations (EN)</a>';
+                            }
+                            
+                            // Marina Rules (ID)
+                            if ($marina_rules_id_pdf) {
+                                $pdf_url = wp_get_attachment_url($marina_rules_id_pdf);
+                                echo '<a href="' . esc_url($pdf_url) . '" class="berthing-link" download>Marina Rules and Regulations (ID)</a>';
+                            } else {
+                                echo '<a href="#" class="berthing-link" onclick="alert(\'PDF not yet uploaded\'); return false;">Marina Rules and Regulations (ID)</a>';
+                            }
+                            ?>
+                        </div>
                     </div>
 
                     <div class="berthing-divider"></div>

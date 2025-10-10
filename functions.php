@@ -7208,111 +7208,214 @@ function nirup_marina_meta_box_callback($post) {
 
     wp_nonce_field('nirup_marina_meta_box', 'nirup_marina_meta_box_nonce');
 
-    // Get saved values
+    // Get saved values (existing fields)
     $subtitle = get_post_meta($post->ID, '_marina_subtitle', true);
     $title = get_post_meta($post->ID, '_marina_title', true);
     $berthing_desc_1 = get_post_meta($post->ID, '_marina_berthing_description_1', true);
     $berthing_desc_2 = get_post_meta($post->ID, '_marina_berthing_description_2', true);
     $gallery_images = get_post_meta($post->ID, '_marina_gallery', true);
     $gallery_images = is_array($gallery_images) ? $gallery_images : array();
+
+    // NEW: Get PDF file IDs
+    $berthing_rates_pdf = get_post_meta($post->ID, '_berthing_rates_pdf', true);
+    $arrival_procedure_pdf = get_post_meta($post->ID, '_arrival_procedure_pdf', true);
+    $marina_rules_en_pdf = get_post_meta($post->ID, '_marina_rules_en_pdf', true);
+    $marina_rules_id_pdf = get_post_meta($post->ID, '_marina_rules_id_pdf', true);
+
     ?>
+    <style>
+        .marina-meta-section { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        .marina-meta-section:last-child { border-bottom: none; }
+        .marina-meta-field { margin-bottom: 15px; }
+        .marina-meta-field label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .marina-meta-field input[type="text"],
+        .marina-meta-field textarea { width: 100%; }
+        .pdf-upload-container { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 10px; }
+        .current-pdf { background: #f1f1f1; padding: 10px; border-radius: 3px; margin-bottom: 10px; }
+        .pdf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
+    </style>
 
-    <div class="marina-meta-box">
-        <style>
-            .marina-meta-box .form-group { margin-bottom: 20px; }
-            .marina-meta-box label { display: block; font-weight: 600; margin-bottom: 8px; }
-            .marina-meta-box input[type="text"],
-            .marina-meta-box textarea { width: 100%; padding: 8px; }
-            .marina-meta-box textarea { min-height: 100px; }
-            .gallery-images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
-            .gallery-image-item { position: relative; }
-            .gallery-image-item img { width: 100%; height: 100px; object-fit: cover; border: 2px solid #ddd; }
-            .remove-gallery-image { position: absolute; top: 5px; right: 5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; }
-        </style>
-
-        <h3>Hero Section</h3>
-        <div class="form-group">
+    <!-- Existing Hero Section Fields -->
+    <div class="marina-meta-section">
+        <h3>🏝️ Hero Section</h3>
+        
+        <div class="marina-meta-field">
             <label for="marina_subtitle">Subtitle</label>
-            <input type="text" id="marina_subtitle" name="marina_subtitle" value="<?php echo esc_attr($subtitle); ?>" placeholder="Seamless access, exclusive facilities">
+            <input type="text" id="marina_subtitle" name="marina_subtitle" 
+                   value="<?php echo esc_attr($subtitle); ?>" 
+                   placeholder="e.g., Welcome to ONE°15 Marina Nirup Island" />
         </div>
 
-        <div class="form-group">
+        <div class="marina-meta-field">
             <label for="marina_title">Main Title</label>
-            <input type="text" id="marina_title" name="marina_title" value="<?php echo esc_attr($title); ?>" placeholder="Marina at Nirup Island">
+            <input type="text" id="marina_title" name="marina_title" 
+                   value="<?php echo esc_attr($title); ?>" 
+                   placeholder="e.g., Arrive in Style" />
         </div>
-
-        <h3>🖼️ Gallery Images</h3>
-        <p><em>Upload images for the marina gallery (displays 5 photos with "see more" option if more are uploaded)</em></p>
-        <div id="marina-gallery-images" class="gallery-images-grid">
-            <?php foreach ($gallery_images as $image_id) : ?>
-                <?php $image_url = wp_get_attachment_thumb_url($image_id); ?>
-                <?php if ($image_url) : ?>
-                    <div class="gallery-image-item" data-attachment-id="<?php echo esc_attr($image_id); ?>">
-                        <img src="<?php echo esc_url($image_url); ?>" alt="">
-                        <button type="button" class="remove-gallery-image">×</button>
-                        <input type="hidden" name="marina_gallery[]" value="<?php echo esc_attr($image_id); ?>">
-                    </div>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </div>
-        <button type="button" class="button button-primary" id="add-marina-gallery-images">Add Gallery Images</button>
-
-        <h3>Berthing Section</h3>
-        <div class="form-group">
-            <label for="marina_berthing_description_1">Berthing Description - Paragraph 1</label>
-            <textarea id="marina_berthing_description_1" name="marina_berthing_description_1"><?php echo esc_textarea($berthing_desc_1); ?></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="marina_berthing_description_2">Berthing Description - Paragraph 2</label>
-            <textarea id="marina_berthing_description_2" name="marina_berthing_description_2"><?php echo esc_textarea($berthing_desc_2); ?></textarea>
-        </div>
-
-        <p style="background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 4px; margin-top: 20px;">
-            <strong>ℹ️ Private Charters:</strong> To add or edit private charters, go to <strong>Private Charters</strong> in the admin menu. 
-            All published charters will automatically appear on this Marina page.
-        </p>
     </div>
 
+    <!-- Existing Berthing Description -->
+    <div class="marina-meta-section">
+        <h3>⚓ Berthing Descriptions</h3>
+        
+        <div class="marina-meta-field">
+            <label for="marina_berthing_description_1">Description 1</label>
+            <textarea id="marina_berthing_description_1" name="marina_berthing_description_1" 
+                      rows="3"><?php echo esc_textarea($berthing_desc_1); ?></textarea>
+        </div>
+
+        <div class="marina-meta-field">
+            <label for="marina_berthing_description_2">Description 2</label>
+            <textarea id="marina_berthing_description_2" name="marina_berthing_description_2" 
+                      rows="3"><?php echo esc_textarea($berthing_desc_2); ?></textarea>
+        </div>
+    </div>
+
+    <!-- NEW: PDF Downloads Section -->
+    <div class="marina-meta-section">
+        <h3>📄 Downloadable PDFs</h3>
+        <p style="color: #666; margin-bottom: 15px;">Upload PDF files that users can download from the marina page.</p>
+        
+        <div class="pdf-grid">
+            <!-- Berthing Rates PDF -->
+            <div class="marina-meta-field">
+                <label>Berthing Rates PDF</label>
+                <div class="pdf-upload-container">
+                    <?php if ($berthing_rates_pdf): 
+                        $pdf_url = wp_get_attachment_url($berthing_rates_pdf);
+                        $pdf_filename = basename(get_attached_file($berthing_rates_pdf));
+                    ?>
+                        <div class="current-pdf" id="berthing_rates_display">
+                            <strong>Current PDF:</strong> 
+                            <a href="<?php echo esc_url($pdf_url); ?>" target="_blank"><?php echo esc_html($pdf_filename); ?></a>
+                            <button type="button" class="button remove-pdf-btn" data-field="berthing_rates" style="margin-left: 10px;">Remove</button>
+                        </div>
+                    <?php endif; ?>
+                    <button type="button" class="button upload-pdf-btn" data-field="berthing_rates">
+                        <?php echo $berthing_rates_pdf ? 'Change PDF' : 'Upload PDF'; ?>
+                    </button>
+                    <input type="hidden" id="berthing_rates_pdf" name="berthing_rates_pdf" value="<?php echo esc_attr($berthing_rates_pdf); ?>" />
+                </div>
+            </div>
+
+            <!-- Arrival Procedure PDF -->
+            <div class="marina-meta-field">
+                <label>Arrival Procedure PDF</label>
+                <div class="pdf-upload-container">
+                    <?php if ($arrival_procedure_pdf): 
+                        $pdf_url = wp_get_attachment_url($arrival_procedure_pdf);
+                        $pdf_filename = basename(get_attached_file($arrival_procedure_pdf));
+                    ?>
+                        <div class="current-pdf" id="arrival_procedure_display">
+                            <strong>Current PDF:</strong> 
+                            <a href="<?php echo esc_url($pdf_url); ?>" target="_blank"><?php echo esc_html($pdf_filename); ?></a>
+                            <button type="button" class="button remove-pdf-btn" data-field="arrival_procedure" style="margin-left: 10px;">Remove</button>
+                        </div>
+                    <?php endif; ?>
+                    <button type="button" class="button upload-pdf-btn" data-field="arrival_procedure">
+                        <?php echo $arrival_procedure_pdf ? 'Change PDF' : 'Upload PDF'; ?>
+                    </button>
+                    <input type="hidden" id="arrival_procedure_pdf" name="arrival_procedure_pdf" value="<?php echo esc_attr($arrival_procedure_pdf); ?>" />
+                </div>
+            </div>
+
+            <!-- Marina Rules (EN) PDF -->
+            <div class="marina-meta-field">
+                <label>Marina Rules & Regulations (EN) PDF</label>
+                <div class="pdf-upload-container">
+                    <?php if ($marina_rules_en_pdf): 
+                        $pdf_url = wp_get_attachment_url($marina_rules_en_pdf);
+                        $pdf_filename = basename(get_attached_file($marina_rules_en_pdf));
+                    ?>
+                        <div class="current-pdf" id="marina_rules_en_display">
+                            <strong>Current PDF:</strong> 
+                            <a href="<?php echo esc_url($pdf_url); ?>" target="_blank"><?php echo esc_html($pdf_filename); ?></a>
+                            <button type="button" class="button remove-pdf-btn" data-field="marina_rules_en" style="margin-left: 10px;">Remove</button>
+                        </div>
+                    <?php endif; ?>
+                    <button type="button" class="button upload-pdf-btn" data-field="marina_rules_en">
+                        <?php echo $marina_rules_en_pdf ? 'Change PDF' : 'Upload PDF'; ?>
+                    </button>
+                    <input type="hidden" id="marina_rules_en_pdf" name="marina_rules_en_pdf" value="<?php echo esc_attr($marina_rules_en_pdf); ?>" />
+                </div>
+            </div>
+
+            <!-- Marina Rules (ID) PDF -->
+            <div class="marina-meta-field">
+                <label>Marina Rules & Regulations (ID) PDF</label>
+                <div class="pdf-upload-container">
+                    <?php if ($marina_rules_id_pdf): 
+                        $pdf_url = wp_get_attachment_url($marina_rules_id_pdf);
+                        $pdf_filename = basename(get_attached_file($marina_rules_id_pdf));
+                    ?>
+                        <div class="current-pdf" id="marina_rules_id_display">
+                            <strong>Current PDF:</strong> 
+                            <a href="<?php echo esc_url($pdf_url); ?>" target="_blank"><?php echo esc_html($pdf_filename); ?></a>
+                            <button type="button" class="button remove-pdf-btn" data-field="marina_rules_id" style="margin-left: 10px;">Remove</button>
+                        </div>
+                    <?php endif; ?>
+                    <button type="button" class="button upload-pdf-btn" data-field="marina_rules_id">
+                        <?php echo $marina_rules_id_pdf ? 'Change PDF' : 'Upload PDF'; ?>
+                    </button>
+                    <input type="hidden" id="marina_rules_id_pdf" name="marina_rules_id_pdf" value="<?php echo esc_attr($marina_rules_id_pdf); ?>" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for PDF Upload -->
     <script>
     jQuery(document).ready(function($) {
-        // Gallery Image Upload
-        let galleryFrame;
-        $('#add-marina-gallery-images').on('click', function(e) {
+        var pdfUploaders = {};
+        
+        // Upload PDF
+        $('.upload-pdf-btn').on('click', function(e) {
             e.preventDefault();
+            var fieldName = $(this).data('field');
+            var button = $(this);
             
-            if (galleryFrame) {
-                galleryFrame.open();
+            if (pdfUploaders[fieldName]) {
+                pdfUploaders[fieldName].open();
                 return;
             }
             
-            galleryFrame = wp.media({
-                title: 'Select Gallery Images',
-                button: { text: 'Add to Gallery' },
-                multiple: true
+            pdfUploaders[fieldName] = wp.media({
+                title: 'Select PDF File',
+                library: { type: 'application/pdf' },
+                button: { text: 'Use this PDF' },
+                multiple: false
             });
             
-            galleryFrame.on('select', function() {
-                const selection = galleryFrame.state().get('selection');
-                selection.map(function(attachment) {
-                    attachment = attachment.toJSON();
-                    const html = `
-                        <div class="gallery-image-item" data-attachment-id="${attachment.id}">
-                            <img src="${attachment.sizes.thumbnail.url}" alt="">
-                            <button type="button" class="remove-gallery-image">×</button>
-                            <input type="hidden" name="marina_gallery[]" value="${attachment.id}">
-                        </div>
-                    `;
-                    $('#marina-gallery-images').append(html);
-                });
+            pdfUploaders[fieldName].on('select', function() {
+                var attachment = pdfUploaders[fieldName].state().get('selection').first().toJSON();
+                
+                if (attachment.mime !== 'application/pdf') {
+                    alert('Please select a PDF file.');
+                    return;
+                }
+                
+                $('#' + fieldName + '_pdf').val(attachment.id);
+                
+                var displayHtml = '<div class="current-pdf" id="' + fieldName + '_display">';
+                displayHtml += '<strong>Current PDF:</strong> <a href="' + attachment.url + '" target="_blank">' + attachment.filename + '</a>';
+                displayHtml += ' <button type="button" class="button remove-pdf-btn" data-field="' + fieldName + '" style="margin-left: 10px;">Remove</button>';
+                displayHtml += '</div>';
+                
+                $('#' + fieldName + '_display').remove();
+                button.before(displayHtml);
+                button.text('Change PDF');
             });
             
-            galleryFrame.open();
+            pdfUploaders[fieldName].open();
         });
-
-        // Remove gallery image
-        $(document).on('click', '.remove-gallery-image', function() {
-            $(this).closest('.gallery-image-item').remove();
+        
+        // Remove PDF
+        $(document).on('click', '.remove-pdf-btn', function(e) {
+            e.preventDefault();
+            var fieldName = $(this).data('field');
+            $('#' + fieldName + '_pdf').val('');
+            $('#' + fieldName + '_display').remove();
+            $('.upload-pdf-btn[data-field="' + fieldName + '"]').text('Upload PDF');
         });
     });
     </script>
@@ -7362,6 +7465,26 @@ function nirup_save_marina_meta($post_id) {
     if (isset($_POST['marina_berthing_description_2'])) {
         update_post_meta($post_id, '_marina_berthing_description_2', wp_kses_post($_POST['marina_berthing_description_2']));
     }
+
+    // ============================================
+    // NEW: Save PDF files - ADD THIS SECTION
+    // ============================================
+    if (isset($_POST['berthing_rates_pdf'])) {
+        update_post_meta($post_id, '_berthing_rates_pdf', intval($_POST['berthing_rates_pdf']));
+    }
+    
+    if (isset($_POST['arrival_procedure_pdf'])) {
+        update_post_meta($post_id, '_arrival_procedure_pdf', intval($_POST['arrival_procedure_pdf']));
+    }
+    
+    if (isset($_POST['marina_rules_en_pdf'])) {
+        update_post_meta($post_id, '_marina_rules_en_pdf', intval($_POST['marina_rules_en_pdf']));
+    }
+    
+    if (isset($_POST['marina_rules_id_pdf'])) {
+        update_post_meta($post_id, '_marina_rules_id_pdf', intval($_POST['marina_rules_id_pdf']));
+    }
+    // ============================================
 
     // Save Private Charters
     if (isset($_POST['marina_charters']) && is_array($_POST['marina_charters'])) {
