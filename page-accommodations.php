@@ -97,9 +97,7 @@ get_header(); ?>
             </div>
             <div class="riahi-cta-wrapper">
                 <a href="<?php echo esc_url(get_theme_mod('nirup_riahi_booking_link', '#')); ?>" 
-                class="riahi-cta-button" 
-                target="_blank" 
-                rel="noopener noreferrer">
+                class="riahi-cta-button">
                     <?php echo esc_html(get_theme_mod('nirup_riahi_cta_text', 'SEE ALL VILLAS')); ?>
                 </a>
             </div>

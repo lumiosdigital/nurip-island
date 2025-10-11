@@ -2617,6 +2617,23 @@ function nirup_get_breadcrumbs() {
         );
     }
 
+    // Riahi Residences Page
+    if (is_page_template('page-riahi-residences.php')) {
+        // Add Accommodations as parent
+        $accommodations_page = get_page_by_path('accommodations');
+        if ($accommodations_page) {
+            $breadcrumbs[] = array(
+                'title' => 'Accommodations',
+                'url' => get_permalink($accommodations_page)
+            );
+        }
+        
+        $breadcrumbs[] = array(
+            'title' => 'Riahi Residences',
+            'url' => ''
+        );
+    }
+
 
     
     return $breadcrumbs;
@@ -9582,4 +9599,564 @@ function nirup_customizer_preview_scripts() {
     );
 }
 add_action('customize_preview_init', 'nirup_customizer_preview_scripts');
+
+/**
+ * Add Villa Features Meta Box
+ * Add this to functions.php
+ */
+function nirup_add_villa_features_meta_box() {
+    add_meta_box(
+        'villa_features',
+        __('Villa Features', 'nirup-island'),
+        'nirup_villa_features_meta_box_callback',
+        'villa',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_villa_features_meta_box');
+
+/**
+ * Villa Features Meta Box Callback
+ */
+function nirup_villa_features_meta_box_callback($post) {
+    wp_nonce_field('nirup_save_villa_features', 'nirup_villa_features_nonce');
+    
+    $features = get_post_meta($post->ID, '_villa_features', true);
+    if (!is_array($features)) {
+        $features = array();
+    }
+    ?>
+    
+    <div id="villa-features-wrapper">
+        <div id="villa-features-list">
+            <?php
+            if (!empty($features)) {
+                foreach ($features as $index => $feature) {
+                    ?>
+                    <div class="villa-feature-item" style="margin-bottom: 15px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd;">
+                        <input 
+                            type="text" 
+                            name="villa_features[]" 
+                            value="<?php echo esc_attr($feature); ?>" 
+                            placeholder="e.g., 2 Bedrooms, Swimming Pool, Full Kitchen"
+                            style="width: 80%; margin-right: 10px;"
+                        />
+                        <button type="button" class="button remove-feature">Remove</button>
+                    </div>
+                    <?php
+                }
+            }
+            ?>
+        </div>
+        <button type="button" id="add-feature" class="button button-secondary" style="margin-top: 10px;">
+            + Add Feature
+        </button>
+    </div>
+    
+    <script>
+    jQuery(document).ready(function($) {
+        // Add feature
+        $('#add-feature').on('click', function() {
+            var featureHtml = '<div class="villa-feature-item" style="margin-bottom: 15px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd;">' +
+                '<input type="text" name="villa_features[]" value="" placeholder="e.g., 2 Bedrooms, Swimming Pool, Full Kitchen" style="width: 80%; margin-right: 10px;" />' +
+                '<button type="button" class="button remove-feature">Remove</button>' +
+                '</div>';
+            $('#villa-features-list').append(featureHtml);
+        });
+        
+        // Remove feature
+        $(document).on('click', '.remove-feature', function() {
+            $(this).closest('.villa-feature-item').remove();
+        });
+    });
+    </script>
+    
+    <style>
+        .villa-feature-item {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+    
+    <?php
+}
+
+/**
+ * Save Villa Features
+ */
+function nirup_save_villa_features($post_id) {
+    // Check nonce
+    if (!isset($_POST['nirup_villa_features_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_villa_features_nonce'], 'nirup_save_villa_features')) {
+        return;
+    }
+    
+    // Check autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    
+    // Check permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    
+    // Save features
+    $features = array();
+    if (isset($_POST['villa_features']) && is_array($_POST['villa_features'])) {
+        foreach ($_POST['villa_features'] as $feature) {
+            $feature = sanitize_text_field($feature);
+            if (!empty($feature)) {
+                $features[] = $feature;
+            }
+        }
+    }
+    
+    update_post_meta($post_id, '_villa_features', $features);
+}
+add_action('save_post_villa', 'nirup_save_villa_features');
+
+/**
+ * Riahi Residences Page Customizer Options
+ * Add this to functions.php
+ */
+function nirup_riahi_residences_customizer($wp_customize) {
+    // Riahi Residences Section
+    $wp_customize->add_section('nirup_riahi_residences', array(
+        'title' => __('Riahi Residences Page', 'nirup-island'),
+        'priority' => 37,
+        'description' => __('Customize the Riahi Residences page', 'nirup-island'),
+    ));
+
+    // === HERO SECTION ===
+    
+    // Hero Image
+    $wp_customize->add_setting('nirup_riahi_hero_image', array(
+        'default' => '',
+        'sanitize_callback' => 'absint',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_riahi_hero_image', array(
+        'label' => __('Hero Background Image', 'nirup-island'),
+        'section' => 'nirup_riahi_residences',
+        'mime_type' => 'image',
+        'description' => __('Recommended size: 1400x780px', 'nirup-island'),
+    )));
+
+    // Hero Subtitle
+    $wp_customize->add_setting('nirup_riahi_hero_subtitle', array(
+        'default' => __('Your Private Island Sanctuary', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_riahi_hero_subtitle', array(
+        'label' => __('Hero Subtitle', 'nirup-island'),
+        'section' => 'nirup_riahi_residences',
+        'type' => 'text',
+    ));
+
+    // Hero Title
+    $wp_customize->add_setting('nirup_riahi_hero_title', array(
+        'default' => __('Riahi Residences', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_riahi_hero_title', array(
+        'label' => __('Hero Title', 'nirup-island'),
+        'section' => 'nirup_riahi_residences',
+        'type' => 'text',
+    ));
+
+    // === OVERVIEW SECTION ===
+    
+    // Overview Heading
+    $wp_customize->add_setting('nirup_riahi_overview_heading', array(
+        'default' => __('Overview', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_riahi_overview_heading', array(
+        'label' => __('Overview Section Heading', 'nirup-island'),
+        'section' => 'nirup_riahi_residences',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('nirup_riahi_overview_description', array(
+        'default' => __('Riahi Residences offers a tranquil and spacious retreat, with 2 to 4-bedroom villas designed for comfort and privacy. Each unit features a fully equipped kitchen, and some include a private plunge or swimming pool. While offering seclusion, the residences remain just a short distance from the island\'s dining venues and the amenities of The Westin Nirup Island Resort & Spa, accessible with day passes. Guests have the flexibility to dine at various restaurants across the island or prepare their own meals in the comfort of their villa.', 'nirup-island'),
+        'sanitize_callback' => 'wp_kses_post',  // Changed from sanitize_textarea_field
+    ));
+
+    $wp_customize->add_control('nirup_riahi_overview_description', array(
+        'label' => __('Overview Description', 'nirup-island'),
+        'section' => 'nirup_riahi_residences',
+        'type' => 'textarea',
+        'input_attrs' => array(
+            'rows' => 6,
+        ),
+    ));
+}
+add_action('customize_register', 'nirup_riahi_residences_customizer');
+
+function nirup_enqueue_riahi_residences_assets() {
+    // Only on Riahi Residences page template
+    if (is_page_template('page-riahi-residences.php')) {
+        // Enqueue CSS
+        wp_enqueue_style(
+            'nirup-riahi-residences',
+            get_template_directory_uri() . '/assets/css/riahi-residences.css',
+            array(),
+            '1.0.0'
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_riahi_residences_assets');
+
+function nirup_villa_icons_admin_menu() {
+    add_submenu_page(
+        'edit.php?post_type=villa',
+        'Feature Icons Library',
+        'Feature Icons',
+        'manage_options',
+        'villa-feature-icons',
+        'nirup_villa_icons_admin_page'
+    );
+}
+add_action('admin_menu', 'nirup_villa_icons_admin_menu');
+
+/**
+ * Get villa feature icons directory paths
+ */
+function nirup_get_villa_icon_paths() {
+    $upload_dir = wp_upload_dir();
+    return array(
+        'dir' => $upload_dir['basedir'] . '/villa-feature-icons/',
+        'url' => $upload_dir['baseurl'] . '/villa-feature-icons/'
+    );
+}
+
+/**
+ * Get all available villa feature icons
+ */
+function nirup_get_villa_feature_icons() {
+    $paths = nirup_get_villa_icon_paths();
+    $icons = array();
+    
+    if (is_dir($paths['dir'])) {
+        $files = glob($paths['dir'] . '*.svg');
+        foreach ($files as $file) {
+            $filename = basename($file);
+            $name = pathinfo($filename, PATHINFO_FILENAME);
+            
+            $icons[$filename] = array(
+                'name' => ucfirst(str_replace(array('-', '_'), ' ', $name)),
+                'filename' => $filename,
+                'url' => $paths['url'] . $filename,
+                'path' => $file
+            );
+        }
+    }
+    
+    return $icons;
+}
+
+/**
+ * Admin page for icon library
+ */
+function nirup_villa_icons_admin_page() {
+    $paths = nirup_get_villa_icon_paths();
+    
+    // Create directory if it doesn't exist
+    if (!file_exists($paths['dir'])) {
+        wp_mkdir_p($paths['dir']);
+    }
+    
+    // Handle file upload
+    if (isset($_POST['upload_villa_icon']) && check_admin_referer('upload_villa_icon_nonce')) {
+        if (!empty($_FILES['villa_icon_file']['name'])) {
+            $file = $_FILES['villa_icon_file'];
+            
+            // Check if it's an SVG
+            if ($file['type'] === 'image/svg+xml') {
+                $filename = sanitize_file_name($file['name']);
+                $destination = $paths['dir'] . $filename;
+                
+                if (move_uploaded_file($file['tmp_name'], $destination)) {
+                    echo '<div class="notice notice-success"><p>Icon uploaded successfully!</p></div>';
+                } else {
+                    echo '<div class="notice notice-error"><p>Failed to upload icon.</p></div>';
+                }
+            } else {
+                echo '<div class="notice notice-error"><p>Only SVG files are allowed.</p></div>';
+            }
+        }
+    }
+    
+    // Handle icon deletion
+    if (isset($_GET['delete_icon']) && check_admin_referer('delete_villa_icon_' . $_GET['delete_icon'])) {
+        $icon_to_delete = sanitize_file_name($_GET['delete_icon']);
+        $file_path = $paths['dir'] . $icon_to_delete;
+        
+        if (file_exists($file_path)) {
+            unlink($file_path);
+            echo '<div class="notice notice-success"><p>Icon deleted successfully!</p></div>';
+        }
+    }
+    
+    $icons = nirup_get_villa_feature_icons();
+    ?>
+    
+    <div class="wrap">
+        <h1>Villa Feature Icons Library</h1>
+        
+        <div style="background: white; padding: 20px; margin: 20px 0; border: 1px solid #ccd0d4; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
+            <h2>Upload New Icon</h2>
+            <form method="post" enctype="multipart/form-data">
+                <?php wp_nonce_field('upload_villa_icon_nonce'); ?>
+                <p>
+                    <input type="file" name="villa_icon_file" accept=".svg" required>
+                    <input type="submit" name="upload_villa_icon" class="button button-primary" value="Upload SVG Icon">
+                </p>
+                <p class="description">Only SVG files are accepted. Icon names should be descriptive (e.g., bedroom.svg, pool.svg, kitchen.svg)</p>
+            </form>
+        </div>
+        
+        <div style="background: white; padding: 20px; border: 1px solid #ccd0d4; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
+            <h2>Icon Library (<?php echo count($icons); ?> icons)</h2>
+            
+            <?php if (empty($icons)) : ?>
+                <p>No icons uploaded yet. Upload your first icon above!</p>
+            <?php else : ?>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
+                    <?php foreach ($icons as $icon) : ?>
+                        <div style="border: 1px solid #ddd; padding: 15px; text-align: center; border-radius: 4px;">
+                            <div style="width: 60px; height: 60px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;">
+                                <img src="<?php echo esc_url($icon['url']); ?>" alt="<?php echo esc_attr($icon['name']); ?>" style="max-width: 100%; max-height: 100%;">
+                            </div>
+                            <p style="margin: 0 0 8px 0; font-size: 12px; word-break: break-word;">
+                                <strong><?php echo esc_html($icon['name']); ?></strong>
+                            </p>
+                            <p style="margin: 0; font-size: 11px; color: #666;">
+                                <?php echo esc_html($icon['filename']); ?>
+                            </p>
+                            <a href="?post_type=villa&page=villa-feature-icons&delete_icon=<?php echo urlencode($icon['filename']); ?>&_wpnonce=<?php echo wp_create_nonce('delete_villa_icon_' . $icon['filename']); ?>" 
+                               class="button button-small" 
+                               style="margin-top: 8px; color: #b32d2e;"
+                               onclick="return confirm('Are you sure you want to delete this icon?');">
+                                Delete
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <div style="background: #f0f6fc; border-left: 4px solid #2271b1; padding: 12px; margin-top: 20px;">
+            <p style="margin: 0;"><strong>💡 Tip:</strong> Name your icon files descriptively (e.g., "bedroom.svg", "swimming-pool.svg", "kitchen.svg") for easier selection when adding villa features.</p>
+        </div>
+    </div>
+    
+    <?php
+}
+
+// ========== 2. ENHANCED VILLA FEATURES META BOX WITH ICON PICKER ==========
+
+/**
+ * Replace the old villa features meta box
+ */
+function nirup_villa_features_with_icons_meta_box() {
+    wp_nonce_field('nirup_save_villa_features', 'nirup_villa_features_nonce');
+    
+    global $post;
+    $features = get_post_meta($post->ID, '_villa_features', true);
+    if (!is_array($features)) {
+        $features = array();
+    }
+    
+    $available_icons = nirup_get_villa_feature_icons();
+    ?>
+    
+    <div id="villa-features-wrapper">
+        <div id="villa-features-list">
+            <?php
+            if (!empty($features)) {
+                foreach ($features as $index => $feature) {
+                    $feature_text = isset($feature['text']) ? $feature['text'] : (is_string($feature) ? $feature : '');
+                    $feature_icon = isset($feature['icon']) ? $feature['icon'] : '';
+                    
+                    nirup_render_feature_row($feature_text, $feature_icon, $available_icons);
+                }
+            }
+            ?>
+        </div>
+        
+        <button type="button" id="add-feature" class="button button-secondary" style="margin-top: 10px;">
+            + Add Feature
+        </button>
+        
+        <?php if (empty($available_icons)) : ?>
+            <p style="margin-top: 15px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffc107;">
+                <strong>No icons available.</strong> 
+                <a href="<?php echo admin_url('edit.php?post_type=villa&page=villa-feature-icons'); ?>">Upload icons to the library</a> first.
+            </p>
+        <?php endif; ?>
+    </div>
+    
+    <script>
+    jQuery(document).ready(function($) {
+        // Add feature
+        $('#add-feature').on('click', function() {
+            var featureHtml = <?php echo json_encode(nirup_get_feature_row_html($available_icons)); ?>;
+            $('#villa-features-list').append(featureHtml);
+        });
+        
+        // Remove feature
+        $(document).on('click', '.remove-feature', function() {
+            $(this).closest('.villa-feature-item').remove();
+        });
+        
+        // Icon preview on change
+        $(document).on('change', '.feature-icon-select', function() {
+            var iconUrl = $(this).find(':selected').data('icon-url');
+            var preview = $(this).siblings('.icon-preview');
+            
+            if (iconUrl) {
+                preview.html('<img src="' + iconUrl + '" style="width: 28px; height: 28px;">');
+            } else {
+                preview.html('<span style="font-size: 20px; color: #a48456;">•</span>');
+            }
+        });
+    });
+    </script>
+    
+    <style>
+        .villa-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .icon-preview {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .feature-icon-select {
+            width: 200px;
+        }
+        .feature-text-input {
+            flex: 1;
+        }
+    </style>
+    
+    <?php
+}
+
+/**
+ * Render a single feature row
+ */
+function nirup_render_feature_row($text = '', $icon = '', $available_icons = array()) {
+    ?>
+    <div class="villa-feature-item">
+        <div class="icon-preview">
+            <?php if ($icon && isset($available_icons[$icon])) : ?>
+                <img src="<?php echo esc_url($available_icons[$icon]['url']); ?>" style="width: 28px; height: 28px;">
+            <?php else : ?>
+                <span style="font-size: 20px; color: #a48456;">•</span>
+            <?php endif; ?>
+        </div>
+        
+        <select name="villa_features_icon[]" class="feature-icon-select">
+            <option value="">No icon (bullet point)</option>
+            <?php foreach ($available_icons as $available_icon) : ?>
+                <option value="<?php echo esc_attr($available_icon['filename']); ?>" 
+                        data-icon-url="<?php echo esc_url($available_icon['url']); ?>"
+                        <?php selected($icon, $available_icon['filename']); ?>>
+                    <?php echo esc_html($available_icon['name']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        
+        <input 
+            type="text" 
+            name="villa_features_text[]" 
+            value="<?php echo esc_attr($text); ?>" 
+            placeholder="e.g., 2 Bedrooms, Swimming Pool, Full Kitchen"
+            class="feature-text-input"
+        />
+        
+        <button type="button" class="button remove-feature">Remove</button>
+    </div>
+    <?php
+}
+
+/**
+ * Get HTML for new feature row
+ */
+function nirup_get_feature_row_html($available_icons) {
+    ob_start();
+    nirup_render_feature_row('', '', $available_icons);
+    return ob_get_clean();
+}
+
+/**
+ * Update the save function to handle icons
+ */
+function nirup_save_villa_features_with_icons($post_id) {
+    if (!isset($_POST['nirup_villa_features_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_villa_features_nonce'], 'nirup_save_villa_features')) {
+        return;
+    }
+    
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    
+    $features = array();
+    
+    if (isset($_POST['villa_features_text']) && is_array($_POST['villa_features_text'])) {
+        $feature_texts = $_POST['villa_features_text'];
+        $feature_icons = isset($_POST['villa_features_icon']) ? $_POST['villa_features_icon'] : array();
+        
+        foreach ($feature_texts as $index => $text) {
+            $text = sanitize_text_field($text);
+            if (!empty($text)) {
+                $features[] = array(
+                    'text' => $text,
+                    'icon' => isset($feature_icons[$index]) ? sanitize_file_name($feature_icons[$index]) : ''
+                );
+            }
+        }
+    }
+    
+    update_post_meta($post_id, '_villa_features', $features);
+}
+
+// Update hooks
+remove_action('add_meta_boxes', 'nirup_add_villa_features_meta_box');
+remove_action('save_post_villa', 'nirup_save_villa_features');
+
+function nirup_add_villa_features_with_icons_meta_box() {
+    add_meta_box(
+        'villa_features',
+        __('Villa Features', 'nirup-island'),
+        'nirup_villa_features_with_icons_meta_box',
+        'villa',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_villa_features_with_icons_meta_box');
+add_action('save_post_villa', 'nirup_save_villa_features_with_icons');
 ?>
