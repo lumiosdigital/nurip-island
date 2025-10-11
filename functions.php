@@ -1596,48 +1596,103 @@ function nirup_customize_register($wp_customize) {
     ));
 
     // Video Section
-    $wp_customize->add_section('nirup_video_section', array(
-        'title' => __('Video Section', 'nirup-island'),
-        'priority' => 26,
-    ));
+$wp_customize->add_section('nirup_video_section', array(
+    'title' => __('Video Section', 'nirup-island'),
+    'priority' => 26,
+));
 
-    // Show/Hide Video Section
-    $wp_customize->add_setting('nirup_video_show', array(
-        'default' => true,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
+// Show/Hide Video Section
+$wp_customize->add_setting('nirup_video_show', array(
+    'default' => true,
+    'sanitize_callback' => 'wp_validate_boolean',
+));
 
-    $wp_customize->add_control('nirup_video_show', array(
-        'label' => __('Show Video Section', 'nirup-island'),
-        'section' => 'nirup_video_section',
-        'type' => 'checkbox',
-    ));
+$wp_customize->add_control('nirup_video_show', array(
+    'label' => __('Show Video Section', 'nirup-island'),
+    'section' => 'nirup_video_section',
+    'type' => 'checkbox',
+));
 
-    // Video URL (YouTube)
-    $wp_customize->add_setting('nirup_video_url', array(
-        'default' => '',
-        'sanitize_callback' => 'nirup_sanitize_youtube_url',
-    ));
+// Video Source Type (YouTube or Upload)
+$wp_customize->add_setting('nirup_video_source_type', array(
+    'default' => 'youtube',
+    'sanitize_callback' => 'sanitize_text_field',
+));
 
-    $wp_customize->add_control('nirup_video_url', array(
-        'label' => __('YouTube Video URL', 'nirup-island'),
-        'description' => __('Enter the full YouTube URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID)', 'nirup-island'),
-        'section' => 'nirup_video_section',
-        'type' => 'url',
-    ));
+$wp_customize->add_control('nirup_video_source_type', array(
+    'label' => __('Video Source', 'nirup-island'),
+    'section' => 'nirup_video_section',
+    'type' => 'radio',
+    'choices' => array(
+        'youtube' => __('YouTube Video', 'nirup-island'),
+        'upload' => __('Upload Video', 'nirup-island'),
+    ),
+));
 
-    // Video Title (for accessibility)
-    $wp_customize->add_setting('nirup_video_title', array(
-        'default' => __('Nirup Island Video', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
+// YouTube Video URL
+$wp_customize->add_setting('nirup_video_url', array(
+    'default' => '',
+    'sanitize_callback' => 'nirup_sanitize_youtube_url',
+));
 
-    $wp_customize->add_control('nirup_video_title', array(
-        'label' => __('Video Title', 'nirup-island'),
-        'description' => __('Title for accessibility (screen readers)', 'nirup-island'),
-        'section' => 'nirup_video_section',
-        'type' => 'text',
-    ));
+$wp_customize->add_control('nirup_video_url', array(
+    'label' => __('YouTube Video URL', 'nirup-island'),
+    'description' => __('Enter the full YouTube URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID)', 'nirup-island'),
+    'section' => 'nirup_video_section',
+    'type' => 'url',
+));
+
+// Uploaded Video File
+$wp_customize->add_setting('nirup_video_upload', array(
+    'default' => '',
+    'sanitize_callback' => 'absint',
+));
+
+$wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_video_upload', array(
+    'label' => __('Upload Video File', 'nirup-island'),
+    'description' => __('Upload an MP4 video file. Recommended size: Max 50MB for better performance.', 'nirup-island'),
+    'section' => 'nirup_video_section',
+    'mime_type' => 'video',
+)));
+
+// Video Title (for accessibility)
+$wp_customize->add_setting('nirup_video_title', array(
+    'default' => __('Nirup Island Video', 'nirup-island'),
+    'sanitize_callback' => 'sanitize_text_field',
+));
+
+$wp_customize->add_control('nirup_video_title', array(
+    'label' => __('Video Title', 'nirup-island'),
+    'description' => __('Title for accessibility (screen readers)', 'nirup-island'),
+    'section' => 'nirup_video_section',
+    'type' => 'text',
+));
+
+// Autoplay Toggle
+$wp_customize->add_setting('nirup_video_autoplay', array(
+    'default' => false,
+    'sanitize_callback' => 'wp_validate_boolean',
+));
+
+$wp_customize->add_control('nirup_video_autoplay', array(
+    'label' => __('Autoplay Video', 'nirup-island'),
+    'description' => __('Video will autoplay muted when page loads. Best for ambient/background videos.', 'nirup-island'),
+    'section' => 'nirup_video_section',
+    'type' => 'checkbox',
+));
+
+// Loop Toggle
+$wp_customize->add_setting('nirup_video_loop', array(
+    'default' => false,
+    'sanitize_callback' => 'wp_validate_boolean',
+));
+
+$wp_customize->add_control('nirup_video_loop', array(
+    'label' => __('Loop Video', 'nirup-island'),
+    'description' => __('Video will restart automatically when it ends.', 'nirup-island'),
+    'section' => 'nirup_video_section',
+    'type' => 'checkbox',
+));
 
     // Navigation Settings Section
     $wp_customize->add_section('nirup_navigation', array(
@@ -2313,7 +2368,10 @@ function nirup_mobile_default_menu() {
 /**
  * Convert YouTube URL to embed format
  */
-function nirup_get_youtube_embed_url($url) {
+/**
+ * Convert YouTube URL to embed format with autoplay and loop support
+ */
+function nirup_get_youtube_embed_url($url, $autoplay = false, $loop = false) {
     if (empty($url)) {
         return false;
     }
@@ -2338,16 +2396,28 @@ function nirup_get_youtube_embed_url($url) {
         return false;
     }
     
-    // Build embed URL with privacy-enhanced mode and parameters
+    // Build embed URL with privacy-enhanced mode
     $embed_url = 'https://www.youtube-nocookie.com/embed/' . $video_id;
     
-    // Add parameters for better experience
+    // Add parameters
     $params = array(
         'rel' => '0',           // Don't show related videos from other channels
         'modestbranding' => '1', // Minimal YouTube branding
         'iv_load_policy' => '3', // Don't show annotations
         'enablejsapi' => '1',    // Enable JavaScript API for tracking
     );
+    
+    // Add autoplay parameter if enabled (YouTube will mute automatically)
+    if ($autoplay) {
+        $params['autoplay'] = '1';
+        $params['mute'] = '1'; // Required for autoplay to work
+    }
+    
+    // Add loop parameter if enabled
+    if ($loop) {
+        $params['loop'] = '1';
+        $params['playlist'] = $video_id; // Required for loop to work
+    }
     
     $embed_url .= '?' . http_build_query($params);
     
@@ -7699,30 +7769,60 @@ function nirup_save_charter_meta($post_id) {
 add_action('save_post_private_charter', 'nirup_save_charter_meta');
 
 function nirup_getting_here_page_assets() {
-    // Only load on Getting Here page
-    if (is_page_template('page-getting-here.php')) {
-        
+    // Load on Getting Here page OR front page (homepage)
+    if (is_page_template('page-getting-here.php') || is_front_page()) {
         // Enqueue CSS
         wp_enqueue_style(
-            'nirup-getting-here-page',
+            'nirup-getting-here-css',
             get_template_directory_uri() . '/assets/css/page-getting-here.css',
             array(),
             '1.0.0'
         );
     
-        
-        // Load Google Maps API if key is set - USES EXISTING CUSTOMIZER SETTINGS
+        // Get Google Maps API key
         $google_maps_api_key = get_theme_mod('nirup_google_maps_api_key', '');
         
         if ($google_maps_api_key) {
+            // First load our custom script with the callback function
             wp_enqueue_script(
-                'google-maps-getting-here',
-                'https://maps.googleapis.com/maps/api/js?key=' . esc_attr($google_maps_api_key) . '&callback=initNirupMap&loading=async',
-                array(),
+                'nirup-getting-here-js',
+                get_template_directory_uri() . '/assets/js/getting-here.js',
+                array('jquery'),
+                '1.0.3',
+                true // Load in footer
+            );
+            
+            // Then load Google Maps API (depends on our script)
+            wp_enqueue_script(
+                'google-maps-api',
+                'https://maps.googleapis.com/maps/api/js?key=' . esc_attr($google_maps_api_key) . '&libraries=geometry&callback=initNirupMap',
+                array('nirup-getting-here-js'), // Depends on our script
                 null,
+                true // Load in footer AFTER our script
+            );
+        } else {
+            wp_enqueue_script(
+                'nirup-getting-here-js',
+                get_template_directory_uri() . '/assets/js/getting-here.js',
+                array('jquery'),
+                '1.0.3',
                 true
             );
         }
+
+        // Localize script with map data
+        wp_localize_script('nirup-getting-here-js', 'nirupGettingHere', array(
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('nirup_getting_here_nonce'),
+            'hasApiKey' => !empty($google_maps_api_key),
+            'strings' => array(
+                'loadingMap' => __('Loading interactive map...', 'nirup-island'),
+                'nirupIsland' => __('Nirup Island', 'nirup-island'),
+                'singapore' => __('Singapore Terminal', 'nirup-island'),
+                'batam' => __('Batam Terminal', 'nirup-island'),
+                'ferryRoute' => __('Ferry Route', 'nirup-island'),
+            ),
+        ));
     }
 }
 add_action('wp_enqueue_scripts', 'nirup_getting_here_page_assets');
@@ -9119,6 +9219,31 @@ function nirup_accommodations_page_customizer($wp_customize) {
         ),
     ));
 
+    // Riahi CTA Text
+    $wp_customize->add_setting('nirup_riahi_cta_text', array(
+        'default' => __('SEE ALL VILLAS', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_riahi_cta_text', array(
+        'label' => __('Riahi CTA Button Text', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'type' => 'text',
+    ));
+
+    // Riahi CTA Link
+    $wp_customize->add_setting('nirup_riahi_booking_link', array(
+        'default' => '#',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_riahi_booking_link', array(
+        'label' => __('Riahi Booking Link', 'nirup-island'),
+        'section' => 'nirup_accommodations_page',
+        'type' => 'url',
+        'description' => __('Link for the Riahi Residences booking button', 'nirup-island'),
+    ));
+
     // === WESTIN SECTION ===
     
     // Westin Section Title
@@ -9446,4 +9571,15 @@ function nirup_flush_rewrites_on_activation() {
     flush_rewrite_rules();
 }
 register_activation_hook(__FILE__, 'nirup_flush_rewrites_on_activation');
+
+function nirup_customizer_preview_scripts() {
+    wp_enqueue_script(
+        'nirup-video-customizer-preview',
+        get_template_directory_uri() . '/assets/js/video-customizer-preview.js',
+        array('jquery', 'customize-preview'),
+        '1.0.0',
+        true
+    );
+}
+add_action('customize_preview_init', 'nirup_customizer_preview_scripts');
 ?>
