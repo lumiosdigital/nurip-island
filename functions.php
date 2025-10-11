@@ -2634,6 +2634,31 @@ function nirup_get_breadcrumbs() {
         );
     }
 
+    if (is_singular('villa')) {
+    // Get the villa category to determine parent page
+    $villa_category = get_post_meta(get_the_ID(), '_villa_category', true);
+    
+    // Add Accommodations
+    $breadcrumbs[] = array(
+        'title' => 'Accommodations',
+        'url' => home_url('/accommodations') // Update this URL as needed
+    );
+    
+    // Add Riahi Residences if this villa belongs to that category
+    if (stripos($villa_category, 'riahi') !== false) {
+        $breadcrumbs[] = array(
+            'title' => 'Riahi Residences',
+            'url' => home_url('/riahi-residences') // Update this URL as needed
+        );
+    }
+    
+    // Add current villa
+    $breadcrumbs[] = array(
+        'title' => get_the_title(),
+        'url' => ''
+    );
+}
+
 
     
     return $breadcrumbs;
@@ -10159,4 +10184,580 @@ function nirup_add_villa_features_with_icons_meta_box() {
 }
 add_action('add_meta_boxes', 'nirup_add_villa_features_with_icons_meta_box');
 add_action('save_post_villa', 'nirup_save_villa_features_with_icons');
+
+function nirup_add_single_villa_meta_boxes() {
+    add_meta_box(
+        'villa_single_page_content',
+        '🏝️ Single Villa Page Content',
+        'nirup_villa_single_page_meta_box_callback',
+        'villa',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_single_villa_meta_boxes');
+
+/**
+ * Single Villa Page Meta Box Callback
+ */
+function nirup_villa_single_page_meta_box_callback($post) {
+    wp_nonce_field('nirup_save_villa_single_page', 'nirup_villa_single_page_nonce');
+    
+    // Get saved values
+    $subtitle = get_post_meta($post->ID, '_villa_subtitle', true);
+    $category_title = get_post_meta($post->ID, '_villa_category_title', true);
+    $description = get_post_meta($post->ID, '_villa_description', true);
+    $features_list = get_post_meta($post->ID, '_villa_features_list', true);
+    $booking_url = get_post_meta($post->ID, '_villa_booking_url', true);
+    $gallery_images = get_post_meta($post->ID, '_villa_gallery', true);
+    $gallery_images = is_array($gallery_images) ? $gallery_images : array();
+    ?>
+    
+    <style>
+        .villa-meta-section {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #ddd;
+        }
+        .villa-meta-section:last-child {
+            border-bottom: none;
+        }
+        .villa-meta-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1d2327;
+        }
+        .villa-meta-input {
+            width: 100%;
+            max-width: 100%;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        .villa-meta-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        .villa-meta-description {
+            margin-top: 5px;
+            color: #646970;
+            font-size: 13px;
+        }
+        .villa-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1d2327;
+            margin: 20px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #2271b1;
+        }
+        .villa-gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .villa-gallery-item {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .villa-gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .villa-gallery-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #dc3232;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .villa-gallery-add {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 120px;
+            border: 2px dashed #8c8f94;
+            border-radius: 4px;
+            background: #f6f7f7;
+            color: #50575e;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .villa-gallery-add:hover {
+            border-color: #2271b1;
+            background: #f0f0f1;
+            color: #2271b1;
+        }
+    </style>
+
+    <!-- Hero Section -->
+    <div class="villa-meta-section">
+        <h3 class="villa-section-title">📍 Hero Section</h3>
+        
+        <div style="margin-bottom: 20px;">
+            <label class="villa-meta-label" for="villa_subtitle">
+                Subtitle (appears above title)
+            </label>
+            <input 
+                type="text" 
+                id="villa_subtitle" 
+                name="villa_subtitle" 
+                value="<?php echo esc_attr($subtitle); ?>" 
+                class="villa-meta-input"
+                placeholder="e.g., 2 Bedroom with Pool"
+            />
+            <p class="villa-meta-description">This text appears above the main villa title</p>
+        </div>
+    </div>
+
+    <!-- Gallery Section -->
+    <div class="villa-meta-section">
+        <h3 class="villa-section-title">📸 Gallery Section</h3>
+        
+        <div>
+            <label class="villa-meta-label">Gallery Images</label>
+            <p class="villa-meta-description" style="margin-bottom: 15px;">
+                The first image will be the main large image, images 2-5 will appear in the grid. 
+                Click and drag to reorder.
+            </p>
+            
+            <div id="villa-gallery-container" class="villa-gallery-container">
+                <?php foreach ($gallery_images as $image_id) : 
+                    $image_url = wp_get_attachment_image_url($image_id, 'thumbnail');
+                    if ($image_url) :
+                ?>
+                    <div class="villa-gallery-item" data-id="<?php echo esc_attr($image_id); ?>">
+                        <img src="<?php echo esc_url($image_url); ?>" alt="">
+                        <button type="button" class="villa-gallery-remove" onclick="removeVillaGalleryImage(this)">×</button>
+                        <input type="hidden" name="villa_gallery[]" value="<?php echo esc_attr($image_id); ?>">
+                    </div>
+                <?php 
+                    endif;
+                endforeach; 
+                ?>
+                <div class="villa-gallery-add" onclick="openVillaMediaUploader()">
+                    <span style="font-size: 40px; line-height: 1;">+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="villa-meta-section">
+        <h3 class="villa-section-title">📝 Main Content Section</h3>
+        
+        <div style="margin-bottom: 20px;">
+            <label class="villa-meta-label" for="villa_category_title">
+                Category Title
+            </label>
+            <input 
+                type="text" 
+                id="villa_category_title" 
+                name="villa_category_title" 
+                value="<?php echo esc_attr($category_title); ?>" 
+                class="villa-meta-input"
+                placeholder="e.g., Your Private Island Retreat"
+            />
+            <p class="villa-meta-description">Large heading that appears above the description</p>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label class="villa-meta-label" for="villa_description">
+                Main Description
+            </label>
+            <textarea 
+                id="villa_description" 
+                name="villa_description" 
+                class="villa-meta-textarea"
+                placeholder="Enter the main descriptive paragraph about this villa..."
+            ><?php echo esc_textarea($description); ?></textarea>
+            <p class="villa-meta-description">The main description paragraph (supports HTML)</p>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label class="villa-meta-label" for="villa_features_list">
+                Features List (Bullet Points)
+            </label>
+            <textarea 
+                id="villa_features_list" 
+                name="villa_features_list" 
+                class="villa-meta-textarea"
+                placeholder="Enter features as a bulleted list..."
+            ><?php echo esc_textarea($features_list); ?></textarea>
+            <p class="villa-meta-description">
+                Use HTML list format: &lt;ul&gt;&lt;li&gt;Feature 1&lt;/li&gt;&lt;li&gt;Feature 2&lt;/li&gt;&lt;/ul&gt;
+            </p>
+        </div>
+    </div>
+
+    <!-- Booking Section -->
+    <div class="villa-meta-section">
+        <h3 class="villa-section-title">🔗 Booking Button</h3>
+        
+        <div>
+            <label class="villa-meta-label" for="villa_booking_url">
+                Booking URL
+            </label>
+            <input 
+                type="url" 
+                id="villa_booking_url" 
+                name="villa_booking_url" 
+                value="<?php echo esc_url($booking_url); ?>" 
+                class="villa-meta-input"
+                placeholder="https://booking.example.com/villa-201"
+            />
+            <p class="villa-meta-description">The URL for the "Book Your Stay" button in the sidebar</p>
+        </div>
+    </div>
+
+    <script>
+    jQuery(document).ready(function($) {
+        // Make gallery sortable
+        $('#villa-gallery-container').sortable({
+            items: '.villa-gallery-item',
+            cursor: 'move',
+            placeholder: 'villa-gallery-placeholder',
+            update: function() {
+                // Update order in hidden inputs
+            }
+        });
+    });
+
+    let villaMediaUploader;
+
+    function openVillaMediaUploader() {
+        if (villaMediaUploader) {
+            villaMediaUploader.open();
+            return;
+        }
+
+        villaMediaUploader = wp.media({
+            title: 'Select Villa Gallery Images',
+            button: {
+                text: 'Add to Gallery'
+            },
+            multiple: true
+        });
+
+        villaMediaUploader.on('select', function() {
+            const attachments = villaMediaUploader.state().get('selection').toJSON();
+            const container = document.getElementById('villa-gallery-container');
+            const addButton = container.querySelector('.villa-gallery-add');
+
+            attachments.forEach(function(attachment) {
+                const item = document.createElement('div');
+                item.className = 'villa-gallery-item';
+                item.setAttribute('data-id', attachment.id);
+                item.innerHTML = `
+                    <img src="${attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url}" alt="">
+                    <button type="button" class="villa-gallery-remove" onclick="removeVillaGalleryImage(this)">×</button>
+                    <input type="hidden" name="villa_gallery[]" value="${attachment.id}">
+                `;
+                container.insertBefore(item, addButton);
+            });
+        });
+
+        villaMediaUploader.open();
+    }
+
+    function removeVillaGalleryImage(button) {
+        if (confirm('Remove this image from the gallery?')) {
+            button.closest('.villa-gallery-item').remove();
+        }
+    }
+    </script>
+    
+    <?php
+}
+
+/**
+ * Save Single Villa Page Meta
+ */
+function nirup_save_villa_single_page_meta($post_id) {
+    // Check nonce
+    if (!isset($_POST['nirup_villa_single_page_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_villa_single_page_nonce'], 'nirup_save_villa_single_page')) {
+        return;
+    }
+    
+    // Check autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    
+    // Check permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    
+    // Save all fields
+    $fields = array(
+        '_villa_subtitle' => 'sanitize_text_field',
+        '_villa_category_title' => 'sanitize_text_field',
+        '_villa_description' => 'wp_kses_post',
+        '_villa_features_list' => 'wp_kses_post',
+        '_villa_booking_url' => 'esc_url_raw'
+    );
+    
+    foreach ($fields as $meta_key => $sanitize_callback) {
+        $post_key = str_replace('_villa_', 'villa_', $meta_key);
+        if (isset($_POST[$post_key])) {
+            update_post_meta($post_id, $meta_key, $sanitize_callback($_POST[$post_key]));
+        }
+    }
+    
+    // Save gallery
+    if (isset($_POST['villa_gallery']) && is_array($_POST['villa_gallery'])) {
+        $gallery_images = array_map('intval', $_POST['villa_gallery']);
+        update_post_meta($post_id, '_villa_gallery', $gallery_images);
+    } else {
+        delete_post_meta($post_id, '_villa_gallery');
+    }
+}
+add_action('save_post_villa', 'nirup_save_villa_single_page_meta');
+
+/**
+ * Enqueue Single Villa Page Assets
+ */
+function nirup_enqueue_single_villa_assets() {
+    if (is_singular('villa')) {
+        wp_enqueue_style(
+            'nirup-single-villa',
+            get_template_directory_uri() . '/assets/css/single-villa.css',
+            array(),
+            '1.0.0'
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_single_villa_assets');
+
+function nirup_add_villa_booking_calendar_field() {
+    add_meta_box(
+        'villa_booking_calendar',
+        '📅 WP Booking System Calendar',
+        'nirup_villa_booking_calendar_callback',
+        'villa',
+        'side',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_villa_booking_calendar_field');
+
+/**
+ * Villa Booking Calendar Meta Box Callback
+ */
+function nirup_villa_booking_calendar_callback($post) {
+    wp_nonce_field('nirup_save_villa_booking_calendar', 'nirup_villa_booking_calendar_nonce');
+    
+    $calendar_id = get_post_meta($post->ID, '_villa_booking_calendar_id', true);
+    $form_id = get_post_meta($post->ID, '_villa_booking_form_id', true);
+    ?>
+    
+    <style>
+        .villa-booking-field {
+            margin-bottom: 15px;
+        }
+        .villa-booking-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .villa-booking-input {
+            width: 100%;
+            padding: 6px 8px;
+        }
+        .villa-booking-help {
+            margin-top: 5px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+
+    <div class="villa-booking-field">
+        <label class="villa-booking-label" for="villa_booking_calendar_id">
+            WP Booking Calendar ID
+        </label>
+        <input 
+            type="text" 
+            id="villa_booking_calendar_id" 
+            name="villa_booking_calendar_id" 
+            value="<?php echo esc_attr($calendar_id); ?>" 
+            class="villa-booking-input"
+            placeholder="e.g., 1"
+        />
+        <p class="villa-booking-help">
+            Enter the WP Booking System calendar ID for this villa. 
+            <br>Find it in: <strong>WP Booking System > Calendars</strong>
+        </p>
+    </div>
+
+    <div class="villa-booking-field">
+        <label class="villa-booking-label" for="villa_booking_form_id">
+            WP Booking Form ID
+        </label>
+        <input 
+            type="text" 
+            id="villa_booking_form_id" 
+            name="villa_booking_form_id" 
+            value="<?php echo esc_attr($form_id); ?>" 
+            class="villa-booking-input"
+            placeholder="e.g., 1"
+        />
+        <p class="villa-booking-help">
+            Enter the WP Booking System form ID to attach to the calendar. 
+            <br>Find it in: <strong>WP Booking System > Forms</strong>
+        </p>
+    </div>
+
+    <?php if (class_exists('WP_Booking_System')) : ?>
+        <p style="padding: 10px; background: #d4edda; border-left: 3px solid #28a745; margin-top: 10px;">
+            ✓ WP Booking System is active
+        </p>
+    <?php else : ?>
+        <p style="padding: 10px; background: #f8d7da; border-left: 3px solid #dc3545; margin-top: 10px;">
+            ⚠ WP Booking System plugin not detected. Please install and activate it.
+        </p>
+    <?php endif; ?>
+    <?php
+}
+
+/**
+ * Save Villa Booking Calendar Meta
+ */
+function nirup_save_villa_booking_calendar($post_id) {
+    // Check nonce
+    if (!isset($_POST['nirup_villa_booking_calendar_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_villa_booking_calendar_nonce'], 'nirup_save_villa_booking_calendar')) {
+        return;
+    }
+
+    // Check autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    // Check permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save Calendar ID
+    if (isset($_POST['villa_booking_calendar_id'])) {
+        update_post_meta(
+            $post_id, 
+            '_villa_booking_calendar_id', 
+            sanitize_text_field($_POST['villa_booking_calendar_id'])
+        );
+    }
+
+    // Save Form ID
+    if (isset($_POST['villa_booking_form_id'])) {
+        update_post_meta(
+            $post_id, 
+            '_villa_booking_form_id', 
+            sanitize_text_field($_POST['villa_booking_form_id'])
+        );
+    }
+}
+add_action('save_post_villa', 'nirup_save_villa_booking_calendar');
+
+/**
+ * Enqueue Villa Booking Assets
+ */
+function nirup_enqueue_villa_booking_assets() {
+    if (is_singular('villa')) {
+        // Just enqueue the CSS, no custom JS needed
+        wp_enqueue_style(
+            'nirup-villa-booking',
+            get_template_directory_uri() . '/assets/css/villa-booking.css',
+            array(),
+            '1.0.3'
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_villa_booking_assets');
+
+/**
+ * AJAX Handler for Villa Booking Shortcode Processing
+ */
+function nirup_process_villa_booking_shortcode() {
+    // Verify nonce for security
+    check_ajax_referer('villa_booking_nonce', 'nonce');
+    
+    // Get villa ID from AJAX request
+    $villa_id = isset($_POST['villa_id']) ? intval($_POST['villa_id']) : 0;
+    
+    if (!$villa_id) {
+        wp_send_json_error('No villa ID provided');
+        return;
+    }
+    
+    // Get calendar ID and form ID from villa meta
+    $calendar_id = get_post_meta($villa_id, '_villa_booking_calendar_id', true);
+    $form_id = get_post_meta($villa_id, '_villa_booking_form_id', true);
+    
+    // Check if calendar ID exists
+    if (!$calendar_id) {
+        wp_send_json_error('No calendar ID configured for this villa');
+        return;
+    }
+    
+    // Check if WP Booking System is active
+    if (!class_exists('WP_Booking_System')) {
+        wp_send_json_error('WP Booking System is not active. Please install and activate the plugin.');
+        return;
+    }
+
+    // Enqueue WPBS styles and scripts
+    if (function_exists('wpbs_enqueue_front_end_scripts_and_styles')) {
+        wpbs_enqueue_front_end_scripts_and_styles();
+    }
+    
+    // Capture any enqueued styles
+    ob_start();
+    wp_print_styles();
+    $styles = ob_get_clean();
+
+    // Build shortcode with both calendar and form ID if form ID exists
+    if ($form_id) {
+        $shortcode = '[wpbs id="' . esc_attr($calendar_id) . '" form_id="' . esc_attr($form_id) . '"]';
+    } else {
+        $shortcode = '[wpbs id="' . esc_attr($calendar_id) . '"]';
+    }
+    
+    // Process the shortcode
+    $output = do_shortcode($shortcode);
+    
+    // Check if output is valid
+    if (empty(trim($output)) || $output === $shortcode) {
+        wp_send_json_error('Calendar ID ' . esc_html($calendar_id) . ' not found. Please verify the calendar exists in WP Booking System > Calendars.');
+        return;
+    }
+    
+    // Combine styles and output
+    $full_output = $styles . $output;
+    
+    // Return success with calendar HTML and metadata
+    wp_send_json_success(array(
+        'html' => $full_output,
+        'calendar_id' => $calendar_id,
+        'form_id' => $form_id
+    ));
+}
+add_action('wp_ajax_process_villa_booking_shortcode', 'nirup_process_villa_booking_shortcode');
+add_action('wp_ajax_nopriv_process_villa_booking_shortcode', 'nirup_process_villa_booking_shortcode');
 ?>
