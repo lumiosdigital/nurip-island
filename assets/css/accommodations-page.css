@@ -250,7 +250,7 @@
 }
 
 .westin-card .accpage-image {
-    transform: none;
+    transform: none !important;
 }
 
 .accpage-details {

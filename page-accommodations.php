@@ -298,7 +298,7 @@ get_header(); ?>
                                     <?php endif; ?>
                                 </div>
                                 <div class="accpage-details">
-                                    <p class="accpage-category">Westin Nirup Island Resort & Spa</p>
+                                    <!-- <p class="accpage-category">Westin Nirup Island Resort & Spa</p> -->
                                     <h3 class="accpage-name"><?php the_title(); ?></h3>
                                 </div>
                             </div>
