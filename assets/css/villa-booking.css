@@ -310,7 +310,7 @@ body.modal-open {
 
 /* Keep modal container scrollable if content is long */
 .villa-booking-container {
-    overflow-y: auto;
+    /* overflow-y: auto; */
     max-height: 90vh;
 }
 
