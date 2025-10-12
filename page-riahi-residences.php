@@ -110,14 +110,25 @@ $overview_description = get_theme_mod('nirup_riahi_overview_description', __('Ri
                                 </div>
                             <?php endif; ?>
                             
+
                             <div class="riahi-villa-buttons">
                                 <a href="<?php the_permalink(); ?>" class="riahi-button riahi-button-outline">
                                     Discover more
                                 </a>
-                                <a href="#" class="riahi-button riahi-button-primary">
-                                    Book villa
-                                </a>
+                                <?php 
+                                $calendar_id = get_post_meta(get_the_ID(), '_villa_booking_calendar_id', true);
+                                if ($calendar_id) : 
+                                ?>
+                                    <a href="#" class="riahi-button riahi-button-primary nirup-book-btn" data-villa-id="<?php echo get_the_ID(); ?>" data-villa-name="<?php echo esc_attr(get_the_title()); ?>">
+                                        Book villa
+                                    </a>
+                                <?php else : ?>
+                                    <a href="<?php the_permalink(); ?>" class="riahi-button riahi-button-primary">
+                                        View details
+                                    </a>
+                                <?php endif; ?>
                             </div>
+
                         </div>
                     </div>
                     
@@ -133,5 +144,24 @@ $overview_description = get_theme_mod('nirup_riahi_overview_description', __('Ri
     </div>
 
 </div>
+
+<?php 
+// Output a modal for each villa using the snippet
+$villas_for_modals = new WP_Query(array(
+    'post_type' => 'villa',
+    'posts_per_page' => -1,
+    'post_status' => 'publish',
+));
+
+if ($villas_for_modals->have_posts()) :
+    while ($villas_for_modals->have_posts()) : $villas_for_modals->the_post();
+        get_template_part('template-parts/booking-calendar-modal');
+    endwhile;
+    wp_reset_postdata();
+endif;
+
+// Include thank you modal once
+get_template_part('template-parts/thankyou-modal');
+?>
 
 <?php get_footer(); ?>

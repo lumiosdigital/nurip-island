@@ -167,16 +167,20 @@ get_header(); ?>
                         <?php endforeach; ?>
                     <?php endif; ?>
 
-                    <?php if ($booking_url) : ?>
-                        <div class="villa-sidebar-booking-button">
-                            <a href="<?php echo esc_url($booking_url); ?>" 
-                               class="book-villa-btn" 
-                               target="_blank" 
-                               rel="noopener noreferrer">
-                                BOOK YOUR STAY
-                            </a>
-                        </div>
-                    <?php endif; ?>
+
+
+
+                <!-- Booking button - only if calendar exists -->
+                <?php 
+                $calendar_id = get_post_meta(get_the_ID(), '_villa_booking_calendar_id', true);
+                if ($calendar_id) : 
+                ?>
+                <div class="villa-sidebar-booking-button">
+                    <a href="#" class="nirup-book-btn" data-villa-id="<?php echo get_the_ID(); ?>">
+                        BOOK YOUR STAY
+                    </a>
+                </div>
+                <?php endif; ?>
                 </aside>
                 
             </div>
@@ -301,88 +305,12 @@ document.addEventListener('keydown', function(e) {
 
 <?php endwhile; endif; ?>
 
-<!-- Simple Booking Modal with Calendar Inside -->
 <?php 
-$calendar_id = get_post_meta(get_the_ID(), '_villa_booking_calendar_id', true);
-if ($calendar_id) : 
+// Include reusable booking modal
+get_template_part('template-parts/booking-calendar-modal'); 
+
+// Include thank you modal (only once)
+get_template_part('template-parts/thankyou-modal');
 ?>
-<div id="villa-booking-modal-simple" class="villa-booking-modal" aria-hidden="true" role="dialog">
-    <div class="villa-booking-backdrop"></div>
-    <div class="villa-booking-container" role="document">
-        <button class="villa-booking-close" aria-label="Close booking">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
-                <circle cx="15" cy="15" r="14.5" stroke="currentColor"/>
-                <path d="M10 10L20 20M20 10L10 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-        </button>
-        
-        <div class="villa-booking-header">
-            <h2 class="villa-booking-title">Book <?php the_title(); ?></h2>
-            <p class="villa-booking-subtitle">Select your dates and complete your reservation</p>
-        </div>
-        
-        <div class="villa-booking-content">
-            <div class="villa-booking-calendar-wrapper">
-                <?php 
-                // Render calendar directly in modal
-                $calendar_id = get_post_meta(get_the_ID(), '_villa_booking_calendar_id', true);
-                $form_id     = get_post_meta(get_the_ID(), '_villa_booking_form_id', true); // <— add this
-
-                if ($calendar_id) {
-                    echo do_shortcode(
-                        sprintf('[wpbs id="%s"%s]',
-                            esc_attr($calendar_id),
-                            $form_id ? ' form_id="' . esc_attr($form_id) . '"' : ''
-                        )
-                    );
-                }
-                ?>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-(function($) {
-    'use strict';
-    
-    $(document).ready(function() {
-        
-        // Open modal - calendar already inside, just show it
-        $(document).on('click', '.book-villa-btn', function(e) {
-            e.preventDefault();
-            $('#villa-booking-modal-simple').addClass('active').attr('aria-hidden','false');
-            $('body').addClass('villa-booking-open');
-            $('.villa-booking-close').focus();
-
-            setTimeout(function(){
-                if (window.wpbs) {
-                if (typeof wpbs.init === 'function') wpbs.init();
-                $(document).trigger('wpbs:calendar_loaded');
-                $('.wpbs-calendar').trigger('wpbs:init');
-                }
-            }, 0);
-        });
-                    
-        // Close modal
-        function closeModal() {
-            $('#villa-booking-modal-simple').removeClass('active');
-            $('#villa-booking-modal-simple').attr('aria-hidden', 'true');
-            $('body').removeClass('villa-booking-open');
-        }
-        
-        $(document).on('click', '.villa-booking-close, .villa-booking-backdrop', closeModal);
-        
-        // ESC key to close
-        $(document).on('keydown', function(e) {
-            if (e.key === 'Escape' && $('#villa-booking-modal-simple').hasClass('active')) {
-                closeModal();
-            }
-        });
-    });
-    
-})(jQuery);
-</script>
-<?php endif; ?>
 
 <?php get_footer(); ?>

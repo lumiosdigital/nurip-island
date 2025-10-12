@@ -200,7 +200,7 @@
     width: 100%;
     height: 1px;
     margin: 31px 0;
-    background: url('data:image/svg+xml,<svg width="240" height="1" viewBox="0 0 240 1" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0.5" x2="240" y2="0.5" stroke="%23A48456" stroke-opacity="0.3"/></svg>') center/contain no-repeat;
+    background: url('data:image/svg+xml,<svg width="970" height="1" viewBox="0 0 970 1" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0.5" x2="970" y2="0.5" stroke="%23A48456" stroke-opacity="0.3"/></svg>') center/contain no-repeat;
 }
 
 .villa-features-list {
@@ -209,7 +209,7 @@
     line-height: 1.4;
     color: #3d332f;
     opacity: 0.8;
-    text-align: center;
+    text-align: left;
 }
 
 .villa-features-list ul {
@@ -225,8 +225,8 @@
 
 .content-divider {
     width: 1px;
-    height: 240px;
-    background: url('data:image/svg+xml,<svg width="1" height="240" viewBox="0 0 1 240" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.5" y1="0" x2="0.5" y2="240" stroke="%23A48456" stroke-opacity="0.3"/></svg>') center/contain no-repeat;
+    height: 450px;
+    background: url('data:image/svg+xml,<svg width="1" height="450" viewBox="0 0 1 450" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.5" y1="0" x2="0.5" y2="450" stroke="%23A48456" stroke-opacity="0.3"/></svg>') center/contain no-repeat;
     flex-shrink: 0;
     margin: 10px 0;
 }
@@ -295,6 +295,31 @@
     justify-content: center;
     gap: 10px;
     transition: all 0.2s ease;
+}
+
+.nirup-book-btn {
+    background: #a48456;
+    color: white;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    padding: 10px 20px;
+    height: 40px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}   
+
+.nirup-book-btn:hover {
+    background: #8b5e1d;
+    color: white;
+    text-decoration: none;
 }
 
 .book-villa-btn:hover {

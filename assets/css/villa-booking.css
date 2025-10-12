@@ -1,17 +1,17 @@
 /**
- * Villa Booking Modal Styles
- * For WP Booking System Integration
+ * Villa Booking Modal - Two Column Layout
+ * Calendar left, Form right
  */
 
-/* Booking Modal */
+/* Modal Wrapper */
 .villa-booking-modal {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 10000;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 20px;
@@ -24,36 +24,27 @@
     opacity: 1;
 }
 
-.villa-booking-modal {
-    z-index: 999999;
-}
-
-.villa-booking-backdrop {
-    /* background-color: rgba(0,0,0,.7); */
-    backdrop-filter: none;
-}
-
-/* Modal Backdrop */
+/* Backdrop */
 .villa-booking-backdrop {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.53);
     backdrop-filter: blur(4px);
     z-index: 1;
 }
 
-/* Modal Container */
+/* Container */
 .villa-booking-container {
     position: relative;
     width: 100%;
-    max-width: 900px;
+    max-width: 1200px;
     max-height: 90vh;
     background-color: #FCFAF6;
     z-index: 2;
-    overflow-y: auto;
+    overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn 0.4s ease-out;
 }
@@ -73,13 +64,13 @@
 /* Close Button */
 .villa-booking-close {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 5px;
+    right: 5px;
     width: 30px;
     height: 30px;
     background: transparent;
     border: none;
-    color: #3d332f;
+    color: black;
     cursor: pointer;
     z-index: 10;
     transition: all 0.2s ease;
@@ -90,31 +81,30 @@
 }
 
 .villa-booking-close:hover {
-    transform: rotate(90deg);
-    color: #8b5e1d;
+    color: #A48456;
 }
 
 .villa-booking-close svg {
-    width: 100%;
-    height: 100%;
+    width: 30px;
+    height: 30px;
 }
 
-/* Modal Header */
+/* Header */
 .villa-booking-header {
-    padding: 40px 40px 20px;
+    background-color: #F2EDEA;
+    padding: 40px;
     text-align: center;
-    border-bottom: 1px solid rgba(164, 132, 86, 0.2);
 }
 
 .villa-booking-title {
     font-family: 'Amiri', serif;
     font-size: 36px;
     font-weight: 400;
-    line-height: 1;
     letter-spacing: -1px;
     text-transform: uppercase;
-    color: #3d332f;
-    margin: 0 0 10px 0;
+    color: #3D332F;
+    margin: 0;
+    line-height: 1;
 }
 
 .villa-booking-subtitle {
@@ -122,173 +112,434 @@
     font-size: 14px;
     font-weight: 300;
     color: #555250;
-    margin: 0;
+    margin: 10px 0 0 0;
 }
 
-/* Modal Content */
+/* Content Area */
 .villa-booking-content {
+    position: relative;
+    overflow-y: auto;
+    max-height: calc(90vh - 120px);
+}
+
+/* WPBS Main Wrapper - TWO COLUMNS */
+.villa-booking-modal .wpbs-main-wrapper {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0 !important;
+    position: relative;
+}
+
+.wpbs-container h2 {
+    display: none;
+}
+
+.wpbs-calendars-wrapper {
+    position: sticky !important;
+    top: 40px !important;
+    z-index: 2;
+}
+
+/* Vertical Divider Between Columns */
+.villa-booking-modal .wpbs-main-wrapper::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background-color: rgba(61, 51, 47, 0.2);
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+/* Calendar Container - Left Column */
+.villa-booking-modal .wpbs-container {
+    grid-column: 1;
     padding: 40px;
 }
 
-/* WP Booking System Calendar Wrapper */
-.villa-booking-calendar-wrapper {
-    margin-bottom: 30px;
+/* Form - Right Column */
+.villa-booking-modal .wpbs-form-container {
+    grid-column: 2;
+    padding: 40px;
 }
 
-/* Ensure WPBS calendar is visible and interactive */
-.villa-booking-modal .wpbs-main-wrapper,
-.villa-booking-modal .wpbs-calendar,
-.villa-booking-modal .wpbs-calendar-wrapper {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    height: auto !important;
-    min-height: 400px;
-    pointer-events: auto !important;
+/* Move WPBS legend below calendar */
+/* .villa-booking-modal .wpbs-legend {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+    margin: 0 !important;
+    padding: 20px 40px !important;
+    border-top: 1px solid rgba(61, 51, 47, 0.1);
+    display: flex !important;
+    gap: 20px;
+    justify-content: center;
+} */
+
+/* Hide our custom legend if WPBS has one */
+.villa-booking-legend {
+    display: none;
 }
 
-/* Enable clicks on all calendar elements */
-.villa-booking-modal .wpbs-calendar *,
-.villa-booking-modal .wpbs-calendar-day,
-.villa-booking-modal .wpbs-prev,
-.villa-booking-modal .wpbs-next,
-.villa-booking-modal select,
-.villa-booking-modal button,
-.villa-booking-modal input {
-    pointer-events: auto !important;
-    cursor: pointer !important;
+.wpbs-calendars-wrapper.wpbs-legend-position-side {
+    /* max-width: 365px; */
+    display: flex;
+    flex-direction: column-reverse;
+    /* max-height: 500px; */
+    padding-right: 0px !important;
+
 }
 
-/* Calendar cells should be clickable */
-.villa-booking-modal .wpbs-calendar td,
-.villa-booking-modal .wpbs-calendar th {
-    pointer-events: auto !important;
-}
-
-/* Style WP Booking System calendar */
+/* Calendar Styling */
 .villa-booking-modal .wpbs-calendar {
-    margin: 0 auto;
     background: white;
     padding: 20px;
     border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 60px;
 }
 
-/* Calendar header */
-.villa-booking-modal .wpbs-calendar-header {
-    display: block !important;
-    margin-bottom: 20px;
+.wpbs-calendars-wrapper.wpbs-legend-position-side .wpbs-legend {
+    position: inherit !important;
 }
 
-/* Calendar table */
-.villa-booking-modal .wpbs-calendar table,
-.villa-booking-modal .wpbs-calendar-wrapper table {
-    display: table !important;
-    width: 100% !important;
-    border-collapse: collapse;
+.villa-booking-modal .wpbs-calendar table {
+    width: 100%;
 }
 
-/* Calendar navigation */
-.villa-booking-modal .wpbs-calendar-nav,
-.villa-booking-modal .wpbs-calendar-header-navigation {
-    display: flex !important;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: #f3eeea;
-    border-radius: 4px;
-    margin-bottom: 15px;
-}
-
-/* Month/Year display */
-.villa-booking-modal .wpbs-select-container {
-    display: flex !important;
-    gap: 10px;
-    align-items: center;
-}
-
-/* Calendar Days */
-.villa-booking-modal .wpbs-calendar-day {
-    transition: all 0.2s ease;
-    padding: 10px;
-    text-align: center;
-}
-
-.villa-booking-modal .wpbs-calendar-day:hover {
-    background: #f3eeea;
-}
-
-.villa-booking-modal .wpbs-calendar-day.selected {
-    background: #8b5e1d;
-    color: white;
-}
-
-/* Booking Form */
-.villa-booking-form {
-    background: white;
-    padding: 30px;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.villa-booking-form-title {
-    font-family: 'Amiri', serif;
-    font-size: 24px;
-    font-weight: 400;
+.wpbs-legend .wpbs-legend-item-name {
+    font-size: 16px;
+    font-weight: 500;
     color: #3d332f;
-    margin: 0 0 20px 0;
     text-transform: uppercase;
 }
 
-/* No Calendar Warning */
-.villa-booking-warning {
-    background: #fff3cd;
-    border: 1px solid #ffc107;
-    border-radius: 4px;
-    padding: 20px;
-    text-align: center;
+.wpbs-legend .wpbs-legend-item-icon {
+    margin-right: 10px;
 }
 
-.villa-booking-warning-title {
-    font-family: 'Amiri', serif;
-    font-size: 20px;
-    color: #856404;
-    margin: 0 0 10px 0;
+.wpbs-calendar {
+    min-width: 0px !important;
+    max-width: 1000px !important;
 }
 
-.villa-booking-warning-text {
+.wpbs-form-field-label {
+    margin-bottom: 5px !important;
+}
+
+.wpbs-form-field-label label {
+    font-family: var(--font-hero) !important;
+    text-transform: uppercase !important;
+    font-size: 16px;
+    font-weight: 300;
+    color: #3d332f;
+    text-transform: uppercase;
+    letter-spacing: 0px;
+}
+
+.wpbs-main-wrapper .wpbs-form-container {
+    max-width: 500px;
+}
+
+
+/* Target the checkbox label for field 1-9 */
+.villa-booking-modal label[for*="wpbs-form-field-input-1-9"] {
     font-family: 'Albert Sans', sans-serif;
-    font-size: 14px;
-    color: #856404;
+    font-size: 16px;
+    font-weight: 400;
+    color: #555250;
+    display: flex;
+    align-items: center;
+    /* gap: 10px; */
+}
+
+/* Style just the checkbox itself */
+.villa-booking-modal label[for*="wpbs-form-field-input-1-9"] input[type="checkbox"] {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Thank You Modal - OVER everything */
+.villa-thankyou-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    /* Way higher than booking modal */
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.villa-thankyou-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.villa-thankyou-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1;
+}
+
+.villa-thankyou-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    background-color: #FCFAF6;
+    z-index: 2;
+    padding: 60px 40px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.villa-thankyou-icon {
+    width: 60px;
+    height: 60px;
+    background: #8B5E1D;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 30px;
+}
+
+.villa-thankyou-title {
+    font-family: 'Amiri', serif;
+    font-size: 36px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3D332F;
+    margin: 0 0 20px 0;
+}
+
+.villa-thankyou-message {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 15px;
+    color: #555250;
+    line-height: 1.6;
     margin: 0;
 }
+/* Hide only the confirmation message text */
+.villa-booking-modal .wpbs-form-confirmation-message p {
+    display: none !important;
+}
 
-/* Responsive */
+.villa-booking-modal .wpbs-form-confirmation-message {
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Hide default checkbox */
+.villa-booking-modal .wpbs-form-field-checkbox input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba(61, 51, 47, 0.3);
+    background: white;
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+    margin-right: 8px;
+    transition: all 0.2s ease;
+}
+
+/* Hover state */
+.villa-booking-modal .wpbs-form-field-checkbox input[type="checkbox"]:hover {
+    border-color: #8B5E1D;
+}
+
+/* Checked state - golden checkmark */
+.villa-booking-modal .wpbs-form-field-checkbox input[type="checkbox"]:checked {
+    background: white;
+    border-color: #8B5E1D;
+}
+
+/* Golden checkmark icon */
+.villa-booking-modal .wpbs-form-field-checkbox input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #8B5E1D;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Form Styling */
+.villa-booking-modal .wpbs-form label {
+    font-family: var(--font-hero) !important;
+    text-transform: uppercase !important;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3d332f;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.villa-booking-modal .wpbs-form input[type="text"],
+.villa-booking-modal .wpbs-form input[type="email"],
+.villa-booking-modal .wpbs-form input[type="tel"],
+.villa-booking-modal .wpbs-form input[type="number"],
+.villa-booking-modal .wpbs-form textarea,
+.villa-booking-modal .wpbs-form select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid rgba(61, 51, 47, 0.2);
+    border-radius: 4px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+    background: white;
+    margin-bottom: 15px;
+    transition: border-color 0.2s ease;
+}
+
+.villa-booking-modal .wpbs-form input:focus,
+.villa-booking-modal .wpbs-form textarea:focus,
+.villa-booking-modal .wpbs-form select:focus {
+    outline: none;
+    border-color: #8B5E1D;
+}
+
+.villa-booking-modal .wpbs-form textarea {
+    min-height: 80px;
+    resize: none !important;
+}
+
+.wpbs-form-field-input textarea {
+    resize: vertical !important;
+}
+
+.villa-booking-modal .wpbs-form input[type="submit"],
+.villa-booking-modal .wpbs-form button[type="submit"] {
+    background-color: #8B5E1D;
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#wpbs-form-submit-1 {
+    background-color: #8B5E1D;
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border-radius: 0px;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#wpbs-form-submit-1:hover {
+    background-color: #A48456;
+}
+
+.villa-booking-modal .wpbs-form input[type="submit"]:hover,
+.villa-booking-modal .wpbs-form button[type="submit"]:hover {
+    background-color: #A48456;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 94, 29, 0.3);
+}
+
+/* Checkbox and Radio Buttons */
+.villa-booking-modal .wpbs-form input[type="checkbox"],
+.villa-booking-modal .wpbs-form input[type="radio"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+/* Responsive - Stack on Mobile */
+@media (max-width: 968px) {
+    .villa-booking-modal .wpbs-main-wrapper {
+        grid-template-columns: 1fr !important;
+    }
+
+    .villa-booking-modal .wpbs-main-wrapper::before {
+        display: none;
+    }
+
+    .villa-booking-modal .wpbs-container,
+    .villa-booking-modal .wpbs-form-container {
+        grid-column: 1;
+        padding: 30px;
+    }
+
+    .villa-booking-modal .wpbs-legend {
+        position: static;
+        width: 100%;
+    }
+
+    .villa-booking-close {
+        right: 10px;
+        top: 10px;
+        color: #3d332f;
+    }
+}
+
 @media (max-width: 768px) {
     .villa-booking-container {
         max-width: 95%;
-        max-height: 95vh;
     }
 
     .villa-booking-header {
-        padding: 30px 20px 15px;
+        padding: 30px 20px;
     }
 
     .villa-booking-title {
         font-size: 28px;
     }
 
-    .villa-booking-content {
+    .villa-booking-modal .wpbs-container,
+    .villa-booking-modal .wpbs-form-container {
         padding: 20px;
     }
 
-    .villa-booking-close {
-        top: 10px;
-        right: 10px;
+    .villa-booking-modal .wpbs-legend {
+        padding: 20px !important;
+        flex-direction: column;
+        gap: 10px;
     }
 }
 
-/* Prevent body scroll when modal is open */
+/* Prevent body scroll when modal open */
 body.villa-booking-open {
     overflow: hidden;
 }

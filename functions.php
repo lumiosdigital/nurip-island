@@ -10679,17 +10679,28 @@ add_action('save_post_villa', 'nirup_save_villa_booking_calendar');
  * Enqueue Villa Booking Assets
  */
 function nirup_enqueue_villa_booking_assets() {
-    if (is_singular('villa')) {
         // Just enqueue the CSS, no custom JS needed
         wp_enqueue_style(
             'nirup-villa-booking',
             get_template_directory_uri() . '/assets/css/villa-booking.css',
             array(),
-            '1.0.3'
+            '1.0.6'
         );
-    }
+
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_villa_booking_assets');
+
+// Enqueue JS
+function nirup_enqueue_villa_booking_calendar_assets() {
+    wp_enqueue_script(
+        'nirup-villa-booking-calendar',
+        get_template_directory_uri() . '/assets/js/villa-booking-calendar.js',
+        array('jquery'),
+        '1.0.1',
+        true
+    );
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_villa_booking_calendar_assets');
 
 /**
  * AJAX Handler for Villa Booking Shortcode Processing
@@ -10760,4 +10771,6 @@ function nirup_process_villa_booking_shortcode() {
 }
 add_action('wp_ajax_process_villa_booking_shortcode', 'nirup_process_villa_booking_shortcode');
 add_action('wp_ajax_nopriv_process_villa_booking_shortcode', 'nirup_process_villa_booking_shortcode');
+
+
 ?>
