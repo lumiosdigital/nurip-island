@@ -488,6 +488,7 @@
 
 .single-cta-button-primary {
     background: #8B5E1D;
+    
     color: white;
     font-family: 'Albert Sans', sans-serif;
     font-weight: 300;
@@ -507,7 +508,7 @@
 
 .single-cta-button-primary:hover {
     background-color: #a48456;
-    transform: translateY(-1px);
+    /* transform: translateY(-1px); */
 }
 
 /* Responsive Design */

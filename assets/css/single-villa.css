@@ -279,7 +279,7 @@
 }
 
 .book-villa-btn {
-    background: #a48456;
+    background: #8B5E1D;
     color: white;
     font-family: 'Albert Sans', sans-serif;
     font-weight: 300;
@@ -298,7 +298,7 @@
 }
 
 .nirup-book-btn {
-    background: #a48456;
+    background: #8B5E1D;
     color: white;
     font-family: 'Albert Sans', sans-serif;
     font-weight: 300;
@@ -317,13 +317,13 @@
 }   
 
 .nirup-book-btn:hover {
-    background: #8b5e1d;
+    background: #a48456;
     color: white;
     text-decoration: none;
 }
 
 .book-villa-btn:hover {
-    background: #8b5e1d;
+    background: #a48456;
     color: white;
     text-decoration: none;
 }

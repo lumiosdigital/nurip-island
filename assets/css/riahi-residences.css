@@ -272,19 +272,21 @@
 }
 
 .riahi-button-outline:hover {
-    background-color: #a48456;
+    background-color: #8B5E1D;
     color: white;
 }
 
 .riahi-button-primary {
-    background-color: #a48456;
+    /* background-color: #a48456; */
+    background: #8B5E1D;
     color: white;
-    border: 1px solid #a48456;
+    /* border: 1px solid #a48456; */
+    background: #8B5E1D;
 }
 
 .riahi-button-primary:hover {
-    background-color: #8d6d43;
-    border-color: #8d6d43;
+    background-color: #a48456;
+    border-color: #a48456;
 }
 
 /* ========== No Villas Message ========== */
