@@ -10973,4 +10973,157 @@ function nirup_enqueue_event_offer_booking_assets() {
     }
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_event_offer_booking_assets');
+
+function nirup_add_experience_booking_calendar_meta_box() {
+    add_meta_box(
+        'experience_booking_calendar',
+        '📅 WP Booking System Calendar',
+        'nirup_experience_booking_calendar_callback',
+        'experience',
+        'side',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_experience_booking_calendar_meta_box');
+
+/**
+ * Experience Booking Calendar Meta Box Callback
+ */
+function nirup_experience_booking_calendar_callback($post) {
+    wp_nonce_field('nirup_save_experience_booking_calendar', 'nirup_experience_booking_calendar_nonce');
+    
+    $calendar_id = get_post_meta($post->ID, '_experience_booking_calendar_id', true);
+    $form_id = get_post_meta($post->ID, '_experience_booking_form_id', true);
+    ?>
+    
+    <style>
+        .experience-booking-field {
+            margin-bottom: 15px;
+        }
+        .experience-booking-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .experience-booking-input {
+            width: 100%;
+            padding: 6px 8px;
+        }
+        .experience-booking-help {
+            margin-top: 5px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+
+    <div class="experience-booking-field">
+        <label class="experience-booking-label" for="experience_booking_calendar_id">
+            WP Booking Calendar ID
+        </label>
+        <input 
+            type="text" 
+            id="experience_booking_calendar_id" 
+            name="experience_booking_calendar_id" 
+            value="<?php echo esc_attr($calendar_id); ?>" 
+            class="experience-booking-input"
+            placeholder="e.g., 1"
+        />
+        <p class="experience-booking-help">
+            Enter the WP Booking System calendar ID for this experience. 
+            <br>Find it in: <strong>WP Booking System > Calendars</strong>
+        </p>
+    </div>
+
+    <div class="experience-booking-field">
+        <label class="experience-booking-label" for="experience_booking_form_id">
+            WP Booking Form ID
+        </label>
+        <input 
+            type="text" 
+            id="experience_booking_form_id" 
+            name="experience_booking_form_id" 
+            value="<?php echo esc_attr($form_id); ?>" 
+            class="experience-booking-input"
+            placeholder="e.g., 1"
+        />
+        <p class="experience-booking-help">
+            Enter the WP Booking System form ID to attach to the calendar. 
+            <br>Find it in: <strong>WP Booking System > Forms</strong>
+        </p>
+    </div>
+
+    <?php if (class_exists('WP_Booking_System')) : ?>
+        <p style="padding: 10px; background: #d4edda; border-left: 3px solid #28a745; margin-top: 10px;">
+            ✓ WP Booking System is active
+        </p>
+    <?php else : ?>
+        <p style="padding: 10px; background: #f8d7da; border-left: 3px solid #dc3545; margin-top: 10px;">
+            ⚠ WP Booking System plugin not detected. Please install and activate it.
+        </p>
+    <?php endif; ?>
+    <?php
+}
+
+/**
+ * Save Experience Booking Calendar Data
+ */
+function nirup_save_experience_booking_calendar($post_id) {
+    // Security checks
+    if (!isset($_POST['nirup_experience_booking_calendar_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_experience_booking_calendar_nonce'], 'nirup_save_experience_booking_calendar')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save Calendar ID
+    if (isset($_POST['experience_booking_calendar_id'])) {
+        update_post_meta(
+            $post_id, 
+            '_experience_booking_calendar_id', 
+            sanitize_text_field($_POST['experience_booking_calendar_id'])
+        );
+    }
+
+    // Save Form ID
+    if (isset($_POST['experience_booking_form_id'])) {
+        update_post_meta(
+            $post_id, 
+            '_experience_booking_form_id', 
+            sanitize_text_field($_POST['experience_booking_form_id'])
+        );
+    }
+}
+add_action('save_post_experience', 'nirup_save_experience_booking_calendar');
+
+/**
+ * Enqueue Experience Booking Assets
+ */
+function nirup_enqueue_experience_booking_assets() {
+    // Only load on single experience pages
+    if (is_singular('experience')) {
+        wp_enqueue_script(
+            'nirup-experience-booking',
+            get_template_directory_uri() . '/assets/js/experience-booking.js',
+            array('jquery'),
+            '1.0.0',
+            true
+        );
+        
+        // Enqueue villa booking styles (reuse the same modal styles)
+        wp_enqueue_style(
+            'nirup-villa-booking',
+            get_template_directory_uri() . '/assets/css/villa-booking.css',
+            array(),
+            '1.0.6'
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_experience_booking_assets');
 ?>

@@ -339,6 +339,9 @@ if (empty($region_section_text)) {
                     $pdf_url = wp_get_attachment_url($cta_pdf_file);
                     $pdf_filename = basename(get_attached_file($cta_pdf_file));
                 }
+                
+                // Check if this experience has a booking calendar configured
+                $calendar_id = get_post_meta(get_the_ID(), '_experience_booking_calendar_id', true);
                 ?>
                 
                 <h2 class="single-cta-title"><?php echo esc_html($cta_title); ?></h2>
@@ -361,8 +364,17 @@ if (empty($region_section_text)) {
                     </span>
                 <?php endif; ?>
                 
-                <!-- Primary Button (Gold background) -->
-                <a href="#contact" class="single-cta-button-primary"><?php echo esc_html($cta_primary_button); ?></a>
+                <!-- Primary Button (Gold background) - UPDATED TO USE MODAL -->
+                <?php if ($calendar_id) : ?>
+                    <button class="single-cta-button-primary experience-book-btn" 
+                            data-experience-id="<?php echo get_the_ID(); ?>">
+                        <?php echo esc_html($cta_primary_button); ?>
+                    </button>
+                <?php else : ?>
+                    <a href="#contact" class="single-cta-button-primary">
+                        <?php echo esc_html($cta_primary_button); ?>
+                    </a>
+                <?php endif; ?>
             </div>
             
             <!-- Bottom Separator Line -->
