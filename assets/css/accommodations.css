@@ -75,7 +75,7 @@
 
 .accommodation-card:hover {
     transform: scale(1.01);
-    cursor: pointer;
+    /* cursor: pointer; */
 }
 
 /* .accommodation-overlay {
@@ -263,13 +263,13 @@
 }
 
 /* Hover effects for different card types */
-.resort-card:hover .accommodation-title {
+/* .resort-card:hover .accommodation-title {
     color: #8b5e1d;
 }
 
 .villas-card:hover .accommodation-title {
     color: #8b5e1d;
-}
+} */
 
 /* ===========================
    RESPONSIVE STYLES

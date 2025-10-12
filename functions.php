@@ -1589,12 +1589,6 @@ function nirup_customize_register($wp_customize) {
         'sanitize_callback' => 'esc_url_raw',
     ));
 
-    $wp_customize->add_control('nirup_hero_cta_link', array(
-        'label' => __('Hero Button Link', 'nirup-island'),
-        'section' => 'nirup_hero_section',
-        'type' => 'url',
-    ));
-
     // Video Section
 $wp_customize->add_section('nirup_video_section', array(
     'title' => __('Video Section', 'nirup-island'),
@@ -1718,11 +1712,6 @@ $wp_customize->add_control('nirup_video_loop', array(
         'sanitize_callback' => 'esc_url_raw',
     ));
 
-    $wp_customize->add_control('nirup_booking_button_link', array(
-        'label' => __('Booking Button Link URL', 'nirup-island'),
-        'section' => 'nirup_navigation',
-        'type' => 'url',
-    ));
 
     // Wellness Retreat Section
 $wp_customize->add_section('nirup_wellness_retreat', array(
@@ -4321,12 +4310,6 @@ function nirup_getting_here_customizer($wp_customize) {
         'sanitize_callback' => 'esc_url_raw',
     ));
 
-    $wp_customize->add_control('nirup_getting_here_button_url', array(
-        'label' => __('Button Link URL', 'nirup-island'),
-        'section' => 'nirup_getting_here',
-        'type' => 'url',
-        'description' => __('Enter the full URL where the button should link (e.g., https://yoursite.com/getting-here)', 'nirup-island'),
-    ));
 }
 add_action('customize_register', 'nirup_getting_here_customizer');
 
@@ -10472,26 +10455,6 @@ function nirup_villa_single_page_meta_box_callback($post) {
             <p class="villa-meta-description">
                 Use HTML list format: &lt;ul&gt;&lt;li&gt;Feature 1&lt;/li&gt;&lt;li&gt;Feature 2&lt;/li&gt;&lt;/ul&gt;
             </p>
-        </div>
-    </div>
-
-    <!-- Booking Section -->
-    <div class="villa-meta-section">
-        <h3 class="villa-section-title">🔗 Booking Button</h3>
-        
-        <div>
-            <label class="villa-meta-label" for="villa_booking_url">
-                Booking URL
-            </label>
-            <input 
-                type="url" 
-                id="villa_booking_url" 
-                name="villa_booking_url" 
-                value="<?php echo esc_url($booking_url); ?>" 
-                class="villa-meta-input"
-                placeholder="https://booking.example.com/villa-201"
-            />
-            <p class="villa-meta-description">The URL for the "Book Your Stay" button in the sidebar</p>
         </div>
     </div>
 

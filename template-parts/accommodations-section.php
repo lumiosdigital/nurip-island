@@ -161,7 +161,9 @@ $villas_image_url = $villas_image_id ? wp_get_attachment_image_url($villas_image
                 <?php if ($resort_cta_text): ?>
                 <div class="accommodation-cta">
                     <a href="<?php echo esc_url($resort_cta_link ? $resort_cta_link : '#'); ?>" 
-                       class="accommodation-button resort-button">
+                       class="accommodation-button resort-button"
+                       target="_blank" 
+                   rel="noopener noreferrer">
                         <?php echo esc_html($resort_cta_text); ?>
                     </a>
                 </div>
