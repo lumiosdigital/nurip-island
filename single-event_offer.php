@@ -67,10 +67,19 @@ get_header(); ?>
                                 </div>
                             <?php endif; ?>
                             
-                            <!-- How to Book Button -->
-                            <div class="single-event-offer-booking">
-                                <a href="#" class="single-event-offer-book-btn">Book Now</a>
-                            </div>
+                            <!-- Book Now Button - UPDATED -->
+                            <?php 
+                            // Check if this event/offer has a booking calendar configured
+                            $calendar_id = get_post_meta(get_the_ID(), '_event_offer_booking_calendar_id', true);
+                            if ($calendar_id) : 
+                            ?>
+                                <div class="single-event-offer-booking">
+                                    <button class="single-event-offer-book-btn event-offer-book-btn" 
+                                            data-event-offer-id="<?php echo get_the_ID(); ?>">
+                                        Book Now
+                                    </button>
+                                </div>
+                            <?php endif; ?>
                         </div>
                         
                         <!-- Event Details -->
@@ -227,5 +236,13 @@ get_header(); ?>
         <?php endwhile; ?>
     <?php endif; ?>
 </main>
+
+<?php 
+// Output booking modal for this event/offer using the reusable snippet
+get_template_part('template-parts/booking-calendar-modal');
+
+// Include thank you modal once
+get_template_part('template-parts/thankyou-modal');
+?>
 
 <?php get_footer(); ?>

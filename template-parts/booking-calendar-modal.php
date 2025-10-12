@@ -1,6 +1,6 @@
 <?php
 /**
- * Reusable Booking Modal - UPDATED to support multiple post types
+ * Reusable Booking Modal - UPDATED to support event_offer post type
  * File: template-parts/booking-calendar-modal.php
  * REPLACE the existing file with this
  */
@@ -34,10 +34,10 @@ switch ($post_type) {
         $form_meta_key = '_experience_booking_form_id';
         $post_type_label = 'Experience';
         break;
-    case 'event':
-        $calendar_meta_key = '_event_booking_calendar_id';
-        $form_meta_key = '_event_booking_form_id';
-        $post_type_label = 'Event';
+    case 'event_offer':
+        $calendar_meta_key = '_event_offer_booking_calendar_id';
+        $form_meta_key = '_event_offer_booking_form_id';
+        $post_type_label = 'Event/Offer';
         break;
     default:
         $post_type_label = '';
@@ -61,7 +61,7 @@ if ($calendar_id) :
         </button>
         
         <div class="villa-booking-header">
-            <h2 class="villa-booking-title">Book <?php echo esc_html($post_type_label . ' ' . get_the_title()); ?></h2>
+            <h2 class="villa-booking-title">Book <?php echo esc_html($post_type_label . ' - ' . get_the_title()); ?></h2>
             <p class="villa-booking-subtitle">Select your dates and complete your reservation</p>
         </div>
         

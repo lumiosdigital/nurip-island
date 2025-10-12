@@ -160,6 +160,7 @@
     transition: all 0.2s ease;
     border: none;
     cursor: pointer;
+    border-radius: 0;
 }
 
 .single-event-offer-book-btn:hover {
