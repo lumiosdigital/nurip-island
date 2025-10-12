@@ -7684,6 +7684,10 @@ function nirup_charter_details_callback($post) {
     $specifications = get_post_meta($post->ID, '_charter_specifications', true);
     $specifications = is_array($specifications) ? $specifications : array();
     $pricing = get_post_meta($post->ID, '_charter_pricing', true);
+    
+    // NEW: Get booking calendar fields
+    $calendar_id = get_post_meta($post->ID, '_charter_booking_calendar_id', true);
+    $form_id = get_post_meta($post->ID, '_charter_booking_form_id', true);
     ?>
 
     <style>
@@ -7696,6 +7700,14 @@ function nirup_charter_details_callback($post) {
         .spec-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; background: #f9f9f9; position: relative; }
         .spec-item h4 { margin: 0 0 10px 0; padding-right: 100px; }
         .remove-spec { position: absolute; top: 15px; right: 15px; }
+        .booking-calendar-section { 
+            background: #f0f6fc; 
+            border: 1px solid #0073aa; 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 4px; 
+        }
+        .booking-calendar-section h3 { margin-top: 0; color: #0073aa; }
     </style>
 
     <div class="charter-meta-box">
@@ -7734,6 +7746,47 @@ function nirup_charter_details_callback($post) {
             <label for="charter_pricing">Pricing Information</label>
             <textarea id="charter_pricing" name="charter_pricing" rows="5"><?php echo esc_textarea($pricing); ?></textarea>
             <p class="description">Add pricing details. Use line breaks for multiple routes.</p>
+        </div>
+
+        <!-- NEW: Booking Calendar Section -->
+        <div class="booking-calendar-section">
+            <h3>📅 WP Booking System Calendar</h3>
+            
+            <div class="form-group">
+                <label for="charter_booking_calendar_id">WP Booking Calendar ID</label>
+                <input type="text" 
+                       id="charter_booking_calendar_id" 
+                       name="charter_booking_calendar_id" 
+                       value="<?php echo esc_attr($calendar_id); ?>" 
+                       placeholder="e.g., 1">
+                <p class="description">
+                    Enter the WP Booking System calendar ID for this charter.<br>
+                    Find it in: <strong>WP Booking System > Calendars</strong>
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="charter_booking_form_id">WP Booking Form ID</label>
+                <input type="text" 
+                       id="charter_booking_form_id" 
+                       name="charter_booking_form_id" 
+                       value="<?php echo esc_attr($form_id); ?>" 
+                       placeholder="e.g., 1">
+                <p class="description">
+                    Enter the WP Booking System form ID to attach to the calendar.<br>
+                    Find it in: <strong>WP Booking System > Forms</strong>
+                </p>
+            </div>
+
+            <?php if (class_exists('WP_Booking_System')) : ?>
+                <p style="padding: 10px; background: #d4edda; border-left: 3px solid #28a745; margin-top: 10px;">
+                    ✓ WP Booking System is active
+                </p>
+            <?php else : ?>
+                <p style="padding: 10px; background: #f8d7da; border-left: 3px solid #dc3545; margin-top: 10px;">
+                    ⚠ WP Booking System plugin not detected. Please install and activate it.
+                </p>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -7806,6 +7859,24 @@ function nirup_save_charter_meta($post_id) {
     // Save Pricing
     if (isset($_POST['charter_pricing'])) {
         update_post_meta($post_id, '_charter_pricing', wp_kses_post($_POST['charter_pricing']));
+    }
+
+    // NEW: Save Booking Calendar ID
+    if (isset($_POST['charter_booking_calendar_id'])) {
+        update_post_meta(
+            $post_id, 
+            '_charter_booking_calendar_id', 
+            sanitize_text_field($_POST['charter_booking_calendar_id'])
+        );
+    }
+
+    // NEW: Save Booking Form ID
+    if (isset($_POST['charter_booking_form_id'])) {
+        update_post_meta(
+            $post_id, 
+            '_charter_booking_form_id', 
+            sanitize_text_field($_POST['charter_booking_form_id'])
+        );
     }
 }
 add_action('save_post_private_charter', 'nirup_save_charter_meta');
@@ -10692,13 +10763,16 @@ add_action('wp_enqueue_scripts', 'nirup_enqueue_villa_booking_assets');
 
 // Enqueue JS
 function nirup_enqueue_villa_booking_calendar_assets() {
-    wp_enqueue_script(
-        'nirup-villa-booking-calendar',
-        get_template_directory_uri() . '/assets/js/villa-booking-calendar.js',
-        array('jquery'),
-        '1.0.1',
-        true
-    );
+    // Only load on Riahi Residences page or single villa pages
+    if (is_page_template('page-riahi-residences.php') || is_singular('villa')) {
+        wp_enqueue_script(
+            'nirup-villa-booking-calendar',
+            get_template_directory_uri() . '/assets/js/villa-booking-calendar.js',
+            array('jquery'),
+            '1.0.1',
+            true
+        );
+    }
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_villa_booking_calendar_assets');
 
@@ -10772,5 +10846,18 @@ function nirup_process_villa_booking_shortcode() {
 add_action('wp_ajax_process_villa_booking_shortcode', 'nirup_process_villa_booking_shortcode');
 add_action('wp_ajax_nopriv_process_villa_booking_shortcode', 'nirup_process_villa_booking_shortcode');
 
+function nirup_enqueue_charter_booking_assets() {
+    // Only load on the marina page
+    if (is_page_template('page-marina.php')) {
+        wp_enqueue_script(
+            'nirup-charter-booking',
+            get_template_directory_uri() . '/assets/js/charter-booking.js',
+            array('jquery'),
+            '1.0.0',
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_charter_booking_assets');
 
 ?>

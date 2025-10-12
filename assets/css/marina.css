@@ -567,6 +567,8 @@
 
 .charter-book-btn {
     width: 274px;
+    border-radius: 0;
+    padding: 10px 20px;
     /* margin-top: 20px; */
 }
 

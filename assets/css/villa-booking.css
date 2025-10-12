@@ -297,6 +297,23 @@
     z-index: 1;
 }
 
+body.modal-open {
+    overflow: hidden;
+    padding-right: 0;
+    /* Prevent layout shift from scrollbar */
+}
+
+/* Ensure modal content remains scrollable */
+.villa-booking-modal.active {
+    overflow-y: auto;
+}
+
+/* Keep modal container scrollable if content is long */
+.villa-booking-container {
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
 .villa-thankyou-container {
     position: relative;
     width: 100%;

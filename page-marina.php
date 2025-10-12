@@ -245,6 +245,7 @@ get_header(); ?>
             </div>
 
             <!-- Private Charters Section -->
+            <!-- Private Charters Section -->
             <div class="private-charters-section">
                 <div class="charters-header">
                     <h2 class="charters-title">Private Charters</h2>
@@ -300,7 +301,7 @@ get_header(); ?>
                                                     </div>
                                                 <?php endforeach; ?>
                                             </div>
-        
+
                                             <div class="charter-info">
                                                 <?php foreach ($specs_col2 as $spec) : ?>
                                                     <div class="charter-spec">
@@ -317,14 +318,14 @@ get_header(); ?>
                                                 </div>
                                             </div>
                                         <?php endif; ?>
-                                        <a href="#" class="btn-primary charter-book-btn">Book Now</a>                                        
-            
+                                        
+                                        <!-- Updated Book Now button with data attribute -->
+                                        <button class="btn-primary charter-book-btn" data-charter-id="<?php echo esc_attr($charter_id); ?>">
+                                            Book Now
+                                        </button>
                                     </div>
-
                                 </div>
-                                
                             <?php endif; ?>
-
                         </div>
                     </div>
                 <?php 
@@ -443,5 +444,24 @@ document.addEventListener('keydown', function(e) {
     }
 });
 </script>
+
+<?php 
+// Output booking modals for each charter (add this before get_footer())
+$charters_for_modals = new WP_Query(array(
+    'post_type' => 'private_charter',
+    'posts_per_page' => -1,
+    'post_status' => 'publish',
+));
+
+if ($charters_for_modals->have_posts()) :
+    while ($charters_for_modals->have_posts()) : $charters_for_modals->the_post();
+        // Use the reusable booking calendar modal
+        get_template_part('template-parts/booking-calendar-modal');
+    endwhile;
+    wp_reset_postdata();
+endif;
+// Include thank you modal once
+get_template_part('template-parts/thankyou-modal');
+?>
 
 <?php get_footer(); ?>

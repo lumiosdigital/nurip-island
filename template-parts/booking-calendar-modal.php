@@ -1,32 +1,51 @@
 <?php
 /**
- * Reusable Booking Modal
+ * Reusable Booking Modal - UPDATED to support multiple post types
+ * File: template-parts/booking-calendar-modal.php
+ * REPLACE the existing file with this
  */
 
 $post_id = get_the_ID();
-$calendar_id = get_post_meta($post_id, '_villa_booking_calendar_id', true);
-$form_id = get_post_meta($post_id, '_villa_booking_form_id', true);
-
 $post_type = get_post_type();
-$post_type_label = '';
+
+// Get the correct meta keys based on post type
+$calendar_meta_key = '';
+$form_meta_key = '';
 
 switch ($post_type) {
     case 'villa':
+        $calendar_meta_key = '_villa_booking_calendar_id';
+        $form_meta_key = '_villa_booking_form_id';
         $post_type_label = 'Villa';
+        break;
+    case 'private_charter':
+        $calendar_meta_key = '_charter_booking_calendar_id';
+        $form_meta_key = '_charter_booking_form_id';
+        $post_type_label = 'Charter';
         break;
     case 'boat':
     case 'marina':
+        $calendar_meta_key = '_boat_booking_calendar_id';
+        $form_meta_key = '_boat_booking_form_id';
         $post_type_label = 'Boat';
         break;
     case 'experience':
+        $calendar_meta_key = '_experience_booking_calendar_id';
+        $form_meta_key = '_experience_booking_form_id';
         $post_type_label = 'Experience';
         break;
     case 'event':
+        $calendar_meta_key = '_event_booking_calendar_id';
+        $form_meta_key = '_event_booking_form_id';
         $post_type_label = 'Event';
         break;
     default:
         $post_type_label = '';
 }
+
+// Get calendar and form IDs using the correct meta keys
+$calendar_id = $calendar_meta_key ? get_post_meta($post_id, $calendar_meta_key, true) : '';
+$form_id = $form_meta_key ? get_post_meta($post_id, $form_meta_key, true) : '';
 
 if ($calendar_id) : 
 ?>
