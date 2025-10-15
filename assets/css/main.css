@@ -155,19 +155,7 @@ select:focus {
 
 button,
 .button {
-    display: inline-block;
-    padding: 12px 24px;
-    background: var(--color-golden);
-    /* color: var(--color-white); */
-    border: none;
-    border-radius: 4px;
-    font-family: var(--font-family);
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
 }
 
 /* button:hover,

@@ -11126,4 +11126,33 @@ function nirup_enqueue_experience_booking_assets() {
     }
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_experience_booking_assets');
+
+function nirup_enqueue_woocommerce_booking_styles() {
+    // Load on checkout, cart, and booking pages
+    if (is_checkout() || is_cart() || is_woocommerce() || 
+        (function_exists('is_wpbs_page') && is_wpbs_page())) {
+        wp_enqueue_style(
+            'nirup-woocommerce-booking',
+            get_template_directory_uri() . '/assets/css/woocommerce-booking.css',
+            array(),
+            '1.0.0'
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_woocommerce_booking_styles');
+
+
+function wpbs_add_custom_currency($currencies)
+{
+    $currencies['IDR'] = 'Indonesian rupiah';
+    return $currencies;
+}
+add_filter('wpbs_currencies', 'wpbs_add_custom_currency', 10, 1);
+
+function wpbs_add_custom_currency_symbol($currencies)
+{
+    $currencies['IDR'] = 'Rp';
+    return $currencies;
+}
+add_filter('wpbs_currency_symbol', 'wpbs_add_custom_currency_symbol', 10, 1);
 ?>

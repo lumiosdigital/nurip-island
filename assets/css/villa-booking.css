@@ -468,7 +468,7 @@ body.modal-open {
     margin-top: 10px;
 }
 
-#wpbs-form-submit-1 {
+[id^="wpbs-form-submit"] {
     background-color: #8B5E1D;
     color: white;
     border: none;
@@ -485,7 +485,7 @@ body.modal-open {
     margin-top: 10px;
 }
 
-#wpbs-form-submit-1:hover {
+[id^="wpbs-form-submit"]:hover {
     background-color: #A48456;
 }
 

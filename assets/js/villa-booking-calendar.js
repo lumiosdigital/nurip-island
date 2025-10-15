@@ -3,6 +3,9 @@
     
     $(document).ready(function() {
         
+        // Check if returning from WooCommerce payment
+        checkForSuccessfulBooking();
+        
         // Open modal for specific villa
         $(document).on('click', '.nirup-book-btn', function(e) {
             e.preventDefault();
@@ -16,6 +19,9 @@
             $('body').addClass('villa-booking-open');
             $(modalId + ' .villa-booking-close').focus();
 
+            // Mark that we're starting a booking
+            sessionStorage.setItem('nirup_booking_in_progress', 'true');
+
             setTimeout(function(){
                 if (window.wpbs) {
                     if (typeof wpbs.init === 'function') wpbs.init();
@@ -25,30 +31,10 @@
             }, 100);
         });
         
-        // Detect WPBS form submission success
-        var checkInterval = setInterval(function() {
-            var $confirmation = $('.wpbs-form-confirmation-message');
-            
-            if ($confirmation.length > 0 && $confirmation.is(':visible')) {
-                clearInterval(checkInterval);
-                
-                $confirmation.hide();
-                
-                var message = $confirmation.find('p').text() || 'We have received your booking request and will contact you soon.';
-                
-                // Close all booking modals
-                $('.villa-booking-modal').removeClass('active').attr('aria-hidden', 'true');
-                
-                $('#villa-thankyou-text').text(message);
-                $('#villa-thankyou-modal').addClass('active').attr('aria-hidden', 'false');
-                
-                setTimeout(function() {
-                    window.location.reload();
-                }, 4000);
-            }
-        }, 500);
-                    
-        // Close modal
+        // DO NOT INTERCEPT FORM SUBMISSION
+        // Let WPBS + WooCommerce handle the redirect naturally
+        
+        // Close modal handlers
         $(document).on('click', '.villa-booking-close, .villa-booking-backdrop', function() {
             $(this).closest('.villa-booking-modal').removeClass('active').attr('aria-hidden', 'true');
             $('body').removeClass('villa-booking-open');
@@ -61,5 +47,29 @@
             }
         });
     });
+    
+    // Check if user just completed a booking payment
+    function checkForSuccessfulBooking() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var isOrderReceived = urlParams.has('order-received') || 
+                             $('body').hasClass('woocommerce-order-received');
+        
+        var bookingInProgress = sessionStorage.getItem('nirup_booking_in_progress');
+        
+        if (isOrderReceived && bookingInProgress === 'true') {
+            // Clear the flag
+            sessionStorage.removeItem('nirup_booking_in_progress');
+            
+            // Show thank you modal
+            var message = 'Thank you for your booking! Your payment has been confirmed and we will be in touch soon.';
+            $('#villa-thankyou-text').text(message);
+            $('#villa-thankyou-modal').addClass('active').attr('aria-hidden', 'false');
+            
+            // Auto-close after 6 seconds
+            setTimeout(function() {
+                $('#villa-thankyou-modal').removeClass('active').attr('aria-hidden', 'true');
+            }, 6000);
+        }
+    }
     
 })(jQuery);
