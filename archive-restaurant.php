@@ -1,4 +1,8 @@
-<?php get_header(); ?>
+<?php 
+/**
+ * Template Name: Restaurant Archive Page
+ */
+get_header(); ?>
 
 <!-- Breadcrumbs -->
 <?php get_template_part('template-parts/breadcrumbs'); ?>

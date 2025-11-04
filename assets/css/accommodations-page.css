@@ -201,8 +201,11 @@
 
 .accpage-carousel {
     position: relative;
-    width: 100%;
+    width: 1400px;
     margin-bottom: 100px;
+    margin-left: auto;
+    margin-right: auto;
+
 }
 
 .accpage-carousel-wrapper {
@@ -250,7 +253,7 @@
 
 .accpage-card {
     flex: 0 0 380px;
-    height: 598px;
+    height: 620px;
     background: #fcfaf6;
     display: flex;
     flex-direction: column;
@@ -387,7 +390,7 @@
 .accpage-nav-btn {
     width: 38px;
     height: 38px;
-    /* border: 1px solid #a48456; */
+    border: 1px transparent;
     border-radius: 40px;
     background: transparent;
     display: flex;

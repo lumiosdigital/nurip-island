@@ -560,7 +560,7 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
             <p class="section-subtitle"><?php echo esc_html($visa_subtitle); ?></p>
             <div class="visa-section-divider"></div> 
             <div class="visa-buttons-wrapper">
-                <a href="<?php echo esc_url(get_theme_mod('nirup_visa_free_url', '#')); ?>" class="visa-btn visa-btn-outline"><?php echo esc_html(get_theme_mod('nirup_visa_free_text', __('Visa Free Countries', 'nirup-island'))); ?></a>
+                <!-- <a href="<?php echo esc_url(get_theme_mod('nirup_visa_free_url', '#')); ?>" class="visa-btn visa-btn-outline"><?php echo esc_html(get_theme_mod('nirup_visa_free_text', __('Visa Free Countries', 'nirup-island'))); ?></a> -->
                 <a href="<?php echo esc_url(get_theme_mod('nirup_visa_on_arrival_url', '#')); ?>" class="visa-btn visa-btn-filled"><?php echo esc_html(get_theme_mod('nirup_visa_on_arrival_text', __('Visa-On-Arrival Countries', 'nirup-island'))); ?></a>
             </div>
         </div>

@@ -9,6 +9,8 @@
     align-items: center;
     justify-content: center;
     /* background: #f3eeea; */
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .single-event-offer-hero-bg {
