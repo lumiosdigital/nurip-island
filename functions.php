@@ -8129,16 +8129,110 @@ function nirup_getting_here_page_customizer($wp_customize) {
         'section' => 'nirup_getting_here_page',
         'type' => 'text',
     ));
-    
-    $wp_customize->add_setting('nirup_sidebar_mode_label', array(
-        'default' => __('Mode/No.', 'nirup-island'),
+
+    // Work Days Label
+    $wp_customize->add_setting('nirup_sidebar_workdays_label', array(
+        'default' => __('Work Days', 'nirup-island'),
         'sanitize_callback' => 'sanitize_text_field',
     ));
-    $wp_customize->add_control('nirup_sidebar_mode_label', array(
-        'label' => __('Sidebar Label: Mode/No.', 'nirup-island'),
+    $wp_customize->add_control('nirup_sidebar_workdays_label', array(
+        'label' => __('Sidebar: "Work Days" Label', 'nirup-island'),
         'section' => 'nirup_getting_here_page',
         'type' => 'text',
+        'description' => __('Label for work days in the sidebar', 'nirup-island'),
     ));
+    
+    // Price Label
+    $wp_customize->add_setting('nirup_sidebar_price_label', array(
+        'default' => __('Price', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_sidebar_price_label', array(
+        'label' => __('Sidebar: "Price" Label', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Label for price in the sidebar', 'nirup-island'),
+    ));
+    
+    // ===== SINGAPORE SIDEBAR VALUES =====
+    
+    // Singapore Work Days
+    $wp_customize->add_setting('nirup_singapore_workdays', array(
+        'default' => __('Friday – Sunday', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_singapore_workdays', array(
+        'label' => __('Singapore: Work Days', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Operating days for Singapore route', 'nirup-island'),
+    ));
+    
+    // Singapore Price
+    $wp_customize->add_setting('nirup_singapore_price', array(
+        'default' => __('SGD 76 /per way', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_singapore_price', array(
+        'label' => __('Singapore: Price', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Price for Singapore route', 'nirup-island'),
+    ));
+    
+    // ===== BATAM SIDEBAR VALUES =====
+    
+    // Batam Work Days
+    $wp_customize->add_setting('nirup_batam_workdays', array(
+        'default' => __('Daily / Friday – Sunday', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_batam_workdays', array(
+        'label' => __('Batam: Work Days', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Operating days for Batam route', 'nirup-island'),
+    ));
+    
+    // Batam Price
+    $wp_customize->add_setting('nirup_batam_price', array(
+        'default' => __('Rp150,000 /per way', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_batam_price', array(
+        'label' => __('Batam: Price', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Price for Batam route', 'nirup-island'),
+    ));
+    
+    // ===== CHECK-IN VALUES FOR ROUTES =====
+    
+    // Singapore to Nirup Check-in
+    $wp_customize->add_setting('nirup_singapore_to_nirup_checkin', array(
+        'default' => __('Horizon Fast Ferry Counter (Harbour Front Centre, #03-47)', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_singapore_to_nirup_checkin', array(
+        'label' => __('Singapore to Nirup: Check-in Location', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Check-in location for Singapore to Nirup route', 'nirup-island'),
+    ));
+    
+    
+    // Batam to Nirup Check-in
+    $wp_customize->add_setting('nirup_batam_to_nirup_checkin', array(
+        'default' => __('Horizon Fast Ferry counter (Bayfront Mall, 2nd floor)', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_batam_to_nirup_checkin', array(
+        'label' => __('Batam to Nirup: Check-in Location', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Check-in location for Batam to Nirup route', 'nirup-island'),
+    ));
+    
     
     $wp_customize->add_setting('nirup_sidebar_checkin_label', array(
         'default' => __('Check In', 'nirup-island'),
@@ -8146,26 +8240,6 @@ function nirup_getting_here_page_customizer($wp_customize) {
     ));
     $wp_customize->add_control('nirup_sidebar_checkin_label', array(
         'label' => __('Sidebar Label: Check In', 'nirup-island'),
-        'section' => 'nirup_getting_here_page',
-        'type' => 'text',
-    ));
-    
-    $wp_customize->add_setting('nirup_sidebar_checkout_label', array(
-        'default' => __('Check Out', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('nirup_sidebar_checkout_label', array(
-        'label' => __('Sidebar Label: Check Out', 'nirup-island'),
-        'section' => 'nirup_getting_here_page',
-        'type' => 'text',
-    ));
-    
-    $wp_customize->add_setting('nirup_sidebar_ferry_label', array(
-        'default' => __('Ferry', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('nirup_sidebar_ferry_label', array(
-        'label' => __('Sidebar Label: Ferry', 'nirup-island'),
         'section' => 'nirup_getting_here_page',
         'type' => 'text',
     ));
@@ -8191,26 +8265,6 @@ function nirup_getting_here_page_customizer($wp_customize) {
         'type' => 'text',
     ));
     
-    $wp_customize->add_setting('nirup_singapore_mode', array(
-        'default' => __('High Speed Ferry', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('nirup_singapore_mode', array(
-        'label' => __('Singapore Mode', 'nirup-island'),
-        'section' => 'nirup_getting_here_page',
-        'type' => 'text',
-    ));
-    
-    $wp_customize->add_setting('nirup_singapore_ferry_info', array(
-        'default' => __('From 2024 (Dec) onwards', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('nirup_singapore_ferry_info', array(
-        'label' => __('Singapore Ferry Info', 'nirup-island'),
-        'section' => 'nirup_getting_here_page',
-        'type' => 'text',
-    ));
-    
     // ===== SIDEBAR VALUES - BATAM =====
     $wp_customize->add_setting('nirup_batam_operator', array(
         'default' => __('Sindo Ferry', 'nirup-island'),
@@ -8232,25 +8286,6 @@ function nirup_getting_here_page_customizer($wp_customize) {
         'type' => 'text',
     ));
     
-    $wp_customize->add_setting('nirup_batam_mode', array(
-        'default' => __('High Speed Ferry', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('nirup_batam_mode', array(
-        'label' => __('Batam Mode', 'nirup-island'),
-        'section' => 'nirup_getting_here_page',
-        'type' => 'text',
-    ));
-    
-    $wp_customize->add_setting('nirup_batam_ferry_info', array(
-        'default' => __('From 2024 (Dec) onwards', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('nirup_batam_ferry_info', array(
-        'label' => __('Batam Ferry Info', 'nirup-island'),
-        'section' => 'nirup_getting_here_page',
-        'type' => 'text',
-    ));
     
     // ===== BOOK TICKET BUTTON =====
     $wp_customize->add_setting('nirup_book_ticket_text', array(
@@ -8283,6 +8318,103 @@ function nirup_getting_here_page_customizer($wp_customize) {
         'section' => 'nirup_getting_here_page',
         'type' => 'text',
     ));
+
+    // Singapore Free Label
+    $wp_customize->add_setting('nirup_luggage_singapore_free_label', array(
+        'default' => __('Free', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_singapore_free_label', array(
+        'label' => __('Singapore: "Free" Label', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Label for free luggage allowance', 'nirup-island'),
+    ));
+    
+    // Singapore Check-in Label
+    $wp_customize->add_setting('nirup_luggage_singapore_checkin_label', array(
+        'default' => __('Check-in', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_singapore_checkin_label', array(
+        'label' => __('Singapore: "Check-in" Label', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Label for check-in time', 'nirup-island'),
+    ));
+    
+    // Singapore Excess Label
+    $wp_customize->add_setting('nirup_luggage_singapore_excess_label', array(
+        'default' => __('Excess', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_singapore_excess_label', array(
+        'label' => __('Singapore: "Excess" Label', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Label for excess luggage fees', 'nirup-island'),
+    ));
+    
+    // Singapore Counters Label
+    $wp_customize->add_setting('nirup_luggage_singapore_counters_label', array(
+        'default' => __('Counters', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_singapore_counters_label', array(
+        'label' => __('Singapore: "Counters" Label', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Label for counter location', 'nirup-island'),
+    ));
+    
+    
+    // Singapore Free Luggage Text
+    $wp_customize->add_setting('nirup_luggage_singapore_free', array(
+        'default' => __('20 kg / boarding pass', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_singapore_free', array(
+        'label' => __('Singapore: Free Luggage Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Free luggage allowance for Singapore departure', 'nirup-island'),
+    ));
+    
+    // Singapore Check-in Text
+    $wp_customize->add_setting('nirup_luggage_singapore_checkin', array(
+        'default' => __('60–20 min before departure', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_singapore_checkin', array(
+        'label' => __('Singapore: Check-in Time Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Check-in time for Singapore departure', 'nirup-island'),
+    ));
+    
+    // Singapore Excess Luggage Text
+    $wp_customize->add_setting('nirup_luggage_singapore_excess', array(
+        'default' => __('$1 per kg (max 40 kg)', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_singapore_excess', array(
+        'label' => __('Singapore: Excess Luggage Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Excess luggage fees for Singapore departure', 'nirup-island'),
+    ));
+    
+    // Singapore Counters Text
+    $wp_customize->add_setting('nirup_luggage_singapore_counters', array(
+        'default' => __('Next to immigration gate', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_singapore_counters', array(
+        'label' => __('Singapore: Counter Location Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Counter location for Singapore departure', 'nirup-island'),
+    ));
     
     $wp_customize->add_setting('nirup_luggage_batam_title', array(
         'default' => __('Batam Departure', 'nirup-island'),
@@ -8292,6 +8424,104 @@ function nirup_getting_here_page_customizer($wp_customize) {
         'label' => __('Luggage: Batam Title', 'nirup-island'),
         'section' => 'nirup_getting_here_page',
         'type' => 'text',
+    ));
+    
+    // Batam Free Label
+    $wp_customize->add_setting('nirup_luggage_batam_free_label', array(
+        'default' => __('Free', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_batam_free_label', array(
+        'label' => __('Batam: "Free" Label', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Label for free luggage allowance', 'nirup-island'),
+    ));
+    
+    // Batam Check-in Label
+    $wp_customize->add_setting('nirup_luggage_batam_checkin_label', array(
+        'default' => __('Check-in', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_batam_checkin_label', array(
+        'label' => __('Batam: "Check-in" Label', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Label for check-in time', 'nirup-island'),
+    ));
+    
+    // Batam Excess Label
+    $wp_customize->add_setting('nirup_luggage_batam_excess_label', array(
+        'default' => __('Excess', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_batam_excess_label', array(
+        'label' => __('Batam: "Excess" Label', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Label for excess luggage fees', 'nirup-island'),
+    ));
+    
+    // Batam Counters Label
+    $wp_customize->add_setting('nirup_luggage_batam_counters_label', array(
+        'default' => __('Counters', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_batam_counters_label', array(
+        'label' => __('Batam: "Counters" Label', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Label for counter location', 'nirup-island'),
+    ));
+    
+    // ===== BATAM LUGGAGE VALUES =====
+    
+    // Batam Free Luggage Text
+    $wp_customize->add_setting('nirup_luggage_batam_free', array(
+        'default' => __('20 kg / boarding pass', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_batam_free', array(
+        'label' => __('Batam: Free Luggage Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Free luggage allowance for Batam departure', 'nirup-island'),
+    ));
+    
+    // Batam Check-in Text
+    $wp_customize->add_setting('nirup_luggage_batam_checkin', array(
+        'default' => __('60–20 min before departure', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_batam_checkin', array(
+        'label' => __('Batam: Check-in Time Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Check-in time for Batam departure', 'nirup-island'),
+    ));
+    
+    // Batam Excess Luggage Text
+    $wp_customize->add_setting('nirup_luggage_batam_excess', array(
+        'default' => __('$1 per kg (max 40 kg)', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_batam_excess', array(
+        'label' => __('Batam: Excess Luggage Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Excess luggage fees for Batam departure', 'nirup-island'),
+    ));
+    
+    // Batam Counters Text
+    $wp_customize->add_setting('nirup_luggage_batam_counters', array(
+        'default' => __('Next to immigration gate', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('nirup_luggage_batam_counters', array(
+        'label' => __('Batam: Counter Location Text', 'nirup-island'),
+        'section' => 'nirup_getting_here_page',
+        'type' => 'text',
+        'description' => __('Counter location for Batam departure', 'nirup-island'),
     ));
     
     // ===== VISA SECTION =====
@@ -8315,25 +8545,25 @@ function nirup_getting_here_page_customizer($wp_customize) {
         'type' => 'text',
     ));
     
-    $wp_customize->add_setting('nirup_visa_free_text', array(
-        'default' => __('Visa Free Countries', 'nirup-island'),
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('nirup_visa_free_text', array(
-        'label' => __('Visa Free Button Text', 'nirup-island'),
-        'section' => 'nirup_getting_here_page',
-        'type' => 'text',
-    ));
+    // $wp_customize->add_setting('nirup_visa_free_text', array(
+    //     'default' => __('Visa Free Countries', 'nirup-island'),
+    //     'sanitize_callback' => 'sanitize_text_field',
+    // ));
+    // $wp_customize->add_control('nirup_visa_free_text', array(
+    //     'label' => __('Visa Free Button Text', 'nirup-island'),
+    //     'section' => 'nirup_getting_here_page',
+    //     'type' => 'text',
+    // ));
     
-    $wp_customize->add_setting('nirup_visa_free_url', array(
-        'default' => '#',
-        'sanitize_callback' => 'esc_url_raw',
-    ));
-    $wp_customize->add_control('nirup_visa_free_url', array(
-        'label' => __('Visa Free Button URL', 'nirup-island'),
-        'section' => 'nirup_getting_here_page',
-        'type' => 'url',
-    ));
+    // $wp_customize->add_setting('nirup_visa_free_url', array(
+    //     'default' => '#',
+    //     'sanitize_callback' => 'esc_url_raw',
+    // ));
+    // $wp_customize->add_control('nirup_visa_free_url', array(
+    //     'label' => __('Visa Free Button URL', 'nirup-island'),
+    //     'section' => 'nirup_getting_here_page',
+    //     'type' => 'url',
+    // ));
     
     $wp_customize->add_setting('nirup_visa_on_arrival_text', array(
         'default' => __('Visa-On-Arrival Countries', 'nirup-island'),

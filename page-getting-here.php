@@ -379,73 +379,77 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
     </div>
 </section>
     <!-- Luggage Information Section -->
-    <section class="luggage-info-section">
-        <div class="getting-here-page-container">
-            <h2 class="section-title"><?php echo esc_html($luggage_title); ?></h2>
-            
-            <div class="luggage-grid">
-                <div class="luggage-block">
-                    <h3 class="luggage-block-title"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_title', __('Singapore Departure', 'nirup-island'))); ?></h3>
-                    
-                    <div class="luggage-items">
-                        <div class="luggage-item">
-                            <div class="luggage-icon-label">
-                                <div class="luggage-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                                        <path d="M22.2975 5.93951H19.5602C19.5367 5.57239 19.2313 5.28162 18.8572 5.28162H18.8208V3.77374C18.8208 2.79578 18.0145 2 17.0235 2H10.9767C9.98549 2 9.17921 2.79578 9.17921 3.77374V5.28162H9.14284C8.76872 5.28162 8.46329 5.57239 8.43997 5.93951H5.70247C3.66087 5.93951 2 7.59534 2 9.63074V22.9848C2 24.6474 3.35672 26 5.02438 26H22.9756C24.6433 26 26 24.6474 26 22.9848V9.63074C26 7.59534 24.3389 5.93951 22.2975 5.93951ZM14.4393 7.34576C15.0686 7.47101 15.6161 7.8266 15.9848 8.35266C16.3641 8.89374 16.5094 9.5498 16.3937 10.1996C16.3481 10.4562 16.2638 10.6992 16.1437 10.9251L14.162 11.152C13.9594 11.175 13.7768 11.2845 13.6613 11.4521L10.7583 15.66C10.6524 15.8137 10.612 16.003 10.6459 16.1865C10.6799 16.3699 10.7857 16.5322 10.9398 16.6378L13.8351 18.623C13.957 18.7067 14.0962 18.7468 14.234 18.7468C14.4584 18.7468 14.679 18.6404 14.8156 18.4421L17.7186 14.2342C17.8342 14.0667 17.8714 13.8575 17.8206 13.6607L17.3186 11.7136C17.5465 11.3221 17.7023 10.8964 17.7825 10.4454C17.964 9.42548 17.7363 8.39624 17.141 7.54736C17.0925 7.47797 17.0413 7.41132 16.9888 7.34576H19.5354V24.5938H8.46458V7.34576H14.4393ZM16.3748 13.7008L14.0533 17.0659L12.3202 15.8776L14.6417 12.5125L16.0275 12.3541L16.3748 13.7008ZM10.5897 3.77374C10.5897 3.56427 10.7561 3.40625 10.9767 3.40625H17.0235C17.244 3.40625 17.4103 3.56427 17.4103 3.77374V5.28162H17.3739C16.9998 5.28162 16.6943 5.57239 16.671 5.93951H11.3292C11.3057 5.57239 11.0004 5.28162 10.6261 5.28162H10.5897V3.77374ZM3.41053 22.9848V9.63074C3.41053 8.37079 4.43868 7.34576 5.70247 7.34576H7.05386V24.5938H5.02438C4.13453 24.5938 3.41053 23.8719 3.41053 22.9848ZM24.5895 22.9848C24.5895 23.8719 23.8657 24.5938 22.9756 24.5938H20.9461V7.34576H22.2975C23.5613 7.34576 24.5895 8.37079 24.5895 9.63074V22.9848Z" fill="#A48456"/>
-                                    </svg>
-                                </div>  
-                                <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_free_label', __('Free', 'nirup-island'))); ?></div>                          
+<section class="luggage-info-section">
+    <div class="getting-here-page-container">
+        <h2 class="section-title"><?php echo esc_html(get_theme_mod('nirup_getting_here_luggage_title', __('Luggage Information', 'nirup-island'))); ?></h2>
+        
+        <div class="luggage-grid">
+            <!-- Singapore Departure -->
+            <div class="luggage-block">
+                <h3 class="luggage-block-title"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_title', __('Singapore Departure', 'nirup-island'))); ?></h3>
+                
+                <div class="luggage-items">
+                    <div class="luggage-item">
+                        <div class="luggage-icon-label">
+                            <div class="luggage-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M20.2975 3.93951H17.5602C17.5367 3.57239 17.2313 3.28162 16.8572 3.28162H16.8208V1.77374C16.8208 0.795776 16.0145 0 15.0235 0H8.97672C7.98549 0 7.17921 0.795776 7.17921 1.77374V3.28162H7.14284C6.76872 3.28162 6.46329 3.57239 6.43997 3.93951H3.70247C1.66087 3.93951 0 5.59534 0 7.63074V20.9848C0 22.6474 1.35672 24 3.02438 24H20.9756C22.6433 24 24 22.6474 24 20.9848V7.63074C24 5.59534 22.3389 3.93951 20.2975 3.93951ZM12.4393 5.34576C13.0686 5.47101 13.6161 5.8266 13.9848 6.35266C14.3641 6.89374 14.5094 7.5498 14.3937 8.19965C14.3481 8.45618 14.2638 8.69916 14.1437 8.92511L12.162 9.15198C11.9594 9.17505 11.7768 9.28455 11.6613 9.45209L8.75834 13.66C8.65237 13.8137 8.61197 14.003 8.64594 14.1865C8.67992 14.3699 8.78571 14.5322 8.9398 14.6378L11.8351 16.623C11.957 16.7067 12.0962 16.7468 12.234 16.7468C12.4584 16.7468 12.679 16.6404 12.8156 16.4421L15.7186 12.2342C15.8342 12.0667 15.8714 11.8575 15.8206 11.6607L15.3186 9.71356C15.5465 9.32208 15.7023 8.89636 15.7825 8.44537C15.964 7.42548 15.7363 6.39624 15.141 5.54736C15.0925 5.47797 15.0413 5.41132 14.9888 5.34576H17.5354V22.5938H6.46458V5.34576H12.4393ZM14.3748 11.7008L12.0533 15.0659L10.3202 13.8776L12.6417 10.5125L14.0275 10.3541L14.3748 11.7008ZM8.58974 1.77374C8.58974 1.56427 8.75614 1.40625 8.97672 1.40625H15.0235C15.244 1.40625 15.4103 1.56427 15.4103 1.77374V3.28162H15.3739C14.9998 3.28162 14.6943 3.57239 14.671 3.93951H9.32917C9.30566 3.57239 9.00041 3.28162 8.62611 3.28162H8.58974V1.77374ZM1.41053 20.9848V7.63074C1.41053 6.37079 2.43868 5.34576 3.70247 5.34576H5.05386V22.5938H3.02438C2.13453 22.5938 1.41053 21.8719 1.41053 20.9848ZM22.5895 20.9848C22.5895 21.8719 21.8657 22.5938 20.9756 22.5938H18.9461V5.34576H20.2975C21.5613 5.34576 22.5895 6.37079 22.5895 7.63074V20.9848Z" fill="#A48456"/>
+                                </svg>
                             </div>
-                            <div class="luggage-info">
-                                <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_free', __('20 kg / boarding pass', 'nirup-island'))); ?></div>
-                            </div>
-                        </div>                       
-                        <div class="luggage-item">
-                            <div class="luggage-icon-label">
-                                <div class="luggage-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
-                                    <path d="M11 5V11L15 13M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z" stroke="#A48456" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_checkin_label', __('Check-in', 'nirup-island'))); ?></div>       
-                            </div>
-                            <div class="luggage-info">
-                                <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_checkin', __('60–20 min before departure', 'nirup-island'))); ?></div>
-                            </div>
+                            <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_free_label', __('Free', 'nirup-island'))); ?></div>
                         </div>
-                        <div class="luggage-item">
-                            <div class="luggage-icon-label">
-                                <div class="luggage-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="24" viewBox="0 0 26 24" fill="none">
-                                    <path d="M21.5573 4.42428H4.44571C2.55566 4.42428 1.02344 2.89206 1.02344 1.00195H24.9796C24.9796 2.89206 23.4474 4.42428 21.5573 4.42428Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M15.691 4.42383H9.82422V7.35724H15.691V4.42383Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M24.0015 23.0012H2.00149C1.39859 23.0012 0.939381 22.4611 1.03642 21.866L2.70917 9.24533C2.86401 8.16146 3.79226 7.35645 4.88708 7.35645H21.1158C22.2107 7.35645 23.139 8.16146 23.2938 9.24533L24.9665 21.866C25.0637 22.4611 24.6044 23.0012 24.0015 23.0012Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M13.0029 20.5556C15.9731 20.5556 18.3808 18.1479 18.3808 15.1777C18.3808 12.2076 15.9731 9.7998 13.0029 9.7998C10.0328 9.7998 7.625 12.2076 7.625 15.1777C7.625 18.1479 10.0328 20.5556 13.0029 20.5556Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M13.0039 9.7998V11.2666" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M13.0039 19.0889V20.5556" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M7.625 15.1787H9.09173" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M16.9141 15.1787H18.3808" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M12.3099 15.8715C11.928 15.4895 11.928 14.8704 12.3099 14.4885C12.6917 14.1067 13.3109 14.1067 13.6927 14.4885C14.0745 14.8705 14.0745 15.4896 13.6927 15.8715C13.3109 16.2532 12.6917 16.2532 12.3099 15.8715Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M13.6914 14.487L15.0778 13.1006" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_excess_label', __('Excess', 'nirup-island'))); ?></div>
+                        <div class="luggage-info">
+                            <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_free', __('20 kg / boarding pass', 'nirup-island'))); ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="luggage-item">
+                        <div class="luggage-icon-label">
+                            <div class="luggage-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                                    <path d="M10.75 4.75V10.75L14.75 12.75M20.75 10.75C20.75 16.2728 16.2728 20.75 10.75 20.75C5.22715 20.75 0.75 16.2728 0.75 10.75C0.75 5.22715 5.22715 0.75 10.75 0.75C16.2728 0.75 20.75 5.22715 20.75 10.75Z" stroke="#A48456" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                            <div class="luggage-info">
-                                <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_excess', __('$1 per kg (max 40 kg)', 'nirup-island'))); ?></div>
+                            <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_checkin_label', __('Check-in', 'nirup-island'))); ?></div>
+                        </div>
+                        <div class="luggage-info">
+                            <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_checkin', __('60–20 min before departure', 'nirup-island'))); ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="luggage-item">
+                        <div class="luggage-icon-label">
+                            <div class="luggage-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="24" viewBox="0 0 26 24" fill="none">
+                                    <path d="M21.2838 4.17232H4.17228C2.28222 4.17232 0.75 2.6401 0.75 0.75H24.7062C24.7062 2.6401 23.1739 4.17232 21.2838 4.17232Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M15.4176 4.17188H9.55078V7.10529H15.4176V4.17188Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M23.7281 22.7493H1.72805C1.12515 22.7493 0.665943 22.2091 0.762985 21.614L2.43573 8.99338C2.59057 7.90951 3.51882 7.10449 4.61365 7.10449H20.8424C21.9373 7.10449 22.8655 7.90951 23.0204 8.99338L24.6931 21.614C24.7902 22.2091 24.331 22.7493 23.7281 22.7493Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12.7275 20.3037C15.6977 20.3037 18.1054 17.8959 18.1054 14.9258C18.1054 11.9556 15.6977 9.54785 12.7275 9.54785C9.75738 9.54785 7.34961 11.9556 7.34961 14.9258C7.34961 17.8959 9.75738 20.3037 12.7275 20.3037Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12.7285 9.54785V11.0146" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12.7285 18.8369V20.3036" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M7.34961 14.9268H8.81634" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M16.6387 14.9268H18.1054" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12.0364 15.6195C11.6545 15.2376 11.6545 14.6185 12.0364 14.2366C12.4183 13.8547 13.0374 13.8547 13.4193 14.2366C13.801 14.6185 13.801 15.2376 13.4193 15.6195C13.0374 16.0012 12.4183 16.0012 12.0364 15.6195Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M13.4199 14.235L14.8064 12.8486" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                        </div>    
-                        <div class="luggage-item">
-                            <div class="luggage-icon-label">
-                                <div class="luggage-icon"> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                                    <mask id="mask0_1253_2198" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="28" height="28">
-                                        <path d="M0 1.90735e-06H28V28H0V1.90735e-06Z" fill="white"/>
+                            <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_excess_label', __('Excess', 'nirup-island'))); ?></div>
+                        </div>
+                        <div class="luggage-info">
+                            <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_excess', __('$1 per kg (max 40 kg)', 'nirup-island'))); ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="luggage-item">
+                        <div class="luggage-icon-label">
+                            <div class="luggage-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                                    <mask id="mask0_1497_627" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="28" height="28">
+                                        <path d="M0 0H28V28H0V0Z" fill="white"/>
                                     </mask>
-                                    <g mask="url(#mask0_1253_2198)">
+                                    <g mask="url(#mask0_1497_627)">
                                         <path d="M19.9609 24.8008V20.043H23.2422V24.8008" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M8.91519 16.7617H25.5402C26.4425 16.7617 27.1808 17.5 27.1808 18.4023C27.1808 19.3047 26.4425 20.043 25.5402 20.043H8.69141" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M8.91323 16.7617H25.5382C26.4406 16.7617 27.1789 17.5 27.1789 18.4023C27.1789 19.3047 26.4405 20.043 25.5382 20.043H8.68945" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M13.8911 9.87145H21.4917C22.1237 9.87145 22.6406 10.3884 22.6406 11.0203V15.6158C22.6406 16.2476 22.1237 16.7646 21.4917 16.7646H13.8911C13.2591 16.7646 12.7422 16.2476 12.7422 15.6158V11.0203C12.7422 10.3884 13.2591 9.87145 13.8911 9.87145Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M0.820312 20.043H8.20312V4.40234H0.820312V20.043Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M15.3125 9.87109V8.23047C15.3125 7.32687 16.0495 6.58984 16.9531 6.58984H18.2656C19.1692 6.58984 19.9062 7.32687 19.9062 8.23047V9.87109" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
@@ -455,80 +459,83 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                                         <path d="M6.5625 4.23828V3.19922" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M1.14844 7.68359H7.65625" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
                                     </g>
-                                    </svg>
-                                </div>
-                                <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_counters_label', __('Counters', 'nirup-island'))); ?></div>     
+                                </svg>
                             </div>
-                            <div class="luggage-info">
-                                <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_counters', __('Next to immigration gate', 'nirup-island'))); ?></div>
-                            </div>
+                            <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_counters_label', __('Counters', 'nirup-island'))); ?></div>
+                        </div>
+                        <div class="luggage-info">
+                            <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_singapore_counters', __('Next to immigration gate', 'nirup-island'))); ?></div>
                         </div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Batam Departure -->
+            <div class="luggage-block">
+                <h3 class="luggage-block-title"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_title', __('Batam Departure', 'nirup-island'))); ?></h3>
                 
-                <div class="luggage-block">
-                    <h3 class="luggage-block-title"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_title', __('Batam Departure', 'nirup-island'))); ?></h3>
-                    
-                    <div class="luggage-items">
-                        <div class="luggage-item">
-                            <div class="luggage-icon-label">
-                                <div class="luggage-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                                        <path d="M22.2975 5.93951H19.5602C19.5367 5.57239 19.2313 5.28162 18.8572 5.28162H18.8208V3.77374C18.8208 2.79578 18.0145 2 17.0235 2H10.9767C9.98549 2 9.17921 2.79578 9.17921 3.77374V5.28162H9.14284C8.76872 5.28162 8.46329 5.57239 8.43997 5.93951H5.70247C3.66087 5.93951 2 7.59534 2 9.63074V22.9848C2 24.6474 3.35672 26 5.02438 26H22.9756C24.6433 26 26 24.6474 26 22.9848V9.63074C26 7.59534 24.3389 5.93951 22.2975 5.93951ZM14.4393 7.34576C15.0686 7.47101 15.6161 7.8266 15.9848 8.35266C16.3641 8.89374 16.5094 9.5498 16.3937 10.1996C16.3481 10.4562 16.2638 10.6992 16.1437 10.9251L14.162 11.152C13.9594 11.175 13.7768 11.2845 13.6613 11.4521L10.7583 15.66C10.6524 15.8137 10.612 16.003 10.6459 16.1865C10.6799 16.3699 10.7857 16.5322 10.9398 16.6378L13.8351 18.623C13.957 18.7067 14.0962 18.7468 14.234 18.7468C14.4584 18.7468 14.679 18.6404 14.8156 18.4421L17.7186 14.2342C17.8342 14.0667 17.8714 13.8575 17.8206 13.6607L17.3186 11.7136C17.5465 11.3221 17.7023 10.8964 17.7825 10.4454C17.964 9.42548 17.7363 8.39624 17.141 7.54736C17.0925 7.47797 17.0413 7.41132 16.9888 7.34576H19.5354V24.5938H8.46458V7.34576H14.4393ZM16.3748 13.7008L14.0533 17.0659L12.3202 15.8776L14.6417 12.5125L16.0275 12.3541L16.3748 13.7008ZM10.5897 3.77374C10.5897 3.56427 10.7561 3.40625 10.9767 3.40625H17.0235C17.244 3.40625 17.4103 3.56427 17.4103 3.77374V5.28162H17.3739C16.9998 5.28162 16.6943 5.57239 16.671 5.93951H11.3292C11.3057 5.57239 11.0004 5.28162 10.6261 5.28162H10.5897V3.77374ZM3.41053 22.9848V9.63074C3.41053 8.37079 4.43868 7.34576 5.70247 7.34576H7.05386V24.5938H5.02438C4.13453 24.5938 3.41053 23.8719 3.41053 22.9848ZM24.5895 22.9848C24.5895 23.8719 23.8657 24.5938 22.9756 24.5938H20.9461V7.34576H22.2975C23.5613 7.34576 24.5895 8.37079 24.5895 9.63074V22.9848Z" fill="#A48456"/>
-                                    </svg>
-                                </div>
-                                <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_free_label', __('Free', 'nirup-island'))); ?></div>
+                <div class="luggage-items">
+                    <div class="luggage-item">
+                        <div class="luggage-icon-label">
+                            <div class="luggage-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M20.2975 3.93951H17.5602C17.5367 3.57239 17.2313 3.28162 16.8572 3.28162H16.8208V1.77374C16.8208 0.795776 16.0145 0 15.0235 0H8.97672C7.98549 0 7.17921 0.795776 7.17921 1.77374V3.28162H7.14284C6.76872 3.28162 6.46329 3.57239 6.43997 3.93951H3.70247C1.66087 3.93951 0 5.59534 0 7.63074V20.9848C0 22.6474 1.35672 24 3.02438 24H20.9756C22.6433 24 24 22.6474 24 20.9848V7.63074C24 5.59534 22.3389 3.93951 20.2975 3.93951ZM12.4393 5.34576C13.0686 5.47101 13.6161 5.8266 13.9848 6.35266C14.3641 6.89374 14.5094 7.5498 14.3937 8.19965C14.3481 8.45618 14.2638 8.69916 14.1437 8.92511L12.162 9.15198C11.9594 9.17505 11.7768 9.28455 11.6613 9.45209L8.75834 13.66C8.65237 13.8137 8.61197 14.003 8.64594 14.1865C8.67992 14.3699 8.78571 14.5322 8.9398 14.6378L11.8351 16.623C11.957 16.7067 12.0962 16.7468 12.234 16.7468C12.4584 16.7468 12.679 16.6404 12.8156 16.4421L15.7186 12.2342C15.8342 12.0667 15.8714 11.8575 15.8206 11.6607L15.3186 9.71356C15.5465 9.32208 15.7023 8.89636 15.7825 8.44537C15.964 7.42548 15.7363 6.39624 15.141 5.54736C15.0925 5.47797 15.0413 5.41132 14.9888 5.34576H17.5354V22.5938H6.46458V5.34576H12.4393ZM14.3748 11.7008L12.0533 15.0659L10.3202 13.8776L12.6417 10.5125L14.0275 10.3541L14.3748 11.7008ZM8.58974 1.77374C8.58974 1.56427 8.75614 1.40625 8.97672 1.40625H15.0235C15.244 1.40625 15.4103 1.56427 15.4103 1.77374V3.28162H15.3739C14.9998 3.28162 14.6943 3.57239 14.671 3.93951H9.32917C9.30566 3.57239 9.00041 3.28162 8.62611 3.28162H8.58974V1.77374ZM1.41053 20.9848V7.63074C1.41053 6.37079 2.43868 5.34576 3.70247 5.34576H5.05386V22.5938H3.02438C2.13453 22.5938 1.41053 21.8719 1.41053 20.9848ZM22.5895 20.9848C22.5895 21.8719 21.8657 22.5938 20.9756 22.5938H18.9461V5.34576H20.2975C21.5613 5.34576 22.5895 6.37079 22.5895 7.63074V20.9848Z" fill="#A48456"/>
+                                </svg>
                             </div>
-                            <div class="luggage-info">
-                                <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_free', __('20 kg / boarding pass', 'nirup-island'))); ?></div>
-                            </div>
+                            <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_free_label', __('Free', 'nirup-island'))); ?></div>
                         </div>
-                        <div class="luggage-item">
-                            <div class="luggage-icon-label">
-                                <div class="luggage-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
-                                    <path d="M11 5V11L15 13M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z" stroke="#A48456" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>                                
-                                <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_checkin_label', __('Check-in', 'nirup-island'))); ?></div>
-                            </div>                            
-
-                            <div class="luggage-info">
-                                <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_checkin', __('60–20 min before departure', 'nirup-island'))); ?></div>
+                        <div class="luggage-info">
+                            <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_free', __('20 kg / boarding pass', 'nirup-island'))); ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="luggage-item">
+                        <div class="luggage-icon-label">
+                            <div class="luggage-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                                    <path d="M10.75 4.75V10.75L14.75 12.75M20.75 10.75C20.75 16.2728 16.2728 20.75 10.75 20.75C5.22715 20.75 0.75 16.2728 0.75 10.75C0.75 5.22715 5.22715 0.75 10.75 0.75C16.2728 0.75 20.75 5.22715 20.75 10.75Z" stroke="#A48456" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                        </div>                       
-                        <div class="luggage-item">
-                            <div class="luggage-icon-label">
-                                <div class="luggage-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="24" viewBox="0 0 26 24" fill="none">
-                                    <path d="M21.5573 4.42428H4.44571C2.55566 4.42428 1.02344 2.89206 1.02344 1.00195H24.9796C24.9796 2.89206 23.4474 4.42428 21.5573 4.42428Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M15.691 4.42383H9.82422V7.35724H15.691V4.42383Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M24.0015 23.0012H2.00149C1.39859 23.0012 0.939381 22.4611 1.03642 21.866L2.70917 9.24533C2.86401 8.16146 3.79226 7.35645 4.88708 7.35645H21.1158C22.2107 7.35645 23.139 8.16146 23.2938 9.24533L24.9665 21.866C25.0637 22.4611 24.6044 23.0012 24.0015 23.0012Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M13.0029 20.5556C15.9731 20.5556 18.3808 18.1479 18.3808 15.1777C18.3808 12.2076 15.9731 9.7998 13.0029 9.7998C10.0328 9.7998 7.625 12.2076 7.625 15.1777C7.625 18.1479 10.0328 20.5556 13.0029 20.5556Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M13.0039 9.7998V11.2666" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M13.0039 19.0889V20.5556" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M7.625 15.1787H9.09173" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M16.9141 15.1787H18.3808" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M12.3099 15.8715C11.928 15.4895 11.928 14.8704 12.3099 14.4885C12.6917 14.1067 13.3109 14.1067 13.6927 14.4885C14.0745 14.8705 14.0745 15.4896 13.6927 15.8715C13.3109 16.2532 12.6917 16.2532 12.3099 15.8715Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M13.6914 14.487L15.0778 13.1006" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_excess_label', __('Excess', 'nirup-island'))); ?></div>           
+                            <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_checkin_label', __('Check-in', 'nirup-island'))); ?></div>
+                        </div>
+                        <div class="luggage-info">
+                            <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_checkin', __('60–20 min before departure', 'nirup-island'))); ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="luggage-item">
+                        <div class="luggage-icon-label">
+                            <div class="luggage-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="24" viewBox="0 0 26 24" fill="none">
+                                    <path d="M21.2838 4.17232H4.17228C2.28222 4.17232 0.75 2.6401 0.75 0.75H24.7062C24.7062 2.6401 23.1739 4.17232 21.2838 4.17232Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M15.4176 4.17188H9.55078V7.10529H15.4176V4.17188Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M23.7281 22.7493H1.72805C1.12515 22.7493 0.665943 22.2091 0.762985 21.614L2.43573 8.99338C2.59057 7.90951 3.51882 7.10449 4.61365 7.10449H20.8424C21.9373 7.10449 22.8655 7.90951 23.0204 8.99338L24.6931 21.614C24.7902 22.2091 24.331 22.7493 23.7281 22.7493Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12.7275 20.3037C15.6977 20.3037 18.1054 17.8959 18.1054 14.9258C18.1054 11.9556 15.6977 9.54785 12.7275 9.54785C9.75738 9.54785 7.34961 11.9556 7.34961 14.9258C7.34961 17.8959 9.75738 20.3037 12.7275 20.3037Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12.7285 9.54785V11.0146" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12.7285 18.8369V20.3036" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M7.34961 14.9268H8.81634" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M16.6387 14.9268H18.1054" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12.0364 15.6195C11.6545 15.2376 11.6545 14.6185 12.0364 14.2366C12.4183 13.8547 13.0374 13.8547 13.4193 14.2366C13.801 14.6185 13.801 15.2376 13.4193 15.6195C13.0374 16.0012 12.4183 16.0012 12.0364 15.6195Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M13.4199 14.235L14.8064 12.8486" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                            <div class="luggage-info">
-                                <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_excess', __('$1 per kg (max 40 kg)', 'nirup-island'))); ?></div>
-                            </div>
-                        </div>   
-                        <div class="luggage-item">
-                            <div class="luggage-icon-label">
-                                <div class="luggage-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                                    <mask id="mask0_1253_2198" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="28" height="28">
-                                        <path d="M0 1.90735e-06H28V28H0V1.90735e-06Z" fill="white"/>
+                            <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_excess_label', __('Excess', 'nirup-island'))); ?></div>
+                        </div>
+                        <div class="luggage-info">
+                            <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_excess', __('$1 per kg (max 40 kg)', 'nirup-island'))); ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="luggage-item">
+                        <div class="luggage-icon-label">
+                            <div class="luggage-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                                    <mask id="mask0_1497_627" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="28" height="28">
+                                        <path d="M0 0H28V28H0V0Z" fill="white"/>
                                     </mask>
-                                    <g mask="url(#mask0_1253_2198)">
+                                    <g mask="url(#mask0_1497_627)">
                                         <path d="M19.9609 24.8008V20.043H23.2422V24.8008" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M8.91519 16.7617H25.5402C26.4425 16.7617 27.1808 17.5 27.1808 18.4023C27.1808 19.3047 26.4425 20.043 25.5402 20.043H8.69141" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M8.91323 16.7617H25.5382C26.4406 16.7617 27.1789 17.5 27.1789 18.4023C27.1789 19.3047 26.4405 20.043 25.5382 20.043H8.68945" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M13.8911 9.87145H21.4917C22.1237 9.87145 22.6406 10.3884 22.6406 11.0203V15.6158C22.6406 16.2476 22.1237 16.7646 21.4917 16.7646H13.8911C13.2591 16.7646 12.7422 16.2476 12.7422 15.6158V11.0203C12.7422 10.3884 13.2591 9.87145 13.8911 9.87145Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M0.820312 20.043H8.20312V4.40234H0.820312V20.043Z" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M15.3125 9.87109V8.23047C15.3125 7.32687 16.0495 6.58984 16.9531 6.58984H18.2656C19.1692 6.58984 19.9062 7.32687 19.9062 8.23047V9.87109" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
@@ -538,20 +545,19 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                                         <path d="M6.5625 4.23828V3.19922" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M1.14844 7.68359H7.65625" stroke="#A48456" stroke-width="1.5" stroke-miterlimit="22.926" stroke-linecap="round" stroke-linejoin="round"/>
                                     </g>
-                                    </svg>
-                                </div>                            
-                                <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_counters_label', __('Counters', 'nirup-island'))); ?></div>
+                                </svg>
                             </div>
-
-                            <div class="luggage-info">
-                                <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_counters', __('Next to immigration gate', 'nirup-island'))); ?></div>
-                            </div>
+                            <div class="luggage-label"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_counters_label', __('Counters', 'nirup-island'))); ?></div>
+                        </div>
+                        <div class="luggage-info">
+                            <div class="luggage-value"><?php echo esc_html(get_theme_mod('nirup_luggage_batam_counters', __('Next to immigration gate', 'nirup-island'))); ?></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Visa Requirements Section -->
     <section class="visa-requirements-section">
@@ -561,7 +567,8 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
             <div class="visa-section-divider"></div> 
             <div class="visa-buttons-wrapper">
                 <!-- <a href="<?php echo esc_url(get_theme_mod('nirup_visa_free_url', '#')); ?>" class="visa-btn visa-btn-outline"><?php echo esc_html(get_theme_mod('nirup_visa_free_text', __('Visa Free Countries', 'nirup-island'))); ?></a> -->
-                <a href="<?php echo esc_url(get_theme_mod('nirup_visa_on_arrival_url', '#')); ?>" class="visa-btn visa-btn-filled"><?php echo esc_html(get_theme_mod('nirup_visa_on_arrival_text', __('Visa-On-Arrival Countries', 'nirup-island'))); ?></a>
+                <a href="<?php echo esc_url(get_theme_mod('nirup_visa_on_arrival_url', '#')); ?>" target="_blank" 
+                rel="noopener noreferrer" class="visa-btn visa-btn-filled"><?php echo esc_html(get_theme_mod('nirup_visa_on_arrival_text', __('Visa-On-Arrival Countries', 'nirup-island'))); ?></a>
             </div>
         </div>
     </section>
