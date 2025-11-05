@@ -75,7 +75,8 @@ add_action('after_setup_theme', 'nirup_custom_image_sizes');
  * Flush rewrite rules on theme activation
  */
 function nirup_rewrite_flush() {
-    register_experiences_post_type();
+    // Rewrite rules will be flushed after all post types are registered
+    // Post types are registered on 'init' hook, so we flush on a later hook
     flush_rewrite_rules();
 }
 add_action('after_switch_theme', 'nirup_rewrite_flush');
