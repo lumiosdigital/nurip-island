@@ -62,8 +62,8 @@ get_header(); ?>
                         </svg>
                     </div>
                     <div class="dining-feature-content">
-                        <h3 class="dining-feature-title">Fresh Products</h3>
-                        <p class="dining-feature-description">Carefully selected ingredients<br>from trusted suppliers.</p>
+                        <h3 class="dining-feature-title"><?php echo esc_html(get_theme_mod('dining_icon1_title', 'Fresh Products')); ?></h3>
+                        <p class="dining-feature-description"><?php echo esc_html(get_theme_mod('dining_icon1_description', 'Carefully selected ingredients from trusted suppliers.')); ?></p>
                     </div>
                 </div>
                 
@@ -82,8 +82,8 @@ get_header(); ?>
                         </svg>
                     </div>
                     <div class="dining-feature-content">
-                        <h3 class="dining-feature-title">Skilled Chefs</h3>
-                        <p class="dining-feature-description">Masters of their craft,<br>creating culinary perfection.</p>
+                        <h3 class="dining-feature-title"><?php echo esc_html(get_theme_mod('dining_icon2_title', 'Skilled Chefs')); ?></h3>
+                        <p class="dining-feature-description"><?php echo esc_html(get_theme_mod('dining_icon2_description', 'Masters of their craft, creating culinary perfection.')); ?></p>
                     </div>
                 </div>
                 
@@ -104,8 +104,8 @@ get_header(); ?>
                         </svg>
                     </div>
                     <div class="dining-feature-content">
-                        <h3 class="dining-feature-title">Unique Recipes</h3>
-                        <p class="dining-feature-description">Signature dishes you won't find anywhere else.</p>
+                        <h3 class="dining-feature-title"><?php echo esc_html(get_theme_mod('dining_icon3_title', 'Unique Recipes')); ?></h3>
+                        <p class="dining-feature-description"><?php echo esc_html(get_theme_mod('dining_icon3_description', 'Signature dishes you won\'t find anywhere else.')); ?></p>
                     </div>
                 </div>
                 
@@ -124,8 +124,8 @@ get_header(); ?>
                         </svg>
                     </div>
                     <div class="dining-feature-content">
-                        <h3 class="dining-feature-title">Premium Service</h3>
-                        <p class="dining-feature-description">Attentive staff making<br>every detail matter.</p>
+                        <h3 class="dining-feature-title"><?php echo esc_html(get_theme_mod('dining_icon4_title', 'Premium Service')); ?></h3>
+                        <p class="dining-feature-description"><?php echo esc_html(get_theme_mod('dining_icon4_description', 'Attentive staff making every detail matter.')); ?></p>
                     </div>
                 </div>
             </div>

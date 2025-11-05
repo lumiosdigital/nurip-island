@@ -6135,6 +6135,99 @@ function nirup_dining_archive_customizer($wp_customize) {
         'type' => 'textarea',
     ));
 
+    // Feature Icons Section
+    // Icon 1 - Fresh Products
+    $wp_customize->add_setting('dining_icon1_title', array(
+        'default' => __('Fresh Products', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('dining_icon1_title', array(
+        'label' => __('Icon 1 - Title', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('dining_icon1_description', array(
+        'default' => __('Carefully selected ingredients from trusted suppliers.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('dining_icon1_description', array(
+        'label' => __('Icon 1 - Description', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'textarea',
+    ));
+
+    // Icon 2 - Skilled Chefs
+    $wp_customize->add_setting('dining_icon2_title', array(
+        'default' => __('Skilled Chefs', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('dining_icon2_title', array(
+        'label' => __('Icon 2 - Title', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('dining_icon2_description', array(
+        'default' => __('Masters of their craft, creating culinary perfection.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('dining_icon2_description', array(
+        'label' => __('Icon 2 - Description', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'textarea',
+    ));
+
+    // Icon 3 - Unique Recipes
+    $wp_customize->add_setting('dining_icon3_title', array(
+        'default' => __('Unique Recipes', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('dining_icon3_title', array(
+        'label' => __('Icon 3 - Title', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('dining_icon3_description', array(
+        'default' => __('Signature dishes you won\'t find anywhere else.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('dining_icon3_description', array(
+        'label' => __('Icon 3 - Description', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'textarea',
+    ));
+
+    // Icon 4 - Premium Service
+    $wp_customize->add_setting('dining_icon4_title', array(
+        'default' => __('Premium Service', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('dining_icon4_title', array(
+        'label' => __('Icon 4 - Title', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('dining_icon4_description', array(
+        'default' => __('Attentive staff making every detail matter.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+
+    $wp_customize->add_control('dining_icon4_description', array(
+        'label' => __('Icon 4 - Description', 'nirup-island'),
+        'section' => 'nirup_dining_archive',
+        'type' => 'textarea',
+    ));
+
     // Signature Experiences Section
     $wp_customize->add_setting('signature_experiences_category', array(
         'default' => __('For Connoisseurs', 'nirup-island'),
