@@ -355,7 +355,7 @@ if (empty($region_section_text)) {
             <?php elseif (!empty($cta_no_calendar_text)) : ?>
                 <!-- Show alternative text when no calendar is attached -->
                 <div class="single-cta-content">
-                    <p class="single-cta-subtitle"><?php echo esc_html($cta_no_calendar_text); ?></p>
+                    <h2 class="single-cta-title"><?php echo esc_html($cta_no_calendar_text); ?></h2>
                 </div>
             <?php endif; ?>
 
