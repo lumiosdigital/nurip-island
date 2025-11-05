@@ -6230,6 +6230,255 @@ function nirup_restaurant_admin_column_content($column, $post_id) {
 }
 add_action('manage_restaurant_posts_custom_column', 'nirup_restaurant_admin_column_content', 10, 2);
 
+// Register Ferry Schedule Custom Post Type
+function nirup_register_ferry_schedule_post_type() {
+    $labels = array(
+        'name'                  => _x('Ferry Schedules', 'Post type general name', 'nirup-island'),
+        'singular_name'         => _x('Ferry Schedule', 'Post type singular name', 'nirup-island'),
+        'menu_name'             => _x('Ferry Schedules', 'Admin Menu text', 'nirup-island'),
+        'name_admin_bar'        => _x('Ferry Schedule', 'Add New on Toolbar', 'nirup-island'),
+        'add_new'               => __('Add New', 'nirup-island'),
+        'add_new_item'          => __('Add New Ferry Schedule', 'nirup-island'),
+        'new_item'              => __('New Ferry Schedule', 'nirup-island'),
+        'edit_item'             => __('Edit Ferry Schedule', 'nirup-island'),
+        'view_item'             => __('View Ferry Schedule', 'nirup-island'),
+        'all_items'             => __('All Ferry Schedules', 'nirup-island'),
+        'search_items'          => __('Search Ferry Schedules', 'nirup-island'),
+        'not_found'             => __('No ferry schedules found.', 'nirup-island'),
+        'not_found_in_trash'    => __('No ferry schedules found in Trash.', 'nirup-island'),
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => false,
+        'publicly_queryable' => false,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'capability_type'    => 'post',
+        'has_archive'        => false,
+        'hierarchical'       => false,
+        'menu_position'      => 22,
+        'menu_icon'          => 'dashicons-calendar-alt',
+        'supports'           => array('title'),
+        'show_in_rest'       => true,
+    );
+
+    register_post_type('ferry_schedule', $args);
+}
+add_action('init', 'nirup_register_ferry_schedule_post_type');
+
+// Ferry Schedule Meta Boxes
+function nirup_add_ferry_schedule_meta_boxes() {
+    add_meta_box(
+        'ferry-schedule-details',
+        __('⛴️ Ferry Schedule Details', 'nirup-island'),
+        'nirup_ferry_schedule_details_callback',
+        'ferry_schedule',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_ferry_schedule_meta_boxes');
+
+// Ferry Schedule Details Meta Box Callback
+function nirup_ferry_schedule_details_callback($post) {
+    wp_nonce_field('nirup_ferry_schedule_details', 'nirup_ferry_schedule_details_nonce');
+
+    $route_type = get_post_meta($post->ID, '_ferry_route_type', true);
+    $route_from = get_post_meta($post->ID, '_ferry_route_from', true);
+    $route_to = get_post_meta($post->ID, '_ferry_route_to', true);
+    $etd = get_post_meta($post->ID, '_ferry_etd', true);
+    $eta = get_post_meta($post->ID, '_ferry_eta', true);
+    $operator = get_post_meta($post->ID, '_ferry_operator', true);
+    $duration = get_post_meta($post->ID, '_ferry_duration', true);
+    $price = get_post_meta($post->ID, '_ferry_price', true);
+    $frequency = get_post_meta($post->ID, '_ferry_frequency', true);
+    $checkin_location = get_post_meta($post->ID, '_ferry_checkin_location', true);
+    $menu_order = get_post_meta($post->ID, '_ferry_menu_order', true);
+    ?>
+    <style>
+        .ferry-schedule-table { width: 100%; border-collapse: collapse; }
+        .ferry-schedule-table th { text-align: left; padding: 12px; background: #f5f5f5; width: 200px; }
+        .ferry-schedule-table td { padding: 12px; }
+        .ferry-schedule-table tr { border-bottom: 1px solid #ddd; }
+        .ferry-schedule-table input[type="text"],
+        .ferry-schedule-table select { width: 100%; max-width: 500px; }
+        .ferry-schedule-table textarea { width: 100%; max-width: 500px; rows: 3; }
+        .ferry-schedule-table .description { color: #666; font-size: 13px; margin-top: 5px; }
+    </style>
+    <table class="ferry-schedule-table">
+        <tr>
+            <th><label for="ferry_route_type"><?php _e('Route Type', 'nirup-island'); ?></label></th>
+            <td>
+                <select id="ferry_route_type" name="ferry_route_type">
+                    <option value="singapore" <?php selected($route_type, 'singapore'); ?>>Singapore</option>
+                    <option value="batam" <?php selected($route_type, 'batam'); ?>>Batam</option>
+                </select>
+                <p class="description"><?php _e('Select which route this schedule belongs to (Singapore or Batam)', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="ferry_route_from"><?php _e('Route From', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="ferry_route_from" name="ferry_route_from" value="<?php echo esc_attr($route_from); ?>" />
+                <p class="description"><?php _e('e.g., "Singapore", "Nirup", "Batam"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="ferry_route_to"><?php _e('Route To', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="ferry_route_to" name="ferry_route_to" value="<?php echo esc_attr($route_to); ?>" />
+                <p class="description"><?php _e('e.g., "Singapore", "Nirup", "Batam"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="ferry_etd"><?php _e('ETD (Departure Time)', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="ferry_etd" name="ferry_etd" value="<?php echo esc_attr($etd); ?>" />
+                <p class="description"><?php _e('e.g., "10:30 (SGT)" or "09:45 (IDT)"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="ferry_eta"><?php _e('ETA (Arrival Time)', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="ferry_eta" name="ferry_eta" value="<?php echo esc_attr($eta); ?>" />
+                <p class="description"><?php _e('e.g., "11:10 (SGT)" or "10:05 (IDT)"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="ferry_operator"><?php _e('Operator', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="ferry_operator" name="ferry_operator" value="<?php echo esc_attr($operator); ?>" />
+                <p class="description"><?php _e('e.g., "Horizon Fast Ferry", "Rans Fadhila"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="ferry_duration"><?php _e('Duration', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="ferry_duration" name="ferry_duration" value="<?php echo esc_attr($duration); ?>" />
+                <p class="description"><?php _e('e.g., "50 minutes", "20 minutes"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="ferry_price"><?php _e('Price', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="ferry_price" name="ferry_price" value="<?php echo esc_attr($price); ?>" />
+                <p class="description"><?php _e('e.g., "SGD 76 /per way", "Rp150,000 /per way"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="ferry_frequency"><?php _e('Frequency / Days', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="ferry_frequency" name="ferry_frequency" value="<?php echo esc_attr($frequency); ?>" />
+                <p class="description"><?php _e('e.g., "Daily", "Fri–Sun only"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="ferry_checkin_location"><?php _e('Check-in Location', 'nirup-island'); ?></label></th>
+            <td>
+                <textarea id="ferry_checkin_location" name="ferry_checkin_location" rows="2"><?php echo esc_textarea($checkin_location); ?></textarea>
+                <p class="description"><?php _e('e.g., "Tanah Merah Ferry Terminal"', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="ferry_menu_order"><?php _e('Display Order', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="number" id="ferry_menu_order" name="ferry_menu_order" value="<?php echo esc_attr($menu_order ? $menu_order : 0); ?>" min="0" />
+                <p class="description"><?php _e('Lower numbers appear first. Leave at 0 for default ordering.', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+
+// Save Ferry Schedule Meta
+function nirup_save_ferry_schedule_meta($post_id) {
+    // Check nonce
+    if (!isset($_POST['nirup_ferry_schedule_details_nonce']) || !wp_verify_nonce($_POST['nirup_ferry_schedule_details_nonce'], 'nirup_ferry_schedule_details')) {
+        return;
+    }
+
+    // Check autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    // Check permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save all fields
+    $fields = array(
+        'ferry_route_type' => 'sanitize_text_field',
+        'ferry_route_from' => 'sanitize_text_field',
+        'ferry_route_to' => 'sanitize_text_field',
+        'ferry_etd' => 'sanitize_text_field',
+        'ferry_eta' => 'sanitize_text_field',
+        'ferry_operator' => 'sanitize_text_field',
+        'ferry_duration' => 'sanitize_text_field',
+        'ferry_price' => 'sanitize_text_field',
+        'ferry_frequency' => 'sanitize_text_field',
+        'ferry_checkin_location' => 'sanitize_textarea_field',
+        'ferry_menu_order' => 'absint',
+    );
+
+    foreach ($fields as $field => $sanitize_callback) {
+        if (isset($_POST[$field])) {
+            update_post_meta($post_id, '_' . $field, $sanitize_callback($_POST[$field]));
+        }
+    }
+}
+add_action('save_post', 'nirup_save_ferry_schedule_meta');
+
+// Add admin columns for ferry schedules
+function nirup_ferry_schedule_admin_columns($columns) {
+    $new_columns = array();
+    $new_columns['cb'] = $columns['cb'];
+    $new_columns['title'] = $columns['title'];
+    $new_columns['route_type'] = __('Route Type', 'nirup-island');
+    $new_columns['route'] = __('Route', 'nirup-island');
+    $new_columns['etd'] = __('ETD', 'nirup-island');
+    $new_columns['eta'] = __('ETA', 'nirup-island');
+    $new_columns['operator'] = __('Operator', 'nirup-island');
+    $new_columns['order'] = __('Order', 'nirup-island');
+    $new_columns['date'] = $columns['date'];
+    return $new_columns;
+}
+add_filter('manage_ferry_schedule_posts_columns', 'nirup_ferry_schedule_admin_columns');
+
+function nirup_ferry_schedule_admin_column_content($column, $post_id) {
+    switch ($column) {
+        case 'route_type':
+            $route_type = get_post_meta($post_id, '_ferry_route_type', true);
+            echo $route_type ? ucfirst(esc_html($route_type)) : '—';
+            break;
+        case 'route':
+            $from = get_post_meta($post_id, '_ferry_route_from', true);
+            $to = get_post_meta($post_id, '_ferry_route_to', true);
+            echo ($from && $to) ? esc_html($from . ' → ' . $to) : '—';
+            break;
+        case 'etd':
+            $etd = get_post_meta($post_id, '_ferry_etd', true);
+            echo $etd ? esc_html($etd) : '—';
+            break;
+        case 'eta':
+            $eta = get_post_meta($post_id, '_ferry_eta', true);
+            echo $eta ? esc_html($eta) : '—';
+            break;
+        case 'operator':
+            $operator = get_post_meta($post_id, '_ferry_operator', true);
+            echo $operator ? esc_html($operator) : '—';
+            break;
+        case 'order':
+            $order = get_post_meta($post_id, '_ferry_menu_order', true);
+            echo $order ? esc_html($order) : '0';
+            break;
+    }
+}
+add_action('manage_ferry_schedule_posts_custom_column', 'nirup_ferry_schedule_admin_column_content', 10, 2);
+
 function nirup_booking_modal_customizer($wp_customize) {
     // Booking Modal Section
     $wp_customize->add_section('nirup_booking_modal', array(
