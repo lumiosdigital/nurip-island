@@ -72,8 +72,34 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                 
                 <!-- Singapore to Nirup Tab -->
                 <div class="route-tab-content active" id="singapore-to-nirup">
-                    <div class="route-departure-point"><?php echo esc_html(get_theme_mod('nirup_singapore_departure_point', __('HarbourFront Centre', 'nirup-island'))); ?></div>
-                    
+                    <?php
+                    // Query Singapore to Nirup ferries
+                    $singapore_to_nirup = new WP_Query(array(
+                        'post_type' => 'ferry_schedule',
+                        'posts_per_page' => -1,
+                        'meta_query' => array(
+                            'relation' => 'AND',
+                            array(
+                                'key' => '_ferry_route_type',
+                                'value' => 'singapore',
+                                'compare' => '='
+                            ),
+                            array(
+                                'key' => '_ferry_route_from',
+                                'value' => 'Singapore',
+                                'compare' => 'LIKE'
+                            )
+                        ),
+                        'meta_key' => '_ferry_menu_order',
+                        'orderby' => 'meta_value_num',
+                        'order' => 'ASC'
+                    ));
+
+                    $first_schedule = $singapore_to_nirup->posts[0] ?? null;
+                    $departure_point = $first_schedule ? get_post_meta($first_schedule->ID, '_ferry_checkin_location', true) : get_theme_mod('nirup_singapore_departure_point', __('HarbourFront Centre', 'nirup-island'));
+                    ?>
+                    <div class="route-departure-point"><?php echo esc_html($departure_point); ?></div>
+
                     <table class="ferry-schedule-table">
                         <thead>
                             <tr>
@@ -83,19 +109,59 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><?php echo esc_html(get_theme_mod('nirup_singapore_to_nirup_route', __('Singapore → Nirup', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_singapore_to_nirup_etd', __('10:30 (SGT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_singapore_to_nirup_eta', __('11:10 (SGT)', 'nirup-island'))); ?></td>
-                            </tr>
+                            <?php if ($singapore_to_nirup->have_posts()) : ?>
+                                <?php while ($singapore_to_nirup->have_posts()) : $singapore_to_nirup->the_post(); ?>
+                                    <?php
+                                    $route_from = get_post_meta(get_the_ID(), '_ferry_route_from', true);
+                                    $route_to = get_post_meta(get_the_ID(), '_ferry_route_to', true);
+                                    $etd = get_post_meta(get_the_ID(), '_ferry_etd', true);
+                                    $eta = get_post_meta(get_the_ID(), '_ferry_eta', true);
+                                    ?>
+                                    <tr>
+                                        <td><?php echo esc_html($route_from . ' → ' . $route_to); ?></td>
+                                        <td><?php echo esc_html($etd); ?></td>
+                                        <td><?php echo esc_html($eta); ?></td>
+                                    </tr>
+                                <?php endwhile; wp_reset_postdata(); ?>
+                            <?php else : ?>
+                                <tr>
+                                    <td colspan="3"><?php _e('No ferry schedules available.', 'nirup-island'); ?></td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
                 
                 <!-- Nirup to Singapore Tab -->
                 <div class="route-tab-content" id="nirup-to-singapore">
-                    <div class="route-departure-point"><?php echo esc_html(get_theme_mod('nirup_nirup_departure_point', __('Nirup Island Ferry Terminal', 'nirup-island'))); ?></div>
-                    
+                    <?php
+                    // Query Nirup to Singapore ferries
+                    $nirup_to_singapore = new WP_Query(array(
+                        'post_type' => 'ferry_schedule',
+                        'posts_per_page' => -1,
+                        'meta_query' => array(
+                            'relation' => 'AND',
+                            array(
+                                'key' => '_ferry_route_type',
+                                'value' => 'singapore',
+                                'compare' => '='
+                            ),
+                            array(
+                                'key' => '_ferry_route_from',
+                                'value' => 'Nirup',
+                                'compare' => 'LIKE'
+                            )
+                        ),
+                        'meta_key' => '_ferry_menu_order',
+                        'orderby' => 'meta_value_num',
+                        'order' => 'ASC'
+                    ));
+
+                    $first_schedule_nirup = $nirup_to_singapore->posts[0] ?? null;
+                    $departure_point_nirup = $first_schedule_nirup ? get_post_meta($first_schedule_nirup->ID, '_ferry_checkin_location', true) : get_theme_mod('nirup_nirup_departure_point', __('Nirup Island Ferry Terminal', 'nirup-island'));
+                    ?>
+                    <div class="route-departure-point"><?php echo esc_html($departure_point_nirup); ?></div>
+
                     <table class="ferry-schedule-table">
                         <thead>
                             <tr>
@@ -105,11 +171,25 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_singapore_route', __('Nirup → Singapore', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_singapore_etd', __('12:00 (SGT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_singapore_eta', __('12:50 (SGT)', 'nirup-island'))); ?></td>
-                            </tr>
+                            <?php if ($nirup_to_singapore->have_posts()) : ?>
+                                <?php while ($nirup_to_singapore->have_posts()) : $nirup_to_singapore->the_post(); ?>
+                                    <?php
+                                    $route_from = get_post_meta(get_the_ID(), '_ferry_route_from', true);
+                                    $route_to = get_post_meta(get_the_ID(), '_ferry_route_to', true);
+                                    $etd = get_post_meta(get_the_ID(), '_ferry_etd', true);
+                                    $eta = get_post_meta(get_the_ID(), '_ferry_eta', true);
+                                    ?>
+                                    <tr>
+                                        <td><?php echo esc_html($route_from . ' → ' . $route_to); ?></td>
+                                        <td><?php echo esc_html($etd); ?></td>
+                                        <td><?php echo esc_html($eta); ?></td>
+                                    </tr>
+                                <?php endwhile; wp_reset_postdata(); ?>
+                            <?php else : ?>
+                                <tr>
+                                    <td colspan="3"><?php _e('No ferry schedules available.', 'nirup-island'); ?></td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -117,6 +197,14 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
             
             <!-- Right Column: Sidebar -->
             <div class="route-sidebar">
+                <?php
+                // Get sidebar info from first schedule (either direction)
+                $sidebar_schedule = $first_schedule ?? $first_schedule_nirup ?? null;
+                $sidebar_operator = $sidebar_schedule ? get_post_meta($sidebar_schedule->ID, '_ferry_operator', true) : get_theme_mod('nirup_singapore_operator', __('Horizon Fast Ferry', 'nirup-island'));
+                $sidebar_duration = $sidebar_schedule ? get_post_meta($sidebar_schedule->ID, '_ferry_duration', true) : get_theme_mod('nirup_singapore_duration', __('50 minutes', 'nirup-island'));
+                $sidebar_price = $sidebar_schedule ? get_post_meta($sidebar_schedule->ID, '_ferry_price', true) : get_theme_mod('nirup_singapore_price', __('SGD 76 /per way', 'nirup-island'));
+                $sidebar_frequency = $sidebar_schedule ? get_post_meta($sidebar_schedule->ID, '_ferry_frequency', true) : get_theme_mod('nirup_singapore_workdays', __('Daily', 'nirup-island'));
+                ?>
                 <div class="sidebar-item">
                     <div class="sidebar-header">
                         <div class="sidebar-icon">
@@ -134,9 +222,9 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                         </div>
                         <p class="sidebar-label"><?php echo esc_html(get_theme_mod('nirup_sidebar_operator_label', __('Operator', 'nirup-island'))); ?></p>
                     </div>
-                    <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_singapore_operator', __('Horizon Fast Ferry', 'nirup-island'))); ?></p>
+                    <p class="sidebar-value"><?php echo esc_html($sidebar_operator); ?></p>
                 </div>
-                
+
                 <div class="sidebar-item">
                     <div class="sidebar-header">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -144,7 +232,7 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                         </svg>
                         <p class="sidebar-label"><?php echo esc_html(get_theme_mod('nirup_sidebar_duration_label', __('Duration', 'nirup-island'))); ?></p>
                     </div>
-                    <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_singapore_duration', __('50 minutes', 'nirup-island'))); ?></p>
+                    <p class="sidebar-value"><?php echo esc_html($sidebar_duration); ?></p>
                 </div>
                 
                 <div class="sidebar-item">
@@ -159,9 +247,9 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                         </div>
                         <p class="sidebar-label"><?php echo esc_html(get_theme_mod('nirup_sidebar_workdays_label', __('Work Days', 'nirup-island'))); ?></p>
                     </div>
-                    <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_singapore_workdays', __('Friday – Sunday', 'nirup-island'))); ?></p>
+                    <p class="sidebar-value"><?php echo esc_html($sidebar_frequency); ?></p>
                 </div>
-                
+
                 <div class="sidebar-item">
                     <div class="sidebar-header">
                         <div class="sidebar-icon">
@@ -178,9 +266,10 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                         </div>
                         <p class="sidebar-label"><?php echo esc_html(get_theme_mod('nirup_sidebar_price_label', __('Price', 'nirup-island'))); ?></p>
                     </div>
-                    <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_singapore_price', __('SGD 76 /per way', 'nirup-island'))); ?></p>
+                    <p class="sidebar-value"><?php echo esc_html($sidebar_price); ?></p>
                 </div>
-                
+
+                <?php if ($sidebar_schedule && get_post_meta($sidebar_schedule->ID, '_ferry_checkin_location', true)): ?>
                 <div class="sidebar-item">
                     <div class="sidebar-header">
                         <div class="sidebar-icon">
@@ -190,8 +279,9 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                         </div>
                         <p class="sidebar-label"><?php echo esc_html(get_theme_mod('nirup_sidebar_checkin_label', __('Check-in', 'nirup-island'))); ?></p>
                     </div>
-                    <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_singapore_to_nirup_checkin', __('Horizon Fast Ferry Counter (Harbour Front Centre, #03-47)', 'nirup-island'))); ?></p>
+                    <p class="sidebar-value"><?php echo esc_html(get_post_meta($sidebar_schedule->ID, '_ferry_checkin_location', true)); ?></p>
                 </div>
+                <?php endif; ?>
                 
                 <a href="<?php echo esc_url(get_theme_mod('nirup_book_ticket_singapore_url', '#')); ?>" 
                 class="book-ticket-btn" 
@@ -217,8 +307,34 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                 
                 <!-- Batam to Nirup Tab -->
                 <div class="route-tab-content active" id="batam-to-nirup">
-                    <div class="route-departure-point"><?php echo esc_html(get_theme_mod('nirup_batam_departure_point', __('HarbourBay Ferry Terminal', 'nirup-island'))); ?></div>
-                    
+                    <?php
+                    // Query Batam to Nirup ferries
+                    $batam_to_nirup = new WP_Query(array(
+                        'post_type' => 'ferry_schedule',
+                        'posts_per_page' => -1,
+                        'meta_query' => array(
+                            'relation' => 'AND',
+                            array(
+                                'key' => '_ferry_route_type',
+                                'value' => 'batam',
+                                'compare' => '='
+                            ),
+                            array(
+                                'key' => '_ferry_route_from',
+                                'value' => 'Batam',
+                                'compare' => 'LIKE'
+                            )
+                        ),
+                        'meta_key' => '_ferry_menu_order',
+                        'orderby' => 'meta_value_num',
+                        'order' => 'ASC'
+                    ));
+
+                    $first_schedule_batam = $batam_to_nirup->posts[0] ?? null;
+                    $departure_point_batam = $first_schedule_batam ? get_post_meta($first_schedule_batam->ID, '_ferry_checkin_location', true) : get_theme_mod('nirup_batam_departure_point', __('HarbourBay Ferry Terminal', 'nirup-island'));
+                    ?>
+                    <div class="route-departure-point"><?php echo esc_html($departure_point_batam); ?></div>
+
                     <table class="ferry-schedule-table">
                         <thead>
                             <tr>
@@ -229,32 +345,61 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_route_1', __('Batam → Nirup', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_etd_1', __('09:45 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_eta_1', __('10:05 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_days_1', __('Daily', 'nirup-island'))); ?></td>
-                            </tr>
-                            <tr>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_route_2', __('Batam → Nirup', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_etd_2', __('13:00 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_eta_2', __('13:20 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_days_2', __('Daily', 'nirup-island'))); ?></td>
-                            </tr>
-                            <tr>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_route_3', __('Batam → Nirup', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_etd_3', __('15:30 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_eta_3', __('15:50 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_days_3', __('Fri–Sun', 'nirup-island'))); ?></td>
-                            </tr>
+                            <?php if ($batam_to_nirup->have_posts()) : ?>
+                                <?php while ($batam_to_nirup->have_posts()) : $batam_to_nirup->the_post(); ?>
+                                    <?php
+                                    $route_from = get_post_meta(get_the_ID(), '_ferry_route_from', true);
+                                    $route_to = get_post_meta(get_the_ID(), '_ferry_route_to', true);
+                                    $etd = get_post_meta(get_the_ID(), '_ferry_etd', true);
+                                    $eta = get_post_meta(get_the_ID(), '_ferry_eta', true);
+                                    $frequency = get_post_meta(get_the_ID(), '_ferry_frequency', true);
+                                    ?>
+                                    <tr>
+                                        <td><?php echo esc_html($route_from . ' → ' . $route_to); ?></td>
+                                        <td><?php echo esc_html($etd); ?></td>
+                                        <td><?php echo esc_html($eta); ?></td>
+                                        <td><?php echo esc_html($frequency); ?></td>
+                                    </tr>
+                                <?php endwhile; wp_reset_postdata(); ?>
+                            <?php else : ?>
+                                <tr>
+                                    <td colspan="4"><?php _e('No ferry schedules available.', 'nirup-island'); ?></td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
                 
                 <!-- Nirup to Batam Tab -->
                 <div class="route-tab-content" id="nirup-to-batam">
-                    <div class="route-departure-point"><?php echo esc_html(get_theme_mod('nirup_nirup_departure_point', __('Nirup Island Ferry Terminal', 'nirup-island'))); ?></div>
-                    
+                    <?php
+                    // Query Nirup to Batam ferries
+                    $nirup_to_batam = new WP_Query(array(
+                        'post_type' => 'ferry_schedule',
+                        'posts_per_page' => -1,
+                        'meta_query' => array(
+                            'relation' => 'AND',
+                            array(
+                                'key' => '_ferry_route_type',
+                                'value' => 'batam',
+                                'compare' => '='
+                            ),
+                            array(
+                                'key' => '_ferry_route_from',
+                                'value' => 'Nirup',
+                                'compare' => 'LIKE'
+                            )
+                        ),
+                        'meta_key' => '_ferry_menu_order',
+                        'orderby' => 'meta_value_num',
+                        'order' => 'ASC'
+                    ));
+
+                    $first_schedule_nirup_batam = $nirup_to_batam->posts[0] ?? null;
+                    $departure_point_nirup_batam = $first_schedule_nirup_batam ? get_post_meta($first_schedule_nirup_batam->ID, '_ferry_checkin_location', true) : get_theme_mod('nirup_nirup_departure_point', __('Nirup Island Ferry Terminal', 'nirup-island'));
+                    ?>
+                    <div class="route-departure-point"><?php echo esc_html($departure_point_nirup_batam); ?></div>
+
                     <table class="ferry-schedule-table">
                         <thead>
                             <tr>
@@ -265,24 +410,27 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_route_1', __('Nirup → Batam', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_etd_1', __('09:00 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_eta_1', __('09:20 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_days_1', __('Daily', 'nirup-island'))); ?></td>
-                            </tr>
-                            <tr>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_route_2', __('Nirup → Batam', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_etd_2', __('14:00 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_eta_2', __('14:20 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_days_2', __('Daily', 'nirup-island'))); ?></td>
-                            </tr>
-                            <tr>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_route_3', __('Nirup → Batam', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_etd_3', __('18:00 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_eta_3', __('18:20 (IDT)', 'nirup-island'))); ?></td>
-                                <td><?php echo esc_html(get_theme_mod('nirup_nirup_to_batam_days_3', __('Fri–Sun', 'nirup-island'))); ?></td>
-                            </tr>
+                            <?php if ($nirup_to_batam->have_posts()) : ?>
+                                <?php while ($nirup_to_batam->have_posts()) : $nirup_to_batam->the_post(); ?>
+                                    <?php
+                                    $route_from = get_post_meta(get_the_ID(), '_ferry_route_from', true);
+                                    $route_to = get_post_meta(get_the_ID(), '_ferry_route_to', true);
+                                    $etd = get_post_meta(get_the_ID(), '_ferry_etd', true);
+                                    $eta = get_post_meta(get_the_ID(), '_ferry_eta', true);
+                                    $frequency = get_post_meta(get_the_ID(), '_ferry_frequency', true);
+                                    ?>
+                                    <tr>
+                                        <td><?php echo esc_html($route_from . ' → ' . $route_to); ?></td>
+                                        <td><?php echo esc_html($etd); ?></td>
+                                        <td><?php echo esc_html($eta); ?></td>
+                                        <td><?php echo esc_html($frequency); ?></td>
+                                    </tr>
+                                <?php endwhile; wp_reset_postdata(); ?>
+                            <?php else : ?>
+                                <tr>
+                                    <td colspan="4"><?php _e('No ferry schedules available.', 'nirup-island'); ?></td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -290,6 +438,14 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
             
             <!-- Right Column: Sidebar -->
             <div class="route-sidebar">
+                <?php
+                // Get sidebar info from first schedule (either direction)
+                $sidebar_schedule_batam = $first_schedule_batam ?? $first_schedule_nirup_batam ?? null;
+                $sidebar_operator_batam = $sidebar_schedule_batam ? get_post_meta($sidebar_schedule_batam->ID, '_ferry_operator', true) : get_theme_mod('nirup_batam_operator', __('Rans Fadhila', 'nirup-island'));
+                $sidebar_duration_batam = $sidebar_schedule_batam ? get_post_meta($sidebar_schedule_batam->ID, '_ferry_duration', true) : get_theme_mod('nirup_batam_duration', __('20 minutes', 'nirup-island'));
+                $sidebar_price_batam = $sidebar_schedule_batam ? get_post_meta($sidebar_schedule_batam->ID, '_ferry_price', true) : get_theme_mod('nirup_batam_price', __('Rp150,000 /per way', 'nirup-island'));
+                $sidebar_frequency_batam = $sidebar_schedule_batam ? get_post_meta($sidebar_schedule_batam->ID, '_ferry_frequency', true) : get_theme_mod('nirup_batam_workdays', __('Daily / Friday – Sunday', 'nirup-island'));
+                ?>
                 <div class="sidebar-item">
                     <div class="sidebar-header">
                         <div class="sidebar-icon">
@@ -307,9 +463,9 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                         </div>
                         <p class="sidebar-label"><?php echo esc_html(get_theme_mod('nirup_sidebar_operator_label', __('Operator', 'nirup-island'))); ?></p>
                     </div>
-                    <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_batam_operator', __('Rans Fadhila', 'nirup-island'))); ?></p>
+                    <p class="sidebar-value"><?php echo esc_html($sidebar_operator_batam); ?></p>
                 </div>
-                
+
                 <div class="sidebar-item">
                     <div class="sidebar-header">
                         <div class="sidebar-icon">
@@ -319,9 +475,9 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                         </div>
                         <p class="sidebar-label"><?php echo esc_html(get_theme_mod('nirup_sidebar_duration_label', __('Duration', 'nirup-island'))); ?></p>
                     </div>
-                    <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_batam_duration', __('20 minutes', 'nirup-island'))); ?></p>
+                    <p class="sidebar-value"><?php echo esc_html($sidebar_duration_batam); ?></p>
                 </div>
-                
+
                 <div class="sidebar-item">
                     <div class="sidebar-header">
                         <div class="sidebar-icon">
@@ -334,7 +490,7 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                         </div>
                         <p class="sidebar-label"><?php echo esc_html(get_theme_mod('nirup_sidebar_workdays_label', __('Work Days', 'nirup-island'))); ?></p>
                     </div>
-                    <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_batam_workdays', __('Daily / Friday – Sunday', 'nirup-island'))); ?></p>
+                    <p class="sidebar-value"><?php echo esc_html($sidebar_frequency_batam); ?></p>
                 </div>
                 
                 <div class="sidebar-item">
@@ -353,9 +509,10 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                         </div>
                         <p class="sidebar-label"><?php echo esc_html(get_theme_mod('nirup_sidebar_price_label', __('Price', 'nirup-island'))); ?></p>
                     </div>
-                    <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_batam_price', __('Rp150,000 /per way', 'nirup-island'))); ?></p>
+                    <p class="sidebar-value"><?php echo esc_html($sidebar_price_batam); ?></p>
                 </div>
-                
+
+                <?php if ($sidebar_schedule_batam && get_post_meta($sidebar_schedule_batam->ID, '_ferry_checkin_location', true)): ?>
                 <div class="sidebar-item">
                     <div class="sidebar-header">
                         <div class="sidebar-icon">
@@ -365,8 +522,9 @@ $map_center_lng = get_theme_mod('nirup_map_center_lng', '104.0266055');
                         </div>
                         <p class="sidebar-label"><?php echo esc_html(get_theme_mod('nirup_sidebar_checkin_label', __('Check-in', 'nirup-island'))); ?></p>
                     </div>
-                    <p class="sidebar-value"><?php echo esc_html(get_theme_mod('nirup_batam_to_nirup_checkin', __('Horizon Fast Ferry counter (Bayfront Mall, 2nd floor)', 'nirup-island'))); ?></p>
+                    <p class="sidebar-value"><?php echo esc_html(get_post_meta($sidebar_schedule_batam->ID, '_ferry_checkin_location', true)); ?></p>
                 </div>
+                <?php endif; ?>
                 
                 <a href="<?php echo esc_url(get_theme_mod('nirup_book_ticket_batam_url', '#')); ?>" 
                 class="book-ticket-btn" 
