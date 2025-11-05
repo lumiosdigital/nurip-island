@@ -91,20 +91,36 @@
         },
 
         watchFormSubmission: function() {
-            // Watch for successful WPBS form submission
-            $(document).on('wpbs_form_submit_success', function(event, data) {
-                console.log('✅ Experience booking form submitted successfully');
-                
-                // Close the booking modal
-                ExperienceBooking.closeBookingModal();
-                
-                // Track successful booking
-                if (window.NirupTheme && window.NirupTheme.Utils) {
-                    window.NirupTheme.Utils.trackEvent('experience_booking_submitted', {
-                        form_data: data
-                    });
+            // Detect WPBS form submission success
+            var checkInterval = setInterval(function() {
+                var $confirmation = $('.wpbs-form-confirmation-message');
+
+                if ($confirmation.length > 0 && $confirmation.is(':visible')) {
+                    clearInterval(checkInterval);
+
+                    $confirmation.hide();
+
+                    var message = $confirmation.find('p').text() || 'We have received your booking request and will contact you soon.';
+
+                    // Close all booking modals
+                    $('.villa-booking-modal').removeClass('active').attr('aria-hidden', 'true');
+                    $('body').removeClass('modal-open').css('overflow', '');
+
+                    // Show thank you modal
+                    $('#villa-thankyou-text').text(message);
+                    $('#villa-thankyou-modal').addClass('active').attr('aria-hidden', 'false');
+
+                    // Track successful booking
+                    if (window.NirupTheme && window.NirupTheme.Utils) {
+                        window.NirupTheme.Utils.trackEvent('experience_booking_submitted');
+                    }
+
+                    // Reload after 4 seconds
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 4000);
                 }
-            });
+            }, 500);
         }
     };
 

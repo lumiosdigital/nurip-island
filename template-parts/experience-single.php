@@ -308,75 +308,82 @@ if (empty($region_section_text)) {
         <div class="single-cta-container">
             <!-- Top Separator Line -->
             <div class="single-cta-separator-top"></div>
-            
-            <div class="single-cta-content">
-                <?php 
-                // Get CTA fields with defaults
-                $cta_title = get_post_meta(get_the_ID(), '_cta_title', true);
-                $cta_subtitle = get_post_meta(get_the_ID(), '_cta_subtitle', true);
-                $cta_primary_button = get_post_meta(get_the_ID(), '_cta_primary_button', true);
-                $cta_secondary_button = get_post_meta(get_the_ID(), '_cta_secondary_button', true);
-                $cta_pdf_file = get_post_meta(get_the_ID(), '_cta_pdf_file', true);
-                
-                // Set defaults if fields are empty
-                if (empty($cta_title)) {
-                    $cta_title = 'Book your ' . strtolower(get_the_title());
-                }
-                if (empty($cta_subtitle)) {
-                    $cta_subtitle = 'Make your journey unforgettable — reserve your experience in advance';
-                }
-                if (empty($cta_primary_button)) {
-                    $cta_primary_button = 'BOOK NOW';
-                }
-                if (empty($cta_secondary_button)) {
-                    $cta_secondary_button = 'DOWNLOAD OUR MAP';
-                }
-                
-                // Get PDF file details
-                $pdf_url = '';
-                $pdf_filename = '';
-                if ($cta_pdf_file) {
-                    $pdf_url = wp_get_attachment_url($cta_pdf_file);
-                    $pdf_filename = basename(get_attached_file($cta_pdf_file));
-                }
-                
-                // Check if this experience has a booking calendar configured
-                $calendar_id = get_post_meta(get_the_ID(), '_experience_booking_calendar_id', true);
-                ?>
-                
-                <h2 class="single-cta-title"><?php echo esc_html($cta_title); ?></h2>
-                <p class="single-cta-subtitle"><?php echo esc_html($cta_subtitle); ?></p>
-            </div>
-            
+
+            <?php
+            // Get CTA fields
+            $cta_title = get_post_meta(get_the_ID(), '_cta_title', true);
+            $cta_subtitle = get_post_meta(get_the_ID(), '_cta_subtitle', true);
+            $cta_primary_button = get_post_meta(get_the_ID(), '_cta_primary_button', true);
+            $cta_secondary_button = get_post_meta(get_the_ID(), '_cta_secondary_button', true);
+            $cta_pdf_file = get_post_meta(get_the_ID(), '_cta_pdf_file', true);
+
+            // Check if this experience has a booking calendar configured
+            $calendar_id = get_post_meta(get_the_ID(), '_experience_booking_calendar_id', true);
+
+            // Get alternative text for experiences without calendar
+            $cta_no_calendar_text = get_theme_mod('nirup_experience_no_calendar_text', '');
+
+            // Set defaults if fields are empty
+            if (empty($cta_title)) {
+                $cta_title = 'Book your ' . strtolower(get_the_title());
+            }
+            if (empty($cta_subtitle)) {
+                $cta_subtitle = 'Make your journey unforgettable — reserve your experience in advance';
+            }
+            if (empty($cta_primary_button)) {
+                $cta_primary_button = 'BOOK NOW';
+            }
+            if (empty($cta_secondary_button)) {
+                $cta_secondary_button = 'DOWNLOAD OUR MAP';
+            }
+
+            // Get PDF file details
+            $pdf_url = '';
+            $pdf_filename = '';
+            if ($cta_pdf_file) {
+                $pdf_url = wp_get_attachment_url($cta_pdf_file);
+                $pdf_filename = basename(get_attached_file($cta_pdf_file));
+            }
+            ?>
+
+            <?php if ($calendar_id) : ?>
+                <!-- Show booking title and subtitle when calendar is attached -->
+                <div class="single-cta-content">
+                    <h2 class="single-cta-title"><?php echo esc_html($cta_title); ?></h2>
+                    <p class="single-cta-subtitle"><?php echo esc_html($cta_subtitle); ?></p>
+                </div>
+            <?php elseif (!empty($cta_no_calendar_text)) : ?>
+                <!-- Show alternative text when no calendar is attached -->
+                <div class="single-cta-content">
+                    <p class="single-cta-subtitle"><?php echo esc_html($cta_no_calendar_text); ?></p>
+                </div>
+            <?php endif; ?>
+
             <div class="single-cta-buttons-container">
                 <!-- Secondary Button (Download PDF or disabled if no PDF) -->
                 <?php if ($pdf_url) : ?>
-                    <a href="<?php echo esc_url($pdf_url); ?>" 
-                       class="single-cta-button-secondary" 
+                    <a href="<?php echo esc_url($pdf_url); ?>"
+                       class="single-cta-button-secondary"
                        download="<?php echo esc_attr($pdf_filename); ?>"
                        title="Download <?php echo esc_attr($pdf_filename); ?>">
                         <?php echo esc_html($cta_secondary_button); ?>
                     </a>
                 <?php else : ?>
-                    <span class="single-cta-button-secondary single-cta-button-disabled" 
+                    <span class="single-cta-button-secondary single-cta-button-disabled"
                           title="PDF not available">
                         <?php echo esc_html($cta_secondary_button); ?>
                     </span>
                 <?php endif; ?>
-                
-                <!-- Primary Button (Gold background) - UPDATED TO USE MODAL -->
+
+                <!-- Primary Button (Gold background) - Show only if calendar is attached -->
                 <?php if ($calendar_id) : ?>
-                    <button class="single-cta-button-primary experience-book-btn" 
+                    <button class="single-cta-button-primary experience-book-btn"
                             data-experience-id="<?php echo get_the_ID(); ?>">
                         <?php echo esc_html($cta_primary_button); ?>
                     </button>
-                <?php else : ?>
-                    <a href="#contact" class="single-cta-button-primary">
-                        <?php echo esc_html($cta_primary_button); ?>
-                    </a>
                 <?php endif; ?>
             </div>
-            
+
             <!-- Bottom Separator Line -->
             <div class="single-cta-separator-bottom"></div>
         </div>
