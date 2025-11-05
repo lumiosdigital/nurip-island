@@ -8932,6 +8932,9 @@ add_action('customize_register', 'nirup_getting_here_page_customizer');
 // Include Ferry Map Customizer Settings
 require_once get_template_directory() . '/inc/customizer-map.php';
 
+// Include Experiences Customizer Settings
+require_once get_template_directory() . '/inc/customizer-experiences.php';
+
 function nirup_enqueue_ferry_map_styles() {
     // Only load on pages that use the map
     if (is_front_page() || is_page_template('page-templates/page-getting-here.php')) {
