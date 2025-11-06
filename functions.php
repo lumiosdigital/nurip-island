@@ -2849,119 +2849,7 @@ function nirup_map_pins_admin_page() {
                 </p>
             </div>
         <?php else: ?>
-            
-            <!-- NEW: Add Pin Form with Icon Library -->
-            <div class="card">
-                <h2><?php _e('Add New Pin', 'nirup-island'); ?></h2>
-                <form method="post" action="">
-                    <?php wp_nonce_field('nirup_pins_action', 'nirup_pins_nonce'); ?>
-                    <input type="hidden" name="action" value="add_pin">
-                    <input type="hidden" name="pin_x" id="pin_x" value="">
-                    <input type="hidden" name="pin_y" id="pin_y" value="">
-                    
-                    <table class="form-table">
-                        <tr>
-                            <th scope="row">
-                                <label for="pin_title"><?php _e('Pin Title', 'nirup-island'); ?></label>
-                            </th>
-                            <td>
-                                <input type="text" id="pin_title" name="pin_title" class="regular-text" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="pin_description"><?php _e('Description', 'nirup-island'); ?></label>
-                            </th>
-                            <td>
-                                <textarea id="pin_description" name="pin_description" rows="3" class="large-text"></textarea>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="pin_link"><?php _e('Link (Optional)', 'nirup-island'); ?></label>
-                            </th>
-                            <td>
-                                <input type="url" id="pin_link" name="pin_link" class="regular-text">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label><?php _e('Pin Type', 'nirup-island'); ?></label>
-                            </th>
-                            <td>
-                                <label>
-                                    <input type="radio" name="pin_type" value="public" checked>
-                                    <?php _e('Public Area', 'nirup-island'); ?>
-                                </label><br>
-                                <label>
-                                    <input type="radio" name="pin_type" value="accommodation">
-                                    <?php _e('Accommodation', 'nirup-island'); ?>
-                                </label>
-                            </td>
-                        </tr>
-                        
-                        <!-- NEW: Icon Selection with Visual Library -->
-                        <tr>
-                            <th scope="row">
-                                <label for="pin_icon"><?php _e('Pin Icon (Optional)', 'nirup-island'); ?></label>
-                            </th>
-                            <td>
-                                <div class="icon-picker-library">
-                                    <?php 
-                                    $custom_icons = nirup_get_custom_icons();
-                                    if (!empty($custom_icons)): ?>
-                                        <div class="icon-selection-grid">
-                                            <div class="icon-option no-icon-option active" data-icon="">
-                                                <div class="icon-preview-box">
-                                                    <span class="no-icon-text"><?php _e('No Icon', 'nirup-island'); ?></span>
-                                                </div>
-                                                <span class="icon-name"><?php _e('None', 'nirup-island'); ?></span>
-                                            </div>
-                                            
-                                            <?php foreach ($custom_icons as $filename => $icon): ?>
-                                                <div class="icon-option" data-icon="custom:<?php echo esc_attr($filename); ?>">
-                                                    <div class="icon-preview-box">
-                                                        <?php echo $icon['svg']; ?>
-                                                    </div>
-                                                    <span class="icon-name"><?php echo esc_html($icon['name']); ?></span>
-                                                </div>
-                                            <?php endforeach; ?>
-                                        </div>
-                                        
-                                        <input type="hidden" id="pin_icon" name="pin_icon" value="">
-                                        
-                                        <!-- Icon Preview with Pin -->
-                                        <div class="selected-icon-preview" id="selected-icon-preview" style="margin-top: 15px; display: none;">
-                                            <label><?php _e('Preview:', 'nirup-island'); ?></label>
-                                            <div class="pin-with-icon-preview" id="pin-with-icon-preview"></div>
-                                        </div>
-                                        
-                                    <?php else: ?>
-                                        <div class="no-icons-message">
-                                            <p><?php _e('No icons available yet.', 'nirup-island'); ?></p>
-                                            <a href="<?php echo admin_url('themes.php?page=nirup-icon-library'); ?>" class="button">
-                                                <?php _e('Upload Icons', 'nirup-island'); ?>
-                                            </a>
-                                        </div>
-                                        <input type="hidden" id="pin_icon" name="pin_icon" value="">
-                                    <?php endif; ?>
-                                    
-                                    <p class="description" style="margin-top: 10px;">
-                                        <a href="<?php echo admin_url('themes.php?page=nirup-icon-library'); ?>" target="_blank">
-                                            <?php _e('Manage your icon library', 'nirup-island'); ?> →
-                                        </a>
-                                    </p>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    
-                    <p class="submit">
-                        <input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e('Add Pin', 'nirup-island'); ?>" disabled>
-                    </p>
-                </form>
-            </div>
-            
+
             <!-- Instructions -->
             <div class="card" style="max-width: 1430px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -3197,8 +3085,8 @@ function nirup_map_pins_admin_page() {
         }
         
         .admin-pin .pin-icon {
-            width: 40px;
-            height: 48px;
+            width: 47px;
+            height: 56px;
         }
         
         .pin-controls {

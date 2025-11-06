@@ -120,8 +120,8 @@
 }
 
 .pin-icon {
-    width: 40px;
-    height: 48px;
+    width: 47px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -165,8 +165,8 @@
 }
 
 .admin-pin .pin-icon {
-    width: 40px;
-    height: 48px;
+    width: 47px;
+    height: 56px;
 }
 
 .admin-pin .pin-icon svg {
@@ -267,6 +267,12 @@
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+}
+
+.map-tooltip.pinned {
+    pointer-events: all;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 2px solid #1E3673;
 }
 
 .tooltip-content {
@@ -422,13 +428,13 @@
     }
 
     .pin-icon {
-        width: 32px;
-        height: 38px;
+        width: 40px;
+        height: 48px;
     }
 
     .admin-pin .pin-icon {
-        width: 32px;
-        height: 38px;
+        width: 40px;
+        height: 48px;
     }
 
     .map-tooltip {
@@ -464,13 +470,13 @@
     }
 
     .pin-icon {
-        width: 28px;
-        height: 34px;
+        width: 35px;
+        height: 42px;
     }
 
     .admin-pin .pin-icon {
-        width: 28px;
-        height: 34px;
+        width: 35px;
+        height: 42px;
     }
 
     .map-tooltip {
