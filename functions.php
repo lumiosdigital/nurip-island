@@ -3709,14 +3709,16 @@ function nirup_map_pins_admin_page() {
     
     <script>
         jQuery(document).ready(function($) {
-            let currentEditPinId = null;
+            console.log('Map Pins Admin JS Loaded');
+
+            var currentEditPinId = null;
             
             // Icon selection functionality
             $('.icon-option').on('click', function() {
                 $('.icon-option').removeClass('active');
                 $(this).addClass('active');
                 
-                const iconValue = $(this).data('icon');
+                var iconValue = $(this).data('icon');
                 $('#pin_icon').val(iconValue);
                 
                 // Update preview
@@ -3725,18 +3727,18 @@ function nirup_map_pins_admin_page() {
             
             // Update preview when pin type changes
             $('input[name="pin_type"]').on('change', function() {
-                const currentIcon = $('#pin_icon').val();
+                var currentIcon = $('#pin_icon').val();
                 updateIconPreview(currentIcon);
             });
             
             function updateIconPreview(iconValue) {
-                const $preview = $('#selected-icon-preview');
-                const $previewPin = $('#pin-with-icon-preview');
+                var $preview = $('#selected-icon-preview');
+                var $previewPin = $('#pin-with-icon-preview');
                 
                 if (iconValue) {
-                    const pinType = $('input[name="pin_type"]:checked').val();
-                    const baseColor = pinType === 'accommodation' ? '#C49A5D' : '#1E3673';
-                    const selectedIconHtml = $('.icon-option.active .icon-preview-box').html();
+                    var pinType = $('input[name="pin_type"]:checked').val();
+                    var baseColor = pinType === 'accommodation' ? '#C49A5D' : '#1E3673';
+                    var selectedIconHtml = $('.icon-option.active .icon-preview-box').html();
                     
                     // Create simplified preview
                     $previewPin.html(`
@@ -3765,36 +3767,36 @@ function nirup_map_pins_admin_page() {
                     },
                     drag: function(event, ui) {
                         // Update coordinates display during drag
-                        const container = $('.map-editor-image');
-                        const containerOffset = container.offset();
-                        const containerWidth = container.width();
-                        const containerHeight = container.height();
+                        var container = $('.map-editor-image');
+                        var containerOffset = container.offset();
+                        var containerWidth = container.width();
+                        var containerHeight = container.height();
 
                         // Calculate percentage position based on the actual position on the image
                         // ui.position is relative to offsetParent
-                        const x = ((ui.position.left + ($(this).width() / 2)) / containerWidth) * 100;
-                        const y = ((ui.position.top + $(this).height()) / containerHeight) * 100;
+                        var x = ((ui.position.left + ($(this).width() / 2)) / containerWidth) * 100;
+                        var y = ((ui.position.top + $(this).height()) / containerHeight) * 100;
 
                         updateCoordinatesDisplay(x, y);
                     },
                     stop: function(event, ui) {
                         $(this).removeClass('dragging');
 
-                        const pinId = $(this).data('pin-id');
-                        const container = $('.map-editor-image');
-                        const containerWidth = container.width();
-                        const containerHeight = container.height();
+                        var pinId = $(this).data('pin-id');
+                        var container = $('.map-editor-image');
+                        var containerWidth = container.width();
+                        var containerHeight = container.height();
 
                         // Account for the transform: translate(-50%, -100%)
                         // The pin's anchor point is at bottom-center due to the transform
                         // ui.position gives us the top-left corner position after transform
                         // We need to add back the offset to get the actual anchor point
-                        const pinWidth = $(this).width();
-                        const pinHeight = $(this).height();
+                        var pinWidth = $(this).width();
+                        var pinHeight = $(this).height();
 
                         // Calculate the actual anchor point (bottom-center of pin)
-                        const x = ((ui.position.left + (pinWidth / 2)) / containerWidth) * 100;
-                        const y = ((ui.position.top + pinHeight) / containerHeight) * 100;
+                        var x = ((ui.position.left + (pinWidth / 2)) / containerWidth) * 100;
+                        var y = ((ui.position.top + pinHeight) / containerHeight) * 100;
 
                         savePinPosition(pinId, x, y);
                         hideCoordinatesDisplay();
@@ -3804,17 +3806,17 @@ function nirup_map_pins_admin_page() {
 
             // Add hover crosshair effect
             $('.map-editor-container').on('mousemove', function(e) {
-                const container = $(this);
-                const rect = this.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+                var container = $(this);
+                var rect = this.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
 
                 // Update crosshair position
                 updateCrosshair(x, y);
 
                 // Calculate and display percentage coordinates
-                const xPercent = (x / rect.width) * 100;
-                const yPercent = (y / rect.height) * 100;
+                var xPercent = (x / rect.width) * 100;
+                var yPercent = (y / rect.height) * 100;
                 updateCoordinatesDisplay(xPercent, yPercent);
             }).on('mouseleave', function() {
                 hideCrosshair();
@@ -3823,18 +3825,22 @@ function nirup_map_pins_admin_page() {
 
             // Click on map to add new pin
             $('#map-editor').on('click', function(e) {
-                const rect = this.getBoundingClientRect();
+                console.log('Map clicked');
+
+                var rect = this.getBoundingClientRect();
 
                 // Calculate click position relative to the image
                 // This gives us the exact position where the user clicked
-                const clickX = e.clientX - rect.left;
-                const clickY = e.clientY - rect.top;
+                var clickX = e.clientX - rect.left;
+                var clickY = e.clientY - rect.top;
 
                 // Convert to percentage
-                const x = (clickX / rect.width) * 100;
-                const y = (clickY / rect.height) * 100;
+                var x = (clickX / rect.width) * 100;
+                var y = (clickY / rect.height) * 100;
 
-                const pinType = $('input[name="new_pin_type"]:checked').val();
+                var pinType = $('input[name="new_pin_type"]:checked').val();
+
+                console.log('Adding pin at', x, y, 'type:', pinType);
 
                 // Visual feedback
                 showClickFeedback(clickX, clickY);
@@ -3844,7 +3850,7 @@ function nirup_map_pins_admin_page() {
 
             // Crosshair and coordinates helper functions
             function updateCrosshair(x, y) {
-                let $crosshair = $('#map-crosshair');
+                var $crosshair = $('#map-crosshair');
                 if (!$crosshair.length) {
                     $crosshair = $('<div id="map-crosshair"><div class="crosshair-h"></div><div class="crosshair-v"></div></div>');
                     $('.map-editor-container').append($crosshair);
@@ -3861,7 +3867,7 @@ function nirup_map_pins_admin_page() {
             }
 
             function updateCoordinatesDisplay(x, y) {
-                let $coords = $('#coordinate-display');
+                var $coords = $('#coordinate-display');
                 if (!$coords.length) {
                     $coords = $('<div id="coordinate-display"></div>');
                     $('.map-editor-container').append($coords);
@@ -3874,7 +3880,7 @@ function nirup_map_pins_admin_page() {
             }
 
             function showClickFeedback(x, y) {
-                const $feedback = $('<div class="click-feedback"></div>');
+                var $feedback = $('<div class="click-feedback"></div>');
                 $feedback.css({
                     left: x + 'px',
                     top: y + 'px'
@@ -3893,32 +3899,34 @@ function nirup_map_pins_admin_page() {
             // Click on existing pin to edit
             $(document).on('click', '.admin-pin', function(e) {
                 e.stopPropagation();
-                const pinId = $(this).data('pin-id');
+                var pinId = $(this).data('pin-id');
                 editPin(pinId);
             });
             
             // Edit pin from table
             $('.edit-pin-btn').on('click', function() {
-                const pinId = $(this).data('pin-id');
+                var pinId = $(this).data('pin-id');
                 editPin(pinId);
             });
             
             // Delete pin
             $('.delete-pin-btn').on('click', function() {
-                const pinId = $(this).data('pin-id');
+                var pinId = $(this).data('pin-id');
                 if (confirm('<?php _e('Are you sure you want to delete this pin?', 'nirup-island'); ?>')) {
                     deletePin(pinId);
                 }
             });
             
             // Modal handling
-            let pendingPinData = null;
-            let selectedModalIcon = '';
+            var pendingPinData = null;
+            var selectedModalIcon = '';
 
             // Functions
             function addNewPin(x, y, pinType) {
+                console.log('addNewPin called:', x, y, pinType);
+
                 // Store the pin data
-                pendingPinData = { x, y, pinType };
+                pendingPinData = { x: x, y: y, pinType: pinType };
                 selectedModalIcon = '';
 
                 // Reset and show modal
@@ -3929,8 +3937,11 @@ function nirup_map_pins_admin_page() {
                 $('.modal-icon-option[data-icon=""]').addClass('active');
                 updateModalPreview();
 
+                console.log('Opening modal');
                 $('#pin-modal').fadeIn(200);
-                $('#modal-pin-title').focus();
+                setTimeout(function() {
+                    $('#modal-pin-title').focus();
+                }, 300);
             }
 
             // Modal icon selection
@@ -3945,8 +3956,7 @@ function nirup_map_pins_admin_page() {
             function updateModalPreview() {
                 if (!pendingPinData) return;
 
-                const $preview = $('#modal-pin-preview');
-                const pinSvg = '<?php echo addslashes(nirup_get_pin_icon_svg("public", "")); ?>'.replace(/"/g, '\\"');
+                var $preview = $('#modal-pin-preview');
 
                 // Generate preview with selected icon if any
                 $.ajax({
@@ -3962,22 +3972,28 @@ function nirup_map_pins_admin_page() {
                         if (response.success) {
                             $preview.html('<div class="pin-icon">' + response.data + '</div>');
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Preview error:', error);
                     }
                 });
             }
 
             // Save pin from modal
             $('#modal-save-pin-btn').on('click', function() {
-                const title = $('#modal-pin-title').val().trim();
+                var title = $('#modal-pin-title').val().trim();
                 if (!title) {
                     alert('<?php _e('Please enter a pin title', 'nirup-island'); ?>');
                     return;
                 }
 
-                if (!pendingPinData) return;
+                if (!pendingPinData) {
+                    console.error('No pending pin data');
+                    return;
+                }
 
-                const description = $('#modal-pin-description').val().trim();
-                const link = $('#modal-pin-link').val().trim();
+                var description = $('#modal-pin-description').val().trim();
+                var link = $('#modal-pin-link').val().trim();
 
                 $.ajax({
                     url: ajaxurl,
@@ -4044,8 +4060,8 @@ function nirup_map_pins_admin_page() {
             }
             
             function editPin(pinId) {
-                const $pin = $(`.admin-pin[data-pin-id="${pinId}"]`);
-                const newTitle = prompt('Edit pin title:', $pin.data('title'));
+                var $pin = $(`.admin-pin[data-pin-id="${pinId}"]`);
+                var newTitle = prompt('Edit pin title:', $pin.data('title'));
                 if (newTitle && newTitle !== $pin.data('title')) {
                     $.ajax({
                         url: ajaxurl,
@@ -4088,14 +4104,14 @@ function nirup_map_pins_admin_page() {
             }
             
             function showMessage(message, type) {
-                const $message = $(`<div class="${type}-message">${message}</div>`);
+                var $message = $(`<div class="${type}-message">${message}</div>`);
                 $('.wrap h1').after($message);
                 setTimeout(() => $message.fadeOut(), 3000);
             }
             
             // Grid toggle
             $('#toggle-grid').on('change', function() {
-                const $grid = $('#map-grid-overlay');
+                var $grid = $('#map-grid-overlay');
                 if ($(this).is(':checked')) {
                     $grid.fadeIn(200);
                 } else {
