@@ -1449,12 +1449,31 @@ function nirup_microsoft_clarity() {
 }
 add_action('wp_head', 'nirup_microsoft_clarity');
 
-// Brevo (Sendinblue) compatibility
+// Brevo (Sendinblue) compatibility and initialization
 function nirup_brevo_support() {
     if (function_exists('sib_forms_shortcode')) {
         // Brevo forms are available
     }
 }
+
+// Initialize Brevo settings on theme activation
+function nirup_initialize_brevo_settings() {
+    // Only set if not already configured
+    if (empty(get_theme_mod('nirup_brevo_api_key'))) {
+        // Check if constant is defined in wp-config.php
+        if (defined('NIRUP_BREVO_API_KEY')) {
+            set_theme_mod('nirup_brevo_api_key', NIRUP_BREVO_API_KEY);
+        }
+    }
+
+    if (empty(get_theme_mod('nirup_brevo_list_id'))) {
+        // Check if constant is defined in wp-config.php
+        if (defined('NIRUP_BREVO_LIST_ID')) {
+            set_theme_mod('nirup_brevo_list_id', NIRUP_BREVO_LIST_ID);
+        }
+    }
+}
+add_action('after_setup_theme', 'nirup_initialize_brevo_settings');
 
 /**
  * Custom Post Types and Fields (to be added as needed)
@@ -5356,6 +5375,34 @@ function nirup_footer_customizer($wp_customize) {
         'type' => 'textarea',
         'description' => __('Full address displayed in the footer', 'nirup-island'),
     ));
+
+    // === BREVO NEWSLETTER SETTINGS ===
+
+    // Brevo API Key
+    $wp_customize->add_setting('nirup_brevo_api_key', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_brevo_api_key', array(
+        'label' => __('Brevo API Key', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'text',
+        'description' => __('Enter your Brevo (Sendinblue) API key for newsletter integration', 'nirup-island'),
+    ));
+
+    // Brevo List ID
+    $wp_customize->add_setting('nirup_brevo_list_id', array(
+        'default' => '6',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control('nirup_brevo_list_id', array(
+        'label' => __('Brevo List ID', 'nirup-island'),
+        'section' => 'nirup_footer_settings',
+        'type' => 'text',
+        'description' => __('Enter the Brevo list ID where subscribers should be added', 'nirup-island'),
+    ));
 }
 add_action('customize_register', 'nirup_footer_customizer');
 
@@ -5366,24 +5413,75 @@ function nirup_handle_newsletter_subscription() {
     }
 
     $email = sanitize_email($_POST['email']);
-    
+
     if (!is_email($email)) {
         wp_send_json_error(array('message' => 'Please enter a valid email address.'));
         return;
     }
 
-    // For now, just store in WordPress options or add to a custom table
-    // Later this can be connected to your newsletter service (Mailchimp, etc.)
-    
-    // Placeholder - save to options table for now
+    // Get Brevo API credentials from customizer
+    $brevo_api_key = get_theme_mod('nirup_brevo_api_key', '');
+    $brevo_list_id = get_theme_mod('nirup_brevo_list_id', '');
+
+    // Try to add to Brevo first
+    $brevo_success = false;
+    $brevo_error_message = '';
+
+    if (!empty($brevo_api_key) && !empty($brevo_list_id)) {
+        // Prepare data for Brevo API
+        $data = array(
+            'email' => $email,
+            'listIds' => array(intval($brevo_list_id)),
+            'updateEnabled' => true
+        );
+
+        // Make API request to Brevo
+        $response = wp_remote_post('https://api.brevo.com/v3/contacts', array(
+            'headers' => array(
+                'api-key' => $brevo_api_key,
+                'Content-Type' => 'application/json',
+            ),
+            'body' => json_encode($data),
+            'timeout' => 15,
+        ));
+
+        if (is_wp_error($response)) {
+            $brevo_error_message = $response->get_error_message();
+            error_log('Brevo API Error: ' . $brevo_error_message);
+        } else {
+            $response_code = wp_remote_retrieve_response_code($response);
+            $response_body = json_decode(wp_remote_retrieve_body($response), true);
+
+            // Success codes: 201 (created) or 204 (updated/already exists)
+            if ($response_code === 201 || $response_code === 204) {
+                $brevo_success = true;
+            } else {
+                $brevo_error_message = isset($response_body['message']) ? $response_body['message'] : 'Unknown error';
+                error_log('Brevo API Error (Code ' . $response_code . '): ' . $brevo_error_message);
+            }
+        }
+    }
+
+    // Also save to local database as backup
     $subscribers = get_option('nirup_newsletter_subscribers', array());
-    
-    if (!in_array($email, $subscribers)) {
+    $already_subscribed = in_array($email, $subscribers);
+
+    if (!$already_subscribed) {
         $subscribers[] = $email;
         update_option('nirup_newsletter_subscribers', $subscribers);
-        wp_send_json_success(array('message' => 'Thank you for subscribing!'));
-    } else {
+    }
+
+    // Send response based on Brevo result
+    if ($brevo_success) {
+        wp_send_json_success(array('message' => 'Thank you for subscribing to our newsletter!'));
+    } elseif (!empty($brevo_api_key) && !empty($brevo_list_id)) {
+        // Brevo was configured but failed
+        wp_send_json_error(array('message' => 'There was an issue subscribing you. Please try again later.'));
+    } elseif ($already_subscribed) {
         wp_send_json_error(array('message' => 'You are already subscribed.'));
+    } else {
+        // No Brevo configured, just local storage
+        wp_send_json_success(array('message' => 'Thank you for subscribing!'));
     }
 }
 add_action('wp_ajax_nirup_newsletter_subscribe', 'nirup_handle_newsletter_subscription');
