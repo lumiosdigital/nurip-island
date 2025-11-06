@@ -92,12 +92,15 @@ if (empty($map_pins)) {
                             style="left: <?php echo esc_attr($pin['x']); ?>%; top: <?php echo esc_attr($pin['y']); ?>%;"
                             aria-label="<?php echo esc_attr($pin['title']); ?>"
                             data-title="<?php echo esc_attr($pin['title']); ?>"
-                            data-description="<?php echo esc_attr($pin['description']); ?>"
-                            data-link="<?php echo esc_attr($pin['link']); ?>"
+                            data-description="<?php echo esc_attr(isset($pin['description']) ? $pin['description'] : ''); ?>"
+                            data-link="<?php echo esc_attr(isset($pin['link']) ? $pin['link'] : ''); ?>"
                             data-pin-type="<?php echo esc_attr($pin['pin_type']); ?>"
                         >
                             <div class="pin-icon pin-icon-<?php echo esc_attr($pin['pin_type']); ?>">
-                                <?php echo nirup_get_pin_icon_svg($pin['pin_type']); ?>
+                                <?php
+                                $icon_key = isset($pin['icon']) ? $pin['icon'] : '';
+                                echo nirup_get_pin_icon_svg($pin['pin_type'], $icon_key);
+                                ?>
                             </div>
                             <div class="pin-pulse"></div>
                         </button>
