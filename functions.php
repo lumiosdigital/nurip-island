@@ -3079,8 +3079,80 @@ function nirup_map_pins_admin_page() {
                 </table>
             <?php endif; ?>
         </div>
+
+        <!-- Pin Modal -->
+        <div id="pin-modal" class="pin-modal" style="display: none;">
+            <div class="pin-modal-overlay"></div>
+            <div class="pin-modal-content">
+                <div class="pin-modal-header">
+                    <h2><?php _e('Add New Pin', 'nirup-island'); ?></h2>
+                    <button type="button" class="pin-modal-close">&times;</button>
+                </div>
+                <div class="pin-modal-body">
+                    <div class="pin-modal-form">
+                        <div class="form-field">
+                            <label for="modal-pin-title"><?php _e('Title', 'nirup-island'); ?> <span class="required">*</span></label>
+                            <input type="text" id="modal-pin-title" class="widefat" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="modal-pin-description"><?php _e('Description', 'nirup-island'); ?></label>
+                            <textarea id="modal-pin-description" rows="3" class="widefat"></textarea>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="modal-pin-link"><?php _e('Link (Optional)', 'nirup-island'); ?></label>
+                            <input type="url" id="modal-pin-link" class="widefat" placeholder="https://">
+                        </div>
+
+                        <div class="form-field">
+                            <label><?php _e('Select Icon (Optional)', 'nirup-island'); ?></label>
+                            <div class="modal-icon-selection">
+                                <?php
+                                $custom_icons = nirup_get_custom_icons();
+                                if (!empty($custom_icons)): ?>
+                                    <div class="modal-icon-grid">
+                                        <div class="modal-icon-option active" data-icon="">
+                                            <div class="icon-box">
+                                                <span style="font-size: 10px; color: #999;"><?php _e('None', 'nirup-island'); ?></span>
+                                            </div>
+                                        </div>
+                                        <?php foreach ($custom_icons as $filename => $icon): ?>
+                                            <div class="modal-icon-option" data-icon="custom:<?php echo esc_attr($filename); ?>">
+                                                <div class="icon-box">
+                                                    <?php echo $icon['svg']; ?>
+                                                </div>
+                                                <span class="icon-label"><?php echo esc_html($icon['name']); ?></span>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <p style="color: #666; font-style: italic;">
+                                        <?php _e('No icons available.', 'nirup-island'); ?>
+                                        <a href="<?php echo admin_url('themes.php?page=nirup-icon-library'); ?>" target="_blank">
+                                            <?php _e('Upload icons', 'nirup-island'); ?>
+                                        </a>
+                                    </p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label><?php _e('Preview', 'nirup-island'); ?></label>
+                            <div id="modal-pin-preview" class="modal-pin-preview">
+                                <!-- Pin preview will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pin-modal-footer">
+                    <button type="button" class="button" id="modal-cancel-btn"><?php _e('Cancel', 'nirup-island'); ?></button>
+                    <button type="button" class="button button-primary" id="modal-save-pin-btn"><?php _e('Add Pin', 'nirup-island'); ?></button>
+                </div>
+            </div>
+        </div>
     </div>
-    
+
     <style>
         .nirup-map-admin .card {
             max-width: 1430px;
@@ -3125,8 +3197,8 @@ function nirup_map_pins_admin_page() {
         }
         
         .admin-pin .pin-icon {
-            width: 35px;  
-            height: 42px;
+            width: 40px;
+            height: 48px;
         }
         
         .pin-controls {
@@ -3445,6 +3517,194 @@ function nirup_map_pins_admin_page() {
             font-size: 14px;
             color: #495057;
         }
+
+        /* Modal Styles */
+        .pin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100000;
+        }
+
+        .pin-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(2px);
+        }
+
+        .pin-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pin-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .pin-modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #23282d;
+        }
+
+        .pin-modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            line-height: 1;
+            color: #666;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .pin-modal-close:hover {
+            background: #f0f0f0;
+            color: #000;
+        }
+
+        .pin-modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .pin-modal-form .form-field {
+            margin-bottom: 20px;
+        }
+
+        .pin-modal-form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #23282d;
+        }
+
+        .pin-modal-form .required {
+            color: #d63638;
+        }
+
+        .pin-modal-form input[type="text"],
+        .pin-modal-form input[type="url"],
+        .pin-modal-form textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .pin-modal-form textarea {
+            resize: vertical;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .modal-icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .modal-icon-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .modal-icon-option:hover {
+            border-color: #0073aa;
+            background: #f0f8ff;
+        }
+
+        .modal-icon-option.active {
+            border-color: #0073aa;
+            background: #e3f2fd;
+            box-shadow: 0 2px 4px rgba(0,115,170,0.2);
+        }
+
+        .modal-icon-option .icon-box {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+        }
+
+        .modal-icon-option .icon-box svg {
+            max-width: 24px;
+            max-height: 24px;
+        }
+
+        .modal-icon-option .icon-label {
+            font-size: 10px;
+            text-align: center;
+            color: #666;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .modal-pin-preview {
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .modal-pin-preview .pin-icon {
+            display: inline-block;
+        }
+
+        .pin-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 16px 24px;
+            border-top: 1px solid #ddd;
+            background: #f9f9f9;
+        }
     </style>
     
     <script>
@@ -3651,31 +3911,118 @@ function nirup_map_pins_admin_page() {
                 }
             });
             
+            // Modal handling
+            let pendingPinData = null;
+            let selectedModalIcon = '';
+
             // Functions
             function addNewPin(x, y, pinType) {
-                const title = prompt('<?php _e('Enter pin title:', 'nirup-island'); ?>');
-                if (!title) return;
-                
+                // Store the pin data
+                pendingPinData = { x, y, pinType };
+                selectedModalIcon = '';
+
+                // Reset and show modal
+                $('#modal-pin-title').val('');
+                $('#modal-pin-description').val('');
+                $('#modal-pin-link').val('');
+                $('.modal-icon-option').removeClass('active');
+                $('.modal-icon-option[data-icon=""]').addClass('active');
+                updateModalPreview();
+
+                $('#pin-modal').fadeIn(200);
+                $('#modal-pin-title').focus();
+            }
+
+            // Modal icon selection
+            $(document).on('click', '.modal-icon-option', function() {
+                $('.modal-icon-option').removeClass('active');
+                $(this).addClass('active');
+                selectedModalIcon = $(this).data('icon') || '';
+                updateModalPreview();
+            });
+
+            // Update modal preview
+            function updateModalPreview() {
+                if (!pendingPinData) return;
+
+                const $preview = $('#modal-pin-preview');
+                const pinSvg = '<?php echo addslashes(nirup_get_pin_icon_svg("public", "")); ?>'.replace(/"/g, '\\"');
+
+                // Generate preview with selected icon if any
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'nirup_get_pin_preview',
+                        pin_type: pendingPinData.pinType,
+                        icon: selectedModalIcon,
+                        nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $preview.html('<div class="pin-icon">' + response.data + '</div>');
+                        }
+                    }
+                });
+            }
+
+            // Save pin from modal
+            $('#modal-save-pin-btn').on('click', function() {
+                const title = $('#modal-pin-title').val().trim();
+                if (!title) {
+                    alert('<?php _e('Please enter a pin title', 'nirup-island'); ?>');
+                    return;
+                }
+
+                if (!pendingPinData) return;
+
+                const description = $('#modal-pin-description').val().trim();
+                const link = $('#modal-pin-link').val().trim();
+
                 $.ajax({
                     url: ajaxurl,
                     type: 'POST',
                     data: {
                         action: 'nirup_add_pin_ajax',
                         title: title,
-                        x: x,
-                        y: y,
-                        pin_type: pinType,
+                        description: description,
+                        link: link,
+                        icon: selectedModalIcon,
+                        x: pendingPinData.x,
+                        y: pendingPinData.y,
+                        pin_type: pendingPinData.pinType,
                         nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
                     },
                     success: function(response) {
                         if (response.success) {
+                            $('#pin-modal').fadeOut(200);
                             location.reload();
                         } else {
                             alert('Error: ' + response.data);
                         }
+                    },
+                    error: function() {
+                        alert('<?php _e('An error occurred. Please try again.', 'nirup-island'); ?>');
                     }
                 });
+            });
+
+            // Close modal
+            function closeModal() {
+                $('#pin-modal').fadeOut(200);
+                pendingPinData = null;
+                selectedModalIcon = '';
             }
+
+            $('.pin-modal-close, #modal-cancel-btn').on('click', closeModal);
+            $('.pin-modal-overlay').on('click', closeModal);
+
+            // ESC key to close modal
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape' && $('#pin-modal').is(':visible')) {
+                    closeModal();
+                }
+            });
             
             function savePinPosition(pinId, x, y) {
                 $.ajax({
@@ -3854,31 +4201,51 @@ function nirup_add_pin_ajax() {
     if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
         wp_die('Security check failed');
     }
-    
+
     // Check permissions
     if (!current_user_can('manage_options')) {
         wp_die('Insufficient permissions');
     }
-    
+
     $pins = nirup_get_map_pins();
-    
+
     $new_pin = array(
         'id' => uniqid('pin_'),
         'title' => sanitize_text_field($_POST['title']),
-        'description' => '', // Will be added in edit
+        'description' => isset($_POST['description']) ? sanitize_textarea_field($_POST['description']) : '',
         'x' => floatval($_POST['x']),
         'y' => floatval($_POST['y']),
-        'link' => '',
+        'link' => isset($_POST['link']) ? esc_url_raw($_POST['link']) : '',
         'pin_type' => sanitize_text_field($_POST['pin_type']), // 'public' or 'accommodation'
+        'icon' => isset($_POST['icon']) ? sanitize_text_field($_POST['icon']) : '',
         'created' => current_time('mysql')
     );
-    
+
     $pins[] = $new_pin;
     update_option('nirup_map_pins', $pins);
-    
+
     wp_send_json_success($new_pin);
 }
 add_action('wp_ajax_nirup_add_pin_ajax', 'nirup_add_pin_ajax');
+
+// AJAX handler for pin preview
+function nirup_get_pin_preview_ajax() {
+    if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
+        wp_die('Security check failed');
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_die('Insufficient permissions');
+    }
+
+    $pin_type = sanitize_text_field($_POST['pin_type']);
+    $icon = isset($_POST['icon']) ? sanitize_text_field($_POST['icon']) : '';
+
+    $svg = nirup_get_pin_icon_svg($pin_type, $icon);
+
+    wp_send_json_success($svg);
+}
+add_action('wp_ajax_nirup_get_pin_preview', 'nirup_get_pin_preview_ajax');
 
 // AJAX: Update pin position
 function nirup_update_pin_position() {
@@ -4156,9 +4523,10 @@ function nirup_get_pin_icon_svg($pin_type, $custom_icon = '') {
         $custom_icons = nirup_get_custom_icons();
         if (isset($custom_icons[$filename])) {
             $icon_svg = $custom_icons[$filename]['svg'];
-            $icon_overlay = '<g transform="translate(47, 35)">
-                <circle cx="0" cy="0" r="12" fill="white" opacity="0.9"/>
-                <g transform="translate(-8, -8) scale(0.7)" fill="' . ($pin_type === 'accommodation' ? '#C49A5D' : '#1E3673') . '">
+            // Position icon in the upper part of the pin, scale it appropriately
+            // No background circle - just the icon itself in white for contrast
+            $icon_overlay = '<g transform="translate(47, 32)">
+                <g transform="translate(-10, -10) scale(0.65)" fill="white" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));">
                     ' . $icon_svg . '
                 </g>
             </g>';
