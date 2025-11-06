@@ -30,26 +30,39 @@
 
             if ($pins.length === 0) return;
 
-            // Pin hover events
+            // Pin hover events (only if tooltip isn't pinned)
             $pins.on('mouseenter', (e) => {
-                this.showTooltip($(e.currentTarget), $tooltip);
+                if (!$tooltip.hasClass('pinned')) {
+                    this.showTooltip($(e.currentTarget), $tooltip);
+                }
             });
 
             $pins.on('mouseleave', (e) => {
-                this.hideTooltip($tooltip);
+                // Only hide if tooltip isn't pinned
+                if (!$tooltip.hasClass('pinned')) {
+                    this.hideTooltip($tooltip);
+                }
             });
 
-            // Pin click events
+            // Pin click events - toggle pinned tooltip
             $pins.on('click', (e) => {
                 e.preventDefault();
-                this.handlePinClick($(e.currentTarget));
+                const $clickedPin = $(e.currentTarget);
+
+                // If clicking same pin again, close tooltip
+                if (this.activePin && this.activePin.is($clickedPin) && $tooltip.hasClass('pinned')) {
+                    this.hideTooltip($tooltip);
+                } else {
+                    // Otherwise, show and pin the tooltip
+                    this.handlePinClick($clickedPin, $tooltip);
+                }
             });
 
             // Keyboard events
             $pins.on('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    this.handlePinClick($(e.currentTarget));
+                    this.handlePinClick($(e.currentTarget), $tooltip);
                 }
             });
         },
@@ -83,7 +96,8 @@
 
         // Hide tooltip
         hideTooltip: function($tooltip) {
-            $tooltip.removeClass('visible');
+            $tooltip.removeClass('visible pinned');
+            this.activePin = null;
         },
 
         // Position tooltip relative to pin
@@ -123,26 +137,24 @@
         },
 
         // Handle pin click interactions
-        handlePinClick: function($pin) {
+        handlePinClick: function($pin, $tooltip) {
             const pinId = $pin.data('pin-id');
             const title = $pin.data('title');
             const link = $pin.data('link');
             const iconType = $pin.data('icon-type');
-            
+
             // Add visual feedback
             this.addClickFeedback($pin);
-            
+
             // Track interaction
             this.trackPinInteraction(pinId, title, iconType);
-            
-            // Handle link navigation
-            if (link && link.trim() !== '') {
-                if (link.startsWith('http') && !link.includes(window.location.hostname)) {
-                    window.open(link, '_blank', 'noopener,noreferrer');
-                } else {
-                    window.location.href = link;
-                }
-            }
+
+            // Show and pin the tooltip (keep it open)
+            this.showTooltip($pin, $tooltip);
+            $tooltip.addClass('pinned');
+
+            // Store active pin reference
+            this.activePin = $pin;
         },
 
         // Add visual feedback for pin clicks
