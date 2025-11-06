@@ -2964,12 +2964,23 @@ function nirup_map_pins_admin_page() {
             
             <!-- Instructions -->
             <div class="card" style="max-width: 1430px; margin-bottom: 20px;">
-                <h2><?php _e('How to Add Pins', 'nirup-island'); ?></h2>
-                <ol>
-                    <li><strong><?php _e('Click anywhere on the map below', 'nirup-island'); ?></strong> <?php _e('to add a new pin', 'nirup-island'); ?></li>
-                    <li><strong><?php _e('Drag existing pins', 'nirup-island'); ?></strong> <?php _e('to reposition them', 'nirup-island'); ?></li>
-                    <li><strong><?php _e('Click on a pin', 'nirup-island'); ?></strong> <?php _e('to edit its details', 'nirup-island'); ?></li>
-                </ol>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2><?php _e('How to Add Pins', 'nirup-island'); ?></h2>
+                        <ol style="margin-bottom: 0;">
+                            <li><strong><?php _e('Click anywhere on the map below', 'nirup-island'); ?></strong> <?php _e('to add a new pin at that exact location', 'nirup-island'); ?></li>
+                            <li><strong><?php _e('Drag existing pins', 'nirup-island'); ?></strong> <?php _e('to reposition them precisely', 'nirup-island'); ?></li>
+                            <li><strong><?php _e('Click on a pin', 'nirup-island'); ?></strong> <?php _e('to edit its details', 'nirup-island'); ?></li>
+                        </ol>
+                    </div>
+                    <div style="text-align: right;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; background: #f0f0f1; border-radius: 4px;">
+                            <input type="checkbox" id="toggle-grid" style="margin: 0;">
+                            <span style="font-weight: 500;"><?php _e('Show Grid', 'nirup-island'); ?></span>
+                        </label>
+                        <p style="margin: 8px 0 0 0; font-size: 12px; color: #666;"><?php _e('Grid helps with precise placement', 'nirup-island'); ?></p>
+                    </div>
+                </div>
             </div>
             
             <!-- Interactive Map -->
@@ -2977,6 +2988,10 @@ function nirup_map_pins_admin_page() {
                 <h2><?php _e('Interactive Map - Click to Add Pins', 'nirup-island'); ?></h2>
                 <div class="map-editor-container">
                     <img src="<?php echo esc_url($map_image_url); ?>" alt="Map" class="map-editor-image" id="map-editor">
+
+                    <!-- Grid overlay -->
+                    <div class="map-grid-overlay" id="map-grid-overlay" style="display: none;"></div>
+
                     <div class="map-pins-overlay" id="map-pins-overlay">
                         <?php foreach ($pins as $pin): 
                             $icon_key = isset($pin['icon']) ? $pin['icon'] : '';
@@ -3282,6 +3297,154 @@ function nirup_map_pins_admin_page() {
             margin: 0 0 15px 0;
             color: #666;
         }
+
+        /* Crosshair cursor */
+        #map-crosshair {
+            position: absolute;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+
+        .crosshair-h,
+        .crosshair-v {
+            position: absolute;
+            background: rgba(0, 115, 170, 0.6);
+        }
+
+        .crosshair-h {
+            width: 40px;
+            height: 2px;
+            left: -20px;
+            top: -1px;
+        }
+
+        .crosshair-v {
+            width: 2px;
+            height: 40px;
+            left: -1px;
+            top: -20px;
+        }
+
+        /* Coordinate display */
+        #coordinate-display {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+            font-weight: 500;
+            z-index: 9998;
+            pointer-events: none;
+            display: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Click feedback animation */
+        .click-feedback {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #0073aa;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9997;
+            opacity: 1;
+        }
+
+        .click-feedback.animate {
+            animation: clickPulse 0.6s ease-out forwards;
+        }
+
+        @keyframes clickPulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(3);
+                opacity: 0;
+            }
+        }
+
+        /* Pin dragging state */
+        .admin-pin.dragging {
+            opacity: 0.8;
+            transform: translate(-50%, -100%) scale(1.1);
+            z-index: 100 !important;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+        }
+
+        /* Improved map editor cursor */
+        .map-editor-container {
+            cursor: crosshair !important;
+        }
+
+        .map-editor-container:hover {
+            border-color: #0073aa;
+        }
+
+        /* Better pin hover state */
+        .admin-pin {
+            transition: all 0.2s ease;
+        }
+
+        .admin-pin:hover {
+            transform: translate(-50%, -100%) scale(1.15);
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
+        }
+
+        /* Grid overlay */
+        .map-grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(0, 115, 170, 0.1) 0px, rgba(0, 115, 170, 0.1) 1px, transparent 1px, transparent 10%),
+                repeating-linear-gradient(90deg, rgba(0, 115, 170, 0.1) 0px, rgba(0, 115, 170, 0.1) 1px, transparent 1px, transparent 10%);
+        }
+
+        /* Improved card styling */
+        .nirup-map-admin .card {
+            border-left: 4px solid #0073aa;
+        }
+
+        .nirup-map-admin .card h2 {
+            color: #23282d;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 15px 0;
+        }
+
+        /* Instructions styling */
+        .nirup-map-admin ol {
+            padding-left: 20px;
+        }
+
+        .nirup-map-admin ol li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        /* Pin controls styling */
+        .pin-controls {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 1px solid #dee2e6;
+        }
+
+        .pin-controls label {
+            font-size: 14px;
+            color: #495057;
+        }
     </style>
     
     <script>
@@ -3336,30 +3499,136 @@ function nirup_map_pins_admin_page() {
             // Make existing pins draggable
             function makePinsDraggable() {
                 $('.admin-pin').draggable({
-                    containment: '.map-pins-overlay',
+                    containment: '.map-editor-container',
+                    start: function(event, ui) {
+                        $(this).addClass('dragging');
+                    },
+                    drag: function(event, ui) {
+                        // Update coordinates display during drag
+                        const container = $('.map-editor-image');
+                        const containerOffset = container.offset();
+                        const containerWidth = container.width();
+                        const containerHeight = container.height();
+
+                        // Calculate percentage position based on the actual position on the image
+                        // ui.position is relative to offsetParent
+                        const x = ((ui.position.left + ($(this).width() / 2)) / containerWidth) * 100;
+                        const y = ((ui.position.top + $(this).height()) / containerHeight) * 100;
+
+                        updateCoordinatesDisplay(x, y);
+                    },
                     stop: function(event, ui) {
+                        $(this).removeClass('dragging');
+
                         const pinId = $(this).data('pin-id');
                         const container = $('.map-editor-image');
                         const containerWidth = container.width();
                         const containerHeight = container.height();
-                        
-                        const x = (ui.position.left / containerWidth) * 100;
-                        const y = (ui.position.top / containerHeight) * 100;
-                        
+
+                        // Account for the transform: translate(-50%, -100%)
+                        // The pin's anchor point is at bottom-center due to the transform
+                        // ui.position gives us the top-left corner position after transform
+                        // We need to add back the offset to get the actual anchor point
+                        const pinWidth = $(this).width();
+                        const pinHeight = $(this).height();
+
+                        // Calculate the actual anchor point (bottom-center of pin)
+                        const x = ((ui.position.left + (pinWidth / 2)) / containerWidth) * 100;
+                        const y = ((ui.position.top + pinHeight) / containerHeight) * 100;
+
                         savePinPosition(pinId, x, y);
+                        hideCoordinatesDisplay();
                     }
                 });
             }
-            
+
+            // Add hover crosshair effect
+            $('.map-editor-container').on('mousemove', function(e) {
+                const container = $(this);
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Update crosshair position
+                updateCrosshair(x, y);
+
+                // Calculate and display percentage coordinates
+                const xPercent = (x / rect.width) * 100;
+                const yPercent = (y / rect.height) * 100;
+                updateCoordinatesDisplay(xPercent, yPercent);
+            }).on('mouseleave', function() {
+                hideCrosshair();
+                hideCoordinatesDisplay();
+            });
+
             // Click on map to add new pin
             $('#map-editor').on('click', function(e) {
                 const rect = this.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+                // Calculate click position relative to the image
+                // This gives us the exact position where the user clicked
+                const clickX = e.clientX - rect.left;
+                const clickY = e.clientY - rect.top;
+
+                // Convert to percentage
+                const x = (clickX / rect.width) * 100;
+                const y = (clickY / rect.height) * 100;
+
                 const pinType = $('input[name="new_pin_type"]:checked').val();
-                
+
+                // Visual feedback
+                showClickFeedback(clickX, clickY);
+
                 addNewPin(x, y, pinType);
             });
+
+            // Crosshair and coordinates helper functions
+            function updateCrosshair(x, y) {
+                let $crosshair = $('#map-crosshair');
+                if (!$crosshair.length) {
+                    $crosshair = $('<div id="map-crosshair"><div class="crosshair-h"></div><div class="crosshair-v"></div></div>');
+                    $('.map-editor-container').append($crosshair);
+                }
+                $crosshair.css({
+                    left: x + 'px',
+                    top: y + 'px',
+                    display: 'block'
+                });
+            }
+
+            function hideCrosshair() {
+                $('#map-crosshair').hide();
+            }
+
+            function updateCoordinatesDisplay(x, y) {
+                let $coords = $('#coordinate-display');
+                if (!$coords.length) {
+                    $coords = $('<div id="coordinate-display"></div>');
+                    $('.map-editor-container').append($coords);
+                }
+                $coords.text(`X: ${x.toFixed(1)}%, Y: ${y.toFixed(1)}%`).show();
+            }
+
+            function hideCoordinatesDisplay() {
+                $('#coordinate-display').hide();
+            }
+
+            function showClickFeedback(x, y) {
+                const $feedback = $('<div class="click-feedback"></div>');
+                $feedback.css({
+                    left: x + 'px',
+                    top: y + 'px'
+                });
+                $('.map-editor-container').append($feedback);
+
+                setTimeout(() => {
+                    $feedback.addClass('animate');
+                }, 10);
+
+                setTimeout(() => {
+                    $feedback.remove();
+                }, 600);
+            }
             
             // Click on existing pin to edit
             $(document).on('click', '.admin-pin', function(e) {
@@ -3477,9 +3746,19 @@ function nirup_map_pins_admin_page() {
                 setTimeout(() => $message.fadeOut(), 3000);
             }
             
+            // Grid toggle
+            $('#toggle-grid').on('change', function() {
+                const $grid = $('#map-grid-overlay');
+                if ($(this).is(':checked')) {
+                    $grid.fadeIn(200);
+                } else {
+                    $grid.fadeOut(200);
+                }
+            });
+
             // Initialize
             makePinsDraggable();
-            
+
             // Initialize with "No Icon" selected
             $('.no-icon-option').trigger('click');
         });
