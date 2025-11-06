@@ -67,17 +67,19 @@ get_header(); ?>
                                 </div>
                             <?php endif; ?>
                             
-                            <!-- Book Now Button - UPDATED -->
-                            <?php 
-                            // Check if this event/offer has a booking calendar configured
-                            $calendar_id = get_post_meta(get_the_ID(), '_event_offer_booking_calendar_id', true);
-                            if ($calendar_id) : 
+                            <!-- Book Now Button - External Link -->
+                            <?php
+                            // Check if this event/offer has a booking link configured
+                            $booking_link = get_post_meta(get_the_ID(), '_event_offer_booking_link', true);
+                            if (!empty($booking_link)) :
                             ?>
                                 <div class="single-event-offer-booking">
-                                    <button class="single-event-offer-book-btn event-offer-book-btn" 
-                                            data-event-offer-id="<?php echo get_the_ID(); ?>">
+                                    <a href="<?php echo esc_url($booking_link); ?>"
+                                       class="single-event-offer-book-btn"
+                                       target="_blank"
+                                       rel="noopener noreferrer">
                                         Book Now
-                                    </button>
+                                    </a>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -237,12 +239,8 @@ get_header(); ?>
     <?php endif; ?>
 </main>
 
-<?php 
-// Output booking modal for this event/offer using the reusable snippet
-get_template_part('template-parts/booking-calendar-modal');
-
-// Include thank you modal once
-get_template_part('template-parts/thankyou-modal');
+<?php
+// Booking modal and thank you modal removed - now using external booking links
 ?>
 
 <?php get_footer(); ?>
