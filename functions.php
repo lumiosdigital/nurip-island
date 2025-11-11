@@ -7604,8 +7604,8 @@ function nirup_contact_form_submit() {
     error_log('Contact Form - Submission saved to database');
     
     // Get email settings from customizer
-    $admin_email = get_theme_mod('nirup_contact_form_email', 'lumiosdigital@gmail.com');
-    $from_email  = get_theme_mod('nirup_contact_form_from_email', 'noreply@lumiosdigital.com');
+    $admin_email = get_theme_mod('nirup_contact_form_email', 'explore@nirupisland.com');
+    $from_email  = get_theme_mod('nirup_contact_form_from_email', 'explore@nirupisland.com');
     $from_name   = get_bloginfo('name');
     
     error_log('Contact Form - Admin email: ' . $admin_email);
@@ -7771,7 +7771,7 @@ function nirup_contact_form_customizer($wp_customize) {
     
     // Send FROM Email Setting (noreply address)
     $wp_customize->add_setting('nirup_contact_form_from_email', array(
-        'default' => 'noreply@lumiosdigital.com',
+        'default' => 'explore@nirupisland.com',
         'sanitize_callback' => 'sanitize_email',
         'transport' => 'refresh',
     ));
@@ -7786,7 +7786,7 @@ function nirup_contact_form_customizer($wp_customize) {
     
     // Send TO Email Setting (admin notification)
     $wp_customize->add_setting('nirup_contact_form_email', array(
-        'default' => 'lumiosdigital@gmail.com',
+        'default' => 'explore@nirupisland.com',
         'sanitize_callback' => 'sanitize_email',
         'transport' => 'refresh',
     ));
@@ -9779,8 +9779,8 @@ function nirup_private_events_form_submit() {
     error_log('Private Events Form - Submission saved to database');
     
     // Get email settings from customizer
-    $admin_email = get_theme_mod('nirup_private_events_form_email', 'lumiosdigital@gmail.com');
-    $from_email = get_theme_mod('nirup_private_events_form_from_email', 'noreply@lumiosdigital.com');
+    $admin_email = get_theme_mod('nirup_private_events_form_email', 'explore@nirupisland.com');
+    $from_email = get_theme_mod('nirup_private_events_form_from_email', 'explore@nirupisland.com');
     $from_name = get_bloginfo('name');
     
     error_log('Private Events Form - Admin email: ' . $admin_email);
@@ -10242,7 +10242,7 @@ function nirup_private_events_customizer($wp_customize) {
     
     // Admin Recipient Email
     $wp_customize->add_setting('nirup_private_events_form_email', array(
-        'default' => 'lumiosdigital@gmail.com',
+        'default' => 'explore@nirupisland.com',
         'sanitize_callback' => 'sanitize_email',
         'transport' => 'refresh',
     ));
@@ -10257,7 +10257,7 @@ function nirup_private_events_customizer($wp_customize) {
     
     // From Email Address
     $wp_customize->add_setting('nirup_private_events_form_from_email', array(
-        'default' => 'noreply@lumiosdigital.com',
+        'default' => 'explore@nirupisland.com',
         'sanitize_callback' => 'sanitize_email',
         'transport' => 'refresh',
     ));

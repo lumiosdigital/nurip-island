@@ -333,6 +333,10 @@
     margin-top: 10px;
 }
 
+.grecaptcha-badge {
+    visibility: hidden !important;
+}
+
 @keyframes spin {
     0% {
         transform: translateY(-50%) rotate(0deg);
