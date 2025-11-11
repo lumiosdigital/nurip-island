@@ -272,10 +272,14 @@ function nirup_enqueue_assets() {
         ),
     ));
 
-    wp_localize_script('nirup-contact', 'nirup_contact_ajax', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('contact_form_nonce')
-    ));
+    wp_localize_script('nirup-contact', 'nirup_contact_ajax', [
+    'ajax_url' => admin_url('admin-ajax.php'),
+    'nonce'    => wp_create_nonce('contact_form_nonce'),
+    'recaptcha'=> [
+        'site_key' => nirup_get_secret('RECAPTCHA_SITE_KEY', 'nirup_recaptcha_site_key', ''),
+        'action'   => 'contact_submit'
+    ],
+    ]);
 
     if (!empty($site_key) && !defined('NIRUP_DISABLE_CAPTCHA')) {
     wp_enqueue_script(
@@ -7546,11 +7550,11 @@ function nirup_contact_form_submit() {
     // Get and sanitize form data
     $form_data = isset($_POST['form_data']) ? $_POST['form_data'] : array();
     
-    $name = sanitize_text_field($form_data['name']);
-    $email = sanitize_email($form_data['email']);
-    $phone = sanitize_text_field($form_data['phone']);
-    $inquiry_type = sanitize_text_field($form_data['inquiry_type']);
-    $message = sanitize_textarea_field($form_data['message']);
+    $name         = sanitize_text_field($form_data['name'] ?? '');
+    $email        = sanitize_email($form_data['email'] ?? '');
+    $phone        = sanitize_text_field($form_data['phone'] ?? '');
+    $inquiry_type = sanitize_text_field($form_data['inquiry_type'] ?? '');
+    $message      = sanitize_textarea_field($form_data['message'] ?? '');
     
     // Validate required fields
     if (empty($name) || empty($email) || empty($inquiry_type) || empty($message)) {
@@ -7563,6 +7567,37 @@ function nirup_contact_form_submit() {
         wp_send_json_error(array('message' => 'Please enter a valid email address.'));
         return;
     }
+
+    // ---- reCAPTCHA v3 verification (added) ----
+    $recaptcha_secret = nirup_get_secret('RECAPTCHA_SECRET', 'nirup_recaptcha_secret', '');
+    $recaptcha_token  = sanitize_text_field($_POST['recaptcha_token'] ?? '');
+    $captcha_enabled  = !defined('NIRUP_DISABLE_CAPTCHA') && !empty($recaptcha_secret);
+
+    if ($captcha_enabled) {
+        $verify = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', array(
+            'body' => array(
+                'secret'   => $recaptcha_secret,
+                'response' => $recaptcha_token,
+                'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+            ),
+            'timeout' => 10,
+        ));
+
+        if (is_wp_error($verify)) {
+            wp_send_json_error(array('message' => 'Captcha verification failed. Please try again.'), 400);
+        }
+
+        $vbody = json_decode(wp_remote_retrieve_body($verify), true);
+        $score = isset($vbody['score']) ? (float) $vbody['score'] : 0;
+
+        // Threshold 0.5 (loosen to 0.3 if needed on dev)
+        if (empty($vbody['success']) || $score < 0.5) {
+            wp_send_json_error(array('message' => 'Captcha failed. Please try again.'), 400);
+        }
+    } else {
+        error_log('Contact form: reCAPTCHA disabled or not configured; skipping verification.');
+    }
+    // ---- end captcha ----
     
     // Store submission in database FIRST
     nirup_store_contact_submission($name, $email, $phone, $inquiry_type, $message);
@@ -7570,19 +7605,17 @@ function nirup_contact_form_submit() {
     
     // Get email settings from customizer
     $admin_email = get_theme_mod('nirup_contact_form_email', 'lumiosdigital@gmail.com');
-    $from_email = get_theme_mod('nirup_contact_form_from_email', 'noreply@lumiosdigital.com');
-    $from_name = get_bloginfo('name');
+    $from_email  = get_theme_mod('nirup_contact_form_from_email', 'noreply@lumiosdigital.com');
+    $from_name   = get_bloginfo('name');
     
     error_log('Contact Form - Admin email: ' . $admin_email);
     error_log('Contact Form - From email: ' . $from_email);
     error_log('Contact Form - User email: ' . $email);
     
-    // ==========================================
-    // EMAIL 1: ADMIN NOTIFICATION (Internal)
-    // ==========================================
+    // EMAIL 1: ADMIN NOTIFICATION
     $admin_subject = '[' . get_bloginfo('name') . '] New Contact Form Submission from ' . $name;
     
-    $admin_body = "New contact form submission:\n\n";
+    $admin_body  = "New contact form submission:\n\n";
     $admin_body .= "Name: " . $name . "\n";
     $admin_body .= "Email: " . $email . "\n";
     $admin_body .= "Phone: " . (!empty($phone) ? $phone : 'Not provided') . "\n";
@@ -7598,53 +7631,39 @@ function nirup_contact_form_submit() {
         'Reply-To: ' . $name . ' <' . $email . '>'
     );
     
-    // ==========================================
-    // EMAIL 2: USER CONFIRMATION (Customer)
-    // ==========================================
-    
-    // Get customizable email content
+    // EMAIL 2: USER CONFIRMATION
     $user_subject_template = get_theme_mod('nirup_contact_confirmation_subject', 'Thank you for contacting {site_name}');
-    $user_body_template = get_theme_mod('nirup_contact_confirmation_body', "Dear {user_name},\n\nThank you for reaching out to us. We have received your message and our team will review it shortly.\n\nHere's a summary of what you submitted:\n\nType of Inquiry: {inquiry_type}\n\nWe aim to respond within 1-2 business days. If your matter is urgent, please don't hesitate to call us at {phone_number}.\n\nBest regards,\nThe {site_name} Team");
-    $user_footer_template = get_theme_mod('nirup_contact_confirmation_footer', "---\nThis is an automated confirmation email. Please do not reply to this message.");
+    $user_body_template    = get_theme_mod('nirup_contact_confirmation_body', "Dear {user_name},\n\nThank you for reaching out to us. We have received your message and our team will review it shortly.\n\nHere's a summary of what you submitted:\n\nType of Inquiry: {inquiry_type}\n\nWe aim to respond within 1-2 business days. If your matter is urgent, please don't hesitate to call us at {phone_number}.\n\nBest regards,\nThe {site_name} Team");
+    $user_footer_template  = get_theme_mod('nirup_contact_confirmation_footer', "---\nThis is an automated confirmation email. Please do not reply to this message.");
     
-    // Replace placeholders with actual values
     $replacements = array(
-        '{site_name}' => get_bloginfo('name'),
-        '{user_name}' => $name,
-        '{user_email}' => $email,
-        '{user_phone}' => !empty($phone) ? $phone : 'Not provided',
+        '{site_name}'    => get_bloginfo('name'),
+        '{user_name}'    => $name,
+        '{user_email}'   => $email,
+        '{user_phone}'   => !empty($phone) ? $phone : 'Not provided',
         '{inquiry_type}' => $inquiry_type,
         '{phone_number}' => get_theme_mod('nirup_contact_phone_primary', '+62 811 6220 999')
     );
     
-    // Apply replacements
     $user_subject = str_replace(array_keys($replacements), array_values($replacements), $user_subject_template);
-    $user_body = str_replace(array_keys($replacements), array_values($replacements), $user_body_template);
-    $user_footer = str_replace(array_keys($replacements), array_values($replacements), $user_footer_template);
-    
-    // Combine body and footer
-    $user_body = $user_body . "\n\n" . $user_footer;
+    $user_body    = str_replace(array_keys($replacements), array_values($replacements), $user_body_template);
+    $user_footer  = str_replace(array_keys($replacements), array_values($replacements), $user_footer_template);
+    $user_body    = $user_body . "\n\n" . $user_footer;
     
     $user_headers = array(
         'Content-Type: text/plain; charset=UTF-8',
         'From: ' . $from_name . ' <' . $from_email . '>'
     );
     
-    // ==========================================
     // SEND BOTH EMAILS
-    // ==========================================
-    
-    // Send admin notification
     error_log('Contact Form - Attempting to send admin email to: ' . $admin_email);
     $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
     error_log('Contact Form - Admin email result: ' . ($admin_mail_sent ? 'SUCCESS' : 'FAILED'));
     
-    // Send user confirmation
     error_log('Contact Form - Attempting to send user email to: ' . $email);
     $user_mail_sent = wp_mail($email, $user_subject, $user_body, $user_headers);
     error_log('Contact Form - User email result: ' . ($user_mail_sent ? 'SUCCESS' : 'FAILED'));
     
-    // Check for PHPMailer errors
     if (!$admin_mail_sent || !$user_mail_sent) {
         global $phpmailer;
         if (isset($phpmailer) && !empty($phpmailer->ErrorInfo)) {
@@ -7652,28 +7671,25 @@ function nirup_contact_form_submit() {
         }
     }
     
-    // ==========================================
     // RETURN RESPONSE
-    // ==========================================
-    
-    // Return success if at least one email sent
     if ($admin_mail_sent || $user_mail_sent) {
         wp_send_json_success(array(
-            'message' => 'Your message has been received! We will respond within 1-2 business days.',
+            'message'    => 'Your message has been received! We will respond within 1-2 business days.',
             'admin_sent' => $admin_mail_sent,
-            'user_sent' => $user_mail_sent
+            'user_sent'  => $user_mail_sent
         ));
     } else {
         // Both failed but data is saved
         wp_send_json_success(array(
-            'message' => 'Your message has been saved! We will respond within 1-2 business days.',
+            'message'    => 'Your message has been saved! We will respond within 1-2 business days.',
             'admin_sent' => false,
-            'user_sent' => false
+            'user_sent'  => false
         ));
     }
 }
 add_action('wp_ajax_nirup_contact_form_submit', 'nirup_contact_form_submit');
 add_action('wp_ajax_nopriv_nirup_contact_form_submit', 'nirup_contact_form_submit');
+
 
 
 /**
