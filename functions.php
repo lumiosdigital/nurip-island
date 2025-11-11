@@ -5987,6 +5987,11 @@ function nirup_handle_newsletter_subscription() {
     $brevo_api_key = get_theme_mod('nirup_brevo_api_key', '');
     $brevo_list_id = get_theme_mod('nirup_brevo_list_id', '');
 
+    // Log configuration status for debugging
+    error_log('Newsletter subscription attempt for: ' . $email);
+    error_log('Brevo API Key configured: ' . (!empty($brevo_api_key) ? 'Yes' : 'No'));
+    error_log('Brevo List ID configured: ' . (!empty($brevo_list_id) ? $brevo_list_id : 'No'));
+
     // Try to add to Brevo first
     $brevo_success = false;
     $brevo_error_message = '';
@@ -5998,6 +6003,8 @@ function nirup_handle_newsletter_subscription() {
             'listIds' => array(intval($brevo_list_id)),
             'updateEnabled' => true
         );
+
+        error_log('Sending to Brevo API with list ID: ' . intval($brevo_list_id));
 
         // Make API request to Brevo
         $response = wp_remote_post('https://api.brevo.com/v3/contacts', array(
@@ -6011,19 +6018,31 @@ function nirup_handle_newsletter_subscription() {
 
         if (is_wp_error($response)) {
             $brevo_error_message = $response->get_error_message();
-            error_log('Brevo API Error: ' . $brevo_error_message);
+            error_log('Brevo API WP_Error: ' . $brevo_error_message);
         } else {
             $response_code = wp_remote_retrieve_response_code($response);
-            $response_body = json_decode(wp_remote_retrieve_body($response), true);
+            $response_body_raw = wp_remote_retrieve_body($response);
+            $response_body = json_decode($response_body_raw, true);
+
+            error_log('Brevo API Response Code: ' . $response_code);
+            error_log('Brevo API Response Body: ' . $response_body_raw);
 
             // Success codes: 201 (created) or 204 (updated/already exists)
             if ($response_code === 201 || $response_code === 204) {
                 $brevo_success = true;
+                error_log('Brevo subscription successful for: ' . $email);
             } else {
                 $brevo_error_message = isset($response_body['message']) ? $response_body['message'] : 'Unknown error';
                 error_log('Brevo API Error (Code ' . $response_code . '): ' . $brevo_error_message);
+
+                // Log additional error details if available
+                if (isset($response_body['code'])) {
+                    error_log('Brevo Error Code: ' . $response_body['code']);
+                }
             }
         }
+    } else {
+        error_log('Brevo integration skipped - credentials not configured');
     }
 
     // Also save to local database as backup
@@ -6033,6 +6052,9 @@ function nirup_handle_newsletter_subscription() {
     if (!$already_subscribed) {
         $subscribers[] = $email;
         update_option('nirup_newsletter_subscribers', $subscribers);
+        error_log('Email saved to local database: ' . $email);
+    } else {
+        error_log('Email already in local database: ' . $email);
     }
 
     // Send response based on Brevo result
@@ -6040,11 +6062,14 @@ function nirup_handle_newsletter_subscription() {
         wp_send_json_success(array('message' => 'Thank you for subscribing to our newsletter!'));
     } elseif (!empty($brevo_api_key) && !empty($brevo_list_id)) {
         // Brevo was configured but failed
+        error_log('Returning error to user - Brevo configured but failed');
         wp_send_json_error(array('message' => 'There was an issue subscribing you. Please try again later.'));
     } elseif ($already_subscribed) {
+        error_log('Returning error to user - already subscribed');
         wp_send_json_error(array('message' => 'You are already subscribed.'));
     } else {
         // No Brevo configured, just local storage
+        error_log('WARNING: Brevo not configured - email only saved locally');
         wp_send_json_success(array('message' => 'Thank you for subscribing!'));
     }
 }
