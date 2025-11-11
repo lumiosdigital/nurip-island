@@ -21,26 +21,40 @@
 
         $form.on('submit', function(e) {
             e.preventDefault();
-            
+
             const email = $input.val().trim();
-            
+
+            console.log('📧 Newsletter form submitted');
+            console.log('📧 Email:', email);
+
             // Basic validation
             if (!email) {
+                console.log('❌ Validation failed: empty email');
                 showMessage('Please enter your email address.', 'error');
                 return;
             }
-            
+
             if (!isValidEmail(email)) {
+                console.log('❌ Validation failed: invalid email format');
                 showMessage('Please enter a valid email address.', 'error');
                 return;
             }
-            
+
+            console.log('✅ Email validation passed');
+
             // Show loading state
             const originalText = $button.text();
             $button.text(nirup_footer_ajax.messages.subscribing)
                    .prop('disabled', true)
                    .addClass('loading');
-            
+
+            console.log('📤 Sending AJAX request to:', nirup_footer_ajax.ajax_url);
+            console.log('📤 Request data:', {
+                action: 'nirup_newsletter_subscribe',
+                email: email,
+                nonce: nirup_footer_ajax.nonce
+            });
+
             // AJAX request
             $.ajax({
                 url: nirup_footer_ajax.ajax_url,
@@ -51,17 +65,28 @@
                     nonce: nirup_footer_ajax.nonce
                 },
                 success: function(response) {
+                    console.log('📥 Server response received:', response);
+
                     if (response.success) {
+                        console.log('✅ Subscription successful!');
+                        console.log('✅ Message:', response.data.message);
                         showMessage(response.data.message, 'success');
                         $input.val(''); // Clear the input
                     } else {
+                        console.log('❌ Subscription failed');
+                        console.log('❌ Error message:', response.data.message);
                         showMessage(response.data.message || nirup_footer_ajax.messages.error, 'error');
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.log('❌ AJAX request failed');
+                    console.log('❌ Status:', status);
+                    console.log('❌ Error:', error);
+                    console.log('❌ Response:', xhr.responseText);
                     showMessage(nirup_footer_ajax.messages.error, 'error');
                 },
                 complete: function() {
+                    console.log('🏁 Request complete, resetting button');
                     // Reset button state
                     $button.text(originalText)
                            .prop('disabled', false)

@@ -201,10 +201,10 @@ function nirup_enqueue_assets() {
     );
 
     wp_enqueue_script(
-        'nirup-footer', 
-        get_template_directory_uri() . '/assets/js/footer.js', 
-        array('jquery'), 
-        '1.0.2', 
+        'nirup-footer',
+        get_template_directory_uri() . '/assets/js/footer.js',
+        array('jquery'),
+        '1.0.3',
         true
     );
 
