@@ -36,7 +36,7 @@
                 $youtube_url = get_theme_mod('nirup_social_youtube', '');
                 $instagram_url = get_theme_mod('nirup_social_instagram', '');
                 $tiktok_url = get_theme_mod('nirup_social_tiktok', '');
-                $linkedin_url = get_theme_mod('nirup_social_linkedin', '');
+                $facebook_url = get_theme_mod('nirup_social_facebook', '');
                 $tripadvisor_url = get_theme_mod('nirup_social_tripadvisor', '');
                 ?>
                 
@@ -78,17 +78,10 @@
                     </a>
                 <?php endif; ?>
                 
-                <?php if ($linkedin_url) : ?>
-                    <a href="<?php echo esc_url($linkedin_url); ?>" target="_blank" rel="noopener noreferrer" class="social-link linkedin">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                    <g clip-path="url(#clip0_490_1144)">
-                        <path d="M14 0C6.268 0 0 6.268 0 14C0 21.732 6.268 28 14 28C21.732 28 28 21.732 28 14C28 6.268 21.732 0 14 0ZM10.002 20H6.862V10.554H10.002V20ZM8.432 9.264H8.412C7.358 9.264 6.677 8.539 6.677 7.632C6.677 6.705 7.379 6 8.453 6C9.527 6 10.188 6.705 10.209 7.632C10.209 8.538 9.527 9.264 8.433 9.264H8.432ZM21.323 20H18.184V14.946C18.184 13.676 17.73 12.81 16.593 12.81C15.726 12.81 15.209 13.394 14.982 13.958C14.899 14.16 14.879 14.442 14.879 14.724V19.999H11.739C11.739 19.999 11.78 11.439 11.739 10.553H14.879V11.891C15.296 11.247 16.042 10.331 17.709 10.331C19.775 10.331 21.324 11.681 21.324 14.583V19.999L21.323 20Z" fill="#A48456"/>
-                    </g>
-                    <defs>
-                        <clipPath id="clip0_490_1144">
-                        <rect width="28" height="28" fill="white"/>
-                        </clipPath>
-                    </defs>
+                <?php if ($facebook_url) : ?>
+                    <a href="<?php echo esc_url($facebook_url); ?>" target="_blank" rel="noopener noreferrer" class="social-link facebook">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+                        <path d="M13 0C5.82036 0 0 5.82036 0 13C0 19.0965 4.19744 24.2122 9.85972 25.6173V16.9728H7.17912V13H9.85972V11.2882C9.85972 6.86348 11.8622 4.8126 16.2063 4.8126C17.03 4.8126 18.4512 4.97432 19.0325 5.13552V8.73652C18.7257 8.70428 18.1927 8.68816 17.5308 8.68816C15.3993 8.68816 14.5756 9.49572 14.5756 11.595V13H18.8219L18.0924 16.9728H14.5756V25.9048C21.0127 25.1274 26.0005 19.6466 26.0005 13C26 5.82036 20.1796 0 13 0Z" fill="#A48456"/>
                     </svg>
                     </a>
                 <?php endif; ?>
@@ -207,7 +200,7 @@
                     <div class="footer-newsletter-section">
                         <h3 class="footer-section-title">Stay Connected</h3>
                         <p class="footer-newsletter-description">Subscribe to our newsletter for the latest updates, offers, and exclusive releases</p>
-                        
+
                         <form class="footer-newsletter-form" id="footer-newsletter-form">
                             <div class="newsletter-input-group">
                                 <input 
@@ -222,7 +215,13 @@
                                 </button>
                             </div>
                         </form>
+                        <small class="recaptcha-note">
+                        This site is protected by reCAPTCHA and the Google
+                        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and
+                        <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+                        </small>
                     </div>
+                    
                     
                     <!-- Contact Information -->
                     <div class="footer-contact-section">

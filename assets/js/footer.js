@@ -56,43 +56,43 @@
             });
 
             // AJAX request
+            const runAjax = (token) => {
             $.ajax({
                 url: nirup_footer_ajax.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'nirup_newsletter_subscribe',
-                    email: email,
-                    nonce: nirup_footer_ajax.nonce
+                action: 'nirup_newsletter_subscribe',
+                email: email,
+                nonce: nirup_footer_ajax.nonce,
+                recaptcha_token: token
                 },
                 success: function(response) {
-                    console.log('📥 Server response received:', response);
-
-                    if (response.success) {
-                        console.log('✅ Subscription successful!');
-                        console.log('✅ Message:', response.data.message);
-                        showMessage(response.data.message, 'success');
-                        $input.val(''); // Clear the input
-                    } else {
-                        console.log('❌ Subscription failed');
-                        console.log('❌ Error message:', response.data.message);
-                        showMessage(response.data.message || nirup_footer_ajax.messages.error, 'error');
-                    }
+                if (response.success) {
+                    showMessage(response.data.message || 'Thank you for subscribing to our newsletter!', 'success');
+                    $input.val('');
+                } else {
+                    showMessage(response.data.message || nirup_footer_ajax.messages.error, 'error');
+                }
                 },
-                error: function(xhr, status, error) {
-                    console.log('❌ AJAX request failed');
-                    console.log('❌ Status:', status);
-                    console.log('❌ Error:', error);
-                    console.log('❌ Response:', xhr.responseText);
-                    showMessage(nirup_footer_ajax.messages.error, 'error');
+                error: function() {
+                showMessage(nirup_footer_ajax.messages.error, 'error');
                 },
                 complete: function() {
-                    console.log('🏁 Request complete, resetting button');
-                    // Reset button state
-                    $button.text(originalText)
-                           .prop('disabled', false)
-                           .removeClass('loading');
+                $button.text(originalText).prop('disabled', false).removeClass('loading');
                 }
             });
+            };
+
+            if (nirup_footer_ajax?.recaptcha?.site_key && typeof grecaptcha !== 'undefined') {
+            grecaptcha.ready(function () {
+                grecaptcha.execute(nirup_footer_ajax.recaptcha.site_key, { action: nirup_footer_ajax.recaptcha.action })
+                .then(function (token) { runAjax(token); })
+                .catch(function ()     { runAjax('');    });
+            });
+            } else {
+            runAjax('');
+            }
+
         });
     }
 

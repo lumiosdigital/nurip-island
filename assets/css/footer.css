@@ -325,6 +325,14 @@
     transform: translateY(-50%);
 }
 
+.recaptcha-note {
+    font-family: var(--font-family);
+    font-size: 8px;
+    color: #6c757d;
+    line-height: 1.4;
+    margin-top: 10px;
+}
+
 @keyframes spin {
     0% {
         transform: translateY(-50%) rotate(0deg);
