@@ -388,6 +388,10 @@
     padding: 200px 0 200px 0;
 }
 
+.single-cta-section-empty {
+    padding: 0px 0 !important;
+}
+
 .single-cta-container {
     max-width: 1400px;
     margin: 0 auto;
