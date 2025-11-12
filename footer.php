@@ -280,6 +280,9 @@
             </div>
         </div>
     </div>
+    <div class="footer-bottom-design">
+         <p>Designed and developed by <a href='https://lumiosdigital.com/'>Lumios Digital</a></p>
+    </div>
 </footer>
 
 </div>
