@@ -326,15 +326,15 @@
 }
 
 .recaptcha-note-nirup {
-    font-family: var(--font-family);
-    font-size: 8px;
-    color: #6c757d;
-    line-height: 1.4;
-    margin-top: 10px;
+    font-family: var(--font-family) !important;
+    font-size: 8px !important;
+    color: #6c757d !important;
+    line-height: 1.4 !important;
+    margin-top: 10px !important;
 }
 
 .grecaptcha-badge {
-    visibility: hidden !important;
+    display: none !important;
 }
 
 @keyframes spin {
