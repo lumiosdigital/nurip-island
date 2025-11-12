@@ -190,6 +190,10 @@
     opacity: 0;
 }
 
+.grecaptcha-badge {
+    display: none !important;
+}
+
 .btn-loader {
     position: absolute;
     width: 20px;
