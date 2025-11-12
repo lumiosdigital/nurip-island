@@ -105,6 +105,16 @@ function nirup_enqueue_assets() {
         );
     }
 
+    if (is_404()) {
+    $path_404 = $dir_path . '/assets/css/404.css';
+    wp_enqueue_style(
+        'nirup-404',
+        $dir_uri . '/assets/css/404.css',
+        ['nirup-main'],
+        file_exists($path_404) ? filemtime($path_404) : null
+    );
+}
+
     // === GOOGLE FONTS === (leave version null so Google controls cache)
     wp_enqueue_style(
         'google-fonts',
@@ -12275,4 +12285,5 @@ function wpbs_add_custom_currency_symbol($currencies)
     return $currencies;
 }
 add_filter('wpbs_currency_symbol', 'wpbs_add_custom_currency_symbol', 10, 1);
+
 ?>
