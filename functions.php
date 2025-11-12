@@ -56,191 +56,111 @@ function nirup_get_secret($const_name, $theme_mod_key, $default = '') {
 }
 
 function nirup_enqueue_assets() {
-    
+
+    // Use child-safe paths and automatic cache-busting
+    $dir_uri  = get_stylesheet_directory_uri();
+    $dir_path = get_stylesheet_directory();
+
     // === CSS FILES ===
-    wp_enqueue_style('nirup-style', get_stylesheet_uri(), array(), '1.0.2');
-    wp_enqueue_style('nirup-main', get_template_directory_uri() . '/assets/css/main.css', array(), '1.0.2');
-    wp_enqueue_style('nirup-header', get_template_directory_uri() . '/assets/css/header.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-hero', get_template_directory_uri() . '/assets/css/hero.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-video', get_template_directory_uri() . '/assets/css/video.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-about-island', get_template_directory_uri() . '/assets/css/about-island.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-accommodations', get_template_directory_uri() . '/assets/css/accommodations.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-experiences-carousel', get_template_directory_uri() . '/assets/css/experiences-carousel.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-experiences-archive', get_template_directory_uri() . '/assets/css/archive-experiences.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-breadcrumbs', get_template_directory_uri() . '/assets/css/breadcrumbs.css', array(), '1.0.2');
-    wp_enqueue_style('nirup-map-section', get_template_directory_uri() . '/assets/css/map-section.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-wellness-retreat', get_template_directory_uri() . '/assets/css/wellness-retreat.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-services', get_template_directory_uri() . '/assets/css/services.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-events-offers-carousel', get_template_directory_uri() . '/assets/css/events-offers-carousel.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-events-offers-archive', get_template_directory_uri() . '/assets/css/events-offers-archive.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-single-event-offer', get_template_directory_uri() . '/assets/css/single-event-offer.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-footer', get_template_directory_uri() . '/assets/css/footer.css', array('nirup-main'), '1.0.3');
-    wp_enqueue_style('nirup-dining', get_template_directory_uri() . '/assets/css/dining.css', array('nirup-main'), '1.0.3');
-    wp_enqueue_style('nirup-single-restaurant', get_template_directory_uri() . '/assets/css/single-restaurant.css', array('nirup-main'), '1.0.3');
-    wp_enqueue_style('nirup-legal-pages', get_template_directory_uri() . '/assets/css/legal-pages.css', array('nirup-main'), '1.0.3');
-    wp_enqueue_style('nirup-contact', get_template_directory_uri() . '/assets/css/contact.css', array(), '1.0.2' );
-    wp_enqueue_style('nirup-marina', get_template_directory_uri() . '/assets/css/marina.css', array('nirup-main'), '1.0.0');
-
-
-    // === GOOGLE FONTS ===
-    wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Albert+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap', array(), null);
-    
-    // === JAVASCRIPT FILES WITH EXPLICIT JQUERY DEPENDENCY ===
-    
-    // 1. Core utilities - explicitly depend on 'jquery' handle
-    wp_enqueue_script(
-        'nirup-utils', 
-        get_template_directory_uri() . '/assets/js/utils.js', 
-        array('jquery'), 
-        '1.0.2', 
-        true
+    // style.css
+    wp_enqueue_style(
+        'nirup-style',
+        get_stylesheet_uri(),
+        [],
+        file_exists($dir_path . '/style.css') ? filemtime($dir_path . '/style.css') : null
     );
-    
+
+    // helper list: [handle, relative path from theme root, dependencies]
+    $css_files = [
+        ['nirup-main',                  '/assets/css/main.css',                  []],
+        ['nirup-header',                '/assets/css/header.css',                ['nirup-main']],
+        ['nirup-hero',                  '/assets/css/hero.css',                  ['nirup-main']],
+        ['nirup-video',                 '/assets/css/video.css',                 ['nirup-main']],
+        ['nirup-about-island',          '/assets/css/about-island.css',          ['nirup-main']],
+        ['nirup-accommodations',        '/assets/css/accommodations.css',        ['nirup-main']],
+        ['nirup-experiences-carousel',  '/assets/css/experiences-carousel.css',  ['nirup-main']],
+        ['nirup-experiences-archive',   '/assets/css/archive-experiences.css',   ['nirup-main']],
+        ['nirup-breadcrumbs',           '/assets/css/breadcrumbs.css',           []],
+        ['nirup-map-section',           '/assets/css/map-section.css',           ['nirup-main']],
+        ['nirup-wellness-retreat',      '/assets/css/wellness-retreat.css',      ['nirup-main']],
+        ['nirup-services',              '/assets/css/services.css',              ['nirup-main']],
+        ['nirup-events-offers-carousel','/assets/css/events-offers-carousel.css',['nirup-main']],
+        ['nirup-events-offers-archive', '/assets/css/events-offers-archive.css', ['nirup-main']],
+        ['nirup-single-event-offer',    '/assets/css/single-event-offer.css',    ['nirup-main']],
+        ['nirup-footer',                '/assets/css/footer.css',                ['nirup-main']],
+        ['nirup-dining',                '/assets/css/dining.css',                ['nirup-main']],
+        ['nirup-single-restaurant',     '/assets/css/single-restaurant.css',     ['nirup-main']],
+        ['nirup-legal-pages',           '/assets/css/legal-pages.css',           ['nirup-main']],
+        ['nirup-contact',               '/assets/css/contact.css',               []],
+        ['nirup-marina',                '/assets/css/marina.css',                ['nirup-main']],
+    ];
+
+    foreach ($css_files as [$handle, $rel, $deps]) {
+        $path = $dir_path . $rel;
+        wp_enqueue_style(
+            $handle,
+            $dir_uri . $rel,
+            $deps,
+            file_exists($path) ? filemtime($path) : null
+        );
+    }
+
+    // === GOOGLE FONTS === (leave version null so Google controls cache)
+    wp_enqueue_style(
+        'google-fonts',
+        'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Albert+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap',
+        [],
+        null
+    );
+
+    // === JAVASCRIPT FILES WITH EXPLICIT JQUERY DEPENDENCY ===
+    $js_files = [
+        // handle, rel path, deps
+        ['nirup-utils',                 '/assets/js/utils.js',                    ['jquery']],
+        ['nirup-navigation',            '/assets/js/navigation.js',              ['jquery','nirup-utils']],
+        ['nirup-mobile-menu',           '/assets/js/mobile-menu.js',             ['jquery','nirup-utils']],
+        ['nirup-search',                '/assets/js/search.js',                  ['jquery','nirup-utils']],
+        ['nirup-language',              '/assets/js/language-switcher.js',       ['jquery','nirup-utils']],
+        ['nirup-analytics',             '/assets/js/analytics.js',               ['jquery','nirup-utils']],
+        ['nirup-plugins',               '/assets/js/plugins.js',                 ['jquery','nirup-utils']],
+        ['nirup-carousel',              '/assets/js/carousel.js',                ['jquery']],
+        ['nirup-main',                  '/assets/js/main.js',                    ['jquery','nirup-utils','nirup-navigation','nirup-mobile-menu','nirup-search','nirup-language','nirup-analytics','nirup-plugins','nirup-carousel']],
+        ['nirup-map-section',           '/assets/js/map-section.js',             ['jquery']],
+        ['nirup-events-offers-carousel','/assets/js/events-offers-carousel.js',  ['jquery','nirup-utils']],
+        ['nirup-footer',                '/assets/js/footer.js',                  ['jquery']],
+        ['single-event-offer-gallery',  '/assets/js/single-event-offer-gallery.js',['jquery']],
+        ['nirup-contact',               '/assets/js/contact.js',                 ['jquery']],
+    ];
+
+    foreach ($js_files as [$handle, $rel, $deps]) {
+        $path = $dir_path . $rel;
+        wp_enqueue_script(
+            $handle,
+            $dir_uri . $rel,
+            $deps,
+            file_exists($path) ? filemtime($path) : null,
+            true
+        );
+    }
+
     if (current_user_can('manage_options')) {
         echo '<script>console.log("📝 nirup-utils enqueued");</script>';
-    }
-    
-    // 2. Navigation and header behavior
-    wp_enqueue_script(
-        'nirup-navigation', 
-        get_template_directory_uri() . '/assets/js/navigation.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 3. Mobile menu functionality
-    wp_enqueue_script(
-        'nirup-mobile-menu', 
-        get_template_directory_uri() . '/assets/js/mobile-menu.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 4. Search functionality
-    wp_enqueue_script(
-        'nirup-search', 
-        get_template_directory_uri() . '/assets/js/search.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 5. Language switcher
-    wp_enqueue_script(
-        'nirup-language', 
-        get_template_directory_uri() . '/assets/js/language-switcher.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 6. Analytics and tracking
-    wp_enqueue_script(
-        'nirup-analytics', 
-        get_template_directory_uri() . '/assets/js/analytics.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 7. Plugin integrations
-    wp_enqueue_script(
-        'nirup-plugins', 
-        get_template_directory_uri() . '/assets/js/plugins.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // NEW: 8. Experiences carousel
-    wp_enqueue_script(
-        'nirup-carousel', 
-        get_template_directory_uri() . '/assets/js/carousel.js', 
-        array('jquery'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 9. Main initialization (loads last)
-    wp_enqueue_script(
-        'nirup-main', 
-        get_template_directory_uri() . '/assets/js/main.js', 
-        array(
-            'jquery',
-            'nirup-utils',
-            'nirup-navigation', 
-            'nirup-mobile-menu',
-            'nirup-search',
-            'nirup-language',
-            'nirup-analytics',
-            'nirup-plugins',
-            'nirup-carousel'
-        ), 
-        '1.0.2', 
-        true
-    );
-
-    wp_enqueue_script(
-        'nirup-map-section', 
-        get_template_directory_uri() . '/assets/js/map-section.js', 
-        array('jquery'), 
-        '1.0.2', 
-        true
-    );
-
-    wp_enqueue_script(
-        'nirup-events-offers-carousel', 
-        get_template_directory_uri() . '/assets/js/events-offers-carousel.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-
-    wp_enqueue_script(
-        'nirup-footer',
-        get_template_directory_uri() . '/assets/js/footer.js',
-        array('jquery'),
-        '1.0.3',
-        true
-    );
-
-    wp_enqueue_script(
-        'single-event-offer-gallery', 
-        get_template_directory_uri() . '/assets/js/single-event-offer-gallery.js', 
-        array('jquery'), 
-        '1.0.2', 
-        true
-    );
-
-    // Enqueue contact JS
-    wp_enqueue_script(
-        'nirup-contact',
-        get_template_directory_uri() . '/assets/js/contact.js',
-        array('jquery'),
-        '1.0.3',
-        true
-    );
-
-    
-    if (current_user_can('manage_options')) {
         echo '<script>console.log("✅ All JavaScript files enqueued!");</script>';
     }
-    
+
     // === LOCALIZATION ===
     wp_localize_script('nirup-main', 'nirup_ajax', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('nirup_nonce')
     ));
-    
+
     wp_localize_script('nirup-utils', 'nirup_theme', array(
-        'template_url' => get_template_directory_uri(),
+        'template_url' => $dir_uri, // child-safe template URL
         'home_url' => home_url('/'),
         'is_mobile' => wp_is_mobile(),
         'debug' => defined('WP_DEBUG') && WP_DEBUG
     ));
-    
+
     // NEW: Localize carousel script
     wp_localize_script('nirup-carousel', 'nirup_carousel', array(
         'ajax_url' => admin_url('admin-ajax.php'),
@@ -268,34 +188,34 @@ function nirup_enqueue_assets() {
             'action'   => 'newsletter_subscribe'
         ),
         'brevo' => array(
-            'list_id'  => (int) $brevo_list_id, // not required on the client, but handy for debugging
+            'list_id'  => (int) $brevo_list_id,
         ),
     ));
 
     wp_localize_script('nirup-contact', 'nirup_contact_ajax', [
-    'ajax_url' => admin_url('admin-ajax.php'),
-    'nonce'    => wp_create_nonce('contact_form_nonce'),
-    'recaptcha'=> [
-        'site_key' => nirup_get_secret('RECAPTCHA_SITE_KEY', 'nirup_recaptcha_site_key', ''),
-        'action'   => 'contact_submit'
-    ],
+        'ajax_url'  => admin_url('admin-ajax.php'),
+        'nonce'     => wp_create_nonce('contact_form_nonce'),
+        'recaptcha' => [
+            'site_key' => nirup_get_secret('RECAPTCHA_SITE_KEY', 'nirup_recaptcha_site_key', ''),
+            'action'   => 'contact_submit'
+        ],
     ]);
 
     if (!empty($site_key) && !defined('NIRUP_DISABLE_CAPTCHA')) {
-    wp_enqueue_script(
-        'recaptcha-v3',
-        'https://www.google.com/recaptcha/api.js?render=' . rawurlencode($site_key),
-        [], null, true
-    );
+        wp_enqueue_script(
+            'recaptcha-v3',
+            'https://www.google.com/recaptcha/api.js?render=' . rawurlencode($site_key),
+            [],
+            null,
+            true
+        );
     }
-
-
-    
 }
 
 // Make sure the hook is properly registered
 remove_action('wp_enqueue_scripts', 'nirup_enqueue_assets'); // Remove any existing
-add_action('wp_enqueue_scripts', 'nirup_enqueue_assets'); // Add fresh
+add_action('wp_enqueue_scripts', 'nirup_enqueue_assets', 20); // Run a bit later so it wins over plugins
+
 
 /**
  * Widget Areas
