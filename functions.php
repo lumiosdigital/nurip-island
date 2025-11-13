@@ -93,6 +93,7 @@ function nirup_enqueue_assets() {
         ['nirup-legal-pages',           '/assets/css/legal-pages.css',           ['nirup-main']],
         ['nirup-contact',               '/assets/css/contact.css',               []],
         ['nirup-marina',                '/assets/css/marina.css',                ['nirup-main']],
+        ['nirup-media-coverage',        '/assets/css/media-coverage.css',        ['nirup-main']],
     ];
 
     foreach ($css_files as [$handle, $rel, $deps]) {
@@ -2546,6 +2547,13 @@ function nirup_get_breadcrumbs() {
     if (is_page_template('page-private-events.php')) {
         $breadcrumbs[] = array(
             'title' => 'Private Events',
+            'url' => ''
+        );
+    }
+
+        if (is_page_template('media-coverage.php')) {
+        $breadcrumbs[] = array(
+            'title' => 'Media Coverage',
             'url' => ''
         );
     }
@@ -12257,21 +12265,6 @@ function nirup_enqueue_experience_booking_assets() {
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_experience_booking_assets');
 
-// function nirup_enqueue_woocommerce_booking_styles() {
-//     // Load on checkout, cart, and booking pages
-//     if (is_checkout() || is_cart() || is_woocommerce() || 
-//         (function_exists('is_wpbs_page') && is_wpbs_page())) {
-//         wp_enqueue_style(
-//             'nirup-woocommerce-booking',
-//             get_template_directory_uri() . '/assets/css/woocommerce-booking.css',
-//             array(),
-//             '1.0.0'
-//         );
-//     }
-// }
-// add_action('wp_enqueue_scripts', 'nirup_enqueue_woocommerce_booking_styles');
-
-
 function wpbs_add_custom_currency($currencies)
 {
     $currencies['IDR'] = 'Indonesian rupiah';
@@ -12285,5 +12278,347 @@ function wpbs_add_custom_currency_symbol($currencies)
     return $currencies;
 }
 add_filter('wpbs_currency_symbol', 'wpbs_add_custom_currency_symbol', 10, 1);
+
+/**
+ * Register Media Coverage Custom Post Type
+ */
+function nirup_register_media_coverage() {
+    $labels = array(
+        'name'                  => 'Media Coverage',
+        'singular_name'         => 'Media Article',
+        'menu_name'             => 'Media Coverage',
+        'add_new'               => 'Add New Article',
+        'add_new_item'          => 'Add New Media Article',
+        'edit_item'             => 'Edit Media Article',
+        'new_item'              => 'New Media Article',
+        'view_item'             => 'View Media Article',
+        'search_items'          => 'Search Media Articles',
+        'not_found'             => 'No media articles found',
+        'not_found_in_trash'    => 'No media articles found in trash',
+    );
+
+    $args = array(
+        'labels'                => $labels,
+        'public'                => true,
+        'has_archive'           => false,
+        'publicly_queryable'    => false,
+        'show_ui'               => true,
+        'show_in_menu'          => true,
+        'menu_position'         => 27,
+        'menu_icon'             => 'dashicons-media-document',
+        'supports'              => array('title'),
+        'hierarchical'          => false,
+        'rewrite'               => false,
+        'show_in_rest'          => false,
+    );
+
+    register_post_type('media_coverage', $args);
+}
+add_action('init', 'nirup_register_media_coverage');
+
+/**
+ * Add Media Coverage Meta Boxes
+ */
+function nirup_add_media_coverage_meta_boxes() {
+    add_meta_box(
+        'media_article_details',
+        '📰 Media Article Details',
+        'nirup_media_article_details_callback',
+        'media_coverage',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_media_coverage_meta_boxes');
+
+/**
+ * Media Coverage Meta Box Callback
+ */
+function nirup_media_article_details_callback($post) {
+    wp_nonce_field('nirup_media_article_meta_box', 'nirup_media_article_meta_box_nonce');
+
+    $source = get_post_meta($post->ID, '_media_article_source', true);
+    $date = get_post_meta($post->ID, '_media_article_date', true);
+    $quote = get_post_meta($post->ID, '_media_article_quote', true);
+    $link = get_post_meta($post->ID, '_media_article_link', true);
+    ?>
+
+    <style>
+        .media-article-meta-box .form-group { margin-bottom: 20px; }
+        .media-article-meta-box label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .media-article-meta-box input[type="text"],
+        .media-article-meta-box input[type="url"],
+        .media-article-meta-box textarea { width: 100%; padding: 8px; }
+        .media-article-meta-box textarea { min-height: 100px; }
+        .media-article-meta-box .description { color: #666; font-style: italic; margin-top: 5px; font-size: 13px; }
+        .media-article-meta-box .note-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <div class="media-article-meta-box">
+        <div class="note-box">
+            <strong>📌 Note:</strong> The article title is the post title above. Enter additional details below.
+        </div>
+
+        <div class="form-group">
+            <label for="media_article_source">Publication / Author</label>
+            <input type="text" 
+                   id="media_article_source" 
+                   name="media_article_source" 
+                   value="<?php echo esc_attr($source); ?>" 
+                   placeholder="e.g., Condé Nast Traveller - July 2025">
+            <p class="description">Enter the publication name and date (this will be displayed on the page)</p>
+        </div>
+
+        <div class="form-group">
+            <label for="media_article_date">Date (for sorting)</label>
+            <input type="text" 
+                   id="media_article_date" 
+                   name="media_article_date" 
+                   value="<?php echo esc_attr($date); ?>" 
+                   placeholder="e.g., 2025-07">
+            <p class="description">Format: YYYY-MM (used for sorting articles chronologically)</p>
+        </div>
+
+        <div class="form-group">
+            <label for="media_article_quote">Article Quote</label>
+            <textarea id="media_article_quote" 
+                      name="media_article_quote" 
+                      rows="4"><?php echo esc_textarea($quote); ?></textarea>
+            <p class="description">A memorable quote or excerpt from the article</p>
+        </div>
+
+        <div class="form-group">
+            <label for="media_article_link">Article URL</label>
+            <input type="url" 
+                   id="media_article_link" 
+                   name="media_article_link" 
+                   value="<?php echo esc_url($link); ?>" 
+                   placeholder="https://example.com/article">
+            <p class="description">The full URL to the article on the external website</p>
+        </div>
+    </div>
+
+    <?php
+}
+
+/**
+ * Save Media Coverage Meta Data
+ */
+function nirup_save_media_coverage_meta($post_id) {
+    // Check if our nonce is set and verify it
+    if (!isset($_POST['nirup_media_article_meta_box_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_media_article_meta_box_nonce'], 'nirup_media_article_meta_box')) {
+        return;
+    }
+
+    // Check if this is an autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    // Check user permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save the data
+    if (isset($_POST['media_article_source'])) {
+        update_post_meta($post_id, '_media_article_source', sanitize_text_field($_POST['media_article_source']));
+    }
+
+    if (isset($_POST['media_article_date'])) {
+        update_post_meta($post_id, '_media_article_date', sanitize_text_field($_POST['media_article_date']));
+    }
+
+    if (isset($_POST['media_article_quote'])) {
+        update_post_meta($post_id, '_media_article_quote', sanitize_textarea_field($_POST['media_article_quote']));
+    }
+
+    if (isset($_POST['media_article_link'])) {
+        update_post_meta($post_id, '_media_article_link', esc_url_raw($_POST['media_article_link']));
+    }
+}
+add_action('save_post', 'nirup_save_media_coverage_meta');
+
+/**
+ * Add Admin Columns for Media Coverage
+ */
+function nirup_media_coverage_admin_columns($columns) {
+    $new_columns = array();
+    $new_columns['cb'] = $columns['cb'];
+    $new_columns['title'] = $columns['title'];
+    $new_columns['source'] = __('Publication', 'nirup-island');
+    $new_columns['article_date'] = __('Date', 'nirup-island');
+    $new_columns['link'] = __('Article Link', 'nirup-island');
+    $new_columns['date'] = $columns['date'];
+    
+    return $new_columns;
+}
+add_filter('manage_media_coverage_posts_columns', 'nirup_media_coverage_admin_columns');
+
+/**
+ * Populate Admin Columns for Media Coverage
+ */
+function nirup_media_coverage_admin_column_content($column, $post_id) {
+    switch ($column) {
+        case 'source':
+            $source = get_post_meta($post_id, '_media_article_source', true);
+            echo $source ? esc_html($source) : '—';
+            break;
+        case 'article_date':
+            $date = get_post_meta($post_id, '_media_article_date', true);
+            echo $date ? esc_html($date) : '—';
+            break;
+        case 'link':
+            $link = get_post_meta($post_id, '_media_article_link', true);
+            if ($link) {
+                echo '<a href="' . esc_url($link) . '" target="_blank" rel="noopener">View Article ↗</a>';
+            } else {
+                echo '—';
+            }
+            break;
+    }
+}
+add_action('manage_media_coverage_posts_custom_column', 'nirup_media_coverage_admin_column_content', 10, 2);
+/**
+ * AJAX Handler for Load More Media Articles
+ */
+function nirup_load_more_media_articles() {
+    // Verify nonce
+    check_ajax_referer('media_coverage_nonce', 'nonce');
+    
+    $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+    
+    // Query for articles
+    $articles_query = new WP_Query(array(
+        'post_type' => 'media_coverage',
+        'posts_per_page' => 5,
+        'orderby' => 'meta_value',
+        'meta_key' => '_media_article_date',
+        'order' => 'DESC',
+        'post_status' => 'publish',
+        'paged' => $page
+    ));
+    
+    if ($articles_query->have_posts()) {
+        ob_start();
+        
+        while ($articles_query->have_posts()) {
+            $articles_query->the_post();
+            $article_id = get_the_ID();
+            $source = get_post_meta($article_id, '_media_article_source', true);
+            $quote = get_post_meta($article_id, '_media_article_quote', true);
+            $link = get_post_meta($article_id, '_media_article_link', true);
+            ?>
+            
+            <div class="media-article-item" data-page="<?php echo esc_attr($page); ?>">
+                <div class="article-header">
+                    <h2 class="article-title"><?php echo esc_html(get_the_title()); ?></h2>
+                    
+                    <?php if ($source) : ?>
+                        <p class="article-source"><?php echo esc_html($source); ?></p>
+                    <?php endif; ?>
+                    
+                    <div class="article-divider"></div>
+                </div>
+                
+                <div class="article-content">
+                    <?php if ($quote) : ?>
+                        <blockquote class="article-quote"><?php echo esc_html($quote); ?></blockquote>
+                    <?php endif; ?>
+                    
+                    <?php if ($link) : ?>
+                        <a href="<?php echo esc_url($link); ?>" 
+                           class="article-link-btn" 
+                           target="_blank" 
+                           rel="noopener noreferrer">
+                            Read Full Article
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <?php
+        }
+        
+        $html = ob_get_clean();
+        wp_reset_postdata();
+        
+        wp_send_json_success(array(
+            'html' => $html,
+            'page' => $page
+        ));
+    } else {
+        wp_send_json_error(array(
+            'message' => 'No more articles found'
+        ));
+    }
+    
+    wp_die();
+}
+add_action('wp_ajax_load_more_media_articles', 'nirup_load_more_media_articles');
+add_action('wp_ajax_nopriv_load_more_media_articles', 'nirup_load_more_media_articles');
+
+/**
+ * Add Media Coverage Page Customizer Options
+ * Add this code to your functions.php file
+ */
+function nirup_media_coverage_customizer($wp_customize) {
+    // Media Coverage Section
+    $wp_customize->add_section('nirup_media_coverage_page', array(
+        'title' => __('Media Coverage Page', 'nirup-island'),
+        'priority' => 45,
+        'description' => __('Customize the Media Coverage page hero section', 'nirup-island'),
+    ));
+
+    // Page Title
+    $wp_customize->add_setting('nirup_media_coverage_title', array(
+        'default' => __('Media Coverage', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+
+    $wp_customize->add_control('nirup_media_coverage_title', array(
+        'label' => __('Page Title', 'nirup-island'),
+        'section' => 'nirup_media_coverage_page',
+        'type' => 'text',
+        'description' => __('Main heading for the Media Coverage page', 'nirup-island'),
+    ));
+
+    // Page Subtitle
+    $wp_customize->add_setting('nirup_media_coverage_subtitle', array(
+        'default' => __('Stay up to date with how Nirup Island is being recognized', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+
+    $wp_customize->add_control('nirup_media_coverage_subtitle', array(
+        'label' => __('Subtitle Line', 'nirup-island'),
+        'section' => 'nirup_media_coverage_page',
+        'type' => 'text',
+        'description' => __('Subtitle', 'nirup-island'),
+    ));
+
+
+    // Show/Hide Subtitle
+    $wp_customize->add_setting('nirup_media_coverage_show_subtitle', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+        'transport' => 'refresh',
+    ));
+
+    $wp_customize->add_control('nirup_media_coverage_show_subtitle', array(
+        'label' => __('Show Subtitle', 'nirup-island'),
+        'section' => 'nirup_media_coverage_page',
+        'type' => 'checkbox',
+        'description' => __('Toggle to show/hide the subtitle text', 'nirup-island'),
+    ));
+}
+add_action('customize_register', 'nirup_media_coverage_customizer');
 
 ?>
