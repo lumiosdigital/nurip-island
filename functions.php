@@ -8424,6 +8424,33 @@ function nirup_marina_meta_box_callback($post) {
         </div>
     </div>
 
+    <!-- Marina Gallery Section -->
+    <div class="marina-meta-section">
+        <h3>📸 Marina Gallery</h3>
+        <p style="color: #666; margin-bottom: 15px;">Upload images for the marina gallery. The first image will be used as the main image, and the next 4 will appear in the grid.</p>
+
+        <div class="marina-gallery-images" style="margin-bottom: 15px; min-height: 50px; border: 2px dashed #ddd; padding: 10px; background: #fafafa;">
+            <?php
+            if ($gallery_images && is_array($gallery_images)) {
+                foreach ($gallery_images as $index => $image_id) {
+                    $image_url = wp_get_attachment_image_src($image_id, 'thumbnail');
+                    if ($image_url) {
+                        echo '<div class="marina-gallery-item" data-id="' . $image_id . '" style="position: relative; display: inline-block; margin: 5px; cursor: move;">';
+                        echo '<img src="' . $image_url[0] . '" style="max-width: 100px; height: 80px; object-fit: cover; border: 2px solid #ddd;" />';
+                        echo '<button type="button" class="remove-marina-gallery-image button" style="position: absolute; top: -5px; right: -5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1; padding: 0;">×</button>';
+                        echo '<input type="hidden" name="marina_gallery[' . $index . ']" value="' . $image_id . '">';
+                        echo '</div>';
+                    }
+                }
+            }
+            ?>
+        </div>
+
+        <button type="button" id="add_marina_gallery_image" class="button button-primary">Add Images to Gallery</button>
+        <button type="button" id="clear_marina_gallery" class="button" style="margin-left: 10px;">Clear All Images</button>
+        <p class="description" style="margin-top: 10px;">You can drag and drop images to reorder them. The first image is the main gallery image.</p>
+    </div>
+
     <!-- NEW: PDF Downloads Section -->
     <div class="marina-meta-section">
         <h3>📄 Downloadable PDFs</h3>
@@ -8570,6 +8597,81 @@ function nirup_marina_meta_box_callback($post) {
             $('#' + fieldName + '_display').remove();
             $('.upload-pdf-btn[data-field="' + fieldName + '"]').text('Upload PDF');
         });
+
+        // ===== MARINA GALLERY UPLOADER =====
+        var marinaGalleryUploader;
+
+        $('#add_marina_gallery_image').on('click', function(e) {
+            e.preventDefault();
+
+            if (marinaGalleryUploader) {
+                marinaGalleryUploader.open();
+                return;
+            }
+
+            marinaGalleryUploader = wp.media({
+                title: 'Select Images for Marina Gallery',
+                button: {
+                    text: 'Add to Gallery'
+                },
+                multiple: true,
+                library: {
+                    type: 'image'
+                }
+            });
+
+            marinaGalleryUploader.on('select', function() {
+                var attachments = marinaGalleryUploader.state().get('selection').toJSON();
+                var currentCount = $('.marina-gallery-item').length;
+
+                // Add selected images
+                attachments.forEach(function(attachment, index) {
+                    var imageIndex = currentCount + index;
+                    var imageHtml = '<div class="marina-gallery-item" data-id="' + attachment.id + '" style="position: relative; display: inline-block; margin: 5px; cursor: move;">';
+                    imageHtml += '<img src="' + (attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url) + '" style="max-width: 100px; height: 80px; object-fit: cover; border: 2px solid #ddd;" />';
+                    imageHtml += '<button type="button" class="remove-marina-gallery-image button" style="position: absolute; top: -5px; right: -5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1; padding: 0;">×</button>';
+                    imageHtml += '<input type="hidden" name="marina_gallery[' + imageIndex + ']" value="' + attachment.id + '">';
+                    imageHtml += '</div>';
+
+                    $('.marina-gallery-images').append(imageHtml);
+                });
+            });
+
+            marinaGalleryUploader.open();
+        });
+
+        // Remove marina gallery image
+        $(document).on('click', '.remove-marina-gallery-image', function(e) {
+            e.preventDefault();
+            $(this).closest('.marina-gallery-item').remove();
+
+            // Reindex the remaining images
+            $('.marina-gallery-item').each(function(index) {
+                $(this).find('input[type="hidden"]').attr('name', 'marina_gallery[' + index + ']');
+            });
+        });
+
+        // Clear all marina gallery images
+        $('#clear_marina_gallery').on('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to clear all gallery images?')) {
+                $('.marina-gallery-images').empty();
+            }
+        });
+
+        // Make marina gallery sortable
+        if ($('.marina-gallery-images').length) {
+            $('.marina-gallery-images').sortable({
+                items: '.marina-gallery-item',
+                cursor: 'move',
+                update: function() {
+                    // Reindex after sorting
+                    $('.marina-gallery-item').each(function(index) {
+                        $(this).find('input[type="hidden"]').attr('name', 'marina_gallery[' + index + ']');
+                    });
+                }
+            });
+        }
     });
     </script>
     <?php
