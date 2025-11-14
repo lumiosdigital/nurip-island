@@ -4486,7 +4486,34 @@ function nirup_delete_custom_icon($filename) {
     return false;
 }
 
-// Updated pin icon function - only handles custom icons
+
+function nirup_extract_svg_viewbox($svg_string) {
+    // Try to find viewBox attribute
+    if (preg_match('/viewBox=["\']([^"\']+)["\']/', $svg_string, $matches)) {
+        return $matches[1];
+    }
+    
+    // If no viewBox, try to construct one from width/height
+    $width = 28;  
+    $height = 28; 
+    
+    if (preg_match('/width=["\'](\d+(?:\.\d+)?)[^"\']*["\']/', $svg_string, $w_matches)) {
+        $width = floatval($w_matches[1]);
+    }
+    if (preg_match('/height=["\'](\d+(?:\.\d+)?)[^"\']*["\']/', $svg_string, $h_matches)) {
+        $height = floatval($h_matches[1]);
+    }
+    
+    return "0 0 $width $height";
+}
+
+function nirup_extract_svg_content($svg_string) {
+    $svg_string = preg_replace('/<svg[^>]*>/', '', $svg_string);
+    $svg_string = preg_replace('/<\/svg>/', '', $svg_string);
+    return trim($svg_string);
+}
+
+
 function nirup_get_pin_icon_svg($pin_type, $custom_icon = '') {
     if ($pin_type === 'accommodation') {
         $base_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="94" height="124" viewBox="0 0 94 124" fill="none">
@@ -4508,70 +4535,77 @@ function nirup_get_pin_icon_svg($pin_type, $custom_icon = '') {
 <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1351"/>
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1351" result="shape"/>
 </filter>
-<filter id="filter1_d_481_1351" x="23" y="76.0005" width="48" height="48" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter1_d_481_1351" x="39" y="89.0005" width="16" height="16" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="5"/>
-<feGaussianBlur stdDeviation="10"/>
+<feOffset dy="2"/>
+<feGaussianBlur stdDeviation="2"/>
 <feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
 <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1351"/>
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1351" result="shape"/>
 </filter>
 <linearGradient id="paint0_linear_481_1351" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
-<stop stop-color="#D8AE72"/>
-<stop offset="1" stop-color="#A48456"/>
+<stop stop-color="#E6C896"/>
+<stop offset="1" stop-color="#A07543"/>
 </linearGradient>
 </defs>';
     } else {
-        $base_svg = '<g filter="url(#filter0_d_481_1382)">
-                    <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6847C46.6555 87.1051 47.3445 87.1051 47.7763 86.6847C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#1E3673"/>
+        // Public pin type
+        $base_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="94" height="124" viewBox="0 0 94 124" fill="none">
+        <g filter="url(#filter0_d_481_1382)">
+                    <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6847C46.6555 87.1051 47.3445 87.1051 47.7763 86.6847C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#153C88"/>
                     <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79.3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79.3491 33.3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_481_1382)" stroke-width="1.5"/>
                     </g>
                     <g filter="url(#filter1_d_481_1382)">
                     <circle cx="47" cy="95.0005" r="4" fill="white"/>
                     </g>';
         $defs = '<defs>
-                <filter id="filter0_d_481_1382" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                <feOffset dy="5"/>
-                <feGaussianBlur stdDeviation="10"/>
-                <feComposite in2="hardAlpha" operator="out"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
-                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1382"/>
-                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1382" result="shape"/>
-                </filter>
-                <filter id="filter1_d_481_1382" x="23" y="76.0005" width="48" height="48" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                <feOffset dy="5"/>
-                <feGaussianBlur stdDeviation="10"/>
-                <feComposite in2="hardAlpha" operator="out"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
-                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1382"/>
-                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1382" result="shape"/>
-                </filter>
-                <linearGradient id="paint0_linear_481_1382" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#6E9CE0"/>
-                <stop offset="1" stop-color="#1E3673"/>
-                </linearGradient>
-                </defs>';
+<filter id="filter0_d_481_1382" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="5"/>
+<feGaussianBlur stdDeviation="10"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1382"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1382" result="shape"/>
+</filter>
+<filter id="filter1_d_481_1382" x="39" y="89.0005" width="16" height="16" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1382"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1382" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_481_1382" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
+<stop stop-color="#6E9CE0"/>
+<stop offset="1" stop-color="#1E3673"/>
+</linearGradient>
+</defs>';
     }
     
-    // Add custom icon overlay if provided
+    // Add custom icon overlay - NO BACKGROUND CIRCLE
     $icon_overlay = '';
     if (!empty($custom_icon) && strpos($custom_icon, 'custom:') === 0) {
         $filename = str_replace('custom:', '', $custom_icon);
         $custom_icons = nirup_get_custom_icons();
         if (isset($custom_icons[$filename])) {
             $icon_svg = $custom_icons[$filename]['svg'];
-            // Position icon in the upper part of the pin, scale it appropriately
-            // No background circle - just the icon itself in white for contrast
-            $icon_overlay = '<g transform="translate(40, 43)">
-                <g transform="translate(-10, -10) scale(1)" fill="white" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));">
-                    ' . $icon_svg . '
-                </g>
+            
+            // Extract the viewBox and content from the uploaded SVG
+            $viewBox = nirup_extract_svg_viewbox($icon_svg);
+            $icon_content = nirup_extract_svg_content($icon_svg);
+            
+            // STANDARDIZED 28x28 ICON CONTAINER - NO BACKGROUND
+            $icon_overlay = '
+            <g transform="translate(33, 28)">
+                <svg x="0" y="0" width="28" height="28" viewBox="' . esc_attr($viewBox) . '" preserveAspectRatio="xMidYMid meet">
+                    ' . $icon_content . '
+                </svg>
             </g>';
         }
     }
@@ -4580,7 +4614,7 @@ function nirup_get_pin_icon_svg($pin_type, $custom_icon = '') {
         ' . $base_svg . '
         ' . $icon_overlay . '
         ' . $defs . '
-    </svg>';
+        </svg>';
 }
 
 // AJAX handler for icon management
