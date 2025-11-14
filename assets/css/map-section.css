@@ -120,8 +120,8 @@
 }
 
 .pin-icon {
-    width: 64px;
-    height: 76px;
+    width: 86px;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -466,7 +466,7 @@
 }
 
 /* Arrow */
-.tooltip-arrow {
+/* .tooltip-arrow {
     position: absolute;
     width: 8px;
     height: 8px;
@@ -476,7 +476,7 @@
     bottom: -4px;
     left: 20px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
+} */
 
 /* When pin is active, hide it */
 .map-pin.active-pin {
