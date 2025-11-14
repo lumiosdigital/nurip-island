@@ -3087,7 +3087,7 @@ function nirup_map_pins_admin_page() {
                                     <div class="modal-icon-grid">
                                         <div class="modal-icon-option active" data-icon="">
                                             <div class="icon-box">
-                                                <span style="font-size: 10px; color: #999;"><?php _e('None', 'nirup-island'); ?></span>
+                                                <span style="font-size: 10px; color: black;"><?php _e('None', 'nirup-island'); ?></span>
                                             </div>
                                         </div>
                                         <?php foreach ($custom_icons as $filename => $icon): ?>
@@ -3413,7 +3413,7 @@ function nirup_map_pins_admin_page() {
             font-size: 11px;
             text-align: center;
             font-weight: 500;
-            color: #333;
+            color: black;
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -3726,18 +3726,18 @@ function nirup_map_pins_admin_page() {
             border: 2px solid transparent;
             border-radius: 6px;
             cursor: pointer;
-            background: white;
+            background: #979797ff;
             transition: all 0.2s;
         }
 
         .modal-icon-option:hover {
             border-color: #0073aa;
-            background: #f0f8ff;
+            background: #97979767;
         }
 
         .modal-icon-option.active {
             border-color: #0073aa;
-            background: #e3f2fd;
+            background: #97979767;
             box-shadow: 0 2px 4px rgba(0,115,170,0.2);
         }
 
@@ -3758,7 +3758,7 @@ function nirup_map_pins_admin_page() {
         .modal-icon-option .icon-label {
             font-size: 10px;
             text-align: center;
-            color: #666;
+            color: black;
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -4581,15 +4581,6 @@ function nirup_enqueue_admin_assets() {
 }
 add_action('admin_enqueue_scripts', 'nirup_enqueue_admin_assets');
 
-/**
- * CUSTOM ICON LIBRARY SYSTEM
- * Replace the icon-related functions in your functions.php with these
- */
-
-// ===========================
-// UPDATED ICON SYSTEM - UPLOAD-ONLY LIBRARY
-// ===========================
-
 // Remove predefined icons - only use uploaded ones
 function nirup_get_predefined_icons() {
     return array(); // Empty - no predefined icons
@@ -4863,17 +4854,6 @@ function nirup_manage_icon_ajax() {
 }
 add_action('wp_ajax_nirup_manage_icon_ajax', 'nirup_manage_icon_ajax');
 
-// Add icon library management to admin page
-function nirup_add_icon_library_menu() {
-    add_theme_page(
-        __('Icon Library', 'nirup-island'),
-        __('Icon Library', 'nirup-island'),
-        'manage_options',
-        'nirup-icon-library',
-        'nirup_icon_library_admin_page'
-    );
-}
-add_action('admin_menu', 'nirup_add_icon_library_menu');
 
 function nirup_icon_library_admin_page() {
     // Handle icon upload
