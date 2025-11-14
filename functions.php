@@ -2766,14 +2766,10 @@ function nirup_add_map_pins_menu() {
 }
 add_action('admin_menu', 'nirup_add_map_pins_menu');
 
-/**
- * REPLACE the nirup_map_pins_admin_page function in functions.php with this
- */
-/**
- * UPDATED Map Pins Admin Page with Icon Library Integration
- * REPLACE the entire nirup_map_pins_admin_page() function in your functions.php with this
- */
+
 function nirup_map_pins_admin_page() {
+    wp_enqueue_media();
+
     // Handle form submissions
     if (isset($_POST['action']) && wp_verify_nonce($_POST['nirup_pins_nonce'], 'nirup_pins_action')) {
         if ($_POST['action'] === 'add_pin') {
@@ -2939,6 +2935,49 @@ function nirup_map_pins_admin_page() {
                         <div class="form-field">
                             <label for="modal-pin-description"><?php _e('Description', 'nirup-island'); ?></label>
                             <textarea id="modal-pin-description" rows="3" class="widefat"></textarea>
+                        </div>
+
+                        <!-- Image 1 -->
+                        <div class="form-field">
+                            <label for="modal-pin-image-1"><?php _e('Image 1', 'nirup-island'); ?></label>
+                            <div class="image-upload-wrapper">
+                                <input type="hidden" id="modal-pin-image-1" value="">
+                                <button type="button" class="button upload-image-btn" data-target="modal-pin-image-1">
+                                    <?php _e('Select Image', 'nirup-island'); ?>
+                                </button>
+                                <button type="button" class="button remove-image-btn" data-target="modal-pin-image-1" style="display:none;">
+                                    <?php _e('Remove', 'nirup-island'); ?>
+                                </button>
+                                <div class="image-preview" data-for="modal-pin-image-1" style="display:none; margin-top:10px;">
+                                    <img src="" alt="" style="max-width: 150px; height: 100px; object-fit: cover; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <p class="description"><?php _e('First image to display in tooltip', 'nirup-island'); ?></p>
+                        </div>
+
+                        <!-- Image 2 -->
+                        <div class="form-field">
+                            <label for="modal-pin-image-2"><?php _e('Image 2', 'nirup-island'); ?></label>
+                            <div class="image-upload-wrapper">
+                                <input type="hidden" id="modal-pin-image-2" value="">
+                                <button type="button" class="button upload-image-btn" data-target="modal-pin-image-2">
+                                    <?php _e('Select Image', 'nirup-island'); ?>
+                                </button>
+                                <button type="button" class="button remove-image-btn" data-target="modal-pin-image-2" style="display:none;">
+                                    <?php _e('Remove', 'nirup-island'); ?>
+                                </button>
+                                <div class="image-preview" data-for="modal-pin-image-2" style="display:none; margin-top:10px;">
+                                    <img src="" alt="" style="max-width: 150px; height: 100px; object-fit: cover; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <p class="description"><?php _e('Second image to display in tooltip', 'nirup-island'); ?></p>
+                        </div>
+
+                        <!-- Hours Field -->
+                        <div class="form-field">
+                            <label for="modal-pin-hours"><?php _e('Hours', 'nirup-island'); ?></label>
+                            <input type="text" id="modal-pin-hours" class="widefat" placeholder="10:00 AM – 12:00 AM">
+                            <p class="description"><?php _e('Operating hours (optional), e.g., "10:00 AM – 12:00 AM"', 'nirup-island'); ?></p>
                         </div>
 
                         <div class="form-field">
@@ -3550,11 +3589,65 @@ function nirup_map_pins_admin_page() {
     
     <script>
         jQuery(document).ready(function($) {
+            // ===================================
+            // GLOBAL VARIABLES - MUST BE FIRST
+            // ===================================
+            var pendingPinData = null;
+            var selectedModalIcon = '';
+            
+            // ===================================
+            // IMAGE UPLOAD FUNCTIONALITY
+            // ===================================
+            var imageUploader;
+            var currentImageTarget = null;
+
+            // Handle upload button click
+            $(document).on('click', '.upload-image-btn', function(e) {
+                e.preventDefault();
+                currentImageTarget = $(this).data('target');
+                
+                if (imageUploader) {
+                    imageUploader.open();
+                    return;
+                }
+                
+                imageUploader = wp.media({
+                    title: 'Select Image',
+                    button: { text: 'Use this image' },
+                    multiple: false,
+                    library: { type: 'image' }
+                });
+                
+                imageUploader.on('select', function() {
+                    var attachment = imageUploader.state().get('selection').first().toJSON();
+                    $('#' + currentImageTarget).val(attachment.id);
+                    var $preview = $('.image-preview[data-for="' + currentImageTarget + '"]');
+                    $preview.find('img').attr('src', attachment.url);
+                    $preview.show();
+                    $('.remove-image-btn[data-target="' + currentImageTarget + '"]').show();
+                    console.log('Image selected, ID:', attachment.id);
+                });
+                
+                imageUploader.open();
+            });
+
+            // Handle remove button click
+            $(document).on('click', '.remove-image-btn', function(e) {
+                e.preventDefault();
+                var target = $(this).data('target');
+                $('#' + target).val('');
+                $('.image-preview[data-for="' + target + '"]').hide().find('img').attr('src', '');
+                $(this).hide();
+                console.log('Image removed from', target);
+            });
+            
             console.log('Map Pins Admin JS Loaded');
 
             var currentEditPinId = null;
             
-            // Icon selection functionality
+            // ===================================
+            // ICON SELECTION FUNCTIONALITY
+            // ===================================
             $('.icon-option').on('click', function() {
                 $('.icon-option').removeClass('active');
                 $(this).addClass('active');
@@ -3599,7 +3692,9 @@ function nirup_map_pins_admin_page() {
                 }
             }
             
-            // Make existing pins draggable
+            // ===================================
+            // DRAGGABLE PINS
+            // ===================================
             function makePinsDraggable() {
                 $('.admin-pin').draggable({
                     containment: '.map-editor-container',
@@ -3609,12 +3704,10 @@ function nirup_map_pins_admin_page() {
                     drag: function(event, ui) {
                         // Update coordinates display during drag
                         var container = $('.map-editor-image');
-                        var containerOffset = container.offset();
                         var containerWidth = container.width();
                         var containerHeight = container.height();
 
-                        // Calculate percentage position based on the actual position on the image
-                        // ui.position is relative to offsetParent
+                        // Calculate percentage position
                         var x = ((ui.position.left + ($(this).width() / 2)) / containerWidth) * 100;
                         var y = ((ui.position.top + $(this).height()) / containerHeight) * 100;
 
@@ -3627,11 +3720,6 @@ function nirup_map_pins_admin_page() {
                         var container = $('.map-editor-image');
                         var containerWidth = container.width();
                         var containerHeight = container.height();
-
-                        // Account for the transform: translate(-50%, -100%)
-                        // The pin's anchor point is at bottom-center due to the transform
-                        // ui.position gives us the top-left corner position after transform
-                        // We need to add back the offset to get the actual anchor point
                         var pinWidth = $(this).width();
                         var pinHeight = $(this).height();
 
@@ -3645,14 +3733,15 @@ function nirup_map_pins_admin_page() {
                 });
             }
 
-            // Add hover crosshair effect
+            // ===================================
+            // MAP INTERACTION - CROSSHAIR & CLICK
+            // ===================================
             $('.map-editor-container').on('mousemove', function(e) {
                 var container = $(this);
                 var rect = this.getBoundingClientRect();
                 var x = e.clientX - rect.left;
                 var y = e.clientY - rect.top;
 
-                // Update crosshair position
                 updateCrosshair(x, y);
 
                 // Calculate and display percentage coordinates
@@ -3669,9 +3758,6 @@ function nirup_map_pins_admin_page() {
                 console.log('Map clicked');
 
                 var rect = this.getBoundingClientRect();
-
-                // Calculate click position relative to the image
-                // This gives us the exact position where the user clicked
                 var clickX = e.clientX - rect.left;
                 var clickY = e.clientY - rect.top;
 
@@ -3737,43 +3823,48 @@ function nirup_map_pins_admin_page() {
                 }, 600);
             }
             
-            // Click on existing pin to edit
+            // ===================================
+            // PIN EDIT/DELETE
+            // ===================================
             $(document).on('click', '.admin-pin', function(e) {
                 e.stopPropagation();
                 var pinId = $(this).data('pin-id');
                 editPin(pinId);
             });
             
-            // Edit pin from table
             $('.edit-pin-btn').on('click', function() {
                 var pinId = $(this).data('pin-id');
                 editPin(pinId);
             });
             
-            // Delete pin
             $('.delete-pin-btn').on('click', function() {
                 var pinId = $(this).data('pin-id');
                 if (confirm('<?php _e('Are you sure you want to delete this pin?', 'nirup-island'); ?>')) {
                     deletePin(pinId);
                 }
             });
-            
-            // Modal handling
-            var pendingPinData = null;
-            var selectedModalIcon = '';
 
-            // Functions
+            // ===================================
+            // ADD NEW PIN FUNCTION
+            // ===================================
             function addNewPin(x, y, pinType) {
                 console.log('addNewPin called:', x, y, pinType);
 
-                // Store the pin data
+                // Store the pin data - CRITICAL FOR SAVE TO WORK
                 pendingPinData = { x: x, y: y, pinType: pinType };
                 selectedModalIcon = '';
 
-                // Reset and show modal
+                console.log('pendingPinData set to:', pendingPinData);
+
+                // Reset all modal fields
                 $('#modal-pin-title').val('');
                 $('#modal-pin-description').val('');
                 $('#modal-pin-link').val('');
+                $('#modal-pin-image-1').val('');
+                $('#modal-pin-image-2').val('');
+                $('#modal-pin-hours').val('');
+                $('.image-preview').hide().find('img').attr('src', '');
+                $('.remove-image-btn').hide();
                 $('.modal-icon-option').removeClass('active');
                 $('.modal-icon-option[data-icon=""]').addClass('active');
                 updateModalPreview();
@@ -3785,7 +3876,9 @@ function nirup_map_pins_admin_page() {
                 }, 300);
             }
 
-            // Modal icon selection
+            // ===================================
+            // MODAL ICON SELECTION
+            // ===================================
             $(document).on('click', '.modal-icon-option', function() {
                 $('.modal-icon-option').removeClass('active');
                 $(this).addClass('active');
@@ -3793,13 +3886,12 @@ function nirup_map_pins_admin_page() {
                 updateModalPreview();
             });
 
-            // Update modal preview
+            // Update modal preview with selected icon
             function updateModalPreview() {
                 if (!pendingPinData) return;
 
                 var $preview = $('#modal-pin-preview');
 
-                // Generate preview with selected icon if any
                 $.ajax({
                     url: ajaxurl,
                     type: 'POST',
@@ -3820,8 +3912,12 @@ function nirup_map_pins_admin_page() {
                 });
             }
 
-            // Save pin from modal
+            // ===================================
+            // SAVE PIN BUTTON - SENDS ALL DATA
+            // ===================================
             $('#modal-save-pin-btn').on('click', function() {
+                console.log('=== SAVE BUTTON CLICKED ===');
+                
                 var title = $('#modal-pin-title').val().trim();
                 if (!title) {
                     alert('<?php _e('Please enter a pin title', 'nirup-island'); ?>');
@@ -3829,43 +3925,70 @@ function nirup_map_pins_admin_page() {
                 }
 
                 if (!pendingPinData) {
-                    console.error('No pending pin data');
+                    console.error('ERROR: pendingPinData is null!');
+                    alert('Error: No pin location set. Try clicking the map again.');
                     return;
                 }
 
                 var description = $('#modal-pin-description').val().trim();
                 var link = $('#modal-pin-link').val().trim();
+                var image1 = $('#modal-pin-image-1').val() || 0;
+                var image2 = $('#modal-pin-image-2').val() || 0;
+                var hours = ($('#modal-pin-hours').val() || '').trim();
+
+                console.log('Saving pin with data:');
+                console.log('  Title:', title);
+                console.log('  Description:', description);
+                console.log('  Link:', link);
+                console.log('  Image 1:', image1);
+                console.log('  Image 2:', image2);
+                console.log('  Hours:', hours);
+                console.log('  X:', pendingPinData.x);
+                console.log('  Y:', pendingPinData.y);
+                console.log('  Type:', pendingPinData.pinType);
+                console.log('  Icon:', selectedModalIcon);
 
                 $.ajax({
                     url: ajaxurl,
                     type: 'POST',
                     data: {
                         action: 'nirup_add_pin_ajax',
+                        nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>',
                         title: title,
                         description: description,
                         link: link,
                         icon: selectedModalIcon,
+                        image_1: image1,
+                        image_2: image2,
+                        hours: hours,
                         x: pendingPinData.x,
                         y: pendingPinData.y,
-                        pin_type: pendingPinData.pinType,
-                        nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
+                        pin_type: pendingPinData.pinType
                     },
                     success: function(response) {
+                        console.log('Save response:', response);
                         if (response.success) {
+                            console.log('Pin saved successfully!');
                             $('#pin-modal').fadeOut(200);
                             location.reload();
                         } else {
+                            console.error('Save failed:', response.data);
                             alert('Error: ' + response.data);
                         }
                     },
-                    error: function() {
+                    error: function(xhr, status, error) {
+                        console.error('AJAX error:', error);
+                        console.error('Response:', xhr.responseText);
                         alert('<?php _e('An error occurred. Please try again.', 'nirup-island'); ?>');
                     }
                 });
             });
 
-            // Close modal
+            // ===================================
+            // CLOSE MODAL
+            // ===================================
             function closeModal() {
+                console.log('Closing modal');
                 $('#pin-modal').fadeOut(200);
                 pendingPinData = null;
                 selectedModalIcon = '';
@@ -3881,6 +4004,9 @@ function nirup_map_pins_admin_page() {
                 }
             });
             
+            // ===================================
+            // PIN MANAGEMENT FUNCTIONS
+            // ===================================
             function savePinPosition(pinId, x, y) {
                 $.ajax({
                     url: ajaxurl,
@@ -3950,7 +4076,9 @@ function nirup_map_pins_admin_page() {
                 setTimeout(() => $message.fadeOut(), 3000);
             }
             
-            // Grid toggle
+            // ===================================
+            // GRID TOGGLE
+            // ===================================
             $('#toggle-grid').on('change', function() {
                 var $grid = $('#map-grid-overlay');
                 if ($(this).is(':checked')) {
@@ -3960,11 +4088,13 @@ function nirup_map_pins_admin_page() {
                 }
             });
 
-            // Initialize
+            // ===================================
+            // INITIALIZE
+            // ===================================
             makePinsDraggable();
-
-            // Initialize with "No Icon" selected
             $('.no-icon-option').trigger('click');
+            
+            console.log('Admin initialization complete');
         });
     </script>
     
@@ -3985,8 +4115,12 @@ function nirup_add_map_pin($data) {
         'x' => floatval($data['pin_x']),
         'y' => floatval($data['pin_y']),
         'link' => esc_url_raw($data['pin_link']),
-        'pin_type' => sanitize_text_field($data['pin_type']), // Changed from 'icon_type'
-        'icon' => sanitize_text_field($data['pin_icon'] ?? ''), // NEW: Icon field
+        'pin_type' => sanitize_text_field($data['pin_type']),
+        'icon' => sanitize_text_field($data['pin_icon'] ?? ''),
+        // IMAGE FIELDS - CRITICAL
+        'image_1' => isset($data['pin_image_1']) ? absint($data['pin_image_1']) : 0,
+        'image_2' => isset($data['pin_image_2']) ? absint($data['pin_image_2']) : 0,
+        'hours' => isset($data['pin_hours']) ? sanitize_text_field($data['pin_hours']) : '',
         'created' => current_time('mysql')
     );
     
@@ -4007,8 +4141,12 @@ function nirup_update_map_pin($data) {
             $pin['x'] = floatval($data['pin_x']);
             $pin['y'] = floatval($data['pin_y']);
             $pin['link'] = esc_url_raw($data['pin_link']);
-            $pin['pin_type'] = sanitize_text_field($data['pin_type']); // Changed from 'icon_type'
+            $pin['pin_type'] = sanitize_text_field($data['pin_type']);
             $pin['icon'] = sanitize_text_field($data['pin_icon'] ?? '');
+            // IMAGE FIELDS - CRITICAL
+            $pin['image_1'] = isset($data['pin_image_1']) ? absint($data['pin_image_1']) : 0;
+            $pin['image_2'] = isset($data['pin_image_2']) ? absint($data['pin_image_2']) : 0;
+            $pin['hours'] = isset($data['pin_hours']) ? sanitize_text_field($data['pin_hours']) : '';
             $pin['updated'] = current_time('mysql');
             break;
         }
@@ -4017,6 +4155,28 @@ function nirup_update_map_pin($data) {
     update_option('nirup_map_pins', $pins);
     add_settings_error('nirup_pins', 'pin_updated', __('Pin updated successfully!', 'nirup-island'), 'updated');
 }
+
+// AJAX handler to get image URL
+function nirup_get_image_url() {
+    $image_id = intval($_POST['image_id']);
+    $size = isset($_POST['size']) ? sanitize_text_field($_POST['size']) : 'medium';
+    
+    if (!$image_id) {
+        wp_send_json_error('No image ID provided');
+        return;
+    }
+    
+    $image_url = wp_get_attachment_image_url($image_id, $size);
+    
+    if ($image_url) {
+        wp_send_json_success($image_url);
+    } else {
+        wp_send_json_error('Image not found');
+    }
+}
+add_action('wp_ajax_nirup_get_image_url', 'nirup_get_image_url');
+add_action('wp_ajax_nopriv_nirup_get_image_url', 'nirup_get_image_url');
+
 
 function nirup_delete_map_pin($pin_id) {
     $pins = nirup_get_map_pins();
@@ -4042,26 +4202,24 @@ function nirup_should_display_map_section() {
     return get_theme_mod('nirup_map_display', true);
 }
 
-
-/**
- * ADD THESE NEW FUNCTIONS to your functions.php (in addition to the previous ones)
- * These handle the AJAX for drag & drop functionality
- */
-
-// ===========================
-// AJAX HANDLERS FOR DRAG & DROP
-// ===========================
+function nirup_get_all_pins_debug() {
+    $pins = get_option('nirup_map_pins', array());
+    wp_send_json_success($pins);
+}
+add_action('wp_ajax_nirup_get_all_pins_debug', 'nirup_get_all_pins_debug');
 
 // AJAX: Add new pin
 function nirup_add_pin_ajax() {
     // Verify nonce
     if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
-        wp_die('Security check failed');
+        wp_send_json_error('Security check failed');
+        return;
     }
 
     // Check permissions
     if (!current_user_can('manage_options')) {
-        wp_die('Insufficient permissions');
+        wp_send_json_error('Insufficient permissions');
+        return;
     }
 
     $pins = nirup_get_map_pins();
@@ -4073,8 +4231,12 @@ function nirup_add_pin_ajax() {
         'x' => floatval($_POST['x']),
         'y' => floatval($_POST['y']),
         'link' => isset($_POST['link']) ? esc_url_raw($_POST['link']) : '',
-        'pin_type' => sanitize_text_field($_POST['pin_type']), // 'public' or 'accommodation'
+        'pin_type' => sanitize_text_field($_POST['pin_type']),
         'icon' => isset($_POST['icon']) ? sanitize_text_field($_POST['icon']) : '',
+        // IMAGE FIELDS - CRITICAL FOR SAVING
+        'image-1' => isset($_POST['image_1']) ? absint($_POST['image_1']) : 0,
+        'image-2' => isset($_POST['image_2']) ? absint($_POST['image_2']) : 0,
+        'hours' => isset($_POST['hours']) ? sanitize_text_field($_POST['hours']) : '',
         'created' => current_time('mysql')
     );
 
@@ -4106,12 +4268,10 @@ add_action('wp_ajax_nirup_get_pin_preview', 'nirup_get_pin_preview_ajax');
 
 // AJAX: Update pin position
 function nirup_update_pin_position() {
-    // Verify nonce
     if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
         wp_die('Security check failed');
     }
     
-    // Check permissions
     if (!current_user_can('manage_options')) {
         wp_die('Insufficient permissions');
     }
@@ -4134,6 +4294,7 @@ function nirup_update_pin_position() {
     wp_send_json_success('Position updated');
 }
 add_action('wp_ajax_nirup_update_pin_position', 'nirup_update_pin_position');
+
 
 // AJAX: Update pin details
 function nirup_update_pin_ajax() {
@@ -4168,12 +4329,10 @@ add_action('wp_ajax_nirup_update_pin_ajax', 'nirup_update_pin_ajax');
 
 // AJAX: Delete pin
 function nirup_delete_pin_ajax() {
-    // Verify nonce
     if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
         wp_die('Security check failed');
     }
     
-    // Check permissions
     if (!current_user_can('manage_options')) {
         wp_die('Insufficient permissions');
     }
@@ -4330,47 +4489,74 @@ function nirup_delete_custom_icon($filename) {
 // Updated pin icon function - only handles custom icons
 function nirup_get_pin_icon_svg($pin_type, $custom_icon = '') {
     if ($pin_type === 'accommodation') {
-        $base_svg = '<g filter="url(#filter0_d_433_1358)">
-                <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6846C46.6555 87.1051 47.3445 87.1051 47.7763 86.6846C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#C49A5D"/>
-                <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79.3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79.3491 33:3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_433_1358)" stroke-width="1.5"/>
-            </g>';
+        $base_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="94" height="124" viewBox="0 0 94 124" fill="none">
+        <g filter="url(#filter0_d_481_1351)">
+                    <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6847C46.6555 87.1051 47.3445 87.1051 47.7763 86.6847C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#C49A5D"/>
+                    <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79.3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79.3491 33.3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_481_1351)" stroke-width="1.5"/>
+                    </g>
+                    <g filter="url(#filter1_d_481_1351)">
+                    <circle cx="47" cy="95.0005" r="4" fill="white"/>
+                    </g>';
         $defs = '<defs>
-                <filter id="filter0_d_433_1358" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                    <feOffset dy="5"/>
-                    <feGaussianBlur stdDeviation="10"/>
-                    <feComposite in2="hardAlpha" operator="out"/>
-                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
-                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_433_1358"/>
-                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_433_1358" result="shape"/>
-                </filter>
-                <linearGradient id="paint0_linear_433_1358" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#D8AE72"/>
-                    <stop offset="1" stop-color="#A48456"/>
-                </linearGradient>
-            </defs>';
+<filter id="filter0_d_481_1351" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="5"/>
+<feGaussianBlur stdDeviation="10"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1351"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1351" result="shape"/>
+</filter>
+<filter id="filter1_d_481_1351" x="23" y="76.0005" width="48" height="48" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="5"/>
+<feGaussianBlur stdDeviation="10"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1351"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1351" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_481_1351" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D8AE72"/>
+<stop offset="1" stop-color="#A48456"/>
+</linearGradient>
+</defs>';
     } else {
-        $base_svg = '<g filter="url(#filter0_d_433_1373)">
-                <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6847C46.6555 87.1051 47.3445 87.1051 47.7763 86.6847C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#1E3673"/>
-                <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79:3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79:3491 33:3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_433_1373)" stroke-width="1.5"/>
-            </g>';
+        $base_svg = '<g filter="url(#filter0_d_481_1382)">
+                    <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6847C46.6555 87.1051 47.3445 87.1051 47.7763 86.6847C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#1E3673"/>
+                    <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79.3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79.3491 33.3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_481_1382)" stroke-width="1.5"/>
+                    </g>
+                    <g filter="url(#filter1_d_481_1382)">
+                    <circle cx="47" cy="95.0005" r="4" fill="white"/>
+                    </g>';
         $defs = '<defs>
-                <filter id="filter0_d_433_1373" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                    <feOffset dy="5"/>
-                    <feGaussianBlur stdDeviation="10"/>
-                    <feComposite in2="hardAlpha" operator="out"/>
-                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
-                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_433_1373"/>
-                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_anta_1373" result="shape"/>
+                <filter id="filter0_d_481_1382" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                <feOffset dy="5"/>
+                <feGaussianBlur stdDeviation="10"/>
+                <feComposite in2="hardAlpha" operator="out"/>
+                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1382"/>
+                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1382" result="shape"/>
                 </filter>
-                <linearGradient id="paint0_linear_433_1373" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#6E9CE0"/>
-                    <stop offset="1" stop-color="#1E3673"/>
+                <filter id="filter1_d_481_1382" x="23" y="76.0005" width="48" height="48" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                <feOffset dy="5"/>
+                <feGaussianBlur stdDeviation="10"/>
+                <feComposite in2="hardAlpha" operator="out"/>
+                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1382"/>
+                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1382" result="shape"/>
+                </filter>
+                <linearGradient id="paint0_linear_481_1382" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6E9CE0"/>
+                <stop offset="1" stop-color="#1E3673"/>
                 </linearGradient>
-            </defs>';
+                </defs>';
     }
     
     // Add custom icon overlay if provided
@@ -4382,8 +4568,8 @@ function nirup_get_pin_icon_svg($pin_type, $custom_icon = '') {
             $icon_svg = $custom_icons[$filename]['svg'];
             // Position icon in the upper part of the pin, scale it appropriately
             // No background circle - just the icon itself in white for contrast
-            $icon_overlay = '<g transform="translate(47, 32)">
-                <g transform="translate(-10, -10) scale(0.65)" fill="white" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));">
+            $icon_overlay = '<g transform="translate(40, 43)">
+                <g transform="translate(-10, -10) scale(1)" fill="white" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));">
                     ' . $icon_svg . '
                 </g>
             </g>';

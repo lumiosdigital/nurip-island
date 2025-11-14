@@ -1,8 +1,8 @@
 <?php
 /**
- * Updated Map Section Template Part
+ * Map Section Template - WITH IMAGE & HOURS SUPPORT
  * File: template-parts/map-section.php
- * REPLACE your existing map-section.php with this
+ * REPLACE your current map-section.php with this
  */
 
 // Get customizer values
@@ -11,112 +11,85 @@ $map_title = get_theme_mod('nirup_map_title', __('Explore Our Island', 'nirup-is
 $map_subtitle = get_theme_mod('nirup_map_subtitle', __('Discover amazing locations and experiences across Nirup Island', 'nirup-island'));
 
 // Get map image URL
-$map_image_url = $map_image_id ? wp_get_attachment_image_url($map_image_id, 'full') : get_template_directory_uri() . '/assets/images/map-placeholder.jpg';
+$map_image_url = $map_image_id ? wp_get_attachment_image_url($map_image_id, 'full') : get_template_directory_uri() . '/assets/images/default-map.jpg';
 
-// Get pins from database
+// Get all map pins
 $map_pins = nirup_get_map_pins();
-
-// Fallback to sample pins if no admin pins exist
-if (empty($map_pins)) {
-    $map_pins = array(
-        array(
-            'id' => 'sample-resort',
-            'title' => 'The Westin Resort',
-            'description' => 'Luxury accommodations with spa and dining',
-            'x' => 25,
-            'y' => 40,
-            'link' => '',
-            'pin_type' => 'accommodation'
-        ),
-        array(
-            'id' => 'sample-villas',
-            'title' => 'Riahi Residences',
-            'description' => 'Private villas with pools and sea views',
-            'x' => 70,
-            'y' => 30,
-            'link' => '',
-            'pin_type' => 'accommodation'
-        ),
-        array(
-            'id' => 'sample-beach',
-            'title' => 'Crystal Beach',
-            'description' => 'Pristine white sand beach and water sports',
-            'x' => 60,
-            'y' => 80,
-            'link' => '',
-            'pin_type' => 'public'
-        ),
-        array(
-            'id' => 'sample-spa',
-            'title' => 'Island Spa',
-            'description' => 'Wellness treatments and relaxation',
-            'x' => 35,
-            'y' => 25,
-            'link' => '',
-            'pin_type' => 'public'
-        )
-    );
-}
 ?>
 
-<section class="map-section" id="island-map">
+<section class="map-section">
     <div class="map-container">
-        
-        <?php if ($map_title || $map_subtitle): ?>
         <div class="map-header">
-            <?php if ($map_title): ?>
-                <h2 class="map-title"><?php echo esc_html($map_title); ?></h2>
-            <?php endif; ?>
-            
-            <?php if ($map_subtitle): ?>
-                <p class="map-subtitle"><?php echo esc_html($map_subtitle); ?></p>
-            <?php endif; ?>
+            <h2 class="map-title"><?php echo esc_html($map_title); ?></h2>
+            <p class="map-subtitle"><?php echo esc_html($map_subtitle); ?></p>
         </div>
-        <?php endif; ?>
         
-        <div class="map-interactive-wrapper">
-            <div class="map-image-container">
-                <img 
-                    src="<?php echo esc_url($map_image_url); ?>" 
-                    alt="<?php echo esc_attr($map_title); ?>"
-                    class="map-image"
-                    loading="lazy"
-                />
-                
-                                <!-- Map Pins -->
-                <div class="map-pins">
-                    <?php foreach ($map_pins as $pin): ?>
-                        <button 
-                            class="map-pin map-pin-<?php echo esc_attr($pin['pin_type']); ?>" 
-                            data-pin-id="<?php echo esc_attr($pin['id']); ?>"
-                            style="left: <?php echo esc_attr($pin['x']); ?>%; top: <?php echo esc_attr($pin['y']); ?>%;"
-                            aria-label="<?php echo esc_attr($pin['title']); ?>"
-                            data-title="<?php echo esc_attr($pin['title']); ?>"
-                            data-description="<?php echo esc_attr(isset($pin['description']) ? $pin['description'] : ''); ?>"
-                            data-link="<?php echo esc_attr(isset($pin['link']) ? $pin['link'] : ''); ?>"
-                            data-pin-type="<?php echo esc_attr($pin['pin_type']); ?>"
-                        >
-                            <div class="pin-icon pin-icon-<?php echo esc_attr($pin['pin_type']); ?>">
-                                <?php
-                                $icon_key = isset($pin['icon']) ? $pin['icon'] : '';
-                                echo nirup_get_pin_icon_svg($pin['pin_type'], $icon_key);
-                                ?>
-                            </div>
-                            <div class="pin-pulse"></div>
-                        </button>
-                    <?php endforeach; ?>
-                </div>
-                
-                <!-- Tooltip -->
-                <div class="map-tooltip" id="map-tooltip">
-                    <div class="tooltip-content">
-                        <h4 class="tooltip-title"></h4>
-                        <p class="tooltip-description"></p>
-                        <div class="tooltip-actions" style="display: none;">
-                            <a href="#" class="tooltip-link"><?php _e('Learn More', 'nirup-island'); ?> →</a>
-                        </div>
+        <div class="map-content">
+            <div class="map-interactive-wrapper">
+                <div class="map-image-container">
+                    <img src="<?php echo esc_url($map_image_url); ?>" alt="<?php echo esc_attr($map_title); ?>" class="map-image">
+                    
+                    <!-- Map Pins -->
+                    <div class="map-pins">
+                        <?php if (!empty($map_pins)): ?>
+                            <?php foreach ($map_pins as $pin): ?>
+                                <button 
+                                    class="map-pin map-pin-<?php echo esc_attr($pin['pin_type']); ?>" 
+                                    data-pin-id="<?php echo esc_attr($pin['id']); ?>"
+                                    data-title="<?php echo esc_attr($pin['title']); ?>"
+                                    data-description="<?php echo esc_attr(isset($pin['description']) ? $pin['description'] : ''); ?>"
+                                    data-link="<?php echo esc_attr(isset($pin['link']) ? $pin['link'] : ''); ?>"
+                                    data-pin-type="<?php echo esc_attr($pin['pin_type']); ?>"
+                                    data-image_1="<?php echo esc_attr(isset($pin['image_1']) ? $pin['image_1'] : '0'); ?>"
+                                    data-image_2="<?php echo esc_attr(isset($pin['image_2']) ? $pin['image_2'] : '0'); ?>"
+                                    data-hours="<?php echo esc_attr(isset($pin['hours']) ? $pin['hours'] : ''); ?>"
+                                    style="left: <?php echo esc_attr($pin['x']); ?>%; top: <?php echo esc_attr($pin['y']); ?>%;"
+                                >
+                                    <div class="pin-icon pin-icon-<?php echo esc_attr($pin['pin_type']); ?>">
+                                        <?php
+                                        $icon_key = isset($pin['icon']) ? $pin['icon'] : '';
+                                        echo nirup_get_pin_icon_svg($pin['pin_type'], $icon_key);
+                                        ?>
+                                    </div>
+                                    <div class="pin-pulse"></div>
+                                </button>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
-                    <div class="tooltip-arrow"></div>
+                    
+                    <div class="map-tooltip" id="map-tooltip">
+                        <button class="tooltip-close" aria-label="<?php _e('Close', 'nirup-island'); ?>">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        
+                        <div class="tooltip-content">
+                            <div class="tooltip-header">
+                                <!-- <div class="tooltip-icon"></div> -->
+                                <h4 class="tooltip-title"></h4>
+                            </div>
+                            
+                            <p class="tooltip-description"></p>
+                            
+                            <div class="tooltip-images"></div>
+                            
+                            <div class="tooltip-hours" style="display: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+                                <path d="M5.5 2.5V5.5L7.5 6.5M10.5 5.5C10.5 8.26142 8.26142 10.5 5.5 10.5C2.73858 10.5 0.5 8.26142 0.5 5.5C0.5 2.73858 2.73858 0.5 5.5 0.5C8.26142 0.5 10.5 2.73858 10.5 5.5Z" stroke="#A48456" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="hours-text"></span>
+                            </div>
+                            
+                            <div class="tooltip-actions" style="display: none;">
+                                <a href="#" class="tooltip-button">
+                                    <?php _e('Discover more', 'nirup-island'); ?>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="tooltip-arrow"></div>
+                    </div>
                 </div>
             </div>
         </div>
