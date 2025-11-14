@@ -154,10 +154,6 @@ function nirup_enqueue_assets() {
         );
     }
 
-    if (current_user_can('manage_options')) {
-        echo '<script>console.log("📝 nirup-utils enqueued");</script>';
-        echo '<script>console.log("✅ All JavaScript files enqueued!");</script>';
-    }
 
     // === LOCALIZATION ===
     wp_localize_script('nirup-main', 'nirup_ajax', array(
@@ -3825,7 +3821,6 @@ function nirup_map_pins_admin_page() {
                     $preview.find('img').attr('src', attachment.url);
                     $preview.show();
                     $('.remove-image-btn[data-target="' + currentImageTarget + '"]').show();
-                    console.log('Image selected, ID:', attachment.id);
                 });
                 
                 imageUploader.open();
@@ -3838,10 +3833,10 @@ function nirup_map_pins_admin_page() {
                 $('#' + target).val('');
                 $('.image-preview[data-for="' + target + '"]').hide().find('img').attr('src', '');
                 $(this).hide();
-                console.log('Image removed from', target);
+
             });
             
-            console.log('Map Pins Admin JS Loaded');
+
 
             var currentEditPinId = null;
             
@@ -3955,7 +3950,7 @@ function nirup_map_pins_admin_page() {
 
             // Click on map to add new pin
             $('#map-editor').on('click', function(e) {
-                console.log('Map clicked');
+
 
                 var rect = this.getBoundingClientRect();
                 var clickX = e.clientX - rect.left;
@@ -3967,7 +3962,7 @@ function nirup_map_pins_admin_page() {
 
                 var pinType = $('input[name="new_pin_type"]:checked').val();
 
-                console.log('Adding pin at', x, y, 'type:', pinType);
+
 
                 // Visual feedback
                 showClickFeedback(clickX, clickY);
@@ -4048,13 +4043,13 @@ function nirup_map_pins_admin_page() {
             // ADD NEW PIN FUNCTION
             // ===================================
             function addNewPin(x, y, pinType) {
-                console.log('addNewPin called:', x, y, pinType);
+
 
                 // Store the pin data - CRITICAL FOR SAVE TO WORK
                 pendingPinData = { x: x, y: y, pinType: pinType };
                 selectedModalIcon = '';
 
-                console.log('pendingPinData set to:', pendingPinData);
+
 
                 // Reset all modal fields
                 $('#modal-pin-title').val('');
@@ -4069,7 +4064,7 @@ function nirup_map_pins_admin_page() {
                 $('.modal-icon-option[data-icon=""]').addClass('active');
                 updateModalPreview();
 
-                console.log('Opening modal');
+
                 $('#pin-modal').fadeIn(200);
                 setTimeout(function() {
                     $('#modal-pin-title').focus();
@@ -4116,7 +4111,7 @@ function nirup_map_pins_admin_page() {
             // SAVE PIN BUTTON - SENDS ALL DATA
             // ===================================
             $('#modal-save-pin-btn').on('click', function() {
-                console.log('=== SAVE BUTTON CLICKED ===');
+
                 
                 var title = $('#modal-pin-title').val().trim();
                 if (!title) {
@@ -4136,17 +4131,6 @@ function nirup_map_pins_admin_page() {
                 var image2 = $('#modal-pin-image-2').val() || 0;
                 var hours = ($('#modal-pin-hours').val() || '').trim();
 
-                console.log('Saving pin with data:');
-                console.log('  Title:', title);
-                console.log('  Description:', description);
-                console.log('  Link:', link);
-                console.log('  Image 1:', image1);
-                console.log('  Image 2:', image2);
-                console.log('  Hours:', hours);
-                console.log('  X:', pendingPinData.x);
-                console.log('  Y:', pendingPinData.y);
-                console.log('  Type:', pendingPinData.pinType);
-                console.log('  Icon:', selectedModalIcon);
 
                 $.ajax({
                     url: ajaxurl,
@@ -4188,7 +4172,6 @@ function nirup_map_pins_admin_page() {
             // CLOSE MODAL
             // ===================================
             function closeModal() {
-                console.log('Closing modal');
                 $('#pin-modal').fadeOut(200);
                 pendingPinData = null;
                 selectedModalIcon = '';
@@ -4305,7 +4288,6 @@ function nirup_map_pins_admin_page() {
             makePinsDraggable();
             $('.no-icon-option').trigger('click');
             
-            console.log('Admin initialization complete');
         });
     </script>
     
