@@ -94,6 +94,7 @@ function nirup_enqueue_assets() {
         ['nirup-contact',               '/assets/css/contact.css',               []],
         ['nirup-marina',                '/assets/css/marina.css',                ['nirup-main']],
         ['nirup-media-coverage',        '/assets/css/media-coverage.css',        ['nirup-main']],
+        ['nirup-press-kit',         '/assets/css/press-kit.css',         ['nirup-main']],
     ];
 
     foreach ($css_files as [$handle, $rel, $deps]) {
@@ -2547,9 +2548,16 @@ function nirup_get_breadcrumbs() {
         );
     }
 
-        if (is_page_template('media-coverage.php')) {
+    if (is_page_template('media-coverage.php')) {
         $breadcrumbs[] = array(
             'title' => 'Media Coverage',
+            'url' => ''
+        );
+    }
+
+    if (is_page_template('page-press-kit.php')) {
+        $breadcrumbs[] = array(
+            'title' => 'Media Kit',
             'url' => ''
         );
     }
@@ -13127,5 +13135,190 @@ function nirup_media_coverage_customizer($wp_customize) {
     ));
 }
 add_action('customize_register', 'nirup_media_coverage_customizer');
+
+// =======================
+// Press Kit Page Customizer Settings
+// =======================
+// Add this to your functions.php file
+
+function nirup_press_kit_customizer($wp_customize) {
+    
+    // Add Press Kit Section
+    $wp_customize->add_section('nirup_press_kit', array(
+        'title' => __('Press Kit Page', 'nirup-island'),
+        'priority' => 90,
+    ));
+
+    // Hero Section Settings
+    // Subtitle
+    $wp_customize->add_setting('press_kit_subtitle', array(
+        'default' => 'FOR YOUR MEDIA COVERAGE',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_subtitle', array(
+        'label' => __('Hero Subtitle', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Title
+    $wp_customize->add_setting('press_kit_title', array(
+        'default' => 'Press kit',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_title', array(
+        'label' => __('Hero Title', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Description
+    $wp_customize->add_setting('press_kit_description', array(
+        'default' => 'Welcome to the Nirup Island Press Kit. Here you\'ll find everything you need to cover our story — from official logos and brand assets to high-resolution photos and videos. These materials are free to use for editorial purposes when featuring Nirup Island.',
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    $wp_customize->add_control('press_kit_description', array(
+        'label' => __('Description Text', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'textarea',
+    ));
+
+    // Card 1 - Logos
+    // Card 1 Image
+    $wp_customize->add_setting('press_kit_card1_image', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'press_kit_card1_image', array(
+        'label' => __('Card 1 - Image', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card1_image',
+    )));
+
+    // Card 1 Title
+    $wp_customize->add_setting('press_kit_card1_title', array(
+        'default' => 'Logos',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_card1_title', array(
+        'label' => __('Card 1 - Title', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Card 1 File
+    $wp_customize->add_setting('press_kit_card1_file', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Upload_Control($wp_customize, 'press_kit_card1_file', array(
+        'label' => __('Card 1 - Download File (ZIP)', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card1_file',
+    )));
+
+    // Card 2 - Photos
+    // Card 2 Image
+    $wp_customize->add_setting('press_kit_card2_image', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'press_kit_card2_image', array(
+        'label' => __('Card 2 - Image', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card2_image',
+    )));
+
+    // Card 2 Title
+    $wp_customize->add_setting('press_kit_card2_title', array(
+        'default' => 'Photos',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_card2_title', array(
+        'label' => __('Card 2 - Title', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Card 2 File
+    $wp_customize->add_setting('press_kit_card2_file', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Upload_Control($wp_customize, 'press_kit_card2_file', array(
+        'label' => __('Card 2 - Download File (ZIP)', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card2_file',
+    )));
+
+    // Card 3 - Videos
+    // Card 3 Image
+    $wp_customize->add_setting('press_kit_card3_image', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'press_kit_card3_image', array(
+        'label' => __('Card 3 - Image', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card3_image',
+    )));
+
+    // Card 3 Title
+    $wp_customize->add_setting('press_kit_card3_title', array(
+        'default' => 'Videos',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_card3_title', array(
+        'label' => __('Card 3 - Title', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Card 3 File
+    $wp_customize->add_setting('press_kit_card3_file', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Upload_Control($wp_customize, 'press_kit_card3_file', array(
+        'label' => __('Card 3 - Download File (ZIP)', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card3_file',
+    )));
+
+    // Press Contacts Section
+    // Title
+    $wp_customize->add_setting('press_kit_contacts_title', array(
+        'default' => 'Press Contacts',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_contacts_title', array(
+        'label' => __('Press Contacts - Title', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Label
+    $wp_customize->add_setting('press_kit_contacts_label', array(
+        'default' => 'For media inquiries:',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_contacts_label', array(
+        'label' => __('Press Contacts - Label', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Email
+    $wp_customize->add_setting('press_kit_contacts_email', array(
+        'default' => 'Marcomm@citrabuanaprakarsa.com',
+        'sanitize_callback' => 'sanitize_email',
+    ));
+    $wp_customize->add_control('press_kit_contacts_email', array(
+        'label' => __('Press Contacts - Email', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'email',
+    ));
+}
+add_action('customize_register', 'nirup_press_kit_customizer');
 
 ?>
