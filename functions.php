@@ -12608,6 +12608,281 @@ function nirup_process_villa_booking_shortcode() {
 add_action('wp_ajax_process_villa_booking_shortcode', 'nirup_process_villa_booking_shortcode');
 add_action('wp_ajax_nopriv_process_villa_booking_shortcode', 'nirup_process_villa_booking_shortcode');
 
+/**
+ * Process Villa Booking with Midtrans Payment
+ * Creates WooCommerce order and initiates Midtrans payment
+ */
+function nirup_process_villa_booking_payment() {
+    // Verify nonce for security
+    check_ajax_referer('villa_booking_nonce', 'nonce');
+
+    // Get booking data from AJAX request
+    $villa_id = isset($_POST['villa_id']) ? intval($_POST['villa_id']) : 0;
+    $booking_data = isset($_POST['booking_data']) ? $_POST['booking_data'] : array();
+
+    if (!$villa_id || empty($booking_data)) {
+        wp_send_json_error(array('message' => 'Invalid booking data'));
+        return;
+    }
+
+    // Check if WooCommerce is active
+    if (!class_exists('WooCommerce')) {
+        wp_send_json_error(array('message' => 'WooCommerce is not active'));
+        return;
+    }
+
+    try {
+        // Get villa details
+        $villa_title = get_the_title($villa_id);
+        $check_in = sanitize_text_field($booking_data['check_in']);
+        $check_out = sanitize_text_field($booking_data['check_out']);
+        $guests = intval($booking_data['guests']);
+        $total_price = floatval($booking_data['total_price']);
+
+        // Customer details
+        $customer_name = sanitize_text_field($booking_data['name']);
+        $customer_email = sanitize_email($booking_data['email']);
+        $customer_phone = sanitize_text_field($booking_data['phone']);
+
+        // Create or get WooCommerce product for this villa
+        $product_id = nirup_get_or_create_villa_product($villa_id, $villa_title);
+
+        if (!$product_id) {
+            wp_send_json_error(array('message' => 'Failed to create booking product'));
+            return;
+        }
+
+        // Create WooCommerce order
+        $order = wc_create_order();
+
+        // Add villa booking as order item
+        $order->add_product(wc_get_product($product_id), 1, array(
+            'subtotal' => $total_price,
+            'total' => $total_price
+        ));
+
+        // Set customer billing details
+        $order->set_address(array(
+            'first_name' => $customer_name,
+            'email'      => $customer_email,
+            'phone'      => $customer_phone,
+        ), 'billing');
+
+        // Add booking meta data to order
+        $order->update_meta_data('_villa_id', $villa_id);
+        $order->update_meta_data('_villa_name', $villa_title);
+        $order->update_meta_data('_check_in_date', $check_in);
+        $order->update_meta_data('_check_out_date', $check_out);
+        $order->update_meta_data('_number_of_guests', $guests);
+        $order->update_meta_data('_booking_type', 'villa');
+
+        // Calculate totals
+        $order->calculate_totals();
+
+        // Set payment method to Midtrans
+        $order->set_payment_method('midtrans');
+        $order->set_payment_method_title('Midtrans Payment Gateway');
+
+        // Save the order
+        $order->save();
+
+        // Get Midtrans payment URL
+        $payment_url = nirup_generate_midtrans_payment_url($order);
+
+        if ($payment_url) {
+            wp_send_json_success(array(
+                'order_id' => $order->get_id(),
+                'payment_url' => $payment_url,
+                'message' => 'Order created successfully'
+            ));
+        } else {
+            wp_send_json_error(array('message' => 'Failed to generate payment URL'));
+        }
+
+    } catch (Exception $e) {
+        wp_send_json_error(array('message' => 'Booking error: ' . $e->getMessage()));
+    }
+}
+add_action('wp_ajax_process_villa_booking_payment', 'nirup_process_villa_booking_payment');
+add_action('wp_ajax_nopriv_process_villa_booking_payment', 'nirup_process_villa_booking_payment');
+
+/**
+ * Get or create a WooCommerce product for villa booking
+ */
+function nirup_get_or_create_villa_product($villa_id, $villa_title) {
+    // Check if product already exists
+    $existing_product_id = get_post_meta($villa_id, '_wc_villa_product_id', true);
+
+    if ($existing_product_id && get_post_status($existing_product_id) === 'publish') {
+        return $existing_product_id;
+    }
+
+    // Create new simple product
+    $product = new WC_Product_Simple();
+    $product->set_name($villa_title . ' - Booking');
+    $product->set_status('publish');
+    $product->set_catalog_visibility('hidden');
+    $product->set_price(0); // Price will be set dynamically
+    $product->set_virtual(true);
+    $product->set_sold_individually(true);
+
+    $product_id = $product->save();
+
+    // Store product ID in villa meta
+    update_post_meta($villa_id, '_wc_villa_product_id', $product_id);
+
+    return $product_id;
+}
+
+/**
+ * Generate Midtrans payment URL for order
+ */
+function nirup_generate_midtrans_payment_url($order) {
+    // Check if Midtrans plugin is active and configured
+    if (!class_exists('WC_Gateway_Midtrans')) {
+        error_log('Midtrans gateway class not found');
+        return false;
+    }
+
+    $order_id = $order->get_id();
+
+    // Get Midtrans gateway settings
+    $midtrans_gateways = array('midtrans', 'midtrans_snap');
+    $payment_url = false;
+
+    foreach ($midtrans_gateways as $gateway_id) {
+        $gateway = WC()->payment_gateways->payment_gateways()[$gateway_id] ?? null;
+
+        if ($gateway && $gateway->enabled === 'yes') {
+            // Set the payment method for the order
+            $order->set_payment_method($gateway_id);
+            $order->save();
+
+            // Try to get payment URL through Midtrans
+            // Most Midtrans plugins provide a checkout URL
+            $payment_url = $gateway->get_payment_url($order);
+
+            if ($payment_url) {
+                break;
+            }
+        }
+    }
+
+    // If standard method didn't work, try alternative approach
+    if (!$payment_url) {
+        // Fallback: redirect to WooCommerce checkout with this order
+        $payment_url = wc_get_checkout_url() . '?pay_for_order=true&key=' . $order->get_order_key() . '&order_id=' . $order_id;
+    }
+
+    return $payment_url;
+}
+
+/**
+ * Handle Midtrans payment notification/callback
+ */
+function nirup_handle_midtrans_payment_notification() {
+    // This will be called by Midtrans webhook
+    $json_result = file_get_contents('php://input');
+    $result = json_decode($json_result, true);
+
+    if (!$result) {
+        wp_send_json_error(array('message' => 'Invalid notification data'));
+        return;
+    }
+
+    $order_id = isset($result['order_id']) ? sanitize_text_field($result['order_id']) : '';
+    $transaction_status = isset($result['transaction_status']) ? $result['transaction_status'] : '';
+
+    if (!$order_id) {
+        wp_send_json_error(array('message' => 'Order ID not found'));
+        return;
+    }
+
+    // Get WooCommerce order
+    $order = wc_get_order($order_id);
+
+    if (!$order) {
+        wp_send_json_error(array('message' => 'Order not found'));
+        return;
+    }
+
+    // Update order status based on transaction status
+    switch ($transaction_status) {
+        case 'capture':
+        case 'settlement':
+            $order->payment_complete();
+            $order->add_order_note('Payment completed via Midtrans');
+            break;
+
+        case 'pending':
+            $order->update_status('on-hold', 'Payment pending via Midtrans');
+            break;
+
+        case 'deny':
+        case 'expire':
+        case 'cancel':
+            $order->update_status('failed', 'Payment failed via Midtrans: ' . $transaction_status);
+            break;
+    }
+
+    wp_send_json_success(array('message' => 'Notification processed'));
+}
+add_action('wp_ajax_midtrans_payment_notification', 'nirup_handle_midtrans_payment_notification');
+add_action('wp_ajax_nopriv_midtrans_payment_notification', 'nirup_handle_midtrans_payment_notification');
+
+/**
+ * Handle Midtrans payment return
+ * Redirects user back to the villa page with payment status
+ */
+function nirup_handle_midtrans_return() {
+    // Check if this is a Midtrans return
+    if (!isset($_GET['order_id']) || !isset($_GET['transaction_status'])) {
+        return;
+    }
+
+    $order_id = sanitize_text_field($_GET['order_id']);
+    $transaction_status = sanitize_text_field($_GET['transaction_status']);
+
+    // Get the order
+    $order = wc_get_order($order_id);
+
+    if (!$order) {
+        return;
+    }
+
+    // Get villa ID from order meta
+    $villa_id = $order->get_meta('_villa_id');
+
+    if ($villa_id) {
+        // Redirect to villa page with payment status
+        $villa_url = get_permalink($villa_id);
+        $redirect_url = add_query_arg(array(
+            'payment_status' => $transaction_status,
+            'order_id' => $order_id
+        ), $villa_url);
+
+        wp_redirect($redirect_url);
+        exit;
+    }
+}
+add_action('template_redirect', 'nirup_handle_midtrans_return', 1);
+
+/**
+ * Configure Midtrans return URLs
+ */
+function nirup_configure_midtrans_return_urls($order) {
+    // This filter can be used by Midtrans plugin to set return URLs
+    $villa_id = $order->get_meta('_villa_id');
+
+    if ($villa_id) {
+        $return_url = get_permalink($villa_id);
+        return $return_url;
+    }
+
+    return home_url();
+}
+add_filter('woocommerce_get_return_url', 'nirup_configure_midtrans_return_urls', 10, 1);
+
 function nirup_enqueue_charter_booking_assets() {
     // Only load on the marina page
     if (is_page_template('page-marina.php')) {
