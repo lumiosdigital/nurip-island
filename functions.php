@@ -95,6 +95,8 @@ function nirup_enqueue_assets() {
         ['nirup-marina',                '/assets/css/marina.css',                ['nirup-main']],
         ['nirup-media-coverage',        '/assets/css/media-coverage.css',        ['nirup-main']],
         ['nirup-press-kit',         '/assets/css/press-kit.css',         ['nirup-main']],
+        ['nirup-villa-booking',         '/assets/css/villa-booking.css',         ['nirup-main']],
+        // ['nirup-woocommerce-booking',         '/assets/css/woocommerce-booking.css',         ['nirup-main']],
     ];
 
     foreach ($css_files as [$handle, $rel, $deps]) {
@@ -12589,17 +12591,17 @@ add_action('save_post_villa', 'nirup_save_villa_booking_calendar');
 /**
  * Enqueue Villa Booking Assets
  */
-function nirup_enqueue_villa_booking_assets() {
-        // Just enqueue the CSS, no custom JS needed
-        wp_enqueue_style(
-            'nirup-villa-booking',
-            get_template_directory_uri() . '/assets/css/villa-booking.css',
-            array(),
-            '1.0.6'
-        );
+// function nirup_enqueue_villa_booking_assets() {
+//         // Just enqueue the CSS, no custom JS needed
+//         wp_enqueue_style(
+//             'nirup-villa-booking',
+//             get_template_directory_uri() . '/assets/css/villa-booking.css',
+//             array(),
+//             '1.0.6'
+//         );
 
-}
-add_action('wp_enqueue_scripts', 'nirup_enqueue_villa_booking_assets');
+// }
+// add_action('wp_enqueue_scripts', 'nirup_enqueue_villa_booking_assets');
 
 // Enqueue JS
 function nirup_enqueue_villa_booking_calendar_assets() {
