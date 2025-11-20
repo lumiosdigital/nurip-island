@@ -596,3 +596,162 @@ body.modal-open {
 body.villa-booking-open {
     overflow: hidden;
 }
+
+/* ================================================
+   NIRUP – BOOKING MODAL STYLES POLISH
+   ================================================ */
+
+/* --- 1. TOTAL SECTION (top of form) --- */
+.villa-booking-modal .wpbs-form-price-breakdown,
+.villa-booking-modal .wpbs-form-total,
+.villa-booking-modal .wpbs-form-total-wrapper {
+    background: #f8f3ee;
+    border-radius: 12px;
+    padding: 18px 24px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(200, 180, 155, 0.3);
+}
+
+.villa-booking-modal .wpbs-form-total-wrapper h3,
+.villa-booking-modal .wpbs-form-total-title {
+    font-family: 'Amiri', serif;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7e746d;
+    margin: 0 0 8px;
+}
+
+.villa-booking-modal .wpbs-form-total-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+}
+
+.villa-booking-modal .wpbs-form-total-wrapper th,
+.villa-booking-modal .wpbs-form-total-wrapper td {
+    padding: 4px 0;
+    text-align: left;
+}
+
+.villa-booking-modal .wpbs-form-total-wrapper tfoot td {
+    font-weight: 600;
+    font-size: 15px;
+    border-top: 1px solid rgba(210, 190, 160, 0.4);
+    padding-top: 8px;
+}
+
+/* --- 2. PAYMENT METHOD --- */
+.villa-booking-modal .wpbs-field-payment-method {
+    margin-top: 24px;
+    background: #f8f3ee;
+    border-radius: 12px;
+    padding: 18px 24px;
+    border: 1px solid rgba(200, 180, 155, 0.3);
+}
+
+.villa-booking-modal .wpbs-field-payment-method legend,
+.villa-booking-modal .wpbs-field-payment-method label {
+    font-family: 'Amiri', serif;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7e746d;
+}
+
+.villa-booking-modal .wpbs-field-payment-method input[type="radio"] {
+    accent-color: #8B5E1D;
+    transform: scale(1.1);
+    margin-right: 6px;
+}
+
+.villa-booking-modal .wpbs-field-payment-method .wpbs-field-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+/* --- 3. RECAPTCHA --- */
+.villa-booking-modal .g-recaptcha {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* --- 4. PAYMENT CONFIRMATION STEP --- */
+.villa-booking-modal .wpbs-form-confirmation-message,
+.villa-booking-modal .wpbs-payment-confirmation {
+    background: #f8f3ee;
+    border-radius: 14px;
+    padding: 30px 26px;
+    border: 1px solid rgba(200, 180, 155, 0.35);
+    margin-top: 28px;
+}
+
+.villa-booking-modal .wpbs-form-confirmation-message h3,
+.villa-booking-modal .wpbs-payment-confirmation h3,
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-form-title {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #3d332f;
+    margin-bottom: 16px;
+}
+
+.villa-booking-modal .wpbs-payment-confirmation table {
+    width: 100%;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    border-collapse: collapse;
+}
+
+.villa-booking-modal .wpbs-payment-confirmation th,
+.villa-booking-modal .wpbs-payment-confirmation td {
+    padding: 6px 0;
+    border: none;
+}
+
+.villa-booking-modal .wpbs-payment-confirmation tfoot td {
+    font-weight: 600;
+    border-top: 1px solid rgba(200, 180, 155, 0.4);
+    padding-top: 8px;
+}
+
+/* Button */
+.villa-booking-modal .wpbs-form-submit,
+.villa-booking-modal .wpbs-form-submit input[type="submit"],
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-button,
+.villa-booking-modal .wpbs-payment-confirmation button {
+    background-color: #8B5E1D !important;
+    color: #fff !important;
+    border: none !important;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    padding: 14px 24px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-button:hover {
+    background-color: #A48456 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(139, 94, 29, 0.25);
+}
+
+/* Fix alignment of edit order link */
+.villa-booking-modal .wpbs-payment-confirmation a.wpbs-edit-order {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    color: #8B5E1D;
+    text-decoration: none;
+    position: absolute;
+    top: 22px;
+    right: 26px;
+}
