@@ -14078,4 +14078,44 @@ function nirup_save_selling_unit_features($post_id) {
 }
 add_action('save_post_selling_unit', 'nirup_save_selling_unit_features');
 
+function nirup_redirect_cart_to_checkout() {
+
+    // Never run this in admin or AJAX.
+    if ( is_admin() ) {
+        return;
+    }
+
+    // Only act on the real Cart page.
+    if ( ! function_exists( 'is_cart' ) || ! is_cart() ) {
+        return;
+    }
+
+    // Ensure WooCommerce cart exists.
+    if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+        return;
+    }
+
+    // IMPORTANT: If cart is empty, do NOT redirect.
+    // WooCommerce (or WP Booking System) may legitimately land on Cart
+    // with an empty cart, and redirecting would cause a loop.
+    if ( WC()->cart->is_empty() ) {
+        return;
+    }
+
+    // Extra safety: if for some reason this runs on checkout, bail.
+    if ( function_exists( 'is_checkout' ) && is_checkout() ) {
+        return;
+    }
+
+    if ( function_exists( 'wc_get_checkout_url' ) ) {
+        $checkout_url = wc_get_checkout_url();
+
+        if ( ! empty( $checkout_url ) ) {
+            wp_safe_redirect( $checkout_url );
+            exit;
+        }
+    }
+}
+add_action( 'template_redirect', 'nirup_redirect_cart_to_checkout' );
+
 ?>

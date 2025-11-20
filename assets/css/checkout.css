@@ -1,0 +1,515 @@
+/**
+ * Nirup Island – WooCommerce Checkout
+ * Matches villa booking / single-villa styling
+ */
+
+body.woocommerce-checkout {
+    background-color: #f3eeea;
+}
+
+/* Main wrapper */
+
+.nirup-checkout-main {
+    min-height: 100vh;
+    padding-top: 88px;
+    /* roughly header height */
+}
+
+.nirup-checkout-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 63px 120px;
+}
+
+/* Header */
+
+.nirup-checkout-header {
+    margin-bottom: 40px;
+}
+
+.nirup-checkout-eyebrow {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(61, 51, 47, 0.6);
+    margin: 0 0 10px;
+}
+
+.nirup-checkout-title {
+    font-family: 'Amiri', serif;
+    font-size: 40px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3d332f;
+    margin: 0 0 10px;
+    line-height: 1.1;
+}
+
+.nirup-checkout-subtitle {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #7a6e68;
+    max-width: 520px;
+    margin: 0;
+}
+
+/* Layout */
+
+.nirup-checkout-layout {
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+}
+
+.nirup-checkout-col {
+    flex: 1 1 0;
+}
+
+.nirup-checkout-col--details {
+    flex-basis: 55%;
+}
+
+.nirup-checkout-col--order {
+    flex-basis: 45%;
+}
+
+/* Cards */
+
+.nirup-checkout-card {
+    background-color: #ffffff;
+    border-radius: 4px;
+    border: 1px solid #e0d4cc;
+    padding: 32px 32px 36px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+.nirup-checkout-card--order {
+    position: sticky;
+    top: 120px;
+}
+
+/* Section titles */
+
+.nirup-checkout-section-title {
+    font-family: 'Amiri', serif;
+    font-size: 20px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    color: #3d332f;
+    margin: 0 0 20px;
+}
+
+/* Customer details */
+
+.nirup-checkout-customer-details {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.nirup-checkout-section--secondary {
+    border-top: 1px solid #f0e3da;
+    padding-top: 20px;
+}
+
+/* Form fields */
+
+.nirup-checkout-main .woocommerce form .form-row,
+.nirup-checkout-main .woocommerce-page form .form-row {
+    margin: 0 0 16px;
+}
+
+.nirup-checkout-main .woocommerce form .form-row label,
+.nirup-checkout-main .woocommerce-page form .form-row label {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8b7a72;
+    margin-bottom: 6px;
+}
+
+/* Inputs */
+
+.nirup-checkout-main .woocommerce input[type="text"],
+.nirup-checkout-main .woocommerce input[type="email"],
+.nirup-checkout-main .woocommerce input[type="tel"],
+.nirup-checkout-main .woocommerce input[type="number"],
+.nirup-checkout-main .woocommerce input[type="password"],
+.nirup-checkout-main .woocommerce textarea,
+.nirup-checkout-main .woocommerce select {
+    width: 100%;
+    border-radius: 2px;
+    border: 1px solid #dccfc4;
+    background-color: #f9f4f0;
+    padding: 10px 12px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    color: #3d332f;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.nirup-checkout-main .woocommerce textarea {
+    min-height: 80px;
+}
+
+.nirup-checkout-main .woocommerce input:focus,
+.nirup-checkout-main .woocommerce textarea:focus,
+.nirup-checkout-main .woocommerce select:focus {
+    outline: none;
+    border-color: #8b5e1d;
+    background-color: #fffaf5;
+}
+
+/* Select2 */
+
+.nirup-checkout-main .select2-container .select2-selection--single {
+    border-radius: 2px;
+    border: 1px solid #dccfc4;
+    background-color: #f9f4f0;
+    height: 38px;
+}
+
+.nirup-checkout-main .select2-container .select2-selection--single .select2-selection__rendered {
+    line-height: 36px;
+    padding-left: 10px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    color: #3d332f;
+}
+
+/* Order table */
+
+.nirup-checkout-order-review table.shop_table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    margin-bottom: 24px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    color: #3d332f;
+}
+
+.nirup-checkout-order-review table.shop_table th,
+.nirup-checkout-order-review table.shop_table td {
+    padding: 8px 0;
+    border: none;
+}
+
+.nirup-checkout-order-review table.shop_table thead th {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    color: #8b7a72;
+    border-bottom: 1px solid #f0e3da;
+    padding-bottom: 10px;
+}
+
+.nirup-checkout-order-review table.shop_table tfoot th,
+.nirup-checkout-order-review table.shop_table tfoot td {
+    border-top: 1px solid #f0e3da;
+    padding-top: 8px;
+}
+
+.nirup-checkout-order-review .product-name {
+    font-weight: 500;
+}
+
+.nirup-checkout-order-review .order-total td,
+.nirup-checkout-order-review .order-total th {
+    font-weight: 600;
+}
+
+/* Payment methods */
+
+.nirup-checkout-main .woocommerce-checkout-payment {
+    border-radius: 4px;
+    border: 1px solid #f0e3da;
+    background-color: #f9f4f0;
+    padding: 18px 16px 16px;
+}
+
+.nirup-checkout-main .woocommerce-checkout-payment .wc_payment_methods {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+}
+
+.nirup-checkout-main .woocommerce-checkout-payment .wc_payment_methods li {
+    margin-bottom: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(220, 207, 196, 0.6);
+}
+
+.nirup-checkout-main .woocommerce-checkout-payment .wc_payment_methods li:last-child {
+    border-bottom: none;
+}
+
+.nirup-checkout-main .woocommerce-checkout-payment .wc_payment_methods label {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3d332f;
+}
+
+.nirup-checkout-main .woocommerce-checkout-payment .payment_box {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 12px;
+    color: #7a6e68;
+    margin: 6px 0 0 22px;
+}
+
+/* Place order button (Midtrans hooks here) */
+
+.nirup-checkout-main #place_order,
+.nirup-checkout-main .woocommerce-checkout-payment #place_order {
+    background-color: #8B5E1D;
+    color: #ffffff;
+    border: none;
+    border-radius: 0;
+    width: 100%;
+    padding: 14px 30px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.nirup-checkout-main #place_order:hover,
+.nirup-checkout-main .woocommerce-checkout-payment #place_order:hover {
+    background-color: #A48456;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(139, 94, 29, 0.25);
+}
+
+/* Security note */
+
+.nirup-checkout-security-note {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #8b7a72;
+    margin-top: 16px;
+}
+
+/* Woo notices alignment */
+
+.nirup-checkout-main .woocommerce-error,
+.nirup-checkout-main .woocommerce-info,
+.nirup-checkout-main .woocommerce-message {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+}
+
+/* Responsive */
+
+@media (max-width: 1024px) {
+    .nirup-checkout-wrapper {
+        padding: 60px 24px 80px;
+    }
+
+    .nirup-checkout-layout {
+        flex-direction: column-reverse;
+        gap: 32px;
+    }
+
+    .nirup-checkout-card--order {
+        position: static;
+    }
+}
+
+@media (max-width: 600px) {
+    .nirup-checkout-title {
+        font-size: 30px;
+    }
+
+    .nirup-checkout-wrapper {
+        padding: 40px 20px 60px;
+    }
+
+    .nirup-checkout-card {
+        padding: 24px 20px 28px;
+    }
+}
+
+/* ========= Nirup – Order received / Thank you ========= */
+
+.nirup-thankyou-main {
+    background: #f3eeea;
+    padding: 96px 0 120px;
+}
+
+.nirup-thankyou-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 63px;
+}
+
+/* Page header */
+
+.nirup-thankyou-header {
+    text-align: left;
+    margin-bottom: 32px;
+}
+
+.nirup-thankyou-eyebrow {
+    font-family: 'Amiri', serif;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7e746d;
+    margin: 0 0 6px;
+}
+
+.nirup-thankyou-title {
+    font-family: 'Amiri', serif;
+    font-size: 40px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    color: #3d332f;
+    margin: 0 0 8px;
+}
+
+.nirup-thankyou-header .woocommerce-notice--success {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    color: #555250;
+    margin: 0;
+}
+
+/* Main card */
+
+.nirup-thankyou-summary-card {
+    background: #f8f2ec;
+    border-radius: 24px;
+    padding: 28px 32px 32px;
+    box-shadow: 0 18px 60px rgba(40, 27, 16, 0.12);
+    border: 1px solid rgba(173, 154, 133, 0.28);
+}
+
+.nirup-thankyou-section-title {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7e746d;
+    margin: 0 0 20px;
+}
+
+/* Order overview list */
+
+.nirup-thankyou-overview {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px 32px;
+}
+
+.nirup-thankyou-overview-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nirup-thankyou-overview-label {
+    font-family: 'Amiri', serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #8f837c;
+}
+
+.nirup-thankyou-overview-value {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    color: #3d332f;
+}
+
+/* Extra sections: order table, booking details, payment info */
+
+.nirup-thankyou-extra {
+    margin-top: 40px;
+    display: grid;
+    gap: 24px;
+}
+
+/* Order details & customer details cards */
+
+.nirup-thankyou-extra .woocommerce-order-details,
+.nirup-thankyou-extra .woocommerce-customer-details,
+.nirup-thankyou-extra .wpbs-woocommerce-booking-details {
+    background: #fdf8f3;
+    border-radius: 18px;
+    padding: 24px 28px;
+    border: 1px solid rgba(173, 154, 133, 0.25);
+}
+
+.nirup-thankyou-extra h2 {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7e746d;
+    margin: 0 0 18px;
+}
+
+/* Tables inside cards */
+
+.nirup-thankyou-extra .shop_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+}
+
+.nirup-thankyou-extra .shop_table th,
+.nirup-thankyou-extra .shop_table td {
+    padding: 8px 0;
+    border-top: 1px solid rgba(196, 180, 162, 0.4);
+}
+
+.nirup-thankyou-extra .shop_table th {
+    text-align: left;
+    font-weight: 500;
+    color: #7a6c63;
+}
+
+/* Midtrans payment info table */
+
+.nirup-thankyou-extra .midtrans_payment_info {
+    background: #fdf8f3;
+    border-radius: 18px;
+    padding: 18px 22px 22px;
+}
+
+.nirup-thankyou-extra .midtrans_payment_info tr:first-child th,
+.nirup-thankyou-extra .midtrans_payment_info tr:first-child td {
+    border-top: none;
+}
+
+/* Responsive tweaks */
+
+@media (max-width: 768px) {
+    .nirup-thankyou-wrapper {
+        padding: 0 24px;
+    }
+
+    .nirup-thankyou-summary-card {
+        padding: 22px 20px 26px;
+        border-radius: 18px;
+    }
+
+    .nirup-thankyou-title {
+        font-size: 32px;
+    }
+}
