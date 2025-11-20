@@ -4352,51 +4352,51 @@ add_action('wp_ajax_get_attachment_url', 'nirup_get_attachment_url_ajax');
 
 function nirup_add_map_pin($data) {
     $pins = nirup_get_map_pins();
-    
+
     $new_pin = array(
         'id' => uniqid('pin_'),
-        'title' => sanitize_text_field($data['pin_title']),
-        'description' => sanitize_textarea_field($data['pin_description']),
-        'x' => floatval($data['pin_x']),
-        'y' => floatval($data['pin_y']),
-        'link' => esc_url_raw($data['pin_link']),
-        'pin_type' => sanitize_text_field($data['pin_type']),
-        'icon' => sanitize_text_field($data['pin_icon'] ?? ''),
+        'title' => sanitize_text_field($data['pin_title'] ?? $data['title'] ?? ''),
+        'description' => sanitize_textarea_field($data['pin_description'] ?? $data['description'] ?? ''),
+        'x' => floatval($data['pin_x'] ?? $data['x'] ?? 0),
+        'y' => floatval($data['pin_y'] ?? $data['y'] ?? 0),
+        'link' => esc_url_raw($data['pin_link'] ?? $data['link'] ?? ''),
+        'pin_type' => sanitize_text_field($data['pin_type'] ?? 'public'),
+        'icon' => sanitize_text_field($data['pin_icon'] ?? $data['icon'] ?? ''),
         // IMAGE FIELDS - CRITICAL
-        'image_1' => isset($data['pin_image_1']) ? absint($data['pin_image_1']) : 0,
-        'image_2' => isset($data['pin_image_2']) ? absint($data['pin_image_2']) : 0,
-        'hours' => isset($data['pin_hours']) ? sanitize_text_field($data['pin_hours']) : '',
+        'image_1' => isset($data['pin_image_1']) ? absint($data['pin_image_1']) : (isset($data['image_1']) ? absint($data['image_1']) : 0),
+        'image_2' => isset($data['pin_image_2']) ? absint($data['pin_image_2']) : (isset($data['image_2']) ? absint($data['image_2']) : 0),
+        'hours' => isset($data['pin_hours']) ? sanitize_text_field($data['pin_hours']) : (isset($data['hours']) ? sanitize_text_field($data['hours']) : ''),
         'created' => current_time('mysql')
     );
-    
+
     $pins[] = $new_pin;
     update_option('nirup_map_pins', $pins);
-    
+
     add_settings_error('nirup_pins', 'pin_added', __('Pin added successfully!', 'nirup-island'), 'updated');
 }
 
 function nirup_update_map_pin($data) {
     $pins = nirup_get_map_pins();
     $pin_id = sanitize_text_field($data['pin_id']);
-    
+
     foreach ($pins as &$pin) {
         if ($pin['id'] === $pin_id) {
-            $pin['title'] = sanitize_text_field($data['pin_title']);
-            $pin['description'] = sanitize_textarea_field($data['pin_description']);
-            $pin['x'] = floatval($data['pin_x']);
-            $pin['y'] = floatval($data['pin_y']);
-            $pin['link'] = esc_url_raw($data['pin_link']);
-            $pin['pin_type'] = sanitize_text_field($data['pin_type']);
-            $pin['icon'] = sanitize_text_field($data['pin_icon'] ?? '');
+            $pin['title'] = sanitize_text_field($data['pin_title'] ?? $data['title'] ?? $pin['title']);
+            $pin['description'] = sanitize_textarea_field($data['pin_description'] ?? $data['description'] ?? $pin['description']);
+            $pin['x'] = floatval($data['pin_x'] ?? $data['x'] ?? $pin['x']);
+            $pin['y'] = floatval($data['pin_y'] ?? $data['y'] ?? $pin['y']);
+            $pin['link'] = esc_url_raw($data['pin_link'] ?? $data['link'] ?? $pin['link']);
+            $pin['pin_type'] = sanitize_text_field($data['pin_type'] ?? $pin['pin_type']);
+            $pin['icon'] = sanitize_text_field($data['pin_icon'] ?? $data['icon'] ?? $pin['icon'] ?? '');
             // IMAGE FIELDS - CRITICAL
-            $pin['image_1'] = isset($data['pin_image_1']) ? absint($data['pin_image_1']) : 0;
-            $pin['image_2'] = isset($data['pin_image_2']) ? absint($data['pin_image_2']) : 0;
-            $pin['hours'] = isset($data['pin_hours']) ? sanitize_text_field($data['pin_hours']) : '';
+            $pin['image_1'] = isset($data['pin_image_1']) ? absint($data['pin_image_1']) : (isset($data['image_1']) ? absint($data['image_1']) : ($pin['image_1'] ?? 0));
+            $pin['image_2'] = isset($data['pin_image_2']) ? absint($data['pin_image_2']) : (isset($data['image_2']) ? absint($data['image_2']) : ($pin['image_2'] ?? 0));
+            $pin['hours'] = isset($data['pin_hours']) ? sanitize_text_field($data['pin_hours']) : (isset($data['hours']) ? sanitize_text_field($data['hours']) : ($pin['hours'] ?? ''));
             $pin['updated'] = current_time('mysql');
             break;
         }
     }
-    
+
     update_option('nirup_map_pins', $pins);
     add_settings_error('nirup_pins', 'pin_updated', __('Pin updated successfully!', 'nirup-island'), 'updated');
 }
