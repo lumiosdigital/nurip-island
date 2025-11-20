@@ -13883,4 +13883,199 @@ function nirup_villa_selling_customizer($wp_customize) {
     ));
 }
 add_action('customize_register', 'nirup_villa_selling_customizer');
+
+function nirup_add_selling_unit_features_meta_box() {
+    add_meta_box(
+        'selling_unit_features',
+        __('Unit Features', 'nirup-island'),
+        'nirup_selling_unit_features_meta_box_callback',
+        'selling_unit',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_selling_unit_features_meta_box');
+
+/**
+ * Selling Unit Features Meta Box Callback
+ */
+function nirup_selling_unit_features_meta_box_callback($post) {
+    wp_nonce_field('nirup_save_selling_unit_features', 'nirup_selling_unit_features_nonce');
+    
+    $features = get_post_meta($post->ID, '_unit_features', true);
+    if (!is_array($features)) {
+        $features = array();
+    }
+    
+    $available_icons = nirup_get_villa_feature_icons(); // Use the same icon library
+    ?>
+    
+    <div id="selling-unit-features-wrapper">
+        <div id="selling-unit-features-list">
+            <?php
+            if (!empty($features)) {
+                foreach ($features as $index => $feature) {
+                    $feature_text = isset($feature['text']) ? $feature['text'] : (is_string($feature) ? $feature : '');
+                    $feature_icon = isset($feature['icon']) ? $feature['icon'] : '';
+                    
+                    nirup_render_selling_unit_feature_row($feature_text, $feature_icon, $available_icons);
+                }
+            }
+            ?>
+        </div>
+        
+        <button type="button" id="add-unit-feature" class="button button-secondary" style="margin-top: 10px;">
+            + Add Feature
+        </button>
+        
+        <?php if (empty($available_icons)) : ?>
+            <p style="margin-top: 15px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffc107;">
+                <strong>No icons available.</strong> 
+                <a href="<?php echo admin_url('edit.php?post_type=villa&page=villa-feature-icons'); ?>">Upload icons to the library</a> first.
+            </p>
+        <?php endif; ?>
+    </div>
+    
+    <script>
+    jQuery(document).ready(function($) {
+        // Add feature
+        $('#add-unit-feature').on('click', function() {
+            var featureHtml = <?php echo json_encode(nirup_get_selling_unit_feature_row_html($available_icons)); ?>;
+            $('#selling-unit-features-list').append(featureHtml);
+        });
+        
+        // Remove feature
+        $(document).on('click', '.remove-unit-feature', function() {
+            $(this).closest('.selling-unit-feature-item').remove();
+        });
+        
+        // Icon preview on change
+        $(document).on('change', '.unit-feature-icon-select', function() {
+            var iconUrl = $(this).find(':selected').data('icon-url');
+            var preview = $(this).siblings('.unit-icon-preview');
+            
+            if (iconUrl) {
+                preview.html('<img src="' + iconUrl + '" style="width: 28px; height: 28px;">');
+            } else {
+                preview.html('<span style="font-size: 20px; color: #a48456;">•</span>');
+            }
+        });
+    });
+    </script>
+    
+    <style>
+        .selling-unit-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .unit-icon-preview {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .unit-feature-icon-select {
+            width: 200px;
+        }
+        .unit-feature-text-input {
+            flex: 1;
+        }
+    </style>
+    
+    <?php
+}
+
+/**
+ * Render a single selling unit feature row
+ */
+function nirup_render_selling_unit_feature_row($text = '', $icon = '', $available_icons = array()) {
+    ?>
+    <div class="selling-unit-feature-item">
+        <div class="unit-icon-preview">
+            <?php if ($icon && isset($available_icons[$icon])) : ?>
+                <img src="<?php echo esc_url($available_icons[$icon]['url']); ?>" style="width: 28px; height: 28px;">
+            <?php else : ?>
+                <span style="font-size: 20px; color: #a48456;">•</span>
+            <?php endif; ?>
+        </div>
+        
+        <select name="unit_features_icon[]" class="unit-feature-icon-select">
+            <option value="">No icon (bullet point)</option>
+            <?php foreach ($available_icons as $available_icon) : ?>
+                <option value="<?php echo esc_attr($available_icon['filename']); ?>" 
+                        data-icon-url="<?php echo esc_url($available_icon['url']); ?>"
+                        <?php selected($icon, $available_icon['filename']); ?>>
+                    <?php echo esc_html($available_icon['name']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        
+        <input 
+            type="text" 
+            name="unit_features_text[]" 
+            value="<?php echo esc_attr($text); ?>" 
+            placeholder="e.g., Private Pool, Ocean View, Modern Kitchen"
+            class="unit-feature-text-input"
+        />
+        
+        <button type="button" class="button remove-unit-feature">Remove</button>
+    </div>
+    <?php
+}
+
+/**
+ * Get HTML for new selling unit feature row
+ */
+function nirup_get_selling_unit_feature_row_html($available_icons) {
+    ob_start();
+    nirup_render_selling_unit_feature_row('', '', $available_icons);
+    return ob_get_clean();
+}
+
+/**
+ * Save Selling Unit Features
+ */
+function nirup_save_selling_unit_features($post_id) {
+    if (!isset($_POST['nirup_selling_unit_features_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_selling_unit_features_nonce'], 'nirup_save_selling_unit_features')) {
+        return;
+    }
+    
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    
+    $features = array();
+    
+    if (isset($_POST['unit_features_text']) && is_array($_POST['unit_features_text'])) {
+        $feature_texts = $_POST['unit_features_text'];
+        $feature_icons = isset($_POST['unit_features_icon']) ? $_POST['unit_features_icon'] : array();
+        
+        foreach ($feature_texts as $index => $text) {
+            $text = sanitize_text_field($text);
+            if (!empty($text)) {
+                $features[] = array(
+                    'text' => $text,
+                    'icon' => isset($feature_icons[$index]) ? sanitize_file_name($feature_icons[$index]) : ''
+                );
+            }
+        }
+    }
+    
+    update_post_meta($post_id, '_unit_features', $features);
+}
+add_action('save_post_selling_unit', 'nirup_save_selling_unit_features');
+
 ?>
