@@ -120,8 +120,8 @@
 }
 
 .pin-icon {
-    width: 47px;
-    height: 56px;
+    width: 86px;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -246,20 +246,30 @@
    MAP TOOLTIP
    =========================== */
 
+/**
+ * MINIMAL TOOLTIP CSS UPDATE
+ * File: assets/css/map-section.css
+ * REPLACE only the .map-tooltip section (keep everything else the same)
+ */
+
+/* ===========================
+   MAP TOOLTIP - UPDATED STYLING
+   =========================== */
+
 .map-tooltip {
     position: absolute;
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px 24px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(30, 54, 115, 0.2);
+    background: #FFFFFF;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+    border: none;
     z-index: 100;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
     pointer-events: none;
-    max-width: 320px;
-    min-width: 240px;
+    max-width: 420px;
+    min-width: 320px;
     transform: translateY(10px);
 }
 
@@ -267,91 +277,261 @@
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
 .map-tooltip.pinned {
     pointer-events: all;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    border: 2px solid #1E3673;
+}
+
+/* Close button */
+.tooltip-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    z-index: 10;
+    color: #3D332F;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tooltip-close:hover {
+    opacity: 1;
 }
 
 .tooltip-content {
+    padding: 30px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
     text-align: left;
+}
+
+/* Header with icon and title */
+.tooltip-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Wrapper in the tooltip */
+.tooltip-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Make the SVG fit the 32x32 box */
+.tooltip-icon svg {
+    width: 44px;
+    height: 44px;
+}
+
+/* Hide the pin body & glow – keep only the icon overlay (last <g>) */
+.tooltip-icon svg>g:first-of-type,
+.tooltip-icon svg>g:nth-of-type(2) {
+    display: none;
+}
+
+/* We don't need defs for the tooltip icon */
+.tooltip-icon svg defs {
+    display: none;
+}
+
+/* Slightly scale the icon overlay so it fills the circle more */
+.tooltip-icon svg>g:last-of-type {
+    transform-box: fill-box;
+    transform-origin: -10% -50%;
+    transform: scale(2);
+}
+
+/* Colour the icon based on pin type */
+/* Blue pins (public) */
+.tooltip-icon--public svg>g:last-of-type * {
+    fill: #153C88 !important;
+    /* your blue */
+}
+
+/* Gold pins (accommodation) */
+.tooltip-icon--accommodation svg>g:last-of-type * {
+    fill: #C49A5D !important;
+    /* your gold */
 }
 
 .tooltip-title {
     font-family: 'Amiri', serif;
-    font-size: 20px;
     font-weight: 400;
+    font-size: 18px;
+    line-height: 1;
     color: #3D332F;
-    margin: 0 0 12px 0;
-    line-height: 1.3;
+    margin: 0;
+    white-space: pre-line;
 }
 
 .tooltip-description {
     font-family: 'Albert Sans', sans-serif;
-    font-size: 14px;
     font-weight: 300;
+    font-size: 12px;
+    line-height: 1.3;
     color: #3D332F;
-    line-height: 1.5;
-    margin: 0 0 16px 0;
-    opacity: 0.85;
+    margin: 0;
 }
 
+/* Image gallery */
+.tooltip-images {
+    display: flex;
+    gap: 5px;
+    margin: 0;
+}
+
+.tooltip-image {
+    width: 150px;
+    height: 100px;
+    flex-shrink: 0;
+    overflow: hidden;
+    /* border-radius: 10px; */
+}
+
+.tooltip-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Hours display */
+.tooltip-hours {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+}
+
+.tooltip-hours .clock-icon {
+    flex-shrink: 0;
+}
+
+.tooltip-hours .hours-text {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 1.3;
+    color: #3D332F;
+}
+
+/* Actions section */
 .tooltip-actions {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(30, 54, 115, 0.2);
+    margin: 0;
+    padding: 0;
+    border: none;
 }
 
-.tooltip-link {
+/* Discover More button */
+.tooltip-button {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    background: #A48456;
+    color: #FFFFFF;
     font-family: 'Albert Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: #1E3673;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
     text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
+    padding: 10px 20px;
+    height: 30px;
+    transition: background 0.3s ease;
+    margin: 0;
 }
 
-.tooltip-link:hover {
-    color: #0F1E40;
+.tooltip-button:hover {
+    background: #8B6D3D;
 }
 
-.tooltip-arrow {
+/* Keep old link styling for backwards compatibility */
+.tooltip-link {
+    display: none;
+}
+
+/* Arrow */
+/* .tooltip-arrow {
     position: absolute;
-    bottom: -7px;
-    left: 24px;
-    width: 14px;
-    height: 14px;
-    background: #fff;
-    border-right: 1px solid rgba(30, 54, 115, 0.2);
-    border-bottom: 1px solid rgba(30, 54, 115, 0.2);
+    width: 8px;
+    height: 8px;
+    background: #FFFFFF;
     transform: rotate(45deg);
+    pointer-events: none;
+    bottom: -4px;
+    left: 20px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+} */
+
+/* When pin is active, hide it */
+.map-pin.active-pin {
+    opacity: 0;
+    pointer-events: none;
 }
 
-.tooltip-type {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 8px;
+/* ===========================
+   RESPONSIVE
+   =========================== */
+
+@media (max-width: 768px) {
+    .map-tooltip {
+        max-width: 300px;
+        min-width: 280px;
+    }
+
+    .tooltip-content {
+        padding: 25px 16px 16px;
+        gap: 12px;
+    }
+
+    .tooltip-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .tooltip-title {
+        font-size: 16px;
+    }
+
+    .tooltip-images {
+        gap: 4px;
+    }
+
+    .tooltip-image {
+        width: 130px;
+        height: 85px;
+    }
 }
 
-.tooltip-type.public {
-    background: rgba(30, 54, 115, 0.1);
-    color: #1E3673;
-}
+@media (max-width: 480px) {
+    .map-tooltip {
+        max-width: 260px;
+        min-width: 240px;
+    }
 
-.tooltip-type.accommodation {
-    background: rgba(196, 154, 93, 0.1);
-    color: #C49A5D;
+    .tooltip-images {
+        flex-direction: column;
+    }
+
+    .tooltip-image {
+        width: 100%;
+        height: 140px;
+    }
 }
 
 /* ===========================
@@ -557,3 +737,4 @@
         border: 1px solid #ccc;
     }
 }
+

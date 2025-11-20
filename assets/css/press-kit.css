@@ -1,0 +1,279 @@
+/* Press Kit Page Styles */
+
+.press-kit-wrapper {
+    /* background-color: #f3eeea; */
+    /* min-height: 100vh; */
+    width: 1400px;
+    margin: 0 auto;
+}
+
+/* Hero Section */
+.press-kit-hero {
+    /* padding-top: 80px; */
+    padding: 80px 20px 30px;
+    text-align: center;
+
+}
+
+.press-kit-hero-content {
+    max-width: 705px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.press-kit-hero-line {
+    width: 80px;
+    height: 1px;
+    background: #A48456;
+    transform: rotate(90deg);
+    margin: 48px auto 32px auto;
+}
+
+.press-kit-subtitle {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 23px;
+    line-height: 1.4;
+    color: #3d332f;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.press-kit-title {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 72px;
+    line-height: 72px;
+    color: #3d332f;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin: 0;
+}
+
+/* Description Section */
+.press-kit-description {
+    padding: 0px 20px 50px;
+    text-align: center;
+}
+
+.press-kit-description-inner {
+    max-width: 752px;
+    margin: 0 auto;
+}
+
+.press-kit-description p {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.4;
+    color: #3d332f;
+    opacity: 0.8;
+    margin: 0;
+}
+
+/* Cards Section */
+.press-kit-cards {
+    padding: 50px 20px 100px;
+}
+
+.press-kit-cards-inner {
+    max-width: 1399px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.press-kit-card {
+    background-color: #fcfaf6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    height: 575px;
+}
+
+.press-kit-card-image {
+    width: 100%;
+    height: 460px;
+    overflow: hidden;
+    position: relative;
+}
+
+.press-kit-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.press-kit-card-content {
+    padding: 15px 20px 10px;
+    text-align: center;
+}
+
+.press-kit-card-title {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0;
+}
+
+.press-kit-card-button {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    color: #8B5E1D;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 1px;
+    border-bottom: 0.5px solid #8B5E1D;
+    line-height: 1.2;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.press-kit-card-button:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+    border-bottom-color: transparent;
+}
+
+.press-kit-card-button span {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 1.2;
+    color: #8b5e1d;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Press Contacts Section */
+.press-kit-contacts {
+    padding: 100px 20px 150px;
+}
+
+.press-kit-contacts-inner {
+    width: fit-content;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.press-kit-contacts-title {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 1;
+    color: #3d332f;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    margin: 0 0 24px 0;
+}
+
+.press-kit-contacts-divider {
+    width: 100%;
+    height: 1px;
+    background-color: rgba(218, 214, 207, 1);
+    margin: 0 0 24px 0;
+}
+
+.press-kit-contacts-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.press-kit-contacts-content p {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .press-kit-cards-inner {
+        max-width: 960px;
+        gap: 15px;
+    }
+
+    .press-kit-card {
+        height: 500px;
+    }
+
+    .press-kit-card-image {
+        height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .press-kit-title {
+        font-size: 48px;
+        line-height: 52px;
+    }
+
+    .press-kit-subtitle {
+        font-size: 18px;
+    }
+
+    .press-kit-description p {
+        font-size: 16px;
+    }
+
+    .press-kit-cards-inner {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+    }
+
+    .press-kit-card {
+        height: auto;
+        min-height: 400px;
+    }
+
+    .press-kit-card-image {
+        height: 300px;
+    }
+
+    .press-kit-contacts-title {
+        font-size: 36px;
+    }
+
+    .press-kit-contacts-content p {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .press-kit-title {
+        font-size: 36px;
+        line-height: 40px;
+    }
+
+    .press-kit-subtitle {
+        font-size: 16px;
+    }
+
+    .press-kit-description p {
+        font-size: 14px;
+    }
+
+    .press-kit-card-title {
+        font-size: 24px;
+    }
+
+    .press-kit-contacts-title {
+        font-size: 28px;
+    }
+
+    .press-kit-contacts-content p {
+        font-size: 16px;
+    }
+}

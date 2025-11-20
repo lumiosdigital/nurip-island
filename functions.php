@@ -46,203 +46,129 @@ add_action('after_setup_theme', 'nirup_theme_setup');
 /**
  * UPDATED Enqueue Scripts and Styles Function
  */
+
+function nirup_get_secret($const_name, $theme_mod_key, $default = '') {
+  if (defined($const_name) && constant($const_name)) {
+    return constant($const_name);
+  }
+  $val = get_theme_mod($theme_mod_key, $default);
+  return $val !== '' ? $val : $default;
+}
+
 function nirup_enqueue_assets() {
-    // Debug output
-    if (current_user_can('manage_options')) {
-        echo '<script>console.log("🔧 FIXED nirup_enqueue_assets function running!");</script>';
-    }
-    
-    // === EXPLICITLY ENQUEUE JQUERY FIRST ===
-    wp_enqueue_script('jquery');
-    
-    if (current_user_can('manage_options')) {
-        echo '<script>console.log("✅ jQuery explicitly enqueued");</script>';
-    }
-    
+
+    // Use child-safe paths and automatic cache-busting
+    $dir_uri  = get_stylesheet_directory_uri();
+    $dir_path = get_stylesheet_directory();
+
     // === CSS FILES ===
-    wp_enqueue_style('nirup-style', get_stylesheet_uri(), array(), '1.0.2');
-    wp_enqueue_style('nirup-main', get_template_directory_uri() . '/assets/css/main.css', array(), '1.0.2');
-    wp_enqueue_style('nirup-header', get_template_directory_uri() . '/assets/css/header.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-hero', get_template_directory_uri() . '/assets/css/hero.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-video', get_template_directory_uri() . '/assets/css/video.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-about-island', get_template_directory_uri() . '/assets/css/about-island.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-accommodations', get_template_directory_uri() . '/assets/css/accommodations.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-experiences-carousel', get_template_directory_uri() . '/assets/css/experiences-carousel.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-experiences-archive', get_template_directory_uri() . '/assets/css/archive-experiences.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-breadcrumbs', get_template_directory_uri() . '/assets/css/breadcrumbs.css', array(), '1.0.2');
-    wp_enqueue_style('nirup-map-section', get_template_directory_uri() . '/assets/css/map-section.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-wellness-retreat', get_template_directory_uri() . '/assets/css/wellness-retreat.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-services', get_template_directory_uri() . '/assets/css/services.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-events-offers-carousel', get_template_directory_uri() . '/assets/css/events-offers-carousel.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-events-offers-archive', get_template_directory_uri() . '/assets/css/events-offers-archive.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-single-event-offer', get_template_directory_uri() . '/assets/css/single-event-offer.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-footer', get_template_directory_uri() . '/assets/css/footer.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-dining', get_template_directory_uri() . '/assets/css/dining.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-single-restaurant', get_template_directory_uri() . '/assets/css/single-restaurant.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-legal-pages', get_template_directory_uri() . '/assets/css/legal-pages.css', array('nirup-main'), '1.0.2');
-    wp_enqueue_style('nirup-contact', get_template_directory_uri() . '/assets/css/contact.css', array(), '1.0.2' );
-    wp_enqueue_style('nirup-marina', get_template_directory_uri() . '/assets/css/marina.css', array('nirup-main'), '1.0.0');
+    // style.css
+    wp_enqueue_style(
+        'nirup-style',
+        get_stylesheet_uri(),
+        [],
+        file_exists($dir_path . '/style.css') ? filemtime($dir_path . '/style.css') : null
+    );
 
+    // helper list: [handle, relative path from theme root, dependencies]
+    $css_files = [
+        ['nirup-main',                  '/assets/css/main.css',                  []],
+        ['nirup-header',                '/assets/css/header.css',                ['nirup-main']],
+        ['nirup-hero',                  '/assets/css/hero.css',                  ['nirup-main']],
+        ['nirup-video',                 '/assets/css/video.css',                 ['nirup-main']],
+        ['nirup-about-island',          '/assets/css/about-island.css',          ['nirup-main']],
+        ['nirup-accommodations',        '/assets/css/accommodations.css',        ['nirup-main']],
+        ['nirup-experiences-carousel',  '/assets/css/experiences-carousel.css',  ['nirup-main']],
+        ['nirup-experiences-archive',   '/assets/css/archive-experiences.css',   ['nirup-main']],
+        ['nirup-breadcrumbs',           '/assets/css/breadcrumbs.css',           []],
+        ['nirup-map-section',           '/assets/css/map-section.css',           ['nirup-main']],
+        ['nirup-wellness-retreat',      '/assets/css/wellness-retreat.css',      ['nirup-main']],
+        ['nirup-services',              '/assets/css/services.css',              ['nirup-main']],
+        ['nirup-events-offers-carousel','/assets/css/events-offers-carousel.css',['nirup-main']],
+        ['nirup-events-offers-archive', '/assets/css/events-offers-archive.css', ['nirup-main']],
+        ['nirup-single-event-offer',    '/assets/css/single-event-offer.css',    ['nirup-main']],
+        ['nirup-footer',                '/assets/css/footer.css',                ['nirup-main']],
+        ['nirup-dining',                '/assets/css/dining.css',                ['nirup-main']],
+        ['nirup-single-restaurant',     '/assets/css/single-restaurant.css',     ['nirup-main']],
+        ['nirup-legal-pages',           '/assets/css/legal-pages.css',           ['nirup-main']],
+        ['nirup-contact',               '/assets/css/contact.css',               []],
+        ['nirup-marina',                '/assets/css/marina.css',                ['nirup-main']],
+        ['nirup-media-coverage',        '/assets/css/media-coverage.css',        ['nirup-main']],
+        ['nirup-press-kit',         '/assets/css/press-kit.css',         ['nirup-main']],
+    ];
 
-    // === GOOGLE FONTS ===
-    wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Albert+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap', array(), null);
-    
+    foreach ($css_files as [$handle, $rel, $deps]) {
+        $path = $dir_path . $rel;
+        wp_enqueue_style(
+            $handle,
+            $dir_uri . $rel,
+            $deps,
+            file_exists($path) ? filemtime($path) : null
+        );
+    }
+
+    if (is_404()) {
+    $path_404 = $dir_path . '/assets/css/404.css';
+    wp_enqueue_style(
+        'nirup-404',
+        $dir_uri . '/assets/css/404.css',
+        ['nirup-main'],
+        file_exists($path_404) ? filemtime($path_404) : null
+    );
+}
+
+    // === GOOGLE FONTS === (leave version null so Google controls cache)
+    wp_enqueue_style(
+        'google-fonts',
+        'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Albert+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap',
+        [],
+        null
+    );
+
     // === JAVASCRIPT FILES WITH EXPLICIT JQUERY DEPENDENCY ===
-    
-    // 1. Core utilities - explicitly depend on 'jquery' handle
-    wp_enqueue_script(
-        'nirup-utils', 
-        get_template_directory_uri() . '/assets/js/utils.js', 
-        array('jquery'), 
-        '1.0.2', 
-        true
-    );
-    
-    if (current_user_can('manage_options')) {
-        echo '<script>console.log("📝 nirup-utils enqueued");</script>';
+    $js_files = [
+        // handle, rel path, deps
+        ['nirup-utils',                 '/assets/js/utils.js',                    ['jquery']],
+        ['nirup-navigation',            '/assets/js/navigation.js',              ['jquery','nirup-utils']],
+        ['nirup-mobile-menu',           '/assets/js/mobile-menu.js',             ['jquery','nirup-utils']],
+        ['nirup-search',                '/assets/js/search.js',                  ['jquery','nirup-utils']],
+        ['nirup-language',              '/assets/js/language-switcher.js',       ['jquery','nirup-utils']],
+        ['nirup-analytics',             '/assets/js/analytics.js',               ['jquery','nirup-utils']],
+        ['nirup-plugins',               '/assets/js/plugins.js',                 ['jquery','nirup-utils']],
+        ['nirup-carousel',              '/assets/js/carousel.js',                ['jquery']],
+        ['nirup-main',                  '/assets/js/main.js',                    ['jquery','nirup-utils','nirup-navigation','nirup-mobile-menu','nirup-search','nirup-language','nirup-analytics','nirup-plugins','nirup-carousel']],
+        ['nirup-map-section',           '/assets/js/map-section.js',             ['jquery']],
+        ['nirup-events-offers-carousel','/assets/js/events-offers-carousel.js',  ['jquery','nirup-utils']],
+        ['nirup-footer',                '/assets/js/footer.js',                  ['jquery']],
+        ['single-event-offer-gallery',  '/assets/js/single-event-offer-gallery.js',['jquery']],
+        ['nirup-contact',               '/assets/js/contact.js',                 ['jquery']],
+    ];
+
+    foreach ($js_files as [$handle, $rel, $deps]) {
+        $path = $dir_path . $rel;
+        wp_enqueue_script(
+            $handle,
+            $dir_uri . $rel,
+            $deps,
+            file_exists($path) ? filemtime($path) : null,
+            true
+        );
     }
-    
-    // 2. Navigation and header behavior
-    wp_enqueue_script(
-        'nirup-navigation', 
-        get_template_directory_uri() . '/assets/js/navigation.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 3. Mobile menu functionality
-    wp_enqueue_script(
-        'nirup-mobile-menu', 
-        get_template_directory_uri() . '/assets/js/mobile-menu.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 4. Search functionality
-    wp_enqueue_script(
-        'nirup-search', 
-        get_template_directory_uri() . '/assets/js/search.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 5. Language switcher
-    wp_enqueue_script(
-        'nirup-language', 
-        get_template_directory_uri() . '/assets/js/language-switcher.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 6. Analytics and tracking
-    wp_enqueue_script(
-        'nirup-analytics', 
-        get_template_directory_uri() . '/assets/js/analytics.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 7. Plugin integrations
-    wp_enqueue_script(
-        'nirup-plugins', 
-        get_template_directory_uri() . '/assets/js/plugins.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-    
-    // NEW: 8. Experiences carousel
-    wp_enqueue_script(
-        'nirup-carousel', 
-        get_template_directory_uri() . '/assets/js/carousel.js', 
-        array('jquery'), 
-        '1.0.2', 
-        true
-    );
-    
-    // 9. Main initialization (loads last)
-    wp_enqueue_script(
-        'nirup-main', 
-        get_template_directory_uri() . '/assets/js/main.js', 
-        array(
-            'jquery',
-            'nirup-utils',
-            'nirup-navigation', 
-            'nirup-mobile-menu',
-            'nirup-search',
-            'nirup-language',
-            'nirup-analytics',
-            'nirup-plugins',
-            'nirup-carousel'
-        ), 
-        '1.0.2', 
-        true
-    );
 
-    wp_enqueue_script(
-        'nirup-map-section', 
-        get_template_directory_uri() . '/assets/js/map-section.js', 
-        array('jquery'), 
-        '1.0.2', 
-        true
-    );
 
-    wp_enqueue_script(
-        'nirup-events-offers-carousel', 
-        get_template_directory_uri() . '/assets/js/events-offers-carousel.js', 
-        array('jquery', 'nirup-utils'), 
-        '1.0.2', 
-        true
-    );
-
-    wp_enqueue_script(
-        'nirup-footer', 
-        get_template_directory_uri() . '/assets/js/footer.js', 
-        array('jquery'), 
-        '1.0.2', 
-        true
-    );
-
-    wp_enqueue_script(
-        'single-event-offer-gallery', 
-        get_template_directory_uri() . '/assets/js/single-event-offer-gallery.js', 
-        array('jquery'), 
-        '1.0.2', 
-        true
-    );
-
-    // Enqueue contact JS
-    wp_enqueue_script(
-        'nirup-contact',
-        get_template_directory_uri() . '/assets/js/contact.js',
-        array('jquery'),
-        '1.0.3',
-        true
-    );
-
-    
-    if (current_user_can('manage_options')) {
-        echo '<script>console.log("✅ All JavaScript files enqueued!");</script>';
-    }
-    
     // === LOCALIZATION ===
     wp_localize_script('nirup-main', 'nirup_ajax', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('nirup_nonce')
     ));
-    
+
     wp_localize_script('nirup-utils', 'nirup_theme', array(
-        'template_url' => get_template_directory_uri(),
+        'template_url' => $dir_uri, // child-safe template URL
         'home_url' => home_url('/'),
         'is_mobile' => wp_is_mobile(),
         'debug' => defined('WP_DEBUG') && WP_DEBUG
     ));
-    
+
     // NEW: Localize carousel script
     wp_localize_script('nirup-carousel', 'nirup_carousel', array(
         'ajax_url' => admin_url('admin-ajax.php'),
@@ -255,32 +181,49 @@ function nirup_enqueue_assets() {
         'pins_enabled' => true
     ));
 
+    $site_key = nirup_get_secret('RECAPTCHA_SITE_KEY', 'nirup_recaptcha_site_key', '');
+    $brevo_list_id = nirup_get_secret('BREVO_LIST_ID', 'nirup_brevo_list_id', 6);
+
     wp_localize_script('nirup-footer', 'nirup_footer_ajax', array(
         'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('newsletter_nonce'),
+        'nonce'    => wp_create_nonce('newsletter_nonce'),
         'messages' => array(
             'subscribing' => __('Subscribing...', 'nirup-island'),
-            'error' => __('Something went wrong. Please try again.', 'nirup-island'),
-        )
+            'error'       => __('Something went wrong. Please try again.', 'nirup-island'),
+        ),
+        'recaptcha' => array(
+            'site_key' => $site_key,
+            'action'   => 'newsletter_subscribe'
+        ),
+        'brevo' => array(
+            'list_id'  => (int) $brevo_list_id,
+        ),
     ));
 
-    wp_localize_script('nirup-contact', 'nirup_contact_ajax', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('contact_form_nonce')
-    ));
+    wp_localize_script('nirup-contact', 'nirup_contact_ajax', [
+        'ajax_url'  => admin_url('admin-ajax.php'),
+        'nonce'     => wp_create_nonce('contact_form_nonce'),
+        'recaptcha' => [
+            'site_key' => nirup_get_secret('RECAPTCHA_SITE_KEY', 'nirup_recaptcha_site_key', ''),
+            'action'   => 'contact_submit'
+        ],
+    ]);
 
-    
-    
-    if (current_user_can('manage_options')) {
-        echo '<script>console.log("✅ Script localization complete!");</script>';
+    if (!empty($site_key) && !defined('NIRUP_DISABLE_CAPTCHA')) {
+        wp_enqueue_script(
+            'recaptcha-v3',
+            'https://www.google.com/recaptcha/api.js?render=' . rawurlencode($site_key),
+            [],
+            null,
+            true
+        );
     }
-
-    
 }
 
 // Make sure the hook is properly registered
 remove_action('wp_enqueue_scripts', 'nirup_enqueue_assets'); // Remove any existing
-add_action('wp_enqueue_scripts', 'nirup_enqueue_assets'); // Add fresh
+add_action('wp_enqueue_scripts', 'nirup_enqueue_assets', 20); // Run a bit later so it wins over plugins
+
 
 /**
  * Widget Areas
@@ -2577,6 +2520,13 @@ function nirup_get_breadcrumbs() {
         );
     }
 
+    if (is_page_template('page-villa-selling.php')) {
+        $breadcrumbs[] = array(
+            'title' => 'Own Your Private Island Retreat',
+            'url' => ''
+        );
+    }
+
     if (is_page_template('page-getting-here.php') || is_page('getting-here')) {
         $breadcrumbs[] = array(
             'title' => 'Getting Here',
@@ -2601,6 +2551,20 @@ function nirup_get_breadcrumbs() {
     if (is_page_template('page-private-events.php')) {
         $breadcrumbs[] = array(
             'title' => 'Private Events',
+            'url' => ''
+        );
+    }
+
+    if (is_page_template('media-coverage.php')) {
+        $breadcrumbs[] = array(
+            'title' => 'Media Coverage',
+            'url' => ''
+        );
+    }
+
+    if (is_page_template('page-press-kit.php')) {
+        $breadcrumbs[] = array(
+            'title' => 'Media Kit',
             'url' => ''
         );
     }
@@ -2803,24 +2767,122 @@ function nirup_map_section_customizer($wp_customize) {
 add_action('customize_register', 'nirup_map_section_customizer');
 
 function nirup_add_map_pins_menu() {
-    add_theme_page(
-        __('Map Pins', 'nirup-island'),
-        __('Map Pins', 'nirup-island'),
-        'manage_options',
-        'nirup-map-pins',
-        'nirup_map_pins_admin_page'
+    // Main menu item
+    add_menu_page(
+        __('Map Pins', 'nirup-island'),           // Page title
+        __('Map Pins', 'nirup-island'),           // Menu title
+        'manage_options',                          // Capability
+        'nirup-map-pins',                          // Menu slug
+        'nirup_map_pins_admin_page',              // Callback function
+        'dashicons-location-alt',                  // Icon
+        27                                         // Position (after Villas at 26)
+    );
+    
+    // Submenu: Manage Pins (same as main page)
+    add_submenu_page(
+        'nirup-map-pins',                          // Parent slug
+        __('Manage Pins', 'nirup-island'),        // Page title
+        __('Manage Pins', 'nirup-island'),        // Menu title
+        'manage_options',                          // Capability
+        'nirup-map-pins',                          // Menu slug (same as parent)
+        'nirup_map_pins_admin_page'               // Callback
+    );
+    
+    // Submenu: Icon Library
+    add_submenu_page(
+        'nirup-map-pins',                          // Parent slug
+        __('Icon Library', 'nirup-island'),       // Page title
+        __('Icon Library', 'nirup-island'),       // Menu title
+        'manage_options',                          // Capability
+        'nirup-map-icons',                         // Menu slug
+        'nirup_map_icons_admin_page'              // Callback function
     );
 }
 add_action('admin_menu', 'nirup_add_map_pins_menu');
 
-/**
- * REPLACE the nirup_map_pins_admin_page function in functions.php with this
- */
-/**
- * UPDATED Map Pins Admin Page with Icon Library Integration
- * REPLACE the entire nirup_map_pins_admin_page() function in your functions.php with this
- */
+function nirup_map_icons_admin_page() {
+    // Handle icon upload
+    if (isset($_FILES['custom_icon']) && check_admin_referer('nirup_icon_upload', 'icon_upload_nonce')) {
+        $uploaded = nirup_handle_custom_icon_upload();
+        if ($uploaded) {
+            add_settings_error('nirup_icons', 'icon_uploaded', __('Icon uploaded successfully!', 'nirup-island'), 'updated');
+        }
+    }
+    
+    // Handle icon deletion
+    if (isset($_POST['delete_icon']) && check_admin_referer('nirup_delete_icon', 'icon_delete_nonce')) {
+        $filename = sanitize_file_name($_POST['icon_filename']);
+        if (nirup_delete_custom_icon($filename)) {
+            add_settings_error('nirup_icons', 'icon_deleted', __('Icon deleted successfully!', 'nirup-island'), 'updated');
+        }
+    }
+    
+    $custom_icons = nirup_get_custom_icons();
+    ?>
+    <div class="wrap">
+        <h1><?php _e('Icon Library', 'nirup-island'); ?></h1>
+        
+        <?php settings_errors('nirup_icons'); ?>
+        
+        <!-- Upload Form -->
+        <div class="card" style="max-width: 600px;">
+            <h2><?php _e('Upload New Icon', 'nirup-island'); ?></h2>
+            <form method="post" enctype="multipart/form-data">
+                <?php wp_nonce_field('nirup_icon_upload', 'icon_upload_nonce'); ?>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php _e('SVG Icon File', 'nirup-island'); ?></th>
+                        <td>
+                            <input type="file" name="custom_icon" accept=".svg" required>
+                            <p class="description"><?php _e('Upload an SVG file. Max 100KB. Icon will be automatically standardized to 28x28px.', 'nirup-island'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+                <p class="submit">
+                    <button type="submit" class="button button-primary">
+                        <?php _e('Upload Icon', 'nirup-island'); ?>
+                    </button>
+                </p>
+            </form>
+        </div>
+        
+        <!-- Icon Library -->
+        <div class="card">
+            <h2><?php _e('Your Icon Library', 'nirup-island'); ?></h2>
+            
+            <?php if (empty($custom_icons)): ?>
+                <p><?php _e('No custom icons uploaded yet. Upload your first icon above!', 'nirup-island'); ?></p>
+            <?php else: ?>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; padding: 20px 0;">
+                    <?php foreach ($custom_icons as $icon): ?>
+                        <div style="border: 1px solid #ddd; padding: 15px; text-align: center; border-radius: 4px;">
+                            <div style="width: 60px; height: 60px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; background: #f5f5f5; border-radius: 4px;">
+                                <?php echo $icon['svg']; ?>
+                            </div>
+                            <div style="font-size: 12px; margin-bottom: 10px;">
+                                <strong><?php echo esc_html($icon['name']); ?></strong><br>
+                                <span style="color: #666;"><?php echo esc_html($icon['size']); ?></span>
+                            </div>
+                            <form method="post" style="margin: 0;" onsubmit="return confirm('<?php _e('Are you sure you want to delete this icon?', 'nirup-island'); ?>');">
+                                <?php wp_nonce_field('nirup_delete_icon', 'icon_delete_nonce'); ?>
+                                <input type="hidden" name="delete_icon" value="1">
+                                <input type="hidden" name="icon_filename" value="<?php echo esc_attr($icon['filename']); ?>">
+                                <button type="submit" class="button button-small" style="color: #b32d2e;">
+                                    <?php _e('Delete', 'nirup-island'); ?>
+                                </button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php
+}
+
 function nirup_map_pins_admin_page() {
+    wp_enqueue_media();
+
     // Handle form submissions
     if (isset($_POST['action']) && wp_verify_nonce($_POST['nirup_pins_nonce'], 'nirup_pins_action')) {
         if ($_POST['action'] === 'add_pin') {
@@ -2861,13 +2923,6 @@ function nirup_map_pins_admin_page() {
                             <li><strong><?php _e('Click on a pin', 'nirup-island'); ?></strong> <?php _e('to edit its details', 'nirup-island'); ?></li>
                         </ol>
                     </div>
-                    <div style="text-align: right;">
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; background: #f0f0f1; border-radius: 4px;">
-                            <input type="checkbox" id="toggle-grid" style="margin: 0;">
-                            <span style="font-weight: 500;"><?php _e('Show Grid', 'nirup-island'); ?></span>
-                        </label>
-                        <p style="margin: 8px 0 0 0; font-size: 12px; color: #666;"><?php _e('Grid helps with precise placement', 'nirup-island'); ?></p>
-                    </div>
                 </div>
             </div>
             
@@ -2877,8 +2932,6 @@ function nirup_map_pins_admin_page() {
                 <div class="map-editor-container">
                     <img src="<?php echo esc_url($map_image_url); ?>" alt="Map" class="map-editor-image" id="map-editor">
 
-                    <!-- Grid overlay -->
-                    <div class="map-grid-overlay" id="map-grid-overlay" style="display: none;"></div>
 
                     <div class="map-pins-overlay" id="map-pins-overlay">
                         <?php foreach ($pins as $pin): 
@@ -2988,6 +3041,49 @@ function nirup_map_pins_admin_page() {
                             <textarea id="modal-pin-description" rows="3" class="widefat"></textarea>
                         </div>
 
+                        <!-- Image 1 -->
+                        <div class="form-field">
+                            <label for="modal-pin-image-1"><?php _e('Image 1', 'nirup-island'); ?></label>
+                            <div class="image-upload-wrapper">
+                                <input type="hidden" id="modal-pin-image-1" value="">
+                                <button type="button" class="button upload-image-btn" data-target="modal-pin-image-1">
+                                    <?php _e('Select Image', 'nirup-island'); ?>
+                                </button>
+                                <button type="button" class="button remove-image-btn" data-target="modal-pin-image-1" style="display:none;">
+                                    <?php _e('Remove', 'nirup-island'); ?>
+                                </button>
+                                <div class="image-preview" data-for="modal-pin-image-1" style="display:none; margin-top:10px;">
+                                    <img src="" alt="" style="max-width: 150px; height: 100px; object-fit: cover; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <p class="description"><?php _e('First image to display in tooltip', 'nirup-island'); ?></p>
+                        </div>
+
+                        <!-- Image 2 -->
+                        <div class="form-field">
+                            <label for="modal-pin-image-2"><?php _e('Image 2', 'nirup-island'); ?></label>
+                            <div class="image-upload-wrapper">
+                                <input type="hidden" id="modal-pin-image-2" value="">
+                                <button type="button" class="button upload-image-btn" data-target="modal-pin-image-2">
+                                    <?php _e('Select Image', 'nirup-island'); ?>
+                                </button>
+                                <button type="button" class="button remove-image-btn" data-target="modal-pin-image-2" style="display:none;">
+                                    <?php _e('Remove', 'nirup-island'); ?>
+                                </button>
+                                <div class="image-preview" data-for="modal-pin-image-2" style="display:none; margin-top:10px;">
+                                    <img src="" alt="" style="max-width: 150px; height: 100px; object-fit: cover; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <p class="description"><?php _e('Second image to display in tooltip', 'nirup-island'); ?></p>
+                        </div>
+
+                        <!-- Hours Field -->
+                        <div class="form-field">
+                            <label for="modal-pin-hours"><?php _e('Hours', 'nirup-island'); ?></label>
+                            <input type="text" id="modal-pin-hours" class="widefat" placeholder="10:00 AM – 12:00 AM">
+                            <p class="description"><?php _e('Operating hours (optional), e.g., "10:00 AM – 12:00 AM"', 'nirup-island'); ?></p>
+                        </div>
+
                         <div class="form-field">
                             <label for="modal-pin-link"><?php _e('Link (Optional)', 'nirup-island'); ?></label>
                             <input type="url" id="modal-pin-link" class="widefat" placeholder="https://">
@@ -3002,7 +3098,7 @@ function nirup_map_pins_admin_page() {
                                     <div class="modal-icon-grid">
                                         <div class="modal-icon-option active" data-icon="">
                                             <div class="icon-box">
-                                                <span style="font-size: 10px; color: #999;"><?php _e('None', 'nirup-island'); ?></span>
+                                                <span style="font-size: 10px; color: black;"><?php _e('None', 'nirup-island'); ?></span>
                                             </div>
                                         </div>
                                         <?php foreach ($custom_icons as $filename => $icon): ?>
@@ -3039,7 +3135,114 @@ function nirup_map_pins_admin_page() {
                 </div>
             </div>
         </div>
+        <div id="edit-pin-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999999; align-items: center; justify-content: center;">
+            <div style="background: white; padding: 30px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
+                <button type="button" onclick="jQuery('#edit-pin-modal').fadeOut(200)" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #666; line-height: 1;">&times;</button>
+                
+                <h2 style="margin-top: 0;"><?php _e('Edit Pin', 'nirup-island'); ?></h2>
+                
+                <form method="post" id="edit-pin-form">
+                    <?php wp_nonce_field('nirup_pins_action', 'nirup_pins_nonce'); ?>
+                    <input type="hidden" name="action" value="update_pin">
+                    <input type="hidden" name="pin_id" id="edit-pin-id">
+                    
+                    <table class="form-table">
+                        <tr>
+                            <th><label for="edit-pin-title"><?php _e('Pin Title', 'nirup-island'); ?> *</label></th>
+                            <td><input type="text" name="title" id="edit-pin-title" class="regular-text" required></td>
+                        </tr>
+                        <tr>
+                            <th><label for="edit-pin-description"><?php _e('Description', 'nirup-island'); ?></label></th>
+                            <td><textarea name="description" id="edit-pin-description" rows="4" class="large-text"></textarea></td>
+                        </tr>
+                        <tr>
+                            <th><label for="edit-pin-link"><?php _e('Link URL', 'nirup-island'); ?></label></th>
+                            <td><input type="url" name="link" id="edit-pin-link" class="regular-text"></td>
+                        </tr>
+                        <tr>
+                            <th><label><?php _e('Pin Type', 'nirup-island'); ?></label></th>
+                            <td>
+                                <label style="margin-right: 20px;">
+                                    <input type="radio" name="pin_type" value="public"> <?php _e('Public Areas (Blue)', 'nirup-island'); ?>
+                                </label>
+                                <label>
+                                    <input type="radio" name="pin_type" value="accommodation"> <?php _e('Accommodations (Gold)', 'nirup-island'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="edit-pin-icon"><?php _e('Custom Icon', 'nirup-island'); ?></label></th>
+                            <td>
+                                <select name="icon" id="edit-pin-icon" class="regular-text">
+                                    <option value=""><?php _e('No custom icon', 'nirup-island'); ?></option>
+                                    <?php
+                                    $custom_icons = nirup_get_custom_icons();
+                                    foreach ($custom_icons as $icon):
+                                    ?>
+                                        <option value="custom:<?php echo esc_attr($icon['filename']); ?>"><?php echo esc_html($icon['name']); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="edit-pin-image-1"><?php _e('Image 1', 'nirup-island'); ?></label></th>
+                            <td>
+                                <input type="hidden" name="image_1" id="edit-pin-image-1">
+                                <button type="button" class="button upload-image-button" data-target="edit-pin-image-1"><?php _e('Select Image', 'nirup-island'); ?></button>
+                                <button type="button" class="button remove-image-button" data-target="edit-pin-image-1" style="display: none;"><?php _e('Remove', 'nirup-island'); ?></button>
+                                <div class="image-preview" data-target="edit-pin-image-1" style="margin-top: 10px;"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="edit-pin-image-2"><?php _e('Image 2', 'nirup-island'); ?></label></th>
+                            <td>
+                                <input type="hidden" name="image_2" id="edit-pin-image-2">
+                                <button type="button" class="button upload-image-button" data-target="edit-pin-image-2"><?php _e('Select Image', 'nirup-island'); ?></button>
+                                <button type="button" class="button remove-image-button" data-target="edit-pin-image-2" style="display: none;"><?php _e('Remove', 'nirup-island'); ?></button>
+                                <div class="image-preview" data-target="edit-pin-image-2" style="margin-top: 10px;"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="edit-pin-hours"><?php _e('Hours', 'nirup-island'); ?></label></th>
+                            <td><input type="text" name="hours" id="edit-pin-hours" class="regular-text" placeholder="e.g., 9:00 AM - 5:00 PM"></td>
+                        </tr>
+                    </table>
+                    
+                    <p class="submit">
+                        <button type="submit" class="button button-primary button-large"><?php _e('Update Pin', 'nirup-island'); ?></button>
+                        <button type="button" class="button button-large" onclick="jQuery('#edit-pin-modal').fadeOut(200)" style="margin-left: 10px;"><?php _e('Cancel', 'nirup-island'); ?></button>
+                    </p>
+                </form>
+            </div>
+        </div>
+
     </div>
+    <script>
+        jQuery(document).ready(function($) {
+            // Image upload in edit modal
+            $('#edit-pin-modal').on('click', '.upload-image-button', function(e) {
+                e.preventDefault();
+                var targetId = $(this).data('target');
+                var frame = wp.media({ title: 'Select Image', button: { text: 'Use this image' }, multiple: false });
+                frame.on('select', function() {
+                    var attachment = frame.state().get('selection').first().toJSON();
+                    $('#' + targetId).val(attachment.id);
+                    $('.image-preview[data-target="' + targetId + '"]').html('<img src="' + attachment.url + '" style="max-width: 200px;">');
+                    $('.remove-image-button[data-target="' + targetId + '"]').show();
+                });
+                frame.open();
+            });
+            
+            // Image removal in edit modal
+            $('#edit-pin-modal').on('click', '.remove-image-button', function(e) {
+                e.preventDefault();
+                var targetId = $(this).data('target');
+                $('#' + targetId).val('');
+                $('.image-preview[data-target="' + targetId + '"]').empty();
+                $(this).hide();
+            });
+        });
+    </script>
 
     <style>
         .nirup-map-admin .card {
@@ -3221,7 +3424,7 @@ function nirup_map_pins_admin_page() {
             font-size: 11px;
             text-align: center;
             font-weight: 500;
-            color: #333;
+            color: black;
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -3534,18 +3737,18 @@ function nirup_map_pins_admin_page() {
             border: 2px solid transparent;
             border-radius: 6px;
             cursor: pointer;
-            background: white;
+            background: #979797ff;
             transition: all 0.2s;
         }
 
         .modal-icon-option:hover {
             border-color: #0073aa;
-            background: #f0f8ff;
+            background: #97979767;
         }
 
         .modal-icon-option.active {
             border-color: #0073aa;
-            background: #e3f2fd;
+            background: #97979767;
             box-shadow: 0 2px 4px rgba(0,115,170,0.2);
         }
 
@@ -3566,7 +3769,7 @@ function nirup_map_pins_admin_page() {
         .modal-icon-option .icon-label {
             font-size: 10px;
             text-align: center;
-            color: #666;
+            color: black;
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -3597,11 +3800,64 @@ function nirup_map_pins_admin_page() {
     
     <script>
         jQuery(document).ready(function($) {
-            console.log('Map Pins Admin JS Loaded');
+            // ===================================
+            // GLOBAL VARIABLES - MUST BE FIRST
+            // ===================================
+            var pendingPinData = null;
+            var selectedModalIcon = '';
+            
+            // ===================================
+            // IMAGE UPLOAD FUNCTIONALITY
+            // ===================================
+            var imageUploader;
+            var currentImageTarget = null;
+
+            // Handle upload button click
+            $(document).on('click', '.upload-image-btn', function(e) {
+                e.preventDefault();
+                currentImageTarget = $(this).data('target');
+                
+                if (imageUploader) {
+                    imageUploader.open();
+                    return;
+                }
+                
+                imageUploader = wp.media({
+                    title: 'Select Image',
+                    button: { text: 'Use this image' },
+                    multiple: false,
+                    library: { type: 'image' }
+                });
+                
+                imageUploader.on('select', function() {
+                    var attachment = imageUploader.state().get('selection').first().toJSON();
+                    $('#' + currentImageTarget).val(attachment.id);
+                    var $preview = $('.image-preview[data-for="' + currentImageTarget + '"]');
+                    $preview.find('img').attr('src', attachment.url);
+                    $preview.show();
+                    $('.remove-image-btn[data-target="' + currentImageTarget + '"]').show();
+                });
+                
+                imageUploader.open();
+            });
+
+            // Handle remove button click
+            $(document).on('click', '.remove-image-btn', function(e) {
+                e.preventDefault();
+                var target = $(this).data('target');
+                $('#' + target).val('');
+                $('.image-preview[data-for="' + target + '"]').hide().find('img').attr('src', '');
+                $(this).hide();
+
+            });
+            
+
 
             var currentEditPinId = null;
             
-            // Icon selection functionality
+            // ===================================
+            // ICON SELECTION FUNCTIONALITY
+            // ===================================
             $('.icon-option').on('click', function() {
                 $('.icon-option').removeClass('active');
                 $(this).addClass('active');
@@ -3646,7 +3902,9 @@ function nirup_map_pins_admin_page() {
                 }
             }
             
-            // Make existing pins draggable
+            // ===================================
+            // DRAGGABLE PINS
+            // ===================================
             function makePinsDraggable() {
                 $('.admin-pin').draggable({
                     containment: '.map-editor-container',
@@ -3656,12 +3914,10 @@ function nirup_map_pins_admin_page() {
                     drag: function(event, ui) {
                         // Update coordinates display during drag
                         var container = $('.map-editor-image');
-                        var containerOffset = container.offset();
                         var containerWidth = container.width();
                         var containerHeight = container.height();
 
-                        // Calculate percentage position based on the actual position on the image
-                        // ui.position is relative to offsetParent
+                        // Calculate percentage position
                         var x = ((ui.position.left + ($(this).width() / 2)) / containerWidth) * 100;
                         var y = ((ui.position.top + $(this).height()) / containerHeight) * 100;
 
@@ -3674,11 +3930,6 @@ function nirup_map_pins_admin_page() {
                         var container = $('.map-editor-image');
                         var containerWidth = container.width();
                         var containerHeight = container.height();
-
-                        // Account for the transform: translate(-50%, -100%)
-                        // The pin's anchor point is at bottom-center due to the transform
-                        // ui.position gives us the top-left corner position after transform
-                        // We need to add back the offset to get the actual anchor point
                         var pinWidth = $(this).width();
                         var pinHeight = $(this).height();
 
@@ -3692,14 +3943,15 @@ function nirup_map_pins_admin_page() {
                 });
             }
 
-            // Add hover crosshair effect
+            // ===================================
+            // MAP INTERACTION - CROSSHAIR & CLICK
+            // ===================================
             $('.map-editor-container').on('mousemove', function(e) {
                 var container = $(this);
                 var rect = this.getBoundingClientRect();
                 var x = e.clientX - rect.left;
                 var y = e.clientY - rect.top;
 
-                // Update crosshair position
                 updateCrosshair(x, y);
 
                 // Calculate and display percentage coordinates
@@ -3713,12 +3965,9 @@ function nirup_map_pins_admin_page() {
 
             // Click on map to add new pin
             $('#map-editor').on('click', function(e) {
-                console.log('Map clicked');
+
 
                 var rect = this.getBoundingClientRect();
-
-                // Calculate click position relative to the image
-                // This gives us the exact position where the user clicked
                 var clickX = e.clientX - rect.left;
                 var clickY = e.clientY - rect.top;
 
@@ -3728,7 +3977,7 @@ function nirup_map_pins_admin_page() {
 
                 var pinType = $('input[name="new_pin_type"]:checked').val();
 
-                console.log('Adding pin at', x, y, 'type:', pinType);
+
 
                 // Visual feedback
                 showClickFeedback(clickX, clickY);
@@ -3784,59 +4033,65 @@ function nirup_map_pins_admin_page() {
                 }, 600);
             }
             
-            // Click on existing pin to edit
+            // ===================================
+            // PIN EDIT/DELETE
+            // ===================================
             $(document).on('click', '.admin-pin', function(e) {
                 e.stopPropagation();
                 var pinId = $(this).data('pin-id');
                 editPin(pinId);
             });
             
-            // Edit pin from table
             $('.edit-pin-btn').on('click', function() {
                 var pinId = $(this).data('pin-id');
                 editPin(pinId);
             });
             
-            // Delete pin
             $('.delete-pin-btn').on('click', function() {
                 var pinId = $(this).data('pin-id');
                 if (confirm('<?php _e('Are you sure you want to delete this pin?', 'nirup-island'); ?>')) {
                     deletePin(pinId);
                 }
             });
-            
-            // Modal handling
-            var pendingPinData = null;
-            var selectedModalIcon = '';
-            var editingPinId = null; // Track if we're editing
 
-            // Functions
+            // ===================================
+            // ADD NEW PIN FUNCTION
+            // ===================================
             function addNewPin(x, y, pinType) {
-                console.log('addNewPin called:', x, y, pinType);
 
-                // Store the pin data
+
+                // Store the pin data - CRITICAL FOR SAVE TO WORK
                 pendingPinData = { x: x, y: y, pinType: pinType };
                 selectedModalIcon = '';
                 editingPinId = null; // Not editing
 
-                // Reset and show modal
+
+
+                // Reset all modal fields
                 $('#modal-pin-title').val('');
                 $('#modal-pin-description').val('');
                 $('#modal-pin-link').val('');
+                $('#modal-pin-image-1').val('');
+                $('#modal-pin-image-2').val('');
+                $('#modal-pin-hours').val('');
+                $('.image-preview').hide().find('img').attr('src', '');
+                $('.remove-image-btn').hide();
                 $('.modal-icon-option').removeClass('active');
                 $('.modal-icon-option[data-icon=""]').addClass('active');
                 $('.pin-modal-header h2').text('<?php _e('Add New Pin', 'nirup-island'); ?>');
                 $('#modal-save-pin-btn').text('<?php _e('Add Pin', 'nirup-island'); ?>');
                 updateModalPreview();
 
-                console.log('Opening modal');
+
                 $('#pin-modal').fadeIn(200);
                 setTimeout(function() {
                     $('#modal-pin-title').focus();
                 }, 300);
             }
 
-            // Modal icon selection
+            // ===================================
+            // MODAL ICON SELECTION
+            // ===================================
             $(document).on('click', '.modal-icon-option', function() {
                 $('.modal-icon-option').removeClass('active');
                 $(this).addClass('active');
@@ -3844,13 +4099,12 @@ function nirup_map_pins_admin_page() {
                 updateModalPreview();
             });
 
-            // Update modal preview
+            // Update modal preview with selected icon
             function updateModalPreview() {
                 if (!pendingPinData) return;
 
                 var $preview = $('#modal-pin-preview');
 
-                // Generate preview with selected icon if any
                 $.ajax({
                     url: ajaxurl,
                     type: 'POST',
@@ -3871,8 +4125,12 @@ function nirup_map_pins_admin_page() {
                 });
             }
 
-            // Save pin from modal
+            // ===================================
+            // SAVE PIN BUTTON - SENDS ALL DATA
+            // ===================================
             $('#modal-save-pin-btn').on('click', function() {
+
+                
                 var title = $('#modal-pin-title').val().trim();
                 if (!title) {
                     alert('<?php _e('Please enter a pin title', 'nirup-island'); ?>');
@@ -3880,12 +4138,17 @@ function nirup_map_pins_admin_page() {
                 }
 
                 if (!pendingPinData) {
-                    console.error('No pending pin data');
+                    console.error('ERROR: pendingPinData is null!');
+                    alert('Error: No pin location set. Try clicking the map again.');
                     return;
                 }
 
                 var description = $('#modal-pin-description').val().trim();
                 var link = $('#modal-pin-link').val().trim();
+                var image1 = $('#modal-pin-image-1').val() || 0;
+                var image2 = $('#modal-pin-image-2').val() || 0;
+                var hours = ($('#modal-pin-hours').val() || '').trim();
+
 
                 // Check if we're editing or adding
                 var ajaxData = {
@@ -3911,22 +4174,42 @@ function nirup_map_pins_admin_page() {
                 $.ajax({
                     url: ajaxurl,
                     type: 'POST',
-                    data: ajaxData,
+                    data: {
+                        action: 'nirup_add_pin_ajax',
+                        nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>',
+                        title: title,
+                        description: description,
+                        link: link,
+                        icon: selectedModalIcon,
+                        image_1: image1,
+                        image_2: image2,
+                        hours: hours,
+                        x: pendingPinData.x,
+                        y: pendingPinData.y,
+                        pin_type: pendingPinData.pinType
+                    },
                     success: function(response) {
+                        console.log('Save response:', response);
                         if (response.success) {
+                            console.log('Pin saved successfully!');
                             $('#pin-modal').fadeOut(200);
                             location.reload();
                         } else {
+                            console.error('Save failed:', response.data);
                             alert('Error: ' + response.data);
                         }
                     },
-                    error: function() {
+                    error: function(xhr, status, error) {
+                        console.error('AJAX error:', error);
+                        console.error('Response:', xhr.responseText);
                         alert('<?php _e('An error occurred. Please try again.', 'nirup-island'); ?>');
                     }
                 });
             });
 
-            // Close modal
+            // ===================================
+            // CLOSE MODAL
+            // ===================================
             function closeModal() {
                 $('#pin-modal').fadeOut(200);
                 pendingPinData = null;
@@ -3944,6 +4227,9 @@ function nirup_map_pins_admin_page() {
                 }
             });
             
+            // ===================================
+            // PIN MANAGEMENT FUNCTIONS
+            // ===================================
             function savePinPosition(pinId, x, y) {
                 $.ajax({
                     url: ajaxurl,
@@ -3965,49 +4251,53 @@ function nirup_map_pins_admin_page() {
             
             function editPin(pinId) {
                 var $pin = $(`.admin-pin[data-pin-id="${pinId}"]`);
-
-                // Get current pin position
-                var pinLeft = parseFloat($pin.css('left'));
-                var pinTop = parseFloat($pin.css('top'));
-                var containerWidth = $('.map-editor-container').width();
-                var containerHeight = $('.map-editor-container').height();
-                var xPercent = (pinLeft / containerWidth) * 100;
-                var yPercent = (pinTop / containerHeight) * 100;
-
-                // Store the pin data
-                pendingPinData = {
-                    x: xPercent,
-                    y: yPercent,
-                    pinType: $pin.data('pin-type')
-                };
-                editingPinId = pinId;
-
-                // Pre-populate modal with existing data
-                $('#modal-pin-title').val($pin.data('title') || '');
-                $('#modal-pin-description').val($pin.data('description') || '');
-                $('#modal-pin-link').val($pin.data('link') || '');
-
-                // Pre-select the icon if one exists
-                var currentIcon = $pin.data('icon') || '';
-                selectedModalIcon = currentIcon;
-                $('.modal-icon-option').removeClass('active');
-                if (currentIcon) {
-                    $(`.modal-icon-option[data-icon="${currentIcon}"]`).addClass('active');
+                
+                // Pre-fill all form fields
+                $('#edit-pin-id').val(pinId);
+                $('#edit-pin-title').val($pin.data('title'));
+                $('#edit-pin-description').val($pin.data('description'));
+                $('#edit-pin-link').val($pin.data('link'));
+                $('#edit-pin-hours').val($pin.data('hours'));
+                $('input[name="pin_type"][value="' + $pin.data('pin-type') + '"]').prop('checked', true);
+                
+                // Set icon
+                var iconValue = $pin.data('icon');
+                $('#edit-pin-icon').val(iconValue || '');
+                
+                // Handle Image 1
+                var image1 = $pin.data('image_1');
+                if (image1 && image1 != '0') {
+                    $('#edit-pin-image-1').val(image1);
+                    $.post(ajaxurl, { action: 'get_attachment_url', attachment_id: image1 }, function(response) {
+                        if (response.success) {
+                            $('.image-preview[data-target="edit-pin-image-1"]').html('<img src="' + response.data.url + '" style="max-width: 200px;">');
+                            $('.remove-image-button[data-target="edit-pin-image-1"]').show();
+                        }
+                    });
                 } else {
-                    $('.modal-icon-option[data-icon=""]').addClass('active');
+                    $('#edit-pin-image-1').val('');
+                    $('.image-preview[data-target="edit-pin-image-1"]').empty();
+                    $('.remove-image-button[data-target="edit-pin-image-1"]').hide();
                 }
-
-                // Update modal title and button
-                $('.pin-modal-header h2').text('<?php _e('Edit Pin', 'nirup-island'); ?>');
-                $('#modal-save-pin-btn').text('<?php _e('Update Pin', 'nirup-island'); ?>');
-
-                updateModalPreview();
-
+                
+                // Handle Image 2
+                var image2 = $pin.data('image_2');
+                if (image2 && image2 != '0') {
+                    $('#edit-pin-image-2').val(image2);
+                    $.post(ajaxurl, { action: 'get_attachment_url', attachment_id: image2 }, function(response) {
+                        if (response.success) {
+                            $('.image-preview[data-target="edit-pin-image-2"]').html('<img src="' + response.data.url + '" style="max-width: 200px;">');
+                            $('.remove-image-button[data-target="edit-pin-image-2"]').show();
+                        }
+                    });
+                } else {
+                    $('#edit-pin-image-2').val('');
+                    $('.image-preview[data-target="edit-pin-image-2"]').empty();
+                    $('.remove-image-button[data-target="edit-pin-image-2"]').hide();
+                }
+                
                 // Show modal
-                $('#pin-modal').fadeIn(200);
-                setTimeout(function() {
-                    $('#modal-pin-title').focus();
-                }, 300);
+                $('#edit-pin-modal').css('display', 'flex').hide().fadeIn(200);
             }
             
             function deletePin(pinId) {
@@ -4034,22 +4324,10 @@ function nirup_map_pins_admin_page() {
                 $('.wrap h1').after($message);
                 setTimeout(() => $message.fadeOut(), 3000);
             }
-            
-            // Grid toggle
-            $('#toggle-grid').on('change', function() {
-                var $grid = $('#map-grid-overlay');
-                if ($(this).is(':checked')) {
-                    $grid.fadeIn(200);
-                } else {
-                    $grid.fadeOut(200);
-                }
-            });
-
-            // Initialize
+        
             makePinsDraggable();
-
-            // Initialize with "No Icon" selected
             $('.no-icon-option').trigger('click');
+            
         });
     </script>
     
@@ -4059,6 +4337,18 @@ function nirup_map_pins_admin_page() {
 function nirup_get_map_pins() {
     return get_option('nirup_map_pins', array());
 }
+
+function nirup_get_attachment_url_ajax() {
+    $attachment_id = intval($_POST['attachment_id']);
+    $url = wp_get_attachment_image_url($attachment_id, 'medium');
+    
+    if ($url) {
+        wp_send_json_success(array('url' => $url));
+    } else {
+        wp_send_json_error(array('message' => 'Image not found'));
+    }
+}
+add_action('wp_ajax_get_attachment_url', 'nirup_get_attachment_url_ajax');
 
 function nirup_add_map_pin($data) {
     $pins = nirup_get_map_pins();
@@ -4070,8 +4360,12 @@ function nirup_add_map_pin($data) {
         'x' => floatval($data['pin_x']),
         'y' => floatval($data['pin_y']),
         'link' => esc_url_raw($data['pin_link']),
-        'pin_type' => sanitize_text_field($data['pin_type']), // Changed from 'icon_type'
-        'icon' => sanitize_text_field($data['pin_icon'] ?? ''), // NEW: Icon field
+        'pin_type' => sanitize_text_field($data['pin_type']),
+        'icon' => sanitize_text_field($data['pin_icon'] ?? ''),
+        // IMAGE FIELDS - CRITICAL
+        'image_1' => isset($data['pin_image_1']) ? absint($data['pin_image_1']) : 0,
+        'image_2' => isset($data['pin_image_2']) ? absint($data['pin_image_2']) : 0,
+        'hours' => isset($data['pin_hours']) ? sanitize_text_field($data['pin_hours']) : '',
         'created' => current_time('mysql')
     );
     
@@ -4092,8 +4386,12 @@ function nirup_update_map_pin($data) {
             $pin['x'] = floatval($data['pin_x']);
             $pin['y'] = floatval($data['pin_y']);
             $pin['link'] = esc_url_raw($data['pin_link']);
-            $pin['pin_type'] = sanitize_text_field($data['pin_type']); // Changed from 'icon_type'
+            $pin['pin_type'] = sanitize_text_field($data['pin_type']);
             $pin['icon'] = sanitize_text_field($data['pin_icon'] ?? '');
+            // IMAGE FIELDS - CRITICAL
+            $pin['image_1'] = isset($data['pin_image_1']) ? absint($data['pin_image_1']) : 0;
+            $pin['image_2'] = isset($data['pin_image_2']) ? absint($data['pin_image_2']) : 0;
+            $pin['hours'] = isset($data['pin_hours']) ? sanitize_text_field($data['pin_hours']) : '';
             $pin['updated'] = current_time('mysql');
             break;
         }
@@ -4102,6 +4400,28 @@ function nirup_update_map_pin($data) {
     update_option('nirup_map_pins', $pins);
     add_settings_error('nirup_pins', 'pin_updated', __('Pin updated successfully!', 'nirup-island'), 'updated');
 }
+
+// AJAX handler to get image URL
+function nirup_get_image_url() {
+    $image_id = intval($_POST['image_id']);
+    $size = isset($_POST['size']) ? sanitize_text_field($_POST['size']) : 'medium';
+    
+    if (!$image_id) {
+        wp_send_json_error('No image ID provided');
+        return;
+    }
+    
+    $image_url = wp_get_attachment_image_url($image_id, $size);
+    
+    if ($image_url) {
+        wp_send_json_success($image_url);
+    } else {
+        wp_send_json_error('Image not found');
+    }
+}
+add_action('wp_ajax_nirup_get_image_url', 'nirup_get_image_url');
+add_action('wp_ajax_nopriv_nirup_get_image_url', 'nirup_get_image_url');
+
 
 function nirup_delete_map_pin($pin_id) {
     $pins = nirup_get_map_pins();
@@ -4127,26 +4447,24 @@ function nirup_should_display_map_section() {
     return get_theme_mod('nirup_map_display', true);
 }
 
-
-/**
- * ADD THESE NEW FUNCTIONS to your functions.php (in addition to the previous ones)
- * These handle the AJAX for drag & drop functionality
- */
-
-// ===========================
-// AJAX HANDLERS FOR DRAG & DROP
-// ===========================
+function nirup_get_all_pins_debug() {
+    $pins = get_option('nirup_map_pins', array());
+    wp_send_json_success($pins);
+}
+add_action('wp_ajax_nirup_get_all_pins_debug', 'nirup_get_all_pins_debug');
 
 // AJAX: Add new pin
 function nirup_add_pin_ajax() {
     // Verify nonce
     if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
-        wp_die('Security check failed');
+        wp_send_json_error('Security check failed');
+        return;
     }
 
     // Check permissions
     if (!current_user_can('manage_options')) {
-        wp_die('Insufficient permissions');
+        wp_send_json_error('Insufficient permissions');
+        return;
     }
 
     $pins = nirup_get_map_pins();
@@ -4158,8 +4476,12 @@ function nirup_add_pin_ajax() {
         'x' => floatval($_POST['x']),
         'y' => floatval($_POST['y']),
         'link' => isset($_POST['link']) ? esc_url_raw($_POST['link']) : '',
-        'pin_type' => sanitize_text_field($_POST['pin_type']), // 'public' or 'accommodation'
+        'pin_type' => sanitize_text_field($_POST['pin_type']),
         'icon' => isset($_POST['icon']) ? sanitize_text_field($_POST['icon']) : '',
+        // IMAGE FIELDS - CRITICAL FOR SAVING
+        'image-1' => isset($_POST['image_1']) ? absint($_POST['image_1']) : 0,
+        'image-2' => isset($_POST['image_2']) ? absint($_POST['image_2']) : 0,
+        'hours' => isset($_POST['hours']) ? sanitize_text_field($_POST['hours']) : '',
         'created' => current_time('mysql')
     );
 
@@ -4191,12 +4513,10 @@ add_action('wp_ajax_nirup_get_pin_preview', 'nirup_get_pin_preview_ajax');
 
 // AJAX: Update pin position
 function nirup_update_pin_position() {
-    // Verify nonce
     if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
         wp_die('Security check failed');
     }
     
-    // Check permissions
     if (!current_user_can('manage_options')) {
         wp_die('Insufficient permissions');
     }
@@ -4219,6 +4539,7 @@ function nirup_update_pin_position() {
     wp_send_json_success('Position updated');
 }
 add_action('wp_ajax_nirup_update_pin_position', 'nirup_update_pin_position');
+
 
 // AJAX: Update pin details
 function nirup_update_pin_ajax() {
@@ -4259,12 +4580,10 @@ add_action('wp_ajax_nirup_update_pin_ajax', 'nirup_update_pin_ajax');
 
 // AJAX: Delete pin
 function nirup_delete_pin_ajax() {
-    // Verify nonce
     if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
         wp_die('Security check failed');
     }
     
-    // Check permissions
     if (!current_user_can('manage_options')) {
         wp_die('Insufficient permissions');
     }
@@ -4282,22 +4601,13 @@ function nirup_delete_pin_ajax() {
 add_action('wp_ajax_nirup_delete_pin_ajax', 'nirup_delete_pin_ajax');
 
 function nirup_enqueue_admin_assets() {
-    // Only on our admin page
     $screen = get_current_screen();
-    if ($screen && $screen->id === 'appearance_page_nirup-map-pins') {
+    if ($screen && in_array($screen->id, ['toplevel_page_nirup-map-pins', 'map-pins_page_nirup-map-icons'])) {
         wp_enqueue_script('jquery-ui-draggable');
+        wp_enqueue_media();
     }
 }
 add_action('admin_enqueue_scripts', 'nirup_enqueue_admin_assets');
-
-/**
- * CUSTOM ICON LIBRARY SYSTEM
- * Replace the icon-related functions in your functions.php with these
- */
-
-// ===========================
-// UPDATED ICON SYSTEM - UPLOAD-ONLY LIBRARY
-// ===========================
 
 // Remove predefined icons - only use uploaded ones
 function nirup_get_predefined_icons() {
@@ -4418,65 +4728,126 @@ function nirup_delete_custom_icon($filename) {
     return false;
 }
 
-// Updated pin icon function - only handles custom icons
-function nirup_get_pin_icon_svg($pin_type, $custom_icon = '') {
-    if ($pin_type === 'accommodation') {
-        $base_svg = '<g filter="url(#filter0_d_433_1358)">
-                <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6846C46.6555 87.1051 47.3445 87.1051 47.7763 86.6846C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#C49A5D"/>
-                <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79.3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79.3491 33:3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_433_1358)" stroke-width="1.5"/>
-            </g>';
-        $defs = '<defs>
-                <filter id="filter0_d_433_1358" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                    <feOffset dy="5"/>
-                    <feGaussianBlur stdDeviation="10"/>
-                    <feComposite in2="hardAlpha" operator="out"/>
-                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
-                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_433_1358"/>
-                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_433_1358" result="shape"/>
-                </filter>
-                <linearGradient id="paint0_linear_433_1358" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#D8AE72"/>
-                    <stop offset="1" stop-color="#A48456"/>
-                </linearGradient>
-            </defs>';
-    } else {
-        $base_svg = '<g filter="url(#filter0_d_433_1373)">
-                <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6847C46.6555 87.1051 47.3445 87.1051 47.7763 86.6847C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#1E3673"/>
-                <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79:3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79:3491 33:3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_433_1373)" stroke-width="1.5"/>
-            </g>';
-        $defs = '<defs>
-                <filter id="filter0_d_433_1373" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                    <feOffset dy="5"/>
-                    <feGaussianBlur stdDeviation="10"/>
-                    <feComposite in2="hardAlpha" operator="out"/>
-                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
-                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_433_1373"/>
-                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_anta_1373" result="shape"/>
-                </filter>
-                <linearGradient id="paint0_linear_433_1373" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#6E9CE0"/>
-                    <stop offset="1" stop-color="#1E3673"/>
-                </linearGradient>
-            </defs>';
+
+function nirup_extract_svg_viewbox($svg_string) {
+    // Try to find viewBox attribute
+    if (preg_match('/viewBox=["\']([^"\']+)["\']/', $svg_string, $matches)) {
+        return $matches[1];
     }
     
-    // Add custom icon overlay if provided
+    // If no viewBox, try to construct one from width/height
+    $width = 28;  
+    $height = 28; 
+    
+    if (preg_match('/width=["\'](\d+(?:\.\d+)?)[^"\']*["\']/', $svg_string, $w_matches)) {
+        $width = floatval($w_matches[1]);
+    }
+    if (preg_match('/height=["\'](\d+(?:\.\d+)?)[^"\']*["\']/', $svg_string, $h_matches)) {
+        $height = floatval($h_matches[1]);
+    }
+    
+    return "0 0 $width $height";
+}
+
+function nirup_extract_svg_content($svg_string) {
+    $svg_string = preg_replace('/<svg[^>]*>/', '', $svg_string);
+    $svg_string = preg_replace('/<\/svg>/', '', $svg_string);
+    return trim($svg_string);
+}
+
+
+function nirup_get_pin_icon_svg($pin_type, $custom_icon = '') {
+    if ($pin_type === 'accommodation') {
+        $base_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="94" height="124" viewBox="0 0 94 124" fill="none">
+        <g filter="url(#filter0_d_481_1351)">
+                    <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6847C46.6555 87.1051 47.3445 87.1051 47.7763 86.6847C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#C49A5D"/>
+                    <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79.3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79.3491 33.3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_481_1351)" stroke-width="1.5"/>
+                    </g>
+                    <g filter="url(#filter1_d_481_1351)">
+                    <circle cx="47" cy="95.0005" r="4" fill="white"/>
+                    </g>';
+        $defs = '<defs>
+<filter id="filter0_d_481_1351" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="5"/>
+<feGaussianBlur stdDeviation="10"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1351"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1351" result="shape"/>
+</filter>
+<filter id="filter1_d_481_1351" x="39" y="89.0005" width="16" height="16" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1351"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1351" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_481_1351" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E6C896"/>
+<stop offset="1" stop-color="#A07543"/>
+</linearGradient>
+</defs>';
+    } else {
+        // Public pin type
+        $base_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="94" height="124" viewBox="0 0 94 124" fill="none">
+        <g filter="url(#filter0_d_481_1382)">
+                    <path d="M47 15C32.0966 15.0197 20.0197 27.0965 20 41.9999C20 61.3835 45.155 85.6609 46.2237 86.6847C46.6555 87.1051 47.3445 87.1051 47.7763 86.6847C48.845 85.6609 74 61.3835 74 41.9999C73.9803 27.0965 61.9034 15.0197 47 15Z" fill="#153C88"/>
+                    <path d="M47 15.75C61.263 15.7694 72.8627 27.147 73.2402 41.3232L73.25 42.001C73.2498 46.6932 71.7246 51.7302 69.375 56.6943C67.0282 61.6527 63.8806 66.4934 60.6875 70.7793C54.3027 79.3491 47.7822 85.6403 47.2578 86.1426L47.2529 86.1475C47.1124 86.2842 46.8876 86.2842 46.7471 86.1475L46.7422 86.1426C46.2178 85.6403 39.6973 79.3491 33.3125 70.7793C30.1194 66.4934 26.9718 61.6527 24.625 56.6943C22.2754 51.7302 20.7502 46.6932 20.75 42.001C20.7691 27.5114 32.5105 15.7697 47 15.75Z" stroke="url(#paint0_linear_481_1382)" stroke-width="1.5"/>
+                    </g>
+                    <g filter="url(#filter1_d_481_1382)">
+                    <circle cx="47" cy="95.0005" r="4" fill="white"/>
+                    </g>';
+        $defs = '<defs>
+<filter id="filter0_d_481_1382" x="0" y="0" width="94" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="5"/>
+<feGaussianBlur stdDeviation="10"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1382"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1382" result="shape"/>
+</filter>
+<filter id="filter1_d_481_1382" x="39" y="89.0005" width="16" height="16" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_481_1382"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_481_1382" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_481_1382" x1="47" y1="15" x2="47" y2="87" gradientUnits="userSpaceOnUse">
+<stop stop-color="#6E9CE0"/>
+<stop offset="1" stop-color="#1E3673"/>
+</linearGradient>
+</defs>';
+    }
+    
+    // Add custom icon overlay - NO BACKGROUND CIRCLE
     $icon_overlay = '';
     if (!empty($custom_icon) && strpos($custom_icon, 'custom:') === 0) {
         $filename = str_replace('custom:', '', $custom_icon);
         $custom_icons = nirup_get_custom_icons();
         if (isset($custom_icons[$filename])) {
             $icon_svg = $custom_icons[$filename]['svg'];
-            // Position icon in the upper part of the pin, scale it appropriately
-            // No background circle - just the icon itself in white for contrast
-            $icon_overlay = '<g transform="translate(47, 32)">
-                <g transform="translate(-10, -10) scale(0.65)" fill="white" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));">
-                    ' . $icon_svg . '
-                </g>
+            
+            // Extract the viewBox and content from the uploaded SVG
+            $viewBox = nirup_extract_svg_viewbox($icon_svg);
+            $icon_content = nirup_extract_svg_content($icon_svg);
+            
+            // STANDARDIZED 28x28 ICON CONTAINER - NO BACKGROUND
+            $icon_overlay = '
+            <g transform="translate(33, 28)">
+                <svg x="0" y="0" width="28" height="28" viewBox="' . esc_attr($viewBox) . '" preserveAspectRatio="xMidYMid meet">
+                    ' . $icon_content . '
+                </svg>
             </g>';
         }
     }
@@ -4485,7 +4856,7 @@ function nirup_get_pin_icon_svg($pin_type, $custom_icon = '') {
         ' . $base_svg . '
         ' . $icon_overlay . '
         ' . $defs . '
-    </svg>';
+        </svg>';
 }
 
 // AJAX handler for icon management
@@ -4511,17 +4882,6 @@ function nirup_manage_icon_ajax() {
 }
 add_action('wp_ajax_nirup_manage_icon_ajax', 'nirup_manage_icon_ajax');
 
-// Add icon library management to admin page
-function nirup_add_icon_library_menu() {
-    add_theme_page(
-        __('Icon Library', 'nirup-island'),
-        __('Icon Library', 'nirup-island'),
-        'manage_options',
-        'nirup-icon-library',
-        'nirup_icon_library_admin_page'
-    );
-}
-add_action('admin_menu', 'nirup_add_icon_library_menu');
 
 function nirup_icon_library_admin_page() {
     // Handle icon upload
@@ -5904,17 +6264,17 @@ function nirup_footer_customizer($wp_customize) {
         'description' => __('Enter your TikTok profile URL. Leave empty to hide the icon.', 'nirup-island'),
     ));
 
-    // LinkedIn URL
-    $wp_customize->add_setting('nirup_social_linkedin', array(
+    // Facebook URL
+    $wp_customize->add_setting('nirup_social_facebook', array(
         'default' => '',
         'sanitize_callback' => 'esc_url_raw',
     ));
 
-    $wp_customize->add_control('nirup_social_linkedin', array(
-        'label' => __('LinkedIn URL', 'nirup-island'),
+    $wp_customize->add_control('nirup_social_facebook', array(
+        'label' => __('Facebook URL', 'nirup-island'),
         'section' => 'nirup_footer_settings',
         'type' => 'url',
-        'description' => __('Enter your LinkedIn profile URL. Leave empty to hide the icon.', 'nirup-island'),
+        'description' => __('Enter your Facebook profile URL. Leave empty to hide the icon.', 'nirup-island'),
     ));
 
     // TripAdvisor URL
@@ -5986,6 +6346,48 @@ function nirup_footer_customizer($wp_customize) {
 
     // === BREVO NEWSLETTER SETTINGS ===
 
+        // === reCAPTCHA v3 SETTINGS ===
+
+    // Site Key
+    $wp_customize->add_setting('nirup_recaptcha_site_key', array(
+        'default'           => '',
+        'sanitize_callback' => 'sanitize_text_field',
+        'capability'        => 'manage_options',
+    ));
+    $wp_customize->add_control('nirup_recaptcha_site_key', array(
+        'label'       => __('reCAPTCHA v3 Site Key', 'nirup-island'),
+        'section'     => 'nirup_footer_settings',
+        'type'        => 'text',
+        'description' => __('From Google reCAPTCHA Admin Console. Add all domains (localhost, staging, production).', 'nirup-island'),
+    ));
+
+    // Secret Key
+    $wp_customize->add_setting('nirup_recaptcha_secret', array(
+        'default'           => '',
+        'sanitize_callback' => 'sanitize_text_field',
+        'capability'        => 'manage_options',
+    ));
+    $wp_customize->add_control('nirup_recaptcha_secret', array(
+        'label'       => __('reCAPTCHA v3 Secret Key', 'nirup-island'),
+        'section'     => 'nirup_footer_settings',
+        'type'        => 'text', // change to 'password' if you prefer hidden input
+        'description' => __('Server-side secret used to verify tokens. For best security, you can define RECAPTCHA_SECRET in wp-config.php.', 'nirup-island'),
+    ));
+
+    // (Optional) tighten Brevo List ID sanitization to integer
+    $wp_customize->add_setting('nirup_brevo_list_id', array(
+        'default'           => '6',
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('nirup_brevo_list_id', array(
+        'label'       => __('Brevo List ID', 'nirup-island'),
+        'section'     => 'nirup_footer_settings',
+        'type'        => 'number',
+        'input_attrs' => array('min' => 1, 'step' => 1),
+        'description' => __('Numeric List ID (e.g., 6).', 'nirup-island'),
+    ));
+
+
     // Brevo API Key
     $wp_customize->add_setting('nirup_brevo_api_key', array(
         'default' => '',
@@ -5999,101 +6401,141 @@ function nirup_footer_customizer($wp_customize) {
         'description' => __('Enter your Brevo (Sendinblue) API key for newsletter integration', 'nirup-island'),
     ));
 
-    // Brevo List ID
-    $wp_customize->add_setting('nirup_brevo_list_id', array(
-        'default' => '6',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-
-    $wp_customize->add_control('nirup_brevo_list_id', array(
-        'label' => __('Brevo List ID', 'nirup-island'),
-        'section' => 'nirup_footer_settings',
-        'type' => 'text',
-        'description' => __('Enter the Brevo list ID where subscribers should be added', 'nirup-island'),
-    ));
 }
 add_action('customize_register', 'nirup_footer_customizer');
 
 function nirup_handle_newsletter_subscription() {
     // Check nonce for security
-    if (!wp_verify_nonce($_POST['nonce'], 'newsletter_nonce')) {
-        wp_die('Security check failed');
+    if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'newsletter_nonce')) {
+        wp_send_json_error(array('message' => 'Security check failed'), 403);
     }
 
-    $email = sanitize_email($_POST['email']);
-
+    $email = sanitize_email($_POST['email'] ?? '');
     if (!is_email($email)) {
-        wp_send_json_error(array('message' => 'Please enter a valid email address.'));
-        return;
+        wp_send_json_error(array('message' => 'Please enter a valid email address.'), 400);
     }
 
-    // Get Brevo API credentials from customizer
-    $brevo_api_key = get_theme_mod('nirup_brevo_api_key', '');
-    $brevo_list_id = get_theme_mod('nirup_brevo_list_id', '');
 
-    // Try to add to Brevo first
+    $brevo_api_key     = nirup_get_secret('BREVO_API_KEY',     'nirup_brevo_api_key',     '');
+    $brevo_list_id     = (int) nirup_get_secret('BREVO_LIST_ID','nirup_brevo_list_id',     6);
+
+
+    $recaptcha_secret = nirup_get_secret('RECAPTCHA_SECRET', 'nirup_recaptcha_secret', '');
+    $recaptcha_token  = sanitize_text_field($_POST['recaptcha_token'] ?? '');
+
+    // If no secret is configured, skip (keeps current behavior intact)
+    if (!empty($recaptcha_secret)) {
+    $verify = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
+        'body' => [
+        'secret'   => $recaptcha_secret,
+        'response' => $recaptcha_token,
+        'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+        ],
+        'timeout' => 10,
+    ]);
+
+    if (is_wp_error($verify)) {
+        wp_send_json_error(['message' => 'Captcha verification failed. Please try again.'], 400);
+    }
+
+    $vbody = json_decode(wp_remote_retrieve_body($verify), true);
+    $score = isset($vbody['score']) ? (float) $vbody['score'] : 0;
+    $ok    = !empty($vbody['success']) && $score >= 0.5;
+
+    if (!$ok) {
+        // OPTIONAL: lower threshold slightly if needed (e.g., 0.3)
+        // if (!empty($vbody['success']) && $score >= 0.3) { $ok = true; }
+
+        // Fail fast on captcha only (do not touch Brevo/local logic)
+        wp_send_json_error(['message' => 'Captcha failed. Please try again.'], 400);
+    }
+    } else {
+    // No secret present → keep current working flow
+    error_log('reCAPTCHA secret not set; skipping verification.');
+    }
+
+
+    // ---- Brevo upsert (uses $brevo_api_key and $brevo_list_id) ----
+    error_log('Newsletter subscription attempt for: ' . $email);
+    error_log('Brevo API Key configured: ' . (!empty($brevo_api_key) ? 'Yes' : 'No'));
+    error_log('Brevo List ID configured: ' . (!empty($brevo_list_id) ? $brevo_list_id : 'No'));
+
     $brevo_success = false;
     $brevo_error_message = '';
 
     if (!empty($brevo_api_key) && !empty($brevo_list_id)) {
-        // Prepare data for Brevo API
         $data = array(
-            'email' => $email,
-            'listIds' => array(intval($brevo_list_id)),
-            'updateEnabled' => true
+            'email'         => $email,
+            'listIds'       => array($brevo_list_id),
+            'updateEnabled' => true,
         );
 
-        // Make API request to Brevo
+        error_log('Sending to Brevo API with list ID: ' . intval($brevo_list_id));
+
         $response = wp_remote_post('https://api.brevo.com/v3/contacts', array(
             'headers' => array(
-                'api-key' => $brevo_api_key,
+                'api-key'      => $brevo_api_key,
                 'Content-Type' => 'application/json',
+                'Accept'       => 'application/json',
             ),
-            'body' => json_encode($data),
+            'body'    => wp_json_encode($data),
             'timeout' => 15,
         ));
 
         if (is_wp_error($response)) {
             $brevo_error_message = $response->get_error_message();
-            error_log('Brevo API Error: ' . $brevo_error_message);
+            error_log('Brevo API WP_Error: ' . $brevo_error_message);
         } else {
-            $response_code = wp_remote_retrieve_response_code($response);
-            $response_body = json_decode(wp_remote_retrieve_body($response), true);
+            $response_code     = wp_remote_retrieve_response_code($response);
+            $response_body_raw = wp_remote_retrieve_body($response);
+            $response_body     = json_decode($response_body_raw, true);
 
-            // Success codes: 201 (created) or 204 (updated/already exists)
+            error_log('Brevo API Response Code: ' . $response_code);
+            error_log('Brevo API Response Body: ' . $response_body_raw);
+
             if ($response_code === 201 || $response_code === 204) {
                 $brevo_success = true;
+                error_log('Brevo subscription successful for: ' . $email);
             } else {
-                $brevo_error_message = isset($response_body['message']) ? $response_body['message'] : 'Unknown error';
+                $brevo_error_message = $response_body['message'] ?? 'Unknown error';
                 error_log('Brevo API Error (Code ' . $response_code . '): ' . $brevo_error_message);
+                if (isset($response_body['code'])) {
+                    error_log('Brevo Error Code: ' . $response_body['code']);
+                }
             }
         }
+    } else {
+        error_log('Brevo integration skipped - credentials not configured');
     }
 
-    // Also save to local database as backup
+    // Local backup store (unchanged)
     $subscribers = get_option('nirup_newsletter_subscribers', array());
-    $already_subscribed = in_array($email, $subscribers);
-
+    $already_subscribed = in_array($email, $subscribers, true);
     if (!$already_subscribed) {
         $subscribers[] = $email;
         update_option('nirup_newsletter_subscribers', $subscribers);
+        error_log('Email saved to local database: ' . $email);
+    } else {
+        error_log('Email already in local database: ' . $email);
     }
 
-    // Send response based on Brevo result
+    // Response
     if ($brevo_success) {
         wp_send_json_success(array('message' => 'Thank you for subscribing to our newsletter!'));
     } elseif (!empty($brevo_api_key) && !empty($brevo_list_id)) {
-        // Brevo was configured but failed
         wp_send_json_error(array('message' => 'There was an issue subscribing you. Please try again later.'));
     } elseif ($already_subscribed) {
         wp_send_json_error(array('message' => 'You are already subscribed.'));
     } else {
-        // No Brevo configured, just local storage
         wp_send_json_success(array('message' => 'Thank you for subscribing!'));
     }
 }
-add_action('wp_ajax_nirup_newsletter_subscribe', 'nirup_handle_newsletter_subscription');
+// AJAX: logged-out users
 add_action('wp_ajax_nopriv_nirup_newsletter_subscribe', 'nirup_handle_newsletter_subscription');
+// AJAX: logged-in users
+add_action('wp_ajax_nirup_newsletter_subscribe',        'nirup_handle_newsletter_subscription');
+
+
 
 function nirup_sustainability_customizer($wp_customize) {
     
@@ -7497,11 +7939,11 @@ function nirup_contact_form_submit() {
     // Get and sanitize form data
     $form_data = isset($_POST['form_data']) ? $_POST['form_data'] : array();
     
-    $name = sanitize_text_field($form_data['name']);
-    $email = sanitize_email($form_data['email']);
-    $phone = sanitize_text_field($form_data['phone']);
-    $inquiry_type = sanitize_text_field($form_data['inquiry_type']);
-    $message = sanitize_textarea_field($form_data['message']);
+    $name         = sanitize_text_field($form_data['name'] ?? '');
+    $email        = sanitize_email($form_data['email'] ?? '');
+    $phone        = sanitize_text_field($form_data['phone'] ?? '');
+    $inquiry_type = sanitize_text_field($form_data['inquiry_type'] ?? '');
+    $message      = sanitize_textarea_field($form_data['message'] ?? '');
     
     // Validate required fields
     if (empty($name) || empty($email) || empty($inquiry_type) || empty($message)) {
@@ -7514,26 +7956,55 @@ function nirup_contact_form_submit() {
         wp_send_json_error(array('message' => 'Please enter a valid email address.'));
         return;
     }
+
+    // ---- reCAPTCHA v3 verification (added) ----
+    $recaptcha_secret = nirup_get_secret('RECAPTCHA_SECRET', 'nirup_recaptcha_secret', '');
+    $recaptcha_token  = sanitize_text_field($_POST['recaptcha_token'] ?? '');
+    $captcha_enabled  = !defined('NIRUP_DISABLE_CAPTCHA') && !empty($recaptcha_secret);
+
+    if ($captcha_enabled) {
+        $verify = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', array(
+            'body' => array(
+                'secret'   => $recaptcha_secret,
+                'response' => $recaptcha_token,
+                'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+            ),
+            'timeout' => 10,
+        ));
+
+        if (is_wp_error($verify)) {
+            wp_send_json_error(array('message' => 'Captcha verification failed. Please try again.'), 400);
+        }
+
+        $vbody = json_decode(wp_remote_retrieve_body($verify), true);
+        $score = isset($vbody['score']) ? (float) $vbody['score'] : 0;
+
+        // Threshold 0.5 (loosen to 0.3 if needed on dev)
+        if (empty($vbody['success']) || $score < 0.5) {
+            wp_send_json_error(array('message' => 'Captcha failed. Please try again.'), 400);
+        }
+    } else {
+        error_log('Contact form: reCAPTCHA disabled or not configured; skipping verification.');
+    }
+    // ---- end captcha ----
     
     // Store submission in database FIRST
     nirup_store_contact_submission($name, $email, $phone, $inquiry_type, $message);
     error_log('Contact Form - Submission saved to database');
     
     // Get email settings from customizer
-    $admin_email = get_theme_mod('nirup_contact_form_email', 'lumiosdigital@gmail.com');
-    $from_email = get_theme_mod('nirup_contact_form_from_email', 'noreply@lumiosdigital.com');
-    $from_name = get_bloginfo('name');
+    $admin_email = get_theme_mod('nirup_contact_form_email', 'explore@nirupisland.com');
+    $from_email  = get_theme_mod('nirup_contact_form_from_email', 'explore@nirupisland.com');
+    $from_name   = get_bloginfo('name');
     
     error_log('Contact Form - Admin email: ' . $admin_email);
     error_log('Contact Form - From email: ' . $from_email);
     error_log('Contact Form - User email: ' . $email);
     
-    // ==========================================
-    // EMAIL 1: ADMIN NOTIFICATION (Internal)
-    // ==========================================
+    // EMAIL 1: ADMIN NOTIFICATION
     $admin_subject = '[' . get_bloginfo('name') . '] New Contact Form Submission from ' . $name;
     
-    $admin_body = "New contact form submission:\n\n";
+    $admin_body  = "New contact form submission:\n\n";
     $admin_body .= "Name: " . $name . "\n";
     $admin_body .= "Email: " . $email . "\n";
     $admin_body .= "Phone: " . (!empty($phone) ? $phone : 'Not provided') . "\n";
@@ -7549,53 +8020,39 @@ function nirup_contact_form_submit() {
         'Reply-To: ' . $name . ' <' . $email . '>'
     );
     
-    // ==========================================
-    // EMAIL 2: USER CONFIRMATION (Customer)
-    // ==========================================
-    
-    // Get customizable email content
+    // EMAIL 2: USER CONFIRMATION
     $user_subject_template = get_theme_mod('nirup_contact_confirmation_subject', 'Thank you for contacting {site_name}');
-    $user_body_template = get_theme_mod('nirup_contact_confirmation_body', "Dear {user_name},\n\nThank you for reaching out to us. We have received your message and our team will review it shortly.\n\nHere's a summary of what you submitted:\n\nType of Inquiry: {inquiry_type}\n\nWe aim to respond within 1-2 business days. If your matter is urgent, please don't hesitate to call us at {phone_number}.\n\nBest regards,\nThe {site_name} Team");
-    $user_footer_template = get_theme_mod('nirup_contact_confirmation_footer', "---\nThis is an automated confirmation email. Please do not reply to this message.");
+    $user_body_template    = get_theme_mod('nirup_contact_confirmation_body', "Dear {user_name},\n\nThank you for reaching out to us. We have received your message and our team will review it shortly.\n\nHere's a summary of what you submitted:\n\nType of Inquiry: {inquiry_type}\n\nWe aim to respond within 1-2 business days. If your matter is urgent, please don't hesitate to call us at {phone_number}.\n\nBest regards,\nThe {site_name} Team");
+    $user_footer_template  = get_theme_mod('nirup_contact_confirmation_footer', "---\nThis is an automated confirmation email. Please do not reply to this message.");
     
-    // Replace placeholders with actual values
     $replacements = array(
-        '{site_name}' => get_bloginfo('name'),
-        '{user_name}' => $name,
-        '{user_email}' => $email,
-        '{user_phone}' => !empty($phone) ? $phone : 'Not provided',
+        '{site_name}'    => get_bloginfo('name'),
+        '{user_name}'    => $name,
+        '{user_email}'   => $email,
+        '{user_phone}'   => !empty($phone) ? $phone : 'Not provided',
         '{inquiry_type}' => $inquiry_type,
         '{phone_number}' => get_theme_mod('nirup_contact_phone_primary', '+62 811 6220 999')
     );
     
-    // Apply replacements
     $user_subject = str_replace(array_keys($replacements), array_values($replacements), $user_subject_template);
-    $user_body = str_replace(array_keys($replacements), array_values($replacements), $user_body_template);
-    $user_footer = str_replace(array_keys($replacements), array_values($replacements), $user_footer_template);
-    
-    // Combine body and footer
-    $user_body = $user_body . "\n\n" . $user_footer;
+    $user_body    = str_replace(array_keys($replacements), array_values($replacements), $user_body_template);
+    $user_footer  = str_replace(array_keys($replacements), array_values($replacements), $user_footer_template);
+    $user_body    = $user_body . "\n\n" . $user_footer;
     
     $user_headers = array(
         'Content-Type: text/plain; charset=UTF-8',
         'From: ' . $from_name . ' <' . $from_email . '>'
     );
     
-    // ==========================================
     // SEND BOTH EMAILS
-    // ==========================================
-    
-    // Send admin notification
     error_log('Contact Form - Attempting to send admin email to: ' . $admin_email);
     $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
     error_log('Contact Form - Admin email result: ' . ($admin_mail_sent ? 'SUCCESS' : 'FAILED'));
     
-    // Send user confirmation
     error_log('Contact Form - Attempting to send user email to: ' . $email);
     $user_mail_sent = wp_mail($email, $user_subject, $user_body, $user_headers);
     error_log('Contact Form - User email result: ' . ($user_mail_sent ? 'SUCCESS' : 'FAILED'));
     
-    // Check for PHPMailer errors
     if (!$admin_mail_sent || !$user_mail_sent) {
         global $phpmailer;
         if (isset($phpmailer) && !empty($phpmailer->ErrorInfo)) {
@@ -7603,28 +8060,25 @@ function nirup_contact_form_submit() {
         }
     }
     
-    // ==========================================
     // RETURN RESPONSE
-    // ==========================================
-    
-    // Return success if at least one email sent
     if ($admin_mail_sent || $user_mail_sent) {
         wp_send_json_success(array(
-            'message' => 'Your message has been received! We will respond within 1-2 business days.',
+            'message'    => 'Your message has been received! We will respond within 1-2 business days.',
             'admin_sent' => $admin_mail_sent,
-            'user_sent' => $user_mail_sent
+            'user_sent'  => $user_mail_sent
         ));
     } else {
         // Both failed but data is saved
         wp_send_json_success(array(
-            'message' => 'Your message has been saved! We will respond within 1-2 business days.',
+            'message'    => 'Your message has been saved! We will respond within 1-2 business days.',
             'admin_sent' => false,
-            'user_sent' => false
+            'user_sent'  => false
         ));
     }
 }
 add_action('wp_ajax_nirup_contact_form_submit', 'nirup_contact_form_submit');
 add_action('wp_ajax_nopriv_nirup_contact_form_submit', 'nirup_contact_form_submit');
+
 
 
 /**
@@ -7706,7 +8160,7 @@ function nirup_contact_form_customizer($wp_customize) {
     
     // Send FROM Email Setting (noreply address)
     $wp_customize->add_setting('nirup_contact_form_from_email', array(
-        'default' => 'noreply@lumiosdigital.com',
+        'default' => 'explore@nirupisland.com',
         'sanitize_callback' => 'sanitize_email',
         'transport' => 'refresh',
     ));
@@ -7721,7 +8175,7 @@ function nirup_contact_form_customizer($wp_customize) {
     
     // Send TO Email Setting (admin notification)
     $wp_customize->add_setting('nirup_contact_form_email', array(
-        'default' => 'lumiosdigital@gmail.com',
+        'default' => 'explore@nirupisland.com',
         'sanitize_callback' => 'sanitize_email',
         'transport' => 'refresh',
     ));
@@ -8421,6 +8875,33 @@ function nirup_marina_meta_box_callback($post) {
         </div>
     </div>
 
+    <!-- Marina Gallery Section -->
+    <div class="marina-meta-section">
+        <h3>📸 Marina Gallery</h3>
+        <p style="color: #666; margin-bottom: 15px;">Upload images for the marina gallery. The first image will be used as the main image, and the next 4 will appear in the grid.</p>
+
+        <div class="marina-gallery-images" style="margin-bottom: 15px; min-height: 50px; border: 2px dashed #ddd; padding: 10px; background: #fafafa;">
+            <?php
+            if ($gallery_images && is_array($gallery_images)) {
+                foreach ($gallery_images as $index => $image_id) {
+                    $image_url = wp_get_attachment_image_src($image_id, 'thumbnail');
+                    if ($image_url) {
+                        echo '<div class="marina-gallery-item" data-id="' . $image_id . '" style="position: relative; display: inline-block; margin: 5px; cursor: move;">';
+                        echo '<img src="' . $image_url[0] . '" style="max-width: 100px; height: 80px; object-fit: cover; border: 2px solid #ddd;" />';
+                        echo '<button type="button" class="remove-marina-gallery-image button" style="position: absolute; top: -5px; right: -5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1; padding: 0;">×</button>';
+                        echo '<input type="hidden" name="marina_gallery[' . $index . ']" value="' . $image_id . '">';
+                        echo '</div>';
+                    }
+                }
+            }
+            ?>
+        </div>
+
+        <button type="button" id="add_marina_gallery_image" class="button button-primary">Add Images to Gallery</button>
+        <button type="button" id="clear_marina_gallery" class="button" style="margin-left: 10px;">Clear All Images</button>
+        <p class="description" style="margin-top: 10px;">You can drag and drop images to reorder them. The first image is the main gallery image.</p>
+    </div>
+
     <!-- NEW: PDF Downloads Section -->
     <div class="marina-meta-section">
         <h3>📄 Downloadable PDFs</h3>
@@ -8567,6 +9048,81 @@ function nirup_marina_meta_box_callback($post) {
             $('#' + fieldName + '_display').remove();
             $('.upload-pdf-btn[data-field="' + fieldName + '"]').text('Upload PDF');
         });
+
+        // ===== MARINA GALLERY UPLOADER =====
+        var marinaGalleryUploader;
+
+        $('#add_marina_gallery_image').on('click', function(e) {
+            e.preventDefault();
+
+            if (marinaGalleryUploader) {
+                marinaGalleryUploader.open();
+                return;
+            }
+
+            marinaGalleryUploader = wp.media({
+                title: 'Select Images for Marina Gallery',
+                button: {
+                    text: 'Add to Gallery'
+                },
+                multiple: true,
+                library: {
+                    type: 'image'
+                }
+            });
+
+            marinaGalleryUploader.on('select', function() {
+                var attachments = marinaGalleryUploader.state().get('selection').toJSON();
+                var currentCount = $('.marina-gallery-item').length;
+
+                // Add selected images
+                attachments.forEach(function(attachment, index) {
+                    var imageIndex = currentCount + index;
+                    var imageHtml = '<div class="marina-gallery-item" data-id="' + attachment.id + '" style="position: relative; display: inline-block; margin: 5px; cursor: move;">';
+                    imageHtml += '<img src="' + (attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url) + '" style="max-width: 100px; height: 80px; object-fit: cover; border: 2px solid #ddd;" />';
+                    imageHtml += '<button type="button" class="remove-marina-gallery-image button" style="position: absolute; top: -5px; right: -5px; background: #dc3232; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; line-height: 1; padding: 0;">×</button>';
+                    imageHtml += '<input type="hidden" name="marina_gallery[' + imageIndex + ']" value="' + attachment.id + '">';
+                    imageHtml += '</div>';
+
+                    $('.marina-gallery-images').append(imageHtml);
+                });
+            });
+
+            marinaGalleryUploader.open();
+        });
+
+        // Remove marina gallery image
+        $(document).on('click', '.remove-marina-gallery-image', function(e) {
+            e.preventDefault();
+            $(this).closest('.marina-gallery-item').remove();
+
+            // Reindex the remaining images
+            $('.marina-gallery-item').each(function(index) {
+                $(this).find('input[type="hidden"]').attr('name', 'marina_gallery[' + index + ']');
+            });
+        });
+
+        // Clear all marina gallery images
+        $('#clear_marina_gallery').on('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to clear all gallery images?')) {
+                $('.marina-gallery-images').empty();
+            }
+        });
+
+        // Make marina gallery sortable
+        if ($('.marina-gallery-images').length) {
+            $('.marina-gallery-images').sortable({
+                items: '.marina-gallery-item',
+                cursor: 'move',
+                update: function() {
+                    // Reindex after sorting
+                    $('.marina-gallery-item').each(function(index) {
+                        $(this).find('input[type="hidden"]').attr('name', 'marina_gallery[' + index + ']');
+                    });
+                }
+            });
+        }
     });
     </script>
     <?php
@@ -9714,8 +10270,8 @@ function nirup_private_events_form_submit() {
     error_log('Private Events Form - Submission saved to database');
     
     // Get email settings from customizer
-    $admin_email = get_theme_mod('nirup_private_events_form_email', 'lumiosdigital@gmail.com');
-    $from_email = get_theme_mod('nirup_private_events_form_from_email', 'noreply@lumiosdigital.com');
+    $admin_email = get_theme_mod('nirup_private_events_form_email', 'explore@nirupisland.com');
+    $from_email = get_theme_mod('nirup_private_events_form_from_email', 'explore@nirupisland.com');
     $from_name = get_bloginfo('name');
     
     error_log('Private Events Form - Admin email: ' . $admin_email);
@@ -10177,7 +10733,7 @@ function nirup_private_events_customizer($wp_customize) {
     
     // Admin Recipient Email
     $wp_customize->add_setting('nirup_private_events_form_email', array(
-        'default' => 'lumiosdigital@gmail.com',
+        'default' => 'explore@nirupisland.com',
         'sanitize_callback' => 'sanitize_email',
         'transport' => 'refresh',
     ));
@@ -10192,7 +10748,7 @@ function nirup_private_events_customizer($wp_customize) {
     
     // From Email Address
     $wp_customize->add_setting('nirup_private_events_form_from_email', array(
-        'default' => 'noreply@lumiosdigital.com',
+        'default' => 'explore@nirupisland.com',
         'sanitize_callback' => 'sanitize_email',
         'transport' => 'refresh',
     ));
@@ -12262,21 +12818,6 @@ function nirup_enqueue_experience_booking_assets() {
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_experience_booking_assets');
 
-// function nirup_enqueue_woocommerce_booking_styles() {
-//     // Load on checkout, cart, and booking pages
-//     if (is_checkout() || is_cart() || is_woocommerce() || 
-//         (function_exists('is_wpbs_page') && is_wpbs_page())) {
-//         wp_enqueue_style(
-//             'nirup-woocommerce-booking',
-//             get_template_directory_uri() . '/assets/css/woocommerce-booking.css',
-//             array(),
-//             '1.0.0'
-//         );
-//     }
-// }
-// add_action('wp_enqueue_scripts', 'nirup_enqueue_woocommerce_booking_styles');
-
-
 function wpbs_add_custom_currency($currencies)
 {
     $currencies['IDR'] = 'Indonesian rupiah';
@@ -12290,4 +12831,1282 @@ function wpbs_add_custom_currency_symbol($currencies)
     return $currencies;
 }
 add_filter('wpbs_currency_symbol', 'wpbs_add_custom_currency_symbol', 10, 1);
+
+/**
+ * Register Media Coverage Custom Post Type
+ */
+function nirup_register_media_coverage() {
+    $labels = array(
+        'name'                  => 'Media Coverage',
+        'singular_name'         => 'Media Article',
+        'menu_name'             => 'Media Coverage',
+        'add_new'               => 'Add New Article',
+        'add_new_item'          => 'Add New Media Article',
+        'edit_item'             => 'Edit Media Article',
+        'new_item'              => 'New Media Article',
+        'view_item'             => 'View Media Article',
+        'search_items'          => 'Search Media Articles',
+        'not_found'             => 'No media articles found',
+        'not_found_in_trash'    => 'No media articles found in trash',
+    );
+
+    $args = array(
+        'labels'                => $labels,
+        'public'                => true,
+        'has_archive'           => false,
+        'publicly_queryable'    => false,
+        'show_ui'               => true,
+        'show_in_menu'          => true,
+        'menu_position'         => 27,
+        'menu_icon'             => 'dashicons-media-document',
+        'supports'              => array('title'),
+        'hierarchical'          => false,
+        'rewrite'               => false,
+        'show_in_rest'          => false,
+    );
+
+    register_post_type('media_coverage', $args);
+}
+add_action('init', 'nirup_register_media_coverage');
+
+/**
+ * Add Media Coverage Meta Boxes
+ */
+function nirup_add_media_coverage_meta_boxes() {
+    add_meta_box(
+        'media_article_details',
+        '📰 Media Article Details',
+        'nirup_media_article_details_callback',
+        'media_coverage',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_media_coverage_meta_boxes');
+
+/**
+ * Media Coverage Meta Box Callback
+ */
+function nirup_media_article_details_callback($post) {
+    wp_nonce_field('nirup_media_article_meta_box', 'nirup_media_article_meta_box_nonce');
+
+    $source = get_post_meta($post->ID, '_media_article_source', true);
+    $date = get_post_meta($post->ID, '_media_article_date', true);
+    $quote = get_post_meta($post->ID, '_media_article_quote', true);
+    $link = get_post_meta($post->ID, '_media_article_link', true);
+    ?>
+
+    <style>
+        .media-article-meta-box .form-group { margin-bottom: 20px; }
+        .media-article-meta-box label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .media-article-meta-box input[type="text"],
+        .media-article-meta-box input[type="url"],
+        .media-article-meta-box textarea { width: 100%; padding: 8px; }
+        .media-article-meta-box textarea { min-height: 100px; }
+        .media-article-meta-box .description { color: #666; font-style: italic; margin-top: 5px; font-size: 13px; }
+        .media-article-meta-box .note-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <div class="media-article-meta-box">
+        <div class="note-box">
+            <strong>📌 Note:</strong> The article title is the post title above. Enter additional details below.
+        </div>
+
+        <div class="form-group">
+            <label for="media_article_source">Publication / Author</label>
+            <input type="text" 
+                   id="media_article_source" 
+                   name="media_article_source" 
+                   value="<?php echo esc_attr($source); ?>" 
+                   placeholder="e.g., Condé Nast Traveller - July 2025">
+            <p class="description">Enter the publication name and date (this will be displayed on the page)</p>
+        </div>
+
+        <div class="form-group">
+            <label for="media_article_date">Date (for sorting)</label>
+            <input type="text" 
+                   id="media_article_date" 
+                   name="media_article_date" 
+                   value="<?php echo esc_attr($date); ?>" 
+                   placeholder="e.g., 2025-07">
+            <p class="description">Format: YYYY-MM (used for sorting articles chronologically)</p>
+        </div>
+
+        <div class="form-group">
+            <label for="media_article_quote">Article Quote</label>
+            <textarea id="media_article_quote" 
+                      name="media_article_quote" 
+                      rows="4"><?php echo esc_textarea($quote); ?></textarea>
+            <p class="description">A memorable quote or excerpt from the article</p>
+        </div>
+
+        <div class="form-group">
+            <label for="media_article_link">Article URL</label>
+            <input type="url" 
+                   id="media_article_link" 
+                   name="media_article_link" 
+                   value="<?php echo esc_url($link); ?>" 
+                   placeholder="https://example.com/article">
+            <p class="description">The full URL to the article on the external website</p>
+        </div>
+    </div>
+
+    <?php
+}
+
+/**
+ * Save Media Coverage Meta Data
+ */
+function nirup_save_media_coverage_meta($post_id) {
+    // Check if our nonce is set and verify it
+    if (!isset($_POST['nirup_media_article_meta_box_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_media_article_meta_box_nonce'], 'nirup_media_article_meta_box')) {
+        return;
+    }
+
+    // Check if this is an autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    // Check user permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save the data
+    if (isset($_POST['media_article_source'])) {
+        update_post_meta($post_id, '_media_article_source', sanitize_text_field($_POST['media_article_source']));
+    }
+
+    if (isset($_POST['media_article_date'])) {
+        update_post_meta($post_id, '_media_article_date', sanitize_text_field($_POST['media_article_date']));
+    }
+
+    if (isset($_POST['media_article_quote'])) {
+        update_post_meta($post_id, '_media_article_quote', sanitize_textarea_field($_POST['media_article_quote']));
+    }
+
+    if (isset($_POST['media_article_link'])) {
+        update_post_meta($post_id, '_media_article_link', esc_url_raw($_POST['media_article_link']));
+    }
+}
+add_action('save_post', 'nirup_save_media_coverage_meta');
+
+/**
+ * Add Admin Columns for Media Coverage
+ */
+function nirup_media_coverage_admin_columns($columns) {
+    $new_columns = array();
+    $new_columns['cb'] = $columns['cb'];
+    $new_columns['title'] = $columns['title'];
+    $new_columns['source'] = __('Publication', 'nirup-island');
+    $new_columns['article_date'] = __('Date', 'nirup-island');
+    $new_columns['link'] = __('Article Link', 'nirup-island');
+    $new_columns['date'] = $columns['date'];
+    
+    return $new_columns;
+}
+add_filter('manage_media_coverage_posts_columns', 'nirup_media_coverage_admin_columns');
+
+/**
+ * Populate Admin Columns for Media Coverage
+ */
+function nirup_media_coverage_admin_column_content($column, $post_id) {
+    switch ($column) {
+        case 'source':
+            $source = get_post_meta($post_id, '_media_article_source', true);
+            echo $source ? esc_html($source) : '—';
+            break;
+        case 'article_date':
+            $date = get_post_meta($post_id, '_media_article_date', true);
+            echo $date ? esc_html($date) : '—';
+            break;
+        case 'link':
+            $link = get_post_meta($post_id, '_media_article_link', true);
+            if ($link) {
+                echo '<a href="' . esc_url($link) . '" target="_blank" rel="noopener">View Article ↗</a>';
+            } else {
+                echo '—';
+            }
+            break;
+    }
+}
+add_action('manage_media_coverage_posts_custom_column', 'nirup_media_coverage_admin_column_content', 10, 2);
+/**
+ * AJAX Handler for Load More Media Articles
+ */
+function nirup_load_more_media_articles() {
+    // Verify nonce
+    check_ajax_referer('media_coverage_nonce', 'nonce');
+    
+    $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+    
+    // Query for articles
+    $articles_query = new WP_Query(array(
+        'post_type' => 'media_coverage',
+        'posts_per_page' => 5,
+        'orderby' => 'meta_value',
+        'meta_key' => '_media_article_date',
+        'order' => 'DESC',
+        'post_status' => 'publish',
+        'paged' => $page
+    ));
+    
+    if ($articles_query->have_posts()) {
+        ob_start();
+        
+        while ($articles_query->have_posts()) {
+            $articles_query->the_post();
+            $article_id = get_the_ID();
+            $source = get_post_meta($article_id, '_media_article_source', true);
+            $quote = get_post_meta($article_id, '_media_article_quote', true);
+            $link = get_post_meta($article_id, '_media_article_link', true);
+            ?>
+            
+            <div class="media-article-item" data-page="<?php echo esc_attr($page); ?>">
+                <div class="article-header">
+                    <h2 class="article-title"><?php echo esc_html(get_the_title()); ?></h2>
+                    
+                    <?php if ($source) : ?>
+                        <p class="article-source"><?php echo esc_html($source); ?></p>
+                    <?php endif; ?>
+                    
+                    <div class="article-divider"></div>
+                </div>
+                
+                <div class="article-content">
+                    <?php if ($quote) : ?>
+                        <blockquote class="article-quote"><?php echo esc_html($quote); ?></blockquote>
+                    <?php endif; ?>
+                    
+                    <?php if ($link) : ?>
+                        <a href="<?php echo esc_url($link); ?>" 
+                           class="article-link-btn" 
+                           target="_blank" 
+                           rel="noopener noreferrer">
+                            Read Full Article
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <?php
+        }
+        
+        $html = ob_get_clean();
+        wp_reset_postdata();
+        
+        wp_send_json_success(array(
+            'html' => $html,
+            'page' => $page
+        ));
+    } else {
+        wp_send_json_error(array(
+            'message' => 'No more articles found'
+        ));
+    }
+    
+    wp_die();
+}
+add_action('wp_ajax_load_more_media_articles', 'nirup_load_more_media_articles');
+add_action('wp_ajax_nopriv_load_more_media_articles', 'nirup_load_more_media_articles');
+
+/**
+ * Add Media Coverage Page Customizer Options
+ * Add this code to your functions.php file
+ */
+function nirup_media_coverage_customizer($wp_customize) {
+    // Media Coverage Section
+    $wp_customize->add_section('nirup_media_coverage_page', array(
+        'title' => __('Media Coverage Page', 'nirup-island'),
+        'priority' => 45,
+        'description' => __('Customize the Media Coverage page hero section', 'nirup-island'),
+    ));
+
+    // Page Title
+    $wp_customize->add_setting('nirup_media_coverage_title', array(
+        'default' => __('Media Coverage', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+
+    $wp_customize->add_control('nirup_media_coverage_title', array(
+        'label' => __('Page Title', 'nirup-island'),
+        'section' => 'nirup_media_coverage_page',
+        'type' => 'text',
+        'description' => __('Main heading for the Media Coverage page', 'nirup-island'),
+    ));
+
+    // Page Subtitle
+    $wp_customize->add_setting('nirup_media_coverage_subtitle', array(
+        'default' => __('Stay up to date with how Nirup Island is being recognized', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+
+    $wp_customize->add_control('nirup_media_coverage_subtitle', array(
+        'label' => __('Subtitle Line', 'nirup-island'),
+        'section' => 'nirup_media_coverage_page',
+        'type' => 'text',
+        'description' => __('Subtitle', 'nirup-island'),
+    ));
+
+
+    // Show/Hide Subtitle
+    $wp_customize->add_setting('nirup_media_coverage_show_subtitle', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+        'transport' => 'refresh',
+    ));
+
+    $wp_customize->add_control('nirup_media_coverage_show_subtitle', array(
+        'label' => __('Show Subtitle', 'nirup-island'),
+        'section' => 'nirup_media_coverage_page',
+        'type' => 'checkbox',
+        'description' => __('Toggle to show/hide the subtitle text', 'nirup-island'),
+    ));
+}
+add_action('customize_register', 'nirup_media_coverage_customizer');
+
+// =======================
+// Press Kit Page Customizer Settings
+// =======================
+// Add this to your functions.php file
+
+function nirup_press_kit_customizer($wp_customize) {
+    
+    // Add Press Kit Section
+    $wp_customize->add_section('nirup_press_kit', array(
+        'title' => __('Press Kit Page', 'nirup-island'),
+        'priority' => 90,
+    ));
+
+    // Hero Section Settings
+    // Subtitle
+    $wp_customize->add_setting('press_kit_subtitle', array(
+        'default' => 'FOR YOUR MEDIA COVERAGE',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_subtitle', array(
+        'label' => __('Hero Subtitle', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Title
+    $wp_customize->add_setting('press_kit_title', array(
+        'default' => 'Press kit',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_title', array(
+        'label' => __('Hero Title', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Description
+    $wp_customize->add_setting('press_kit_description', array(
+        'default' => 'Welcome to the Nirup Island Press Kit. Here you\'ll find everything you need to cover our story — from official logos and brand assets to high-resolution photos and videos. These materials are free to use for editorial purposes when featuring Nirup Island.',
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    $wp_customize->add_control('press_kit_description', array(
+        'label' => __('Description Text', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'textarea',
+    ));
+
+    // Card 1 - Logos
+    // Card 1 Image
+    $wp_customize->add_setting('press_kit_card1_image', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'press_kit_card1_image', array(
+        'label' => __('Card 1 - Image', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card1_image',
+    )));
+
+    // Card 1 Title
+    $wp_customize->add_setting('press_kit_card1_title', array(
+        'default' => 'Logos',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_card1_title', array(
+        'label' => __('Card 1 - Title', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Card 1 File
+    $wp_customize->add_setting('press_kit_card1_file', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Upload_Control($wp_customize, 'press_kit_card1_file', array(
+        'label' => __('Card 1 - Download File (ZIP)', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card1_file',
+    )));
+
+    // Card 2 - Photos
+    // Card 2 Image
+    $wp_customize->add_setting('press_kit_card2_image', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'press_kit_card2_image', array(
+        'label' => __('Card 2 - Image', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card2_image',
+    )));
+
+    // Card 2 Title
+    $wp_customize->add_setting('press_kit_card2_title', array(
+        'default' => 'Photos',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_card2_title', array(
+        'label' => __('Card 2 - Title', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Card 2 File
+    $wp_customize->add_setting('press_kit_card2_file', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Upload_Control($wp_customize, 'press_kit_card2_file', array(
+        'label' => __('Card 2 - Download File (ZIP)', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card2_file',
+    )));
+
+    // Card 3 - Videos
+    // Card 3 Image
+    $wp_customize->add_setting('press_kit_card3_image', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'press_kit_card3_image', array(
+        'label' => __('Card 3 - Image', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card3_image',
+    )));
+
+    // Card 3 Title
+    $wp_customize->add_setting('press_kit_card3_title', array(
+        'default' => 'Videos',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_card3_title', array(
+        'label' => __('Card 3 - Title', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Card 3 File
+    $wp_customize->add_setting('press_kit_card3_file', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Upload_Control($wp_customize, 'press_kit_card3_file', array(
+        'label' => __('Card 3 - Download File (ZIP)', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'settings' => 'press_kit_card3_file',
+    )));
+
+    // Press Contacts Section
+    // Title
+    $wp_customize->add_setting('press_kit_contacts_title', array(
+        'default' => 'Press Contacts',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_contacts_title', array(
+        'label' => __('Press Contacts - Title', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Label
+    $wp_customize->add_setting('press_kit_contacts_label', array(
+        'default' => 'For media inquiries:',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('press_kit_contacts_label', array(
+        'label' => __('Press Contacts - Label', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'text',
+    ));
+
+    // Email
+    $wp_customize->add_setting('press_kit_contacts_email', array(
+        'default' => 'Marcomm@citrabuanaprakarsa.com',
+        'sanitize_callback' => 'sanitize_email',
+    ));
+    $wp_customize->add_control('press_kit_contacts_email', array(
+        'label' => __('Press Contacts - Email', 'nirup-island'),
+        'section' => 'nirup_press_kit',
+        'type' => 'email',
+    ));
+}
+add_action('customize_register', 'nirup_press_kit_customizer');
+
+function nirup_register_selling_unit_post_type() {
+    $labels = array(
+        'name'                  => _x('Selling Units', 'Post type general name', 'nirup-island'),
+        'singular_name'         => _x('Selling Unit', 'Post type singular name', 'nirup-island'),
+        'menu_name'             => _x('Selling Units', 'Admin Menu text', 'nirup-island'),
+        'add_new'               => __('Add New', 'nirup-island'),
+        'add_new_item'          => __('Add New Unit', 'nirup-island'),
+        'new_item'              => __('New Unit', 'nirup-island'),
+        'edit_item'             => __('Edit Unit', 'nirup-island'),
+        'view_item'             => __('View Unit', 'nirup-island'),
+        'all_items'             => __('All Units', 'nirup-island'),
+        'search_items'          => __('Search Units', 'nirup-island'),
+        'not_found'             => __('No units found.', 'nirup-island'),
+        'not_found_in_trash'    => __('No units found in Trash.', 'nirup-island'),
+        'featured_image'        => __('Unit Featured Image', 'nirup-island'),
+        'set_featured_image'    => __('Set unit featured image', 'nirup-island'),
+        'remove_featured_image' => __('Remove unit featured image', 'nirup-island'),
+        'use_featured_image'    => __('Use as unit featured image', 'nirup-island'),
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => false,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => false,
+        'capability_type'    => 'post',
+        'has_archive'        => false,
+        'hierarchical'       => false,
+        'menu_position'      => 25,
+        'menu_icon'          => 'dashicons-admin-multisite',
+        'supports'           => array('title', 'thumbnail'),
+    );
+
+    register_post_type('selling_unit', $args);
+}
+add_action('init', 'nirup_register_selling_unit_post_type');
+
+// ========== 2. ADD META BOXES FOR SELLING UNIT DETAILS ==========
+
+function nirup_add_selling_unit_meta_boxes() {
+    add_meta_box(
+        'selling_unit_details',
+        __('Unit Details', 'nirup-island'),
+        'nirup_render_selling_unit_details_meta_box',
+        'selling_unit',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_selling_unit_meta_boxes');
+
+function nirup_render_selling_unit_details_meta_box($post) {
+    wp_nonce_field('nirup_save_selling_unit_details', 'nirup_selling_unit_nonce');
+    
+    $subtitle = get_post_meta($post->ID, '_unit_subtitle', true);
+    $bedrooms = get_post_meta($post->ID, '_unit_bedrooms', true);
+    $size = get_post_meta($post->ID, '_unit_size', true);
+    $status = get_post_meta($post->ID, '_unit_status', true);
+    $price = get_post_meta($post->ID, '_unit_price', true);
+    ?>
+    
+    <table class="form-table">
+        <tr>
+            <th><label for="unit_subtitle"><?php _e('Subtitle', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="unit_subtitle" name="unit_subtitle" 
+                       value="<?php echo esc_attr($subtitle); ?>" class="regular-text"
+                       placeholder="e.g., Ocean view villa with private pool">
+                <p class="description"><?php _e('Descriptive subtitle shown above the unit title', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="unit_bedrooms"><?php _e('Bedrooms', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="number" id="unit_bedrooms" name="unit_bedrooms" 
+                       value="<?php echo esc_attr($bedrooms); ?>" class="small-text" min="1" max="10">
+                <p class="description"><?php _e('Number of bedrooms', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="unit_size"><?php _e('Size (sqm)', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="number" id="unit_size" name="unit_size" 
+                       value="<?php echo esc_attr($size); ?>" class="small-text" min="1">
+                <p class="description"><?php _e('Size in square meters', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="unit_status"><?php _e('Status', 'nirup-island'); ?></label></th>
+            <td>
+                <select id="unit_status" name="unit_status">
+                    <option value="Available" <?php selected($status, 'Available'); ?>><?php _e('Available', 'nirup-island'); ?></option>
+                    <option value="Reserved" <?php selected($status, 'Reserved'); ?>><?php _e('Reserved', 'nirup-island'); ?></option>
+                    <option value="Sold" <?php selected($status, 'Sold'); ?>><?php _e('Sold', 'nirup-island'); ?></option>
+                </select>
+                <p class="description"><?php _e('Current availability status', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="unit_price"><?php _e('Price', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="unit_price" name="unit_price" 
+                       value="<?php echo esc_attr($price); ?>" class="regular-text"
+                       placeholder="e.g., $289,000 USD">
+                <p class="description"><?php _e('Display price with currency (e.g., $289,000 USD)', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+    </table>
+    
+    <?php
+}
+
+function nirup_save_selling_unit_details($post_id) {
+    if (!isset($_POST['nirup_selling_unit_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_selling_unit_nonce'], 'nirup_save_selling_unit_details')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (isset($_POST['unit_subtitle'])) {
+        update_post_meta($post_id, '_unit_subtitle', sanitize_text_field($_POST['unit_subtitle']));
+    }
+    
+    if (isset($_POST['unit_bedrooms'])) {
+        update_post_meta($post_id, '_unit_bedrooms', absint($_POST['unit_bedrooms']));
+    }
+    
+    if (isset($_POST['unit_size'])) {
+        update_post_meta($post_id, '_unit_size', absint($_POST['unit_size']));
+    }
+    
+    if (isset($_POST['unit_status'])) {
+        update_post_meta($post_id, '_unit_status', sanitize_text_field($_POST['unit_status']));
+    }
+    
+    if (isset($_POST['unit_price'])) {
+        update_post_meta($post_id, '_unit_price', sanitize_text_field($_POST['unit_price']));
+    }
+}
+add_action('save_post_selling_unit', 'nirup_save_selling_unit_details');
+
+// ========== 3. ADMIN COLUMNS FOR SELLING UNITS ==========
+
+function nirup_selling_unit_admin_columns($columns) {
+    $new_columns = array(
+        'cb' => $columns['cb'],
+        'thumbnail' => __('Image', 'nirup-island'),
+        'title' => $columns['title'],
+        'bedrooms' => __('Bedrooms', 'nirup-island'),
+        'size' => __('Size', 'nirup-island'),
+        'status' => __('Status', 'nirup-island'),
+        'price' => __('Price', 'nirup-island'),
+        'date' => $columns['date']
+    );
+    return $new_columns;
+}
+add_filter('manage_selling_unit_posts_columns', 'nirup_selling_unit_admin_columns');
+
+function nirup_selling_unit_admin_column_content($column, $post_id) {
+    switch ($column) {
+        case 'thumbnail':
+            if (has_post_thumbnail($post_id)) {
+                echo get_the_post_thumbnail($post_id, array(60, 60));
+            } else {
+                echo '—';
+            }
+            break;
+        case 'bedrooms':
+            $bedrooms = get_post_meta($post_id, '_unit_bedrooms', true);
+            echo $bedrooms ? esc_html($bedrooms) : '—';
+            break;
+        case 'size':
+            $size = get_post_meta($post_id, '_unit_size', true);
+            echo $size ? esc_html($size) . ' sqm' : '—';
+            break;
+        case 'status':
+            $status = get_post_meta($post_id, '_unit_status', true);
+            if ($status) {
+                $color = ($status === 'Available') ? '#28a745' : (($status === 'Reserved') ? '#ffc107' : '#dc3545');
+                echo '<span style="color: ' . $color . '; font-weight: 600;">' . esc_html($status) . '</span>';
+            } else {
+                echo '—';
+            }
+            break;
+        case 'price':
+            $price = get_post_meta($post_id, '_unit_price', true);
+            echo $price ? esc_html($price) : '—';
+            break;
+    }
+}
+add_action('manage_selling_unit_posts_custom_column', 'nirup_selling_unit_admin_column_content', 10, 2);
+
+// ========== 4. ENQUEUE ASSETS FOR VILLA SELLING PAGE ==========
+
+function nirup_enqueue_villa_selling_assets() {
+    if (is_page_template('page-villa-selling.php')) {
+        // Enqueue CSS
+        wp_enqueue_style(
+            'nirup-villa-selling',
+            get_template_directory_uri() . '/assets/css/villa-selling.css',
+            array(),
+            '1.0.0'
+        );
+        
+        // Enqueue JavaScript
+        wp_enqueue_script(
+            'nirup-villa-selling',
+            get_template_directory_uri() . '/assets/js/villa-selling.js',
+            array('jquery'),
+            '1.0.0',
+            true
+        );
+        
+        // Localize script
+        wp_localize_script('nirup-villa-selling', 'nirup_villa_selling_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce'    => wp_create_nonce('nirup_villa_selling_form_nonce')
+        ));
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_villa_selling_assets');
+
+// ========== 5. FORM SUBMISSION HANDLER ==========
+
+function nirup_villa_selling_form_submit() {
+    // Verify nonce
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'nirup_villa_selling_form_nonce')) {
+        wp_send_json_error(array('message' => 'Security check failed.'));
+    }
+
+    // Get form data
+    $form_data = $_POST['form_data'];
+    
+    $name = sanitize_text_field($form_data['name']);
+    $email = sanitize_email($form_data['email']);
+    $phone = sanitize_text_field($form_data['phone']);
+    $language = sanitize_text_field($form_data['language']);
+    $villa_unit = sanitize_text_field($form_data['villa_unit']);
+    $message = sanitize_textarea_field($form_data['message']);
+    
+    // Validate required fields
+    if (empty($name) || empty($email) || empty($phone)) {
+        wp_send_json_error(array('message' => 'Please fill in all required fields.'));
+    }
+    
+    if (!is_email($email)) {
+        wp_send_json_error(array('message' => 'Please enter a valid email address.'));
+    }
+
+    // Store in database
+    nirup_store_villa_selling_submission($name, $email, $phone, $language, $villa_unit, $message);
+    
+    // Prepare email to admin
+    $admin_email = get_option('admin_email');
+    $admin_subject = sprintf('[Villa Selling Enquiry] New enquiry from %s', $name);
+    
+    $admin_body = sprintf(
+        "New Villa Selling Enquiry\n\n" .
+        "Name: %s\n" .
+        "Email: %s\n" .
+        "Phone: %s\n" .
+        "Preferred Language: %s\n" .
+        "Villa Interest: %s\n\n" .
+        "Message:\n%s\n\n" .
+        "---\n" .
+        "This enquiry was submitted from the Villa Selling Options page at %s",
+        $name,
+        $email,
+        $phone,
+        $language ? $language : 'Not specified',
+        $villa_unit ? $villa_unit : 'Not specified',
+        $message,
+        get_site_url()
+    );
+    
+    $admin_headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'Reply-To: ' . $name . ' <' . $email . '>'
+    );
+    
+    // Prepare confirmation email to user
+    $user_subject = 'Thank you for your enquiry - Nirup Island';
+    $user_body = sprintf(
+        "Dear %s,\n\n" .
+        "Thank you for your interest in owning a villa at Nirup Island.\n\n" .
+        "We have received your enquiry and our sales team will contact you within 24 hours to discuss your requirements.\n\n" .
+        "Your Enquiry Details:\n" .
+        "- Preferred Language: %s\n" .
+        "- Villa Interest: %s\n" .
+        "- Message: %s\n\n" .
+        "We look forward to helping you find your perfect island retreat.\n\n" .
+        "Best regards,\n" .
+        "Nirup Island Sales Team\n\n" .
+        "---\n" .
+        "If you have any questions, please contact us at %s",
+        $name,
+        $language ? $language : 'Not specified',
+        $villa_unit ? $villa_unit : 'Not specified',
+        $message ? $message : 'No additional message',
+        $admin_email
+    );
+    
+    $user_headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: Nirup Island <' . get_option('admin_email') . '>'
+    );
+    
+    // Send emails
+    $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
+    $user_mail_sent = wp_mail($email, $user_subject, $user_body, $user_headers);
+    
+    // Log results
+    error_log('Villa Selling Form - Admin email result: ' . ($admin_mail_sent ? 'SUCCESS' : 'FAILED'));
+    error_log('Villa Selling Form - User email result: ' . ($user_mail_sent ? 'SUCCESS' : 'FAILED'));
+    
+    // Return success response
+    wp_send_json_success(array(
+        'message' => 'Your enquiry has been received! Our sales team will contact you within 24 hours.',
+        'admin_sent' => $admin_mail_sent,
+        'user_sent' => $user_mail_sent
+    ));
+}
+add_action('wp_ajax_nirup_villa_selling_form_submit', 'nirup_villa_selling_form_submit');
+add_action('wp_ajax_nopriv_nirup_villa_selling_form_submit', 'nirup_villa_selling_form_submit');
+
+// ========== 6. STORE SUBMISSION IN DATABASE ==========
+
+function nirup_store_villa_selling_submission($name, $email, $phone, $language, $villa_unit, $message) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'villa_selling_submissions';
+    
+    // Create table if it doesn't exist
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        nirup_create_villa_selling_submissions_table();
+    }
+    
+    // Insert submission
+    $result = $wpdb->insert(
+        $table_name,
+        array(
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'language' => $language,
+            'villa_unit' => $villa_unit,
+            'message' => $message,
+            'submission_date' => current_time('mysql')
+        ),
+        array('%s', '%s', '%s', '%s', '%s', '%s', '%s')
+    );
+    
+    if ($result === false) {
+        error_log('Villa Selling Form - Database storage failed: ' . $wpdb->last_error);
+    } else {
+        error_log('Villa Selling Form - Submission saved to database successfully');
+    }
+}
+
+function nirup_create_villa_selling_submissions_table() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'villa_selling_submissions';
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        name varchar(255) NOT NULL,
+        email varchar(255) NOT NULL,
+        phone varchar(50) NOT NULL,
+        language varchar(50) DEFAULT NULL,
+        villa_unit varchar(255) DEFAULT NULL,
+        message text DEFAULT NULL,
+        submission_date datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        status varchar(50) DEFAULT 'pending' NOT NULL,
+        PRIMARY KEY  (id)
+    ) $charset_collate;";
+
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+}
+
+// Create table on theme activation
+add_action('after_switch_theme', 'nirup_create_villa_selling_submissions_table');
+
+// ========== 7. ADMIN PAGE FOR SUBMISSIONS ==========
+
+function nirup_villa_selling_admin_menu() {
+    add_submenu_page(
+        'edit.php?post_type=selling_unit',
+        'Enquiries',
+        'Enquiries',
+        'manage_options',
+        'villa-selling-enquiries',
+        'nirup_villa_selling_enquiries_page'
+    );
+}
+add_action('admin_menu', 'nirup_villa_selling_admin_menu');
+
+function nirup_villa_selling_enquiries_page() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'villa_selling_submissions';
+    
+    $submissions = $wpdb->get_results("SELECT * FROM $table_name ORDER BY submission_date DESC");
+    ?>
+    <div class="wrap">
+        <h1>Villa Selling Enquiries</h1>
+        
+        <?php if (empty($submissions)): ?>
+            <p>No enquiries yet.</p>
+        <?php else: ?>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Villa Interest</th>
+                        <th>Language</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($submissions as $submission): ?>
+                        <tr>
+                            <td><?php echo date('M j, Y', strtotime($submission->submission_date)); ?></td>
+                            <td><strong><?php echo esc_html($submission->name); ?></strong></td>
+                            <td><a href="mailto:<?php echo esc_attr($submission->email); ?>"><?php echo esc_html($submission->email); ?></a></td>
+                            <td><?php echo esc_html($submission->phone); ?></td>
+                            <td><?php echo $submission->villa_unit ? esc_html($submission->villa_unit) : '—'; ?></td>
+                            <td><?php echo $submission->language ? esc_html($submission->language) : '—'; ?></td>
+                            <td><?php echo esc_html($submission->status); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
+// ========== 8. CUSTOMIZER SETTINGS ==========
+
+function nirup_villa_selling_customizer($wp_customize) {
+    // Add Villa Selling Section
+    $wp_customize->add_section('nirup_villa_selling', array(
+        'title'    => __('Villa Selling Options Page', 'nirup-island'),
+        'priority' => 160,
+    ));
+
+    // Hero Image
+    $wp_customize->add_setting('nirup_villa_selling_hero_image', array(
+        'sanitize_callback' => 'absint',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_villa_selling_hero_image', array(
+        'label'    => __('Hero Background Image', 'nirup-island'),
+        'section'  => 'nirup_villa_selling',
+        'mime_type' => 'image',
+    )));
+
+    // Hero Title
+    $wp_customize->add_setting('nirup_villa_selling_hero_title', array(
+        'default' => __('Own Your Private Island Retreat', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_hero_title', array(
+        'label'   => __('Hero Title', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'text',
+    ));
+
+    // Hero Subtitle
+    $wp_customize->add_setting('nirup_villa_selling_hero_subtitle', array(
+        'default' => __('Wake up to the sound of the sea and make Nirup Island your home.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_hero_subtitle', array(
+        'label'   => __('Hero Subtitle', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'textarea',
+    ));
+
+    // Overview Column 1 Heading
+    $wp_customize->add_setting('nirup_villa_selling_overview_col1_heading', array(
+        'default' => __('Own a luxury villa on a private island', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_overview_col1_heading', array(
+        'label'   => __('Overview Column 1 - Heading', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'text',
+    ));
+
+    // Overview Column 2 Text
+    $wp_customize->add_setting('nirup_villa_selling_overview_col2_text', array(
+        'default' => __('Riahi Residences offers an exclusive opportunity to own a home on Nirup Island, where refined comfort meets the serenity of the sea.', 'nirup-island'),
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_overview_col2_text', array(
+        'label'   => __('Overview Column 2 - Text', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'textarea',
+    ));
+
+    // Overview Column 3 Text
+    $wp_customize->add_setting('nirup_villa_selling_overview_col3_text', array(
+        'default' => __('Each residence is professionally maintained through a monthly management fee, with optional services provided by The Westin Nirup Island Resort & Spa.', 'nirup-island'),
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_overview_col3_text', array(
+        'label'   => __('Overview Column 3 - Text', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'textarea',
+    ));
+
+    // Form Heading
+    $wp_customize->add_setting('nirup_villa_selling_form_heading', array(
+        'default' => __('Enquire About Villa Ownership', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_form_heading', array(
+        'label'   => __('Form Section - Heading', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'text',
+    ));
+
+    // Form Description
+    $wp_customize->add_setting('nirup_villa_selling_form_description', array(
+        'default' => __('Experience the freedom of owning a home by the sea. Please fill out the form below and our sales team will contact you within 24 hours.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_form_description', array(
+        'label'   => __('Form Section - Description', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'textarea',
+    ));
+}
+add_action('customize_register', 'nirup_villa_selling_customizer');
+
+function nirup_add_selling_unit_features_meta_box() {
+    add_meta_box(
+        'selling_unit_features',
+        __('Unit Features', 'nirup-island'),
+        'nirup_selling_unit_features_meta_box_callback',
+        'selling_unit',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_selling_unit_features_meta_box');
+
+/**
+ * Selling Unit Features Meta Box Callback
+ */
+function nirup_selling_unit_features_meta_box_callback($post) {
+    wp_nonce_field('nirup_save_selling_unit_features', 'nirup_selling_unit_features_nonce');
+    
+    $features = get_post_meta($post->ID, '_unit_features', true);
+    if (!is_array($features)) {
+        $features = array();
+    }
+    
+    $available_icons = nirup_get_villa_feature_icons(); // Use the same icon library
+    ?>
+    
+    <div id="selling-unit-features-wrapper">
+        <div id="selling-unit-features-list">
+            <?php
+            if (!empty($features)) {
+                foreach ($features as $index => $feature) {
+                    $feature_text = isset($feature['text']) ? $feature['text'] : (is_string($feature) ? $feature : '');
+                    $feature_icon = isset($feature['icon']) ? $feature['icon'] : '';
+                    
+                    nirup_render_selling_unit_feature_row($feature_text, $feature_icon, $available_icons);
+                }
+            }
+            ?>
+        </div>
+        
+        <button type="button" id="add-unit-feature" class="button button-secondary" style="margin-top: 10px;">
+            + Add Feature
+        </button>
+        
+        <?php if (empty($available_icons)) : ?>
+            <p style="margin-top: 15px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffc107;">
+                <strong>No icons available.</strong> 
+                <a href="<?php echo admin_url('edit.php?post_type=villa&page=villa-feature-icons'); ?>">Upload icons to the library</a> first.
+            </p>
+        <?php endif; ?>
+    </div>
+    
+    <script>
+    jQuery(document).ready(function($) {
+        // Add feature
+        $('#add-unit-feature').on('click', function() {
+            var featureHtml = <?php echo json_encode(nirup_get_selling_unit_feature_row_html($available_icons)); ?>;
+            $('#selling-unit-features-list').append(featureHtml);
+        });
+        
+        // Remove feature
+        $(document).on('click', '.remove-unit-feature', function() {
+            $(this).closest('.selling-unit-feature-item').remove();
+        });
+        
+        // Icon preview on change
+        $(document).on('change', '.unit-feature-icon-select', function() {
+            var iconUrl = $(this).find(':selected').data('icon-url');
+            var preview = $(this).siblings('.unit-icon-preview');
+            
+            if (iconUrl) {
+                preview.html('<img src="' + iconUrl + '" style="width: 28px; height: 28px;">');
+            } else {
+                preview.html('<span style="font-size: 20px; color: #a48456;">•</span>');
+            }
+        });
+    });
+    </script>
+    
+    <style>
+        .selling-unit-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .unit-icon-preview {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .unit-feature-icon-select {
+            width: 200px;
+        }
+        .unit-feature-text-input {
+            flex: 1;
+        }
+    </style>
+    
+    <?php
+}
+
+/**
+ * Render a single selling unit feature row
+ */
+function nirup_render_selling_unit_feature_row($text = '', $icon = '', $available_icons = array()) {
+    ?>
+    <div class="selling-unit-feature-item">
+        <div class="unit-icon-preview">
+            <?php if ($icon && isset($available_icons[$icon])) : ?>
+                <img src="<?php echo esc_url($available_icons[$icon]['url']); ?>" style="width: 28px; height: 28px;">
+            <?php else : ?>
+                <span style="font-size: 20px; color: #a48456;">•</span>
+            <?php endif; ?>
+        </div>
+        
+        <select name="unit_features_icon[]" class="unit-feature-icon-select">
+            <option value="">No icon (bullet point)</option>
+            <?php foreach ($available_icons as $available_icon) : ?>
+                <option value="<?php echo esc_attr($available_icon['filename']); ?>" 
+                        data-icon-url="<?php echo esc_url($available_icon['url']); ?>"
+                        <?php selected($icon, $available_icon['filename']); ?>>
+                    <?php echo esc_html($available_icon['name']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        
+        <input 
+            type="text" 
+            name="unit_features_text[]" 
+            value="<?php echo esc_attr($text); ?>" 
+            placeholder="e.g., Private Pool, Ocean View, Modern Kitchen"
+            class="unit-feature-text-input"
+        />
+        
+        <button type="button" class="button remove-unit-feature">Remove</button>
+    </div>
+    <?php
+}
+
+/**
+ * Get HTML for new selling unit feature row
+ */
+function nirup_get_selling_unit_feature_row_html($available_icons) {
+    ob_start();
+    nirup_render_selling_unit_feature_row('', '', $available_icons);
+    return ob_get_clean();
+}
+
+/**
+ * Save Selling Unit Features
+ */
+function nirup_save_selling_unit_features($post_id) {
+    if (!isset($_POST['nirup_selling_unit_features_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_selling_unit_features_nonce'], 'nirup_save_selling_unit_features')) {
+        return;
+    }
+    
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    
+    $features = array();
+    
+    if (isset($_POST['unit_features_text']) && is_array($_POST['unit_features_text'])) {
+        $feature_texts = $_POST['unit_features_text'];
+        $feature_icons = isset($_POST['unit_features_icon']) ? $_POST['unit_features_icon'] : array();
+        
+        foreach ($feature_texts as $index => $text) {
+            $text = sanitize_text_field($text);
+            if (!empty($text)) {
+                $features[] = array(
+                    'text' => $text,
+                    'icon' => isset($feature_icons[$index]) ? sanitize_file_name($feature_icons[$index]) : ''
+                );
+            }
+        }
+    }
+    
+    update_post_meta($post_id, '_unit_features', $features);
+}
+add_action('save_post_selling_unit', 'nirup_save_selling_unit_features');
+
 ?>

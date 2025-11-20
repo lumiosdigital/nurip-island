@@ -304,11 +304,11 @@ if (empty($region_section_text)) {
     <?php endif; ?>
 
     <!-- Call to Action Section -->
+
+<!-- Call to Action Section -->
+    <!-- Call to Action Section -->
     <section class="single-cta-section">
         <div class="single-cta-container">
-            <!-- Top Separator Line -->
-            <div class="single-cta-separator-top"></div>
-
             <?php
             // Get CTA fields
             $cta_title = get_post_meta(get_the_ID(), '_cta_title', true);
@@ -346,47 +346,56 @@ if (empty($region_section_text)) {
             }
             ?>
 
-            <?php if ($calendar_id) : ?>
-                <!-- Show booking title and subtitle when calendar is attached -->
-                <div class="single-cta-content">
-                    <h2 class="single-cta-title"><?php echo esc_html($cta_title); ?></h2>
-                    <p class="single-cta-subtitle"><?php echo esc_html($cta_subtitle); ?></p>
-                </div>
-            <?php elseif (!empty($cta_no_calendar_text)) : ?>
-                <!-- Show alternative text when no calendar is attached -->
-                <div class="single-cta-content">
-                    <h2 class="single-cta-title"><?php echo esc_html($cta_no_calendar_text); ?></h2>
-                </div>
-            <?php endif; ?>
+            <?php if ($calendar_id || $pdf_url) : ?>
+                <!-- Top Separator Line -->
+                <div class="single-cta-separator-top"></div>
 
-            <div class="single-cta-buttons-container">
-                <!-- Secondary Button (Download PDF or disabled if no PDF) -->
-                <?php if ($pdf_url) : ?>
-                    <a href="<?php echo esc_url($pdf_url); ?>"
-                       class="single-cta-button-secondary"
-                       download="<?php echo esc_attr($pdf_filename); ?>"
-                       title="Download <?php echo esc_attr($pdf_filename); ?>">
-                        <?php echo esc_html($cta_secondary_button); ?>
-                    </a>
-                <?php else : ?>
-                    <span class="single-cta-button-secondary single-cta-button-disabled"
-                          title="PDF not available">
-                        <?php echo esc_html($cta_secondary_button); ?>
-                    </span>
-                <?php endif; ?>
-
-                <!-- Primary Button (Gold background) - Show only if calendar is attached -->
                 <?php if ($calendar_id) : ?>
-                    <button class="single-cta-button-primary experience-book-btn"
-                            data-experience-id="<?php echo get_the_ID(); ?>">
-                        <?php echo esc_html($cta_primary_button); ?>
-                    </button>
+                    <!-- Show booking title and subtitle when calendar is attached -->
+                    <div class="single-cta-content">
+                        <h2 class="single-cta-title"><?php echo esc_html($cta_title); ?></h2>
+                        <p class="single-cta-subtitle"><?php echo esc_html($cta_subtitle); ?></p>
+                    </div>
+                <?php elseif (!empty($cta_no_calendar_text)) : ?>
+                    <!-- Show alternative text when no calendar is attached -->
+                    <div class="single-cta-content">
+                        <h2 class="single-cta-title"><?php echo esc_html($cta_no_calendar_text); ?></h2>
+                    </div>
                 <?php endif; ?>
-            </div>
 
-            <!-- Bottom Separator Line -->
-            <div class="single-cta-separator-bottom"></div>
+                <div class="single-cta-buttons-container">
+                    <!-- Secondary Button - Only show if PDF exists -->
+                    <?php if ($pdf_url) : ?>
+                        <a href="<?php echo esc_url($pdf_url); ?>"
+                           class="single-cta-button-secondary"
+                           download="<?php echo esc_attr($pdf_filename); ?>"
+                           title="Download <?php echo esc_attr($pdf_filename); ?>">
+                            <?php echo esc_html($cta_secondary_button); ?>
+                        </a>
+                    <?php endif; ?>
+
+                    <!-- Primary Button - Show only if calendar is attached -->
+                    <?php if ($calendar_id) : ?>
+                        <button class="single-cta-button-primary experience-book-btn"
+                                data-experience-id="<?php echo get_the_ID(); ?>">
+                            <?php echo esc_html($cta_primary_button); ?>
+                        </button>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Bottom Separator Line -->
+                <div class="single-cta-separator-bottom"></div>
+            <?php endif; ?>
         </div>
     </section>
-
+    <script>
+    // Add empty class if no CTA content
+    jQuery(document).ready(function($) {
+        var $ctaSection = $('.single-cta-section');
+        var $ctaContainer = $ctaSection.find('.single-cta-container');
+        if ($ctaContainer.children().length === 0) {
+            $ctaSection.addClass('single-cta-section-empty');
+        }
+    });
+    </script>
 </div>

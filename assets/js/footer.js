@@ -21,53 +21,78 @@
 
         $form.on('submit', function(e) {
             e.preventDefault();
-            
+
             const email = $input.val().trim();
-            
+
+            console.log('📧 Newsletter form submitted');
+            console.log('📧 Email:', email);
+
             // Basic validation
             if (!email) {
+                console.log('❌ Validation failed: empty email');
                 showMessage('Please enter your email address.', 'error');
                 return;
             }
-            
+
             if (!isValidEmail(email)) {
+                console.log('❌ Validation failed: invalid email format');
                 showMessage('Please enter a valid email address.', 'error');
                 return;
             }
-            
+
+            console.log('✅ Email validation passed');
+
             // Show loading state
             const originalText = $button.text();
             $button.text(nirup_footer_ajax.messages.subscribing)
                    .prop('disabled', true)
                    .addClass('loading');
-            
+
+            console.log('📤 Sending AJAX request to:', nirup_footer_ajax.ajax_url);
+            console.log('📤 Request data:', {
+                action: 'nirup_newsletter_subscribe',
+                email: email,
+                nonce: nirup_footer_ajax.nonce
+            });
+
             // AJAX request
+            const runAjax = (token) => {
             $.ajax({
                 url: nirup_footer_ajax.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'nirup_newsletter_subscribe',
-                    email: email,
-                    nonce: nirup_footer_ajax.nonce
+                action: 'nirup_newsletter_subscribe',
+                email: email,
+                nonce: nirup_footer_ajax.nonce,
+                recaptcha_token: token
                 },
                 success: function(response) {
-                    if (response.success) {
-                        showMessage(response.data.message, 'success');
-                        $input.val(''); // Clear the input
-                    } else {
-                        showMessage(response.data.message || nirup_footer_ajax.messages.error, 'error');
-                    }
+                if (response.success) {
+                    showMessage(response.data.message || 'Thank you for subscribing to our newsletter!', 'success');
+                    $input.val('');
+                } else {
+                    showMessage(response.data.message || nirup_footer_ajax.messages.error, 'error');
+                }
                 },
                 error: function() {
-                    showMessage(nirup_footer_ajax.messages.error, 'error');
+                showMessage(nirup_footer_ajax.messages.error, 'error');
                 },
                 complete: function() {
-                    // Reset button state
-                    $button.text(originalText)
-                           .prop('disabled', false)
-                           .removeClass('loading');
+                $button.text(originalText).prop('disabled', false).removeClass('loading');
                 }
             });
+            };
+
+            if (nirup_footer_ajax?.recaptcha?.site_key && typeof grecaptcha !== 'undefined') {
+            grecaptcha.ready(function () {
+                grecaptcha.execute(nirup_footer_ajax.recaptcha.site_key, { action: nirup_footer_ajax.recaptcha.action })
+                .then(function (token) { runAjax(token); })
+                .catch(function ()     { runAjax('');    });
+            });
+            } else {
+            runAjax('');
+            }
+
         });
     }
 

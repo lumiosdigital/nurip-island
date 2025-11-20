@@ -1,0 +1,118 @@
+/* 404 Error Page Styles */
+
+.error-404-page {
+    min-height: calc(100vh - 300px);
+    /* Adjust based on header/footer height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    position: relative;
+}
+
+.error-404-container {
+    max-width: 860px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+}
+
+.error-404-title {
+    font-family: 'Amiri', serif;
+    font-size: 72px;
+    font-weight: 400;
+    line-height: 72px;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    color: #3d332f;
+    margin: 0;
+}
+
+.error-404-message {
+    max-width: 860px;
+    width: 100%;
+}
+
+.error-404-message p {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 23px;
+    font-weight: 300;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0;
+}
+
+.error-404-message .homepage-link {
+    color: #8b5e1d;
+    text-decoration: underline;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    transition: opacity 0.3s ease;
+}
+
+.error-404-message .homepage-link:hover {
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .error-404-page {
+        padding: 60px 30px;
+    }
+
+    .error-404-title {
+        font-size: 60px;
+        line-height: 60px;
+    }
+
+    .error-404-message p {
+        font-size: 20px;
+    }
+
+    .error-404-container {
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .error-404-page {
+        padding: 50px 20px;
+        min-height: calc(100vh - 60px);
+    }
+
+    .error-404-title {
+        font-size: 48px;
+        line-height: 48px;
+        letter-spacing: -0.5px;
+    }
+
+    .error-404-message p {
+        font-size: 18px;
+    }
+
+    .error-404-container {
+        gap: 35px;
+    }
+}
+
+@media (max-width: 480px) {
+    .error-404-page {
+        padding: 40px 20px;
+    }
+
+    .error-404-title {
+        font-size: 36px;
+        line-height: 36px;
+    }
+
+    .error-404-message p {
+        font-size: 16px;
+    }
+
+    .error-404-container {
+        gap: 30px;
+    }
+}

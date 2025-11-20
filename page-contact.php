@@ -25,8 +25,8 @@ get_header();
                 <p><?php echo esc_html(get_theme_mod('nirup_contact_intro_text', 'We welcome your enquiries and are here to assist with every detail of your visit, stay, or event. For urgent matters, please call us at:')); ?></p>
                 
                 <p class="contact-phone-highlight">
-                    <strong><?php echo esc_html(get_theme_mod('nirup_contact_phone_label', 'General Enquiries:')); ?></strong> 
-                    <a href="tel:<?php echo esc_attr(str_replace(' ', '', get_theme_mod('nirup_contact_phone_primary', '+62 811 6220 999'))); ?>">
+                    <strong><?php echo esc_html(get_theme_mod('nirup_contact_phone_label', 'General Enquiries:')); ?></strong>
+                    <a href="https://wa.me/<?php echo esc_attr(str_replace([' ', '+'], '', get_theme_mod('nirup_contact_phone_primary', '+62 811 6220 999'))); ?>" target="_blank" rel="noopener noreferrer">
                         <?php echo esc_html(get_theme_mod('nirup_contact_phone_primary', '+62 811 6220 999')); ?>
                     </a>
                 </p>

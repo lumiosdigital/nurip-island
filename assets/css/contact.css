@@ -146,6 +146,7 @@
     border: 1px solid #d4c5b0;
     border-radius: 0px;
     background-color: #ffffff;
+    
 }
 
 .form-textarea:focus {
@@ -188,6 +189,10 @@
 
 .contact-submit-btn.loading .btn-text {
     opacity: 0;
+}
+
+.grecaptcha-badge {
+    display: none !important;
 }
 
 .btn-loader {
