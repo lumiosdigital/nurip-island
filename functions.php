@@ -2937,13 +2937,16 @@ function nirup_map_pins_admin_page() {
                         <?php foreach ($pins as $pin): 
                             $icon_key = isset($pin['icon']) ? $pin['icon'] : '';
                             ?>
-                            <div class="admin-pin admin-pin-<?php echo esc_attr($pin['pin_type']); ?>" 
+                            <div class="admin-pin admin-pin-<?php echo esc_attr($pin['pin_type']); ?>"
                                  data-pin-id="<?php echo esc_attr($pin['id']); ?>"
                                  data-pin-type="<?php echo esc_attr($pin['pin_type']); ?>"
                                  data-title="<?php echo esc_attr($pin['title']); ?>"
                                  data-description="<?php echo esc_attr($pin['description']); ?>"
                                  data-link="<?php echo esc_attr($pin['link']); ?>"
                                  data-icon="<?php echo esc_attr($icon_key); ?>"
+                                 data-image-1="<?php echo esc_attr($pin['image_1'] ?? '0'); ?>"
+                                 data-image-2="<?php echo esc_attr($pin['image_2'] ?? '0'); ?>"
+                                 data-hours="<?php echo esc_attr($pin['hours'] ?? ''); ?>"
                                  style="left: <?php echo esc_attr($pin['x']); ?>%; top: <?php echo esc_attr($pin['y']); ?>%;">
                                 <div class="pin-icon">
                                     <?php echo nirup_get_pin_icon_svg($pin['pin_type'], $icon_key); ?>
@@ -3816,19 +3819,22 @@ function nirup_map_pins_admin_page() {
             $(document).on('click', '.upload-image-btn', function(e) {
                 e.preventDefault();
                 currentImageTarget = $(this).data('target');
-                
+
+                // Lower z-index of pin modal so media library appears on top
+                $('#pin-modal').css('z-index', '99999');
+
                 if (imageUploader) {
                     imageUploader.open();
                     return;
                 }
-                
+
                 imageUploader = wp.media({
                     title: 'Select Image',
                     button: { text: 'Use this image' },
                     multiple: false,
                     library: { type: 'image' }
                 });
-                
+
                 imageUploader.on('select', function() {
                     var attachment = imageUploader.state().get('selection').first().toJSON();
                     $('#' + currentImageTarget).val(attachment.id);
@@ -3836,8 +3842,15 @@ function nirup_map_pins_admin_page() {
                     $preview.find('img').attr('src', attachment.url);
                     $preview.show();
                     $('.remove-image-btn[data-target="' + currentImageTarget + '"]').show();
+                    // Restore pin modal z-index after selection
+                    $('#pin-modal').css('z-index', '100000');
                 });
-                
+
+                imageUploader.on('close', function() {
+                    // Restore pin modal z-index when media library is closed
+                    $('#pin-modal').css('z-index', '100000');
+                });
+
                 imageUploader.open();
             });
 
@@ -4156,6 +4169,9 @@ function nirup_map_pins_admin_page() {
                     description: description,
                     link: link,
                     icon: selectedModalIcon,
+                    image_1: image1,
+                    image_2: image2,
+                    hours: hours,
                     x: pendingPinData.x,
                     y: pendingPinData.y,
                     pin_type: pendingPinData.pinType,
@@ -4174,20 +4190,7 @@ function nirup_map_pins_admin_page() {
                 $.ajax({
                     url: ajaxurl,
                     type: 'POST',
-                    data: {
-                        action: 'nirup_add_pin_ajax',
-                        nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>',
-                        title: title,
-                        description: description,
-                        link: link,
-                        icon: selectedModalIcon,
-                        image_1: image1,
-                        image_2: image2,
-                        hours: hours,
-                        x: pendingPinData.x,
-                        y: pendingPinData.y,
-                        pin_type: pendingPinData.pinType
-                    },
+                    data: ajaxData,
                     success: function(response) {
                         console.log('Save response:', response);
                         if (response.success) {
@@ -4251,53 +4254,86 @@ function nirup_map_pins_admin_page() {
             
             function editPin(pinId) {
                 var $pin = $(`.admin-pin[data-pin-id="${pinId}"]`);
-                
-                // Pre-fill all form fields
-                $('#edit-pin-id').val(pinId);
-                $('#edit-pin-title').val($pin.data('title'));
-                $('#edit-pin-description').val($pin.data('description'));
-                $('#edit-pin-link').val($pin.data('link'));
-                $('#edit-pin-hours').val($pin.data('hours'));
-                $('input[name="pin_type"][value="' + $pin.data('pin-type') + '"]').prop('checked', true);
-                
-                // Set icon
-                var iconValue = $pin.data('icon');
-                $('#edit-pin-icon').val(iconValue || '');
-                
+
+                // Get current pin position
+                var pinLeft = parseFloat($pin.css('left'));
+                var pinTop = parseFloat($pin.css('top'));
+                var containerWidth = $('.map-editor-container').width();
+                var containerHeight = $('.map-editor-container').height();
+                var xPercent = (pinLeft / containerWidth) * 100;
+                var yPercent = (pinTop / containerHeight) * 100;
+
+                // Store the pin data
+                pendingPinData = {
+                    x: xPercent,
+                    y: yPercent,
+                    pinType: $pin.data('pin-type')
+                };
+                editingPinId = pinId;
+
+                // Pre-populate modal with existing data
+                $('#modal-pin-title').val($pin.data('title') || '');
+                $('#modal-pin-description').val($pin.data('description') || '');
+                $('#modal-pin-link').val($pin.data('link') || '');
+                $('#modal-pin-hours').val($pin.data('hours') || '');
+
+                // Pre-select the icon if one exists
+                var currentIcon = $pin.data('icon') || '';
+                selectedModalIcon = currentIcon;
+                $('.modal-icon-option').removeClass('active');
+                if (currentIcon) {
+                    $(`.modal-icon-option[data-icon="${currentIcon}"]`).addClass('active');
+                } else {
+                    $('.modal-icon-option[data-icon=""]').addClass('active');
+                }
+
                 // Handle Image 1
-                var image1 = $pin.data('image_1');
-                if (image1 && image1 != '0') {
-                    $('#edit-pin-image-1').val(image1);
+                var image1 = $pin.data('image-1');
+                if (image1 && image1 != '0' && image1 != 0) {
+                    $('#modal-pin-image-1').val(image1);
                     $.post(ajaxurl, { action: 'get_attachment_url', attachment_id: image1 }, function(response) {
                         if (response.success) {
-                            $('.image-preview[data-target="edit-pin-image-1"]').html('<img src="' + response.data.url + '" style="max-width: 200px;">');
-                            $('.remove-image-button[data-target="edit-pin-image-1"]').show();
+                            var $preview = $('.image-preview[data-for="modal-pin-image-1"]');
+                            $preview.find('img').attr('src', response.data.url);
+                            $preview.show();
+                            $('.remove-image-btn[data-target="modal-pin-image-1"]').show();
                         }
                     });
                 } else {
-                    $('#edit-pin-image-1').val('');
-                    $('.image-preview[data-target="edit-pin-image-1"]').empty();
-                    $('.remove-image-button[data-target="edit-pin-image-1"]').hide();
+                    $('#modal-pin-image-1').val('');
+                    $('.image-preview[data-for="modal-pin-image-1"]').hide().find('img').attr('src', '');
+                    $('.remove-image-btn[data-target="modal-pin-image-1"]').hide();
                 }
-                
+
                 // Handle Image 2
-                var image2 = $pin.data('image_2');
-                if (image2 && image2 != '0') {
-                    $('#edit-pin-image-2').val(image2);
+                var image2 = $pin.data('image-2');
+                if (image2 && image2 != '0' && image2 != 0) {
+                    $('#modal-pin-image-2').val(image2);
                     $.post(ajaxurl, { action: 'get_attachment_url', attachment_id: image2 }, function(response) {
                         if (response.success) {
-                            $('.image-preview[data-target="edit-pin-image-2"]').html('<img src="' + response.data.url + '" style="max-width: 200px;">');
-                            $('.remove-image-button[data-target="edit-pin-image-2"]').show();
+                            var $preview = $('.image-preview[data-for="modal-pin-image-2"]');
+                            $preview.find('img').attr('src', response.data.url);
+                            $preview.show();
+                            $('.remove-image-btn[data-target="modal-pin-image-2"]').show();
                         }
                     });
                 } else {
-                    $('#edit-pin-image-2').val('');
-                    $('.image-preview[data-target="edit-pin-image-2"]').empty();
-                    $('.remove-image-button[data-target="edit-pin-image-2"]').hide();
+                    $('#modal-pin-image-2').val('');
+                    $('.image-preview[data-for="modal-pin-image-2"]').hide().find('img').attr('src', '');
+                    $('.remove-image-btn[data-target="modal-pin-image-2"]').hide();
                 }
-                
+
+                // Update modal title and button
+                $('.pin-modal-header h2').text('<?php _e('Edit Pin', 'nirup-island'); ?>');
+                $('#modal-save-pin-btn').text('<?php _e('Update Pin', 'nirup-island'); ?>');
+
+                updateModalPreview();
+
                 // Show modal
-                $('#edit-pin-modal').css('display', 'flex').hide().fadeIn(200);
+                $('#pin-modal').fadeIn(200);
+                setTimeout(function() {
+                    $('#modal-pin-title').focus();
+                }, 300);
             }
             
             function deletePin(pinId) {
