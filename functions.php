@@ -12850,12 +12850,12 @@ function nirup_enqueue_experience_booking_assets() {
         );
         
         // Enqueue villa booking styles (reuse the same modal styles)
-        wp_enqueue_style(
-            'nirup-villa-booking',
-            get_template_directory_uri() . '/assets/css/villa-booking.css',
-            array(),
-            '1.0.6'
-        );
+        // wp_enqueue_style(
+        //     'nirup-villa-booking',
+        //     get_template_directory_uri() . '/assets/css/villa-booking.css',
+        //     array(),
+        //     '1.0.6'
+        // );
     }
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_experience_booking_assets');

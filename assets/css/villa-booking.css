@@ -222,13 +222,13 @@
 }
 
 .wpbs-main-wrapper .wpbs-form-container {
-    max-width: 500px;
+    max-width: 525px;
 }
 
 /* Target the checkbox label for field 1-9 */
 .villa-booking-modal label[for*="wpbs-form-field-input-1-9"] {
     font-family: 'Albert Sans', sans-serif;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 400;
     color: #555250;
     display: flex;
@@ -593,7 +593,8 @@ body.villa-booking-open {
 .villa-booking-modal .wpbs-form-field-total .wpbs-currency-toggle-wrapper {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 8px;
+    /* margin-bottom: 8px; */
+    margin: 0 0 12px 0;
 }
 
 .villa-booking-modal .wpbs-form-field-total .wpbs-currency-toggle-button {
