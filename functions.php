@@ -4063,6 +4063,7 @@ function nirup_map_pins_admin_page() {
                 // Store the pin data - CRITICAL FOR SAVE TO WORK
                 pendingPinData = { x: x, y: y, pinType: pinType };
                 selectedModalIcon = '';
+                editingPinId = null; // Not editing
 
 
 
@@ -4077,6 +4078,8 @@ function nirup_map_pins_admin_page() {
                 $('.remove-image-btn').hide();
                 $('.modal-icon-option').removeClass('active');
                 $('.modal-icon-option[data-icon=""]').addClass('active');
+                $('.pin-modal-header h2').text('<?php _e('Add New Pin', 'nirup-island'); ?>');
+                $('#modal-save-pin-btn').text('<?php _e('Add Pin', 'nirup-island'); ?>');
                 updateModalPreview();
 
 
@@ -4147,6 +4150,27 @@ function nirup_map_pins_admin_page() {
                 var hours = ($('#modal-pin-hours').val() || '').trim();
 
 
+                // Check if we're editing or adding
+                var ajaxData = {
+                    title: title,
+                    description: description,
+                    link: link,
+                    icon: selectedModalIcon,
+                    x: pendingPinData.x,
+                    y: pendingPinData.y,
+                    pin_type: pendingPinData.pinType,
+                    nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
+                };
+
+                if (editingPinId) {
+                    // Updating existing pin
+                    ajaxData.action = 'nirup_update_pin_ajax';
+                    ajaxData.pin_id = editingPinId;
+                } else {
+                    // Adding new pin
+                    ajaxData.action = 'nirup_add_pin_ajax';
+                }
+
                 $.ajax({
                     url: ajaxurl,
                     type: 'POST',
@@ -4190,6 +4214,7 @@ function nirup_map_pins_admin_page() {
                 $('#pin-modal').fadeOut(200);
                 pendingPinData = null;
                 selectedModalIcon = '';
+                editingPinId = null;
             }
 
             $('.pin-modal-close, #modal-cancel-btn').on('click', closeModal);
@@ -4522,26 +4547,32 @@ function nirup_update_pin_ajax() {
     if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
         wp_die('Security check failed');
     }
-    
+
     // Check permissions
     if (!current_user_can('manage_options')) {
         wp_die('Insufficient permissions');
     }
-    
+
     $pins = nirup_get_map_pins();
     $pin_id = sanitize_text_field($_POST['pin_id']);
-    
+
     foreach ($pins as &$pin) {
         if ($pin['id'] === $pin_id) {
             $pin['title'] = sanitize_text_field($_POST['title']);
             $pin['description'] = sanitize_textarea_field($_POST['description']);
             $pin['link'] = esc_url_raw($_POST['link']);
             $pin['pin_type'] = sanitize_text_field($_POST['pin_type']);
+            $pin['icon'] = sanitize_text_field($_POST['icon'] ?? '');
+            // Only update coordinates if provided (to preserve position when editing details only)
+            if (isset($_POST['x']) && isset($_POST['y'])) {
+                $pin['x'] = floatval($_POST['x']);
+                $pin['y'] = floatval($_POST['y']);
+            }
             $pin['updated'] = current_time('mysql');
             break;
         }
     }
-    
+
     update_option('nirup_map_pins', $pins);
     wp_send_json_success('Pin updated');
 }
