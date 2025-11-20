@@ -112,13 +112,14 @@
 }
 
 .form-select {
-    cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%233d332f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0 center;
-    background-size: 24px;
-    padding-right: 30px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    padding: 16px 8px 16px 14px;
+    background-color: #ffffff;
+    color: #9d8f7f;
+
 }
 
 .form-select option {
@@ -140,13 +141,17 @@
 
 .form-textarea {
     resize: vertical;
-    padding-top: 8px;
+    min-height: 120px;
+    padding: 16px 8px;
+    border: 1px solid #d4c5b0;
+    border-radius: 0px;
+    background-color: #ffffff;
     
 }
 
-/* .form-textarea:focus {
+.form-textarea:focus {
     border-color: #a48456;
-} */
+}
 
 .contact-submit-btn {
     width: 301px;
