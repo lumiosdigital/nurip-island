@@ -3808,6 +3808,7 @@ function nirup_map_pins_admin_page() {
             // Modal handling
             var pendingPinData = null;
             var selectedModalIcon = '';
+            var editingPinId = null; // Track if we're editing
 
             // Functions
             function addNewPin(x, y, pinType) {
@@ -3816,6 +3817,7 @@ function nirup_map_pins_admin_page() {
                 // Store the pin data
                 pendingPinData = { x: x, y: y, pinType: pinType };
                 selectedModalIcon = '';
+                editingPinId = null; // Not editing
 
                 // Reset and show modal
                 $('#modal-pin-title').val('');
@@ -3823,6 +3825,8 @@ function nirup_map_pins_admin_page() {
                 $('#modal-pin-link').val('');
                 $('.modal-icon-option').removeClass('active');
                 $('.modal-icon-option[data-icon=""]').addClass('active');
+                $('.pin-modal-header h2').text('<?php _e('Add New Pin', 'nirup-island'); ?>');
+                $('#modal-save-pin-btn').text('<?php _e('Add Pin', 'nirup-island'); ?>');
                 updateModalPreview();
 
                 console.log('Opening modal');
@@ -3883,20 +3887,31 @@ function nirup_map_pins_admin_page() {
                 var description = $('#modal-pin-description').val().trim();
                 var link = $('#modal-pin-link').val().trim();
 
+                // Check if we're editing or adding
+                var ajaxData = {
+                    title: title,
+                    description: description,
+                    link: link,
+                    icon: selectedModalIcon,
+                    x: pendingPinData.x,
+                    y: pendingPinData.y,
+                    pin_type: pendingPinData.pinType,
+                    nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
+                };
+
+                if (editingPinId) {
+                    // Updating existing pin
+                    ajaxData.action = 'nirup_update_pin_ajax';
+                    ajaxData.pin_id = editingPinId;
+                } else {
+                    // Adding new pin
+                    ajaxData.action = 'nirup_add_pin_ajax';
+                }
+
                 $.ajax({
                     url: ajaxurl,
                     type: 'POST',
-                    data: {
-                        action: 'nirup_add_pin_ajax',
-                        title: title,
-                        description: description,
-                        link: link,
-                        icon: selectedModalIcon,
-                        x: pendingPinData.x,
-                        y: pendingPinData.y,
-                        pin_type: pendingPinData.pinType,
-                        nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
-                    },
+                    data: ajaxData,
                     success: function(response) {
                         if (response.success) {
                             $('#pin-modal').fadeOut(200);
@@ -3916,6 +3931,7 @@ function nirup_map_pins_admin_page() {
                 $('#pin-modal').fadeOut(200);
                 pendingPinData = null;
                 selectedModalIcon = '';
+                editingPinId = null;
             }
 
             $('.pin-modal-close, #modal-cancel-btn').on('click', closeModal);
@@ -3949,27 +3965,49 @@ function nirup_map_pins_admin_page() {
             
             function editPin(pinId) {
                 var $pin = $(`.admin-pin[data-pin-id="${pinId}"]`);
-                var newTitle = prompt('Edit pin title:', $pin.data('title'));
-                if (newTitle && newTitle !== $pin.data('title')) {
-                    $.ajax({
-                        url: ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'nirup_update_pin_ajax',
-                            pin_id: pinId,
-                            title: newTitle,
-                            description: $pin.data('description'),
-                            link: $pin.data('link'),
-                            pin_type: $pin.data('pin-type'),
-                            nonce: '<?php echo wp_create_nonce('nirup_map_nonce'); ?>'
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                location.reload();
-                            }
-                        }
-                    });
+
+                // Get current pin position
+                var pinLeft = parseFloat($pin.css('left'));
+                var pinTop = parseFloat($pin.css('top'));
+                var containerWidth = $('.map-editor-container').width();
+                var containerHeight = $('.map-editor-container').height();
+                var xPercent = (pinLeft / containerWidth) * 100;
+                var yPercent = (pinTop / containerHeight) * 100;
+
+                // Store the pin data
+                pendingPinData = {
+                    x: xPercent,
+                    y: yPercent,
+                    pinType: $pin.data('pin-type')
+                };
+                editingPinId = pinId;
+
+                // Pre-populate modal with existing data
+                $('#modal-pin-title').val($pin.data('title') || '');
+                $('#modal-pin-description').val($pin.data('description') || '');
+                $('#modal-pin-link').val($pin.data('link') || '');
+
+                // Pre-select the icon if one exists
+                var currentIcon = $pin.data('icon') || '';
+                selectedModalIcon = currentIcon;
+                $('.modal-icon-option').removeClass('active');
+                if (currentIcon) {
+                    $(`.modal-icon-option[data-icon="${currentIcon}"]`).addClass('active');
+                } else {
+                    $('.modal-icon-option[data-icon=""]').addClass('active');
                 }
+
+                // Update modal title and button
+                $('.pin-modal-header h2').text('<?php _e('Edit Pin', 'nirup-island'); ?>');
+                $('#modal-save-pin-btn').text('<?php _e('Update Pin', 'nirup-island'); ?>');
+
+                updateModalPreview();
+
+                // Show modal
+                $('#pin-modal').fadeIn(200);
+                setTimeout(function() {
+                    $('#modal-pin-title').focus();
+                }, 300);
             }
             
             function deletePin(pinId) {
@@ -4188,26 +4226,32 @@ function nirup_update_pin_ajax() {
     if (!wp_verify_nonce($_POST['nonce'], 'nirup_map_nonce')) {
         wp_die('Security check failed');
     }
-    
+
     // Check permissions
     if (!current_user_can('manage_options')) {
         wp_die('Insufficient permissions');
     }
-    
+
     $pins = nirup_get_map_pins();
     $pin_id = sanitize_text_field($_POST['pin_id']);
-    
+
     foreach ($pins as &$pin) {
         if ($pin['id'] === $pin_id) {
             $pin['title'] = sanitize_text_field($_POST['title']);
             $pin['description'] = sanitize_textarea_field($_POST['description']);
             $pin['link'] = esc_url_raw($_POST['link']);
             $pin['pin_type'] = sanitize_text_field($_POST['pin_type']);
+            $pin['icon'] = sanitize_text_field($_POST['icon'] ?? '');
+            // Only update coordinates if provided (to preserve position when editing details only)
+            if (isset($_POST['x']) && isset($_POST['y'])) {
+                $pin['x'] = floatval($_POST['x']);
+                $pin['y'] = floatval($_POST['y']);
+            }
             $pin['updated'] = current_time('mysql');
             break;
         }
     }
-    
+
     update_option('nirup_map_pins', $pins);
     wp_send_json_success('Pin updated');
 }
