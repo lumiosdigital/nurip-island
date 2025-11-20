@@ -1,6 +1,6 @@
 /**
  * Villa Booking Modal - Two Column Layout
- * Calendar left, Form right
+ * Updated: Matched TOTAL and PAYMENT CONFIRMATION sections styling
  */
 
 /* Modal Wrapper */
@@ -165,39 +165,21 @@
     padding: 40px;
 }
 
-/* Move WPBS legend below calendar */
-/* .villa-booking-modal .wpbs-legend {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 50%;
-    margin: 0 !important;
-    padding: 20px 40px !important;
-    border-top: 1px solid rgba(61, 51, 47, 0.1);
-    display: flex !important;
-    gap: 20px;
-    justify-content: center;
-} */
-
 /* Hide our custom legend if WPBS has one */
 .villa-booking-legend {
     display: none;
 }
 
 .wpbs-calendars-wrapper.wpbs-legend-position-side {
-    /* max-width: 365px; */
     display: flex;
     flex-direction: column-reverse;
-    /* max-height: 500px; */
     padding-right: 0px !important;
-
 }
 
 /* Calendar Styling */
 .villa-booking-modal .wpbs-calendar {
     background: white;
     padding: 20px;
-    border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 60px;
 }
@@ -231,19 +213,17 @@
 }
 
 .wpbs-form-field-label label {
-    font-family: var(--font-hero) !important;
+    font-family: 'Amiri', serif !important;
     text-transform: uppercase !important;
-    font-size: 16px;
-    font-weight: 300;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
     color: #3d332f;
-    text-transform: uppercase;
-    letter-spacing: 0px;
 }
 
 .wpbs-main-wrapper .wpbs-form-container {
     max-width: 500px;
 }
-
 
 /* Target the checkbox label for field 1-9 */
 .villa-booking-modal label[for*="wpbs-form-field-input-1-9"] {
@@ -253,7 +233,6 @@
     color: #555250;
     display: flex;
     align-items: center;
-    /* gap: 10px; */
 }
 
 /* Style just the checkbox itself */
@@ -272,7 +251,6 @@
     width: 100%;
     height: 100%;
     z-index: 99999;
-    /* Way higher than booking modal */
     display: none;
     align-items: center;
     justify-content: center;
@@ -300,7 +278,6 @@
 body.modal-open {
     overflow: hidden;
     padding-right: 0;
-    /* Prevent layout shift from scrollbar */
 }
 
 /* Ensure modal content remains scrollable */
@@ -310,7 +287,6 @@ body.modal-open {
 
 /* Keep modal container scrollable if content is long */
 .villa-booking-container {
-    /* overflow-y: auto; */
     max-height: 90vh;
 }
 
@@ -355,6 +331,7 @@ body.modal-open {
     line-height: 1.6;
     margin: 0;
 }
+
 /* Hide only the confirmation message text */
 .villa-booking-modal .wpbs-form-confirmation-message p {
     display: none !important;
@@ -375,7 +352,6 @@ body.modal-open {
     height: 18px;
     border: 1px solid rgba(61, 51, 47, 0.3);
     background: white;
-    border-radius: 3px;
     cursor: pointer;
     position: relative;
     margin-right: 8px;
@@ -407,10 +383,11 @@ body.modal-open {
 
 /* Form Styling */
 .villa-booking-modal .wpbs-form label {
-    font-family: var(--font-hero) !important;
+    font-family: 'Amiri', serif !important;
     text-transform: uppercase !important;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 400;
+    letter-spacing: 0.14em;
     color: #3d332f;
     display: block;
     margin-bottom: 8px;
@@ -425,7 +402,6 @@ body.modal-open {
     width: 100%;
     padding: 12px 15px;
     border: 1px solid rgba(61, 51, 47, 0.2);
-    border-radius: 4px;
     font-family: 'Albert Sans', sans-serif;
     font-size: 14px;
     color: #3d332f;
@@ -462,7 +438,6 @@ body.modal-open {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     cursor: pointer;
-    border-radius: 4px;
     transition: all 0.3s ease;
     width: 100%;
     margin-top: 10px;
@@ -479,7 +454,6 @@ body.modal-open {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     cursor: pointer;
-    border-radius: 0px;
     transition: all 0.3s ease;
     width: 100%;
     margin-top: 10px;
@@ -510,26 +484,12 @@ body.modal-open {
 #wpbs-woocommerce-payment-button a {
     background-color: #8B5E1D !important;
     font-family: 'Albert Sans', sans-serif !important;
+    font-size: 14px !important;
+    text-transform: uppercase !important;
 }
 
 #wpbs-woocommerce-payment-button a:hover {
     background-color: #a48456 !important;
-}
-
-.wpbs-form-field-label {
-    font-family: var(--font-hero) !important;
-    text-transform: uppercase !important;
-    font-size: 16px;
-    font-weight: 300;
-    color: #3d332f;
-}
-
-.wpbs-form-field-input {
-    font-family: var(--font-hero) !important;
-    text-transform: uppercase !important;
-    font-size: 16px;
-    font-weight: 300;
-    color: #3d332f;
 }
 
 .wpbs-payment-method-description.wpbs-payment-method-description-woocommerce.wpbs-payment-method-description-open {
@@ -598,31 +558,80 @@ body.villa-booking-open {
 }
 
 /* ================================================
-   NIRUP – BOOKING MODAL STYLES POLISH
+   MATCHED STYLING: TOTAL & PAYMENT CONFIRMATION
+   Both sections now use identical styling
    ================================================ */
 
-/* --- 1. TOTAL SECTION (top of form) --- */
-.villa-booking-modal .wpbs-form-price-breakdown,
-.villa-booking-modal .wpbs-form-total,
-.villa-booking-modal .wpbs-form-total-wrapper {
-    background: #f8f3ee;
-    border-radius: 12px;
-    padding: 18px 24px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(200, 180, 155, 0.3);
+/* --- 1. TOTAL SECTION (in booking form) --- */
+.villa-booking-modal .wpbs-form-field-total {
+    margin-bottom: 30px;
 }
 
-.villa-booking-modal .wpbs-form-total-wrapper h3,
-.villa-booking-modal .wpbs-form-total-title {
+/* Main header "TOTAL" - reduced letter-spacing */
+.villa-booking-modal .wpbs-form-field-total>span {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
     font-family: 'Amiri', serif;
-    font-size: 14px;
-    letter-spacing: 0.18em;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    /* Reduced from 0.22em to match Payment Confirmation */
+    text-transform: uppercase;
+    color: #3d332f;
+    font-weight: 400;
+}
+
+/* Card container */
+.villa-booking-modal .wpbs-form-field-total .wpbs-total-price {
+    background: #f8f3ee;
+    padding: 20px 24px;
+    border: 1px solid rgba(200, 180, 155, 0.35);
+}
+
+/* Currency toggle row */
+.villa-booking-modal .wpbs-form-field-total .wpbs-currency-toggle-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.villa-booking-modal .wpbs-form-field-total .wpbs-currency-toggle-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: #7e746d;
-    margin: 0 0 8px;
+    text-decoration: none;
 }
 
-.villa-booking-modal .wpbs-form-total-wrapper table {
+/* Hide stray text node inside button */
+.villa-booking-modal .wpbs-form-field-total .wpbs-currency-toggle-button span:last-child {
+    display: none;
+}
+
+/* Currency dropdown list */
+.villa-booking-modal .wpbs-form-field-total .wpbs-currency-toggle-list {
+    background: #fff;
+    border: 1px solid rgba(200, 180, 155, 0.6);
+    padding: 4px 0;
+}
+
+.villa-booking-modal .wpbs-form-field-total .wpbs-currency-toggle-list a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 12px;
+    color: #3d332f;
+}
+
+/* Pricing table */
+.villa-booking-modal .wpbs-form-field-total .wpbs-pricing-table {
     width: 100%;
     border-collapse: collapse;
     font-family: 'Albert Sans', sans-serif;
@@ -630,24 +639,96 @@ body.villa-booking-open {
     color: #3d332f;
 }
 
-.villa-booking-modal .wpbs-form-total-wrapper th,
-.villa-booking-modal .wpbs-form-total-wrapper td {
-    padding: 4px 0;
+.villa-booking-modal .wpbs-form-field-total .wpbs-pricing-table th {
     text-align: left;
+    font-family: 'Amiri', serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 400;
+    padding-bottom: 6px !important;
+    color: #3d332f;
 }
 
-.villa-booking-modal .wpbs-form-total-wrapper tfoot td {
-    font-weight: 600;
-    font-size: 15px;
-    border-top: 1px solid rgba(210, 190, 160, 0.4);
+.villa-booking-modal .wpbs-form-field-total .wpbs-pricing-table td {
+    padding: 4px 0;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+}
+
+.villa-booking-modal .wpbs-form-field-total .wpbs-pricing-table tfoot td {
     padding-top: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    font-weight: 600;
+}
+
+/* Force all text content in TOTAL section to uppercase */
+.villa-booking-modal .wpbs-form-field-total .wpbs-pricing-table-events .wpbs-abbr,
+.villa-booking-modal .wpbs-form-field-total .wpbs-pricing-table-events .wpbs-line-item-description,
+.villa-booking-modal .wpbs-form-field-total .wpbs-pricing-table tbody tr td:first-child,
+.villa-booking-modal .wpbs-form-field-total .wpbs-pricing-table tfoot tr td:first-child,
+.villa-booking-modal .wpbs-form-field-total a[class*="price-breakdown"],
+.villa-booking-modal .wpbs-form-field-total .wpbs-pricing-table-price-breakdown-line {
+    text-transform: uppercase !important;
+}
+
+/* Extra space between columns */
+.villa-booking-modal .wpbs-form-field-total .wpbs-pricing-table td:first-child {
+    padding-right: 48px;
+}
+
+/* Price breakdown lines */
+.villa-booking-modal .wpbs-pricing-table-price-breakdown {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.villa-booking-modal .wpbs-pricing-table-price-breakdown-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 4px 0;
+}
+
+.villa-booking-modal .wpbs-pricing-table-price-breakdown-line>span {
+    margin-left: 24px;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: right;
+}
+
+/* "Days × N" and date range on separate lines */
+.villa-booking-modal .wpbs-total-price .wpbs-pricing-table-events .wpbs-abbr {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.villa-booking-modal .wpbs-total-price .wpbs-pricing-table-events .wpbs-line-item-description {
+    display: block;
+    margin-top: 2px;
+}
+
+/* Amount and currency on same line */
+.villa-booking-modal .wpbs-total-price .wpbs-price,
+.villa-booking-modal .wpbs-total-price .wpbs-price span,
+.villa-booking-modal .wpbs-total-price .wpbs-price .wpbs-price-currency {
+    display: inline !important;
+    white-space: nowrap;
+}
+
+.villa-booking-modal .wpbs-total-price .wpbs-price .wpbs-price-currency {
+    margin-left: 0.3em;
 }
 
 /* --- 2. PAYMENT METHOD --- */
 .villa-booking-modal .wpbs-field-payment-method {
     margin-top: 24px;
     background: #f8f3ee;
-    border-radius: 12px;
     padding: 18px 24px;
     border: 1px solid rgba(200, 180, 155, 0.3);
 }
@@ -680,47 +761,137 @@ body.villa-booking-open {
     margin-top: 20px;
 }
 
-/* --- 4. PAYMENT CONFIRMATION STEP --- */
+/* --- 4. PAYMENT CONFIRMATION SECTION --- */
+/* MATCHED TO TOTAL SECTION ABOVE */
+
 .villa-booking-modal .wpbs-form-confirmation-message,
 .villa-booking-modal .wpbs-payment-confirmation {
     background: #f8f3ee;
-    border-radius: 14px;
-    padding: 30px 26px;
+    padding: 20px 24px;
     border: 1px solid rgba(200, 180, 155, 0.35);
     margin-top: 28px;
 }
 
-.villa-booking-modal .wpbs-form-confirmation-message h3,
-.villa-booking-modal .wpbs-payment-confirmation h3,
+/* Main heading "PAYMENT CONFIRMATION" - reduced letter-spacing */
+.villa-booking-modal .wpbs-payment-confirmation h2,
 .villa-booking-modal .wpbs-payment-confirmation .wpbs-form-title {
     font-family: 'Amiri', serif;
     font-size: 16px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.1em;
+    /* Reduced from 0.22em */
     text-transform: uppercase;
+    font-weight: 400;
     color: #3d332f;
-    margin-bottom: 16px;
+    /* margin: 0 0 16px; */
 }
 
-.villa-booking-modal .wpbs-payment-confirmation table {
+.villa-booking-modal .wpbs-woocommerce-payment-confirmation .wpbs-payment-confirmation-inner h4 {
+    font-family: 'Amiri', serif;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.villa-booking-modal .wpbs-woocommerce-payment-confirmation .wpbs-payment-confirmation-inner h4 a {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    /* color: #8B5E1D; */
+    text-decoration: none;
+    text-transform: capitalize;
+    margin-right: 0px;
+}
+
+.villa-booking-modal .wpbs-woocommerce-payment-confirmation .wpbs-payment-confirmation-inner h4 a:hover {
+    text-decoration: underline;
+}
+
+/* Secondary heading "Your Order" - UPPERCASE with more bottom margin */
+.villa-booking-modal .wpbs-payment-confirmation h3 {
+    font-family: 'Amiri', serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: #3d332f;
+    margin: 0 0 20px;
+    /* Increased from 16px to 20px for more space before table */
+}
+
+/* Force all text content in Payment Confirmation to uppercase */
+.villa-booking-modal .wpbs-payment-confirmation h3,
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table-events .wpbs-abbr,
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table-events .wpbs-line-item-description,
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table tbody tr td:first-child,
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table tfoot tr td:first-child,
+.villa-booking-modal .wpbs-payment-confirmation a[class*="price-breakdown"],
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table-price-breakdown-line {
+    text-transform: uppercase !important;
+}
+
+/* Pricing table in Payment Confirmation */
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table {
     width: 100%;
+    border-collapse: collapse;
     font-family: 'Albert Sans', sans-serif;
     font-size: 14px;
-    border-collapse: collapse;
+    color: #3d332f;
 }
 
-.villa-booking-modal .wpbs-payment-confirmation th,
-.villa-booking-modal .wpbs-payment-confirmation td {
-    padding: 6px 0;
+/* Table headers */
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table th {
+    text-align: left;
+    font-family: 'Amiri', serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 400;
+    padding-bottom: 6px !important;
+    color: #3d332f;
+}
+
+/* Table cells */
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table td {
+    padding: 4px 0;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
     border: none;
 }
 
-.villa-booking-modal .wpbs-payment-confirmation tfoot td {
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table tfoot td {
     font-weight: 600;
-    border-top: 1px solid rgba(200, 180, 155, 0.4);
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
     padding-top: 8px;
 }
 
-/* Button */
+/* Extra space between columns */
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table td:first-child {
+    padding-right: 48px;
+}
+
+/* "Days × N" and date range on separate lines */
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table-events .wpbs-abbr {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-pricing-table-events .wpbs-line-item-description {
+    display: block;
+    margin-top: 2px;
+}
+
+/* Amount and currency on same line */
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-price,
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-price span,
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-price .wpbs-price-currency {
+    display: inline !important;
+    white-space: nowrap;
+}
+
+.villa-booking-modal .wpbs-payment-confirmation .wpbs-price .wpbs-price-currency {
+    margin-left: 0.3em;
+}
+
+/* Payment button */
 .villa-booking-modal .wpbs-form-submit,
 .villa-booking-modal .wpbs-form-submit input[type="submit"],
 .villa-booking-modal .wpbs-payment-confirmation .wpbs-button,
@@ -732,7 +903,6 @@ body.villa-booking-open {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    border-radius: 4px;
     padding: 14px 24px;
     width: 100%;
     cursor: pointer;
@@ -745,7 +915,7 @@ body.villa-booking-open {
     box-shadow: 0 6px 14px rgba(139, 94, 29, 0.25);
 }
 
-/* Fix alignment of edit order link */
+/* Edit order link */
 .villa-booking-modal .wpbs-payment-confirmation a.wpbs-edit-order {
     font-family: 'Albert Sans', sans-serif;
     font-size: 13px;
@@ -754,4 +924,36 @@ body.villa-booking-open {
     position: absolute;
     top: 22px;
     right: 26px;
+}
+
+/* Hide the "Check out with WooCommerce" text in modal */
+.villa-booking-modal .wpbs-payment-method-description-woocommerce {
+    display: none !important;
+}
+
+/* =========================================================
+   PAYMENT CONFIRMATION – LAYOUT ADJUSTMENTS
+   Make the confirmation card narrower & well-centered
+   =======================================================*/
+
+.villa-booking-modal .wpbs-woocommerce-payment-confirmation {
+    max-width: 520px;
+    margin: 32px auto 0 auto !important;
+    height: fit-content;
+}
+
+.villa-booking-modal .wpbs-woocommerce-payment-confirmation .wpbs-payment-confirmation-inner {
+    padding: 20px 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .villa-booking-modal .wpbs-woocommerce-payment-confirmation {
+        max-width: 100%;
+        margin: 24px 16px 0 16px !important;
+    }
+
+    .villa-booking-modal .wpbs-woocommerce-payment-confirmation .wpbs-payment-confirmation-inner {
+        padding: 20px 24px;
+    }
 }
