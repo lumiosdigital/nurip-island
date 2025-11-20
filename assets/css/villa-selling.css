@@ -1,0 +1,617 @@
+/* ========== Villa Selling Page Styles ========== */
+
+.villa-selling-page {
+    width: 1400px;
+    margin: 0 auto;
+}
+
+/* ========== Hero Section ========== */
+.villa-selling-hero {
+    position: relative;
+    width: 100%;
+    height: 780px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.villa-selling-hero-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.villa-selling-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(41, 26, 26, 0.3);
+}
+
+.villa-selling-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.villa-selling-hero-title {
+    font-family: 'Amiri', serif;
+    font-size: 72px;
+    line-height: 72px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: white;
+    margin: 0 0 15px 0;
+    font-weight: 400;
+}
+
+.villa-selling-hero-subtitle {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 23px;
+    line-height: 1.4;
+    color: white;
+    margin: 0;
+}
+
+/* ========== Overview Section ========== */
+.villa-selling-overview {
+    max-width: 1282px;
+    margin: 80px auto 130px;
+    padding: 0 20px;
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+}
+
+.villa-selling-overview-col {
+    flex: 1;
+}
+
+.villa-selling-overview-heading {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 23px;
+    line-height: 1.4;
+    color: #3d332f;
+    text-align: right;
+    margin: 0;
+}
+
+.villa-selling-overview-text {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 23px;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0;
+}
+
+.villa-selling-overview-text p {
+    margin: 0 0 1em 0;
+}
+
+.villa-selling-overview-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* ========== Features Section ========== */
+.villa-selling-features {
+    max-width: 1400px;
+    margin: 0 auto 80px;
+    /* padding: 0 20px; */
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    justify-content: center;
+}
+
+.villa-selling-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.villa-selling-feature-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.villa-selling-feature-icon .feature-icon-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.villa-selling-feature-text {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #3d332f;
+    white-space: nowrap;
+}
+
+/* ========== Available Units Header ========== */
+.villa-selling-units-header {
+    max-width: 1400px;
+    margin: 0 auto 60px;
+    /* padding: 0 20px; */
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.villa-selling-units-label {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #8B5E1D;
+    white-space: nowrap;
+}
+
+.villa-selling-units-divider {
+    flex: 1;
+    height: 1px;
+    background-color: #dad6cf;
+}
+
+/* ========== Units Grid ========== */
+.villa-selling-units-section {
+    max-width: 1400px;
+    margin: 0 auto 200px;
+    /* padding: 0 20px; */
+}
+
+.villa-selling-units-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.villa-selling-unit-card {
+    background-color: #fcfaf6;
+    display: flex;
+    flex-direction: column;
+    min-height: 800px;
+}
+
+.villa-selling-unit-image {
+    width: 100%;
+    height: 510px;
+    overflow: hidden;
+    position: relative;
+}
+
+.villa-selling-unit-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.villa-selling-unit-content {
+    padding: 50px 68px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+}
+
+.villa-selling-unit-subtitle {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    color: #555250;
+    text-align: center;
+    margin: 0;
+}
+
+.villa-selling-unit-title {
+    font-family: 'Amiri', serif;
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #555250;
+    text-align: center;
+    margin: 0;
+    font-weight: 400;
+}
+
+.villa-selling-unit-details {
+    display: flex;
+    gap: 148px;
+    margin-top: 20px;
+}
+
+.villa-selling-unit-details-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.villa-selling-unit-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.villa-selling-unit-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.villa-selling-unit-icon img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.villa-selling-unit-detail-text {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #3d332f;
+}
+
+.no-units-message {
+    text-align: center;
+    padding: 60px 20px;
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    color: #555250;
+    grid-column: 1 / -1;
+}
+
+/* ========== Form Section ========== */
+.villa-selling-form-section {
+    max-width: 1400px;
+    margin: 0 auto 150px;
+    /* padding: 0 20px; */
+}
+
+.villa-selling-form-intro {
+    text-align: center;
+    margin-bottom: 64px;
+}
+
+.villa-selling-form-heading {
+    font-family: 'Amiri', serif;
+    font-size: 48px;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3d332f;
+    margin: 0 0 24px 0;
+    font-weight: 400;
+}
+
+.villa-selling-form-description {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #3d332f;
+    margin: 0;
+}
+
+/* ========== Form Fields ========== */
+.villa-selling-form {
+    display: grid;
+    grid-template-columns: 600px 600px;
+    gap: 200px;
+    max-width: 1400px;
+}
+
+.villa-selling-form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+
+.villa-selling-form-column-right {
+    /* Message and submit on right */
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.villa-selling-message-group {
+    flex: 1;
+}
+
+.villa-selling-message-group textarea {
+    height: 100%;
+    min-height: 300px;
+}
+
+.villa-selling-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.villa-selling-form-group label {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    line-height: 1.4;
+    color: #3d332f;
+    /* margin-bottom: 32px; */
+    text-transform: uppercase;
+}
+
+.villa-selling-form-group input,
+.villa-selling-form-group textarea,
+.villa-selling-form-group select {
+    width: 100%;
+    padding: 16px;
+    font-family: var(--font-hero);
+    font-size: 16px;
+    font-weight: 400;
+    color: #3d332f;
+    background: white;
+    border: 1px solid #d4c5b0 !important;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.villa-selling-form-group input::placeholder,
+.villa-selling-form-group textarea::placeholder {
+    color: #9d8f7f;
+    opacity: 1;
+}
+
+.villa-selling-form-group input:focus,
+.villa-selling-form-group textarea:focus,
+.villa-selling-form-group select:focus {
+    border-color: #a48456 !important;
+}
+
+.villa-selling-form-group textarea {
+    resize: vertical;
+    padding: 16px;
+    font-family: var(--font-hero);
+}
+
+.villa-selling-form-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a48456' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 20px;
+    padding-right: 45px;
+    color: #9d8f7f;
+}
+
+/* Make selected option show in normal color */
+.villa-selling-form-group select option {
+    color: #3d332f;
+}
+
+.villa-selling-form-submit-wrapper {
+    margin-top: auto;
+}
+
+.villa-selling-submit-btn {
+    background-color: #a48456;
+    color: white;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: none;
+    padding: 10px 0;
+    width: 301px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.villa-selling-submit-btn:hover {
+    background-color: #8B5E1D;
+}
+
+.villa-selling-submit-btn.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.villa-selling-submit-btn.loading span::after {
+    content: '...';
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+
+    0%,
+    20% {
+        content: '.';
+    }
+
+    40% {
+        content: '..';
+    }
+
+    60%,
+    100% {
+        content: '...';
+    }
+}
+
+/* ========== Form Messages ========== */
+.form-message {
+    display: none;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 4px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+.form-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.form-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* ========== Thank You Modal ========== */
+.villa-thank-you-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.villa-thank-you-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.villa-thank-you-modal .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1;
+    cursor: pointer;
+}
+
+.villa-thank-you-modal .modal-content {
+    position: relative;
+    z-index: 2;
+    background: white;
+    padding: 60px;
+    text-align: center;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.villa-thank-you-modal .modal-icon {
+    margin-bottom: 24px;
+}
+
+.villa-thank-you-modal .modal-title {
+    font-family: 'Amiri', serif;
+    font-size: 32px;
+    color: #3d332f;
+    margin: 0 0 16px 0;
+    font-weight: 400;
+}
+
+.villa-thank-you-modal .modal-message {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #555250;
+    margin: 0;
+}
+
+/* ========== Responsive Design ========== */
+@media (max-width: 768px) {
+    .villa-selling-hero {
+        height: 500px;
+    }
+
+    .villa-selling-hero-title {
+        font-size: 48px;
+        line-height: 48px;
+    }
+
+    .villa-selling-hero-subtitle {
+        font-size: 18px;
+    }
+
+    .villa-selling-overview {
+        flex-direction: column;
+        margin-top: 60px;
+        gap: 30px;
+    }
+
+    .villa-selling-overview-heading {
+        text-align: left;
+    }
+
+    .villa-selling-features {
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    .villa-selling-units-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .villa-selling-unit-card {
+        min-height: auto;
+    }
+
+    .villa-selling-unit-content {
+        padding: 30px 20px;
+    }
+
+    .villa-selling-unit-details {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .villa-selling-form {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .villa-selling-message-group textarea {
+        min-height: 200px;
+    }
+
+    .villa-selling-form-heading {
+        font-size: 36px;
+    }
+
+    .villa-selling-submit-btn {
+        width: 100%;
+    }
+}

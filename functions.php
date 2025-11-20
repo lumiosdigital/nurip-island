@@ -2520,6 +2520,13 @@ function nirup_get_breadcrumbs() {
         );
     }
 
+    if (is_page_template('page-villa-selling.php')) {
+        $breadcrumbs[] = array(
+            'title' => 'Own Your Private Island Retreat',
+            'url' => ''
+        );
+    }
+
     if (is_page_template('page-getting-here.php') || is_page('getting-here')) {
         $breadcrumbs[] = array(
             'title' => 'Getting Here',
@@ -13321,4 +13328,559 @@ function nirup_press_kit_customizer($wp_customize) {
 }
 add_action('customize_register', 'nirup_press_kit_customizer');
 
+function nirup_register_selling_unit_post_type() {
+    $labels = array(
+        'name'                  => _x('Selling Units', 'Post type general name', 'nirup-island'),
+        'singular_name'         => _x('Selling Unit', 'Post type singular name', 'nirup-island'),
+        'menu_name'             => _x('Selling Units', 'Admin Menu text', 'nirup-island'),
+        'add_new'               => __('Add New', 'nirup-island'),
+        'add_new_item'          => __('Add New Unit', 'nirup-island'),
+        'new_item'              => __('New Unit', 'nirup-island'),
+        'edit_item'             => __('Edit Unit', 'nirup-island'),
+        'view_item'             => __('View Unit', 'nirup-island'),
+        'all_items'             => __('All Units', 'nirup-island'),
+        'search_items'          => __('Search Units', 'nirup-island'),
+        'not_found'             => __('No units found.', 'nirup-island'),
+        'not_found_in_trash'    => __('No units found in Trash.', 'nirup-island'),
+        'featured_image'        => __('Unit Featured Image', 'nirup-island'),
+        'set_featured_image'    => __('Set unit featured image', 'nirup-island'),
+        'remove_featured_image' => __('Remove unit featured image', 'nirup-island'),
+        'use_featured_image'    => __('Use as unit featured image', 'nirup-island'),
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => false,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => false,
+        'capability_type'    => 'post',
+        'has_archive'        => false,
+        'hierarchical'       => false,
+        'menu_position'      => 25,
+        'menu_icon'          => 'dashicons-admin-multisite',
+        'supports'           => array('title', 'thumbnail'),
+    );
+
+    register_post_type('selling_unit', $args);
+}
+add_action('init', 'nirup_register_selling_unit_post_type');
+
+// ========== 2. ADD META BOXES FOR SELLING UNIT DETAILS ==========
+
+function nirup_add_selling_unit_meta_boxes() {
+    add_meta_box(
+        'selling_unit_details',
+        __('Unit Details', 'nirup-island'),
+        'nirup_render_selling_unit_details_meta_box',
+        'selling_unit',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_selling_unit_meta_boxes');
+
+function nirup_render_selling_unit_details_meta_box($post) {
+    wp_nonce_field('nirup_save_selling_unit_details', 'nirup_selling_unit_nonce');
+    
+    $subtitle = get_post_meta($post->ID, '_unit_subtitle', true);
+    $bedrooms = get_post_meta($post->ID, '_unit_bedrooms', true);
+    $size = get_post_meta($post->ID, '_unit_size', true);
+    $status = get_post_meta($post->ID, '_unit_status', true);
+    $price = get_post_meta($post->ID, '_unit_price', true);
+    ?>
+    
+    <table class="form-table">
+        <tr>
+            <th><label for="unit_subtitle"><?php _e('Subtitle', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="unit_subtitle" name="unit_subtitle" 
+                       value="<?php echo esc_attr($subtitle); ?>" class="regular-text"
+                       placeholder="e.g., Ocean view villa with private pool">
+                <p class="description"><?php _e('Descriptive subtitle shown above the unit title', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="unit_bedrooms"><?php _e('Bedrooms', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="number" id="unit_bedrooms" name="unit_bedrooms" 
+                       value="<?php echo esc_attr($bedrooms); ?>" class="small-text" min="1" max="10">
+                <p class="description"><?php _e('Number of bedrooms', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="unit_size"><?php _e('Size (sqm)', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="number" id="unit_size" name="unit_size" 
+                       value="<?php echo esc_attr($size); ?>" class="small-text" min="1">
+                <p class="description"><?php _e('Size in square meters', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="unit_status"><?php _e('Status', 'nirup-island'); ?></label></th>
+            <td>
+                <select id="unit_status" name="unit_status">
+                    <option value="Available" <?php selected($status, 'Available'); ?>><?php _e('Available', 'nirup-island'); ?></option>
+                    <option value="Reserved" <?php selected($status, 'Reserved'); ?>><?php _e('Reserved', 'nirup-island'); ?></option>
+                    <option value="Sold" <?php selected($status, 'Sold'); ?>><?php _e('Sold', 'nirup-island'); ?></option>
+                </select>
+                <p class="description"><?php _e('Current availability status', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="unit_price"><?php _e('Price', 'nirup-island'); ?></label></th>
+            <td>
+                <input type="text" id="unit_price" name="unit_price" 
+                       value="<?php echo esc_attr($price); ?>" class="regular-text"
+                       placeholder="e.g., $289,000 USD">
+                <p class="description"><?php _e('Display price with currency (e.g., $289,000 USD)', 'nirup-island'); ?></p>
+            </td>
+        </tr>
+    </table>
+    
+    <?php
+}
+
+function nirup_save_selling_unit_details($post_id) {
+    if (!isset($_POST['nirup_selling_unit_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_selling_unit_nonce'], 'nirup_save_selling_unit_details')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (isset($_POST['unit_subtitle'])) {
+        update_post_meta($post_id, '_unit_subtitle', sanitize_text_field($_POST['unit_subtitle']));
+    }
+    
+    if (isset($_POST['unit_bedrooms'])) {
+        update_post_meta($post_id, '_unit_bedrooms', absint($_POST['unit_bedrooms']));
+    }
+    
+    if (isset($_POST['unit_size'])) {
+        update_post_meta($post_id, '_unit_size', absint($_POST['unit_size']));
+    }
+    
+    if (isset($_POST['unit_status'])) {
+        update_post_meta($post_id, '_unit_status', sanitize_text_field($_POST['unit_status']));
+    }
+    
+    if (isset($_POST['unit_price'])) {
+        update_post_meta($post_id, '_unit_price', sanitize_text_field($_POST['unit_price']));
+    }
+}
+add_action('save_post_selling_unit', 'nirup_save_selling_unit_details');
+
+// ========== 3. ADMIN COLUMNS FOR SELLING UNITS ==========
+
+function nirup_selling_unit_admin_columns($columns) {
+    $new_columns = array(
+        'cb' => $columns['cb'],
+        'thumbnail' => __('Image', 'nirup-island'),
+        'title' => $columns['title'],
+        'bedrooms' => __('Bedrooms', 'nirup-island'),
+        'size' => __('Size', 'nirup-island'),
+        'status' => __('Status', 'nirup-island'),
+        'price' => __('Price', 'nirup-island'),
+        'date' => $columns['date']
+    );
+    return $new_columns;
+}
+add_filter('manage_selling_unit_posts_columns', 'nirup_selling_unit_admin_columns');
+
+function nirup_selling_unit_admin_column_content($column, $post_id) {
+    switch ($column) {
+        case 'thumbnail':
+            if (has_post_thumbnail($post_id)) {
+                echo get_the_post_thumbnail($post_id, array(60, 60));
+            } else {
+                echo '—';
+            }
+            break;
+        case 'bedrooms':
+            $bedrooms = get_post_meta($post_id, '_unit_bedrooms', true);
+            echo $bedrooms ? esc_html($bedrooms) : '—';
+            break;
+        case 'size':
+            $size = get_post_meta($post_id, '_unit_size', true);
+            echo $size ? esc_html($size) . ' sqm' : '—';
+            break;
+        case 'status':
+            $status = get_post_meta($post_id, '_unit_status', true);
+            if ($status) {
+                $color = ($status === 'Available') ? '#28a745' : (($status === 'Reserved') ? '#ffc107' : '#dc3545');
+                echo '<span style="color: ' . $color . '; font-weight: 600;">' . esc_html($status) . '</span>';
+            } else {
+                echo '—';
+            }
+            break;
+        case 'price':
+            $price = get_post_meta($post_id, '_unit_price', true);
+            echo $price ? esc_html($price) : '—';
+            break;
+    }
+}
+add_action('manage_selling_unit_posts_custom_column', 'nirup_selling_unit_admin_column_content', 10, 2);
+
+// ========== 4. ENQUEUE ASSETS FOR VILLA SELLING PAGE ==========
+
+function nirup_enqueue_villa_selling_assets() {
+    if (is_page_template('page-villa-selling.php')) {
+        // Enqueue CSS
+        wp_enqueue_style(
+            'nirup-villa-selling',
+            get_template_directory_uri() . '/assets/css/villa-selling.css',
+            array(),
+            '1.0.0'
+        );
+        
+        // Enqueue JavaScript
+        wp_enqueue_script(
+            'nirup-villa-selling',
+            get_template_directory_uri() . '/assets/js/villa-selling.js',
+            array('jquery'),
+            '1.0.0',
+            true
+        );
+        
+        // Localize script
+        wp_localize_script('nirup-villa-selling', 'nirup_villa_selling_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce'    => wp_create_nonce('nirup_villa_selling_form_nonce')
+        ));
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_villa_selling_assets');
+
+// ========== 5. FORM SUBMISSION HANDLER ==========
+
+function nirup_villa_selling_form_submit() {
+    // Verify nonce
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'nirup_villa_selling_form_nonce')) {
+        wp_send_json_error(array('message' => 'Security check failed.'));
+    }
+
+    // Get form data
+    $form_data = $_POST['form_data'];
+    
+    $name = sanitize_text_field($form_data['name']);
+    $email = sanitize_email($form_data['email']);
+    $phone = sanitize_text_field($form_data['phone']);
+    $language = sanitize_text_field($form_data['language']);
+    $villa_unit = sanitize_text_field($form_data['villa_unit']);
+    $message = sanitize_textarea_field($form_data['message']);
+    
+    // Validate required fields
+    if (empty($name) || empty($email) || empty($phone)) {
+        wp_send_json_error(array('message' => 'Please fill in all required fields.'));
+    }
+    
+    if (!is_email($email)) {
+        wp_send_json_error(array('message' => 'Please enter a valid email address.'));
+    }
+
+    // Store in database
+    nirup_store_villa_selling_submission($name, $email, $phone, $language, $villa_unit, $message);
+    
+    // Prepare email to admin
+    $admin_email = get_option('admin_email');
+    $admin_subject = sprintf('[Villa Selling Enquiry] New enquiry from %s', $name);
+    
+    $admin_body = sprintf(
+        "New Villa Selling Enquiry\n\n" .
+        "Name: %s\n" .
+        "Email: %s\n" .
+        "Phone: %s\n" .
+        "Preferred Language: %s\n" .
+        "Villa Interest: %s\n\n" .
+        "Message:\n%s\n\n" .
+        "---\n" .
+        "This enquiry was submitted from the Villa Selling Options page at %s",
+        $name,
+        $email,
+        $phone,
+        $language ? $language : 'Not specified',
+        $villa_unit ? $villa_unit : 'Not specified',
+        $message,
+        get_site_url()
+    );
+    
+    $admin_headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'Reply-To: ' . $name . ' <' . $email . '>'
+    );
+    
+    // Prepare confirmation email to user
+    $user_subject = 'Thank you for your enquiry - Nirup Island';
+    $user_body = sprintf(
+        "Dear %s,\n\n" .
+        "Thank you for your interest in owning a villa at Nirup Island.\n\n" .
+        "We have received your enquiry and our sales team will contact you within 24 hours to discuss your requirements.\n\n" .
+        "Your Enquiry Details:\n" .
+        "- Preferred Language: %s\n" .
+        "- Villa Interest: %s\n" .
+        "- Message: %s\n\n" .
+        "We look forward to helping you find your perfect island retreat.\n\n" .
+        "Best regards,\n" .
+        "Nirup Island Sales Team\n\n" .
+        "---\n" .
+        "If you have any questions, please contact us at %s",
+        $name,
+        $language ? $language : 'Not specified',
+        $villa_unit ? $villa_unit : 'Not specified',
+        $message ? $message : 'No additional message',
+        $admin_email
+    );
+    
+    $user_headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: Nirup Island <' . get_option('admin_email') . '>'
+    );
+    
+    // Send emails
+    $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
+    $user_mail_sent = wp_mail($email, $user_subject, $user_body, $user_headers);
+    
+    // Log results
+    error_log('Villa Selling Form - Admin email result: ' . ($admin_mail_sent ? 'SUCCESS' : 'FAILED'));
+    error_log('Villa Selling Form - User email result: ' . ($user_mail_sent ? 'SUCCESS' : 'FAILED'));
+    
+    // Return success response
+    wp_send_json_success(array(
+        'message' => 'Your enquiry has been received! Our sales team will contact you within 24 hours.',
+        'admin_sent' => $admin_mail_sent,
+        'user_sent' => $user_mail_sent
+    ));
+}
+add_action('wp_ajax_nirup_villa_selling_form_submit', 'nirup_villa_selling_form_submit');
+add_action('wp_ajax_nopriv_nirup_villa_selling_form_submit', 'nirup_villa_selling_form_submit');
+
+// ========== 6. STORE SUBMISSION IN DATABASE ==========
+
+function nirup_store_villa_selling_submission($name, $email, $phone, $language, $villa_unit, $message) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'villa_selling_submissions';
+    
+    // Create table if it doesn't exist
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        nirup_create_villa_selling_submissions_table();
+    }
+    
+    // Insert submission
+    $result = $wpdb->insert(
+        $table_name,
+        array(
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'language' => $language,
+            'villa_unit' => $villa_unit,
+            'message' => $message,
+            'submission_date' => current_time('mysql')
+        ),
+        array('%s', '%s', '%s', '%s', '%s', '%s', '%s')
+    );
+    
+    if ($result === false) {
+        error_log('Villa Selling Form - Database storage failed: ' . $wpdb->last_error);
+    } else {
+        error_log('Villa Selling Form - Submission saved to database successfully');
+    }
+}
+
+function nirup_create_villa_selling_submissions_table() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'villa_selling_submissions';
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        name varchar(255) NOT NULL,
+        email varchar(255) NOT NULL,
+        phone varchar(50) NOT NULL,
+        language varchar(50) DEFAULT NULL,
+        villa_unit varchar(255) DEFAULT NULL,
+        message text DEFAULT NULL,
+        submission_date datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        status varchar(50) DEFAULT 'pending' NOT NULL,
+        PRIMARY KEY  (id)
+    ) $charset_collate;";
+
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+}
+
+// Create table on theme activation
+add_action('after_switch_theme', 'nirup_create_villa_selling_submissions_table');
+
+// ========== 7. ADMIN PAGE FOR SUBMISSIONS ==========
+
+function nirup_villa_selling_admin_menu() {
+    add_submenu_page(
+        'edit.php?post_type=selling_unit',
+        'Enquiries',
+        'Enquiries',
+        'manage_options',
+        'villa-selling-enquiries',
+        'nirup_villa_selling_enquiries_page'
+    );
+}
+add_action('admin_menu', 'nirup_villa_selling_admin_menu');
+
+function nirup_villa_selling_enquiries_page() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'villa_selling_submissions';
+    
+    $submissions = $wpdb->get_results("SELECT * FROM $table_name ORDER BY submission_date DESC");
+    ?>
+    <div class="wrap">
+        <h1>Villa Selling Enquiries</h1>
+        
+        <?php if (empty($submissions)): ?>
+            <p>No enquiries yet.</p>
+        <?php else: ?>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Villa Interest</th>
+                        <th>Language</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($submissions as $submission): ?>
+                        <tr>
+                            <td><?php echo date('M j, Y', strtotime($submission->submission_date)); ?></td>
+                            <td><strong><?php echo esc_html($submission->name); ?></strong></td>
+                            <td><a href="mailto:<?php echo esc_attr($submission->email); ?>"><?php echo esc_html($submission->email); ?></a></td>
+                            <td><?php echo esc_html($submission->phone); ?></td>
+                            <td><?php echo $submission->villa_unit ? esc_html($submission->villa_unit) : '—'; ?></td>
+                            <td><?php echo $submission->language ? esc_html($submission->language) : '—'; ?></td>
+                            <td><?php echo esc_html($submission->status); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
+// ========== 8. CUSTOMIZER SETTINGS ==========
+
+function nirup_villa_selling_customizer($wp_customize) {
+    // Add Villa Selling Section
+    $wp_customize->add_section('nirup_villa_selling', array(
+        'title'    => __('Villa Selling Options Page', 'nirup-island'),
+        'priority' => 160,
+    ));
+
+    // Hero Image
+    $wp_customize->add_setting('nirup_villa_selling_hero_image', array(
+        'sanitize_callback' => 'absint',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'nirup_villa_selling_hero_image', array(
+        'label'    => __('Hero Background Image', 'nirup-island'),
+        'section'  => 'nirup_villa_selling',
+        'mime_type' => 'image',
+    )));
+
+    // Hero Title
+    $wp_customize->add_setting('nirup_villa_selling_hero_title', array(
+        'default' => __('Own Your Private Island Retreat', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_hero_title', array(
+        'label'   => __('Hero Title', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'text',
+    ));
+
+    // Hero Subtitle
+    $wp_customize->add_setting('nirup_villa_selling_hero_subtitle', array(
+        'default' => __('Wake up to the sound of the sea and make Nirup Island your home.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_hero_subtitle', array(
+        'label'   => __('Hero Subtitle', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'textarea',
+    ));
+
+    // Overview Column 1 Heading
+    $wp_customize->add_setting('nirup_villa_selling_overview_col1_heading', array(
+        'default' => __('Own a luxury villa on a private island', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_overview_col1_heading', array(
+        'label'   => __('Overview Column 1 - Heading', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'text',
+    ));
+
+    // Overview Column 2 Text
+    $wp_customize->add_setting('nirup_villa_selling_overview_col2_text', array(
+        'default' => __('Riahi Residences offers an exclusive opportunity to own a home on Nirup Island, where refined comfort meets the serenity of the sea.', 'nirup-island'),
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_overview_col2_text', array(
+        'label'   => __('Overview Column 2 - Text', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'textarea',
+    ));
+
+    // Overview Column 3 Text
+    $wp_customize->add_setting('nirup_villa_selling_overview_col3_text', array(
+        'default' => __('Each residence is professionally maintained through a monthly management fee, with optional services provided by The Westin Nirup Island Resort & Spa.', 'nirup-island'),
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_overview_col3_text', array(
+        'label'   => __('Overview Column 3 - Text', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'textarea',
+    ));
+
+    // Form Heading
+    $wp_customize->add_setting('nirup_villa_selling_form_heading', array(
+        'default' => __('Enquire About Villa Ownership', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_form_heading', array(
+        'label'   => __('Form Section - Heading', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'text',
+    ));
+
+    // Form Description
+    $wp_customize->add_setting('nirup_villa_selling_form_description', array(
+        'default' => __('Experience the freedom of owning a home by the sea. Please fill out the form below and our sales team will contact you within 24 hours.', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_form_description', array(
+        'label'   => __('Form Section - Description', 'nirup-island'),
+        'section' => 'nirup_villa_selling',
+        'type'    => 'textarea',
+    ));
+}
+add_action('customize_register', 'nirup_villa_selling_customizer');
 ?>
