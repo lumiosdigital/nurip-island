@@ -4599,6 +4599,10 @@ function nirup_update_pin_ajax() {
             $pin['link'] = esc_url_raw($_POST['link']);
             $pin['pin_type'] = sanitize_text_field($_POST['pin_type']);
             $pin['icon'] = sanitize_text_field($_POST['icon'] ?? '');
+            // IMAGE FIELDS - Save image data
+            $pin['image_1'] = isset($_POST['image_1']) ? absint($_POST['image_1']) : ($pin['image_1'] ?? 0);
+            $pin['image_2'] = isset($_POST['image_2']) ? absint($_POST['image_2']) : ($pin['image_2'] ?? 0);
+            $pin['hours'] = isset($_POST['hours']) ? sanitize_text_field($_POST['hours']) : ($pin['hours'] ?? '');
             // Only update coordinates if provided (to preserve position when editing details only)
             if (isset($_POST['x']) && isset($_POST['y'])) {
                 $pin['x'] = floatval($_POST['x']);
