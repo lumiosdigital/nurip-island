@@ -594,7 +594,7 @@ body.villa-booking-open {
     display: flex;
     justify-content: flex-end;
     /* margin-bottom: 8px; */
-    margin: 0 0 12px 0;
+    margin: 0 0 12px 0 !important;
 }
 
 .villa-booking-modal .wpbs-form-field-total .wpbs-currency-toggle-button {
