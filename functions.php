@@ -12659,12 +12659,26 @@ function nirup_process_villa_booking_shortcode() {
     wp_print_styles();
     $styles = ob_get_clean();
 
-    // Build shortcode with both calendar and form ID if form ID exists
+    // Build shortcode with all necessary attributes for villas
+    $shortcode_attrs = array(
+        'id' => esc_attr($calendar_id),
+        'history' => '1', // Show past dates as unavailable
+        'selection_type' => 'multiple', // Date range for villa stays
+        'selection_style' => 'split' // Split days for check-in/check-out
+    );
+    
+    // Add form_id if available
     if ($form_id) {
-        $shortcode = '[wpbs id="' . esc_attr($calendar_id) . '" form_id="' . esc_attr($form_id) . '"]';
-    } else {
-        $shortcode = '[wpbs id="' . esc_attr($calendar_id) . '"]';
+        $shortcode_attrs['form_id'] = esc_attr($form_id);
     }
+    
+    // Build the shortcode string
+    $shortcode_parts = array();
+    foreach ($shortcode_attrs as $key => $value) {
+        $shortcode_parts[] = $key . '="' . $value . '"';
+    }
+    
+    $shortcode = '[wpbs ' . implode(' ', $shortcode_parts) . ']';
     
     // Process the shortcode
     $output = do_shortcode($shortcode);

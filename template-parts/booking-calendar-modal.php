@@ -1,9 +1,5 @@
 <?php
-/**
- * Reusable Booking Modal - UPDATED to support event_offer post type
- * File: template-parts/booking-calendar-modal.php
- * REPLACE the existing file with this
- */
+
 
 $post_id = get_the_ID();
 $post_type = get_post_type();
@@ -11,33 +7,45 @@ $post_type = get_post_type();
 // Get the correct meta keys based on post type
 $calendar_meta_key = '';
 $form_meta_key = '';
+$selection_type = 'multiple'; // Default for villas (date range)
+$selection_style = 'split';   // Default for villas (check-in/check-out days)
 
 switch ($post_type) {
     case 'villa':
         $calendar_meta_key = '_villa_booking_calendar_id';
         $form_meta_key = '_villa_booking_form_id';
         $post_type_label = 'Villa';
+        $selection_type = 'multiple'; // Date range for villa stays
+        $selection_style = 'split';   // Split days for check-in/check-out
         break;
     case 'private_charter':
         $calendar_meta_key = '_charter_booking_calendar_id';
         $form_meta_key = '_charter_booking_form_id';
         $post_type_label = 'Charter';
+        $selection_type = 'single';   // Single day for charter bookings
+        $selection_style = 'normal';  // Normal selection (full day)
         break;
     case 'boat':
     case 'marina':
         $calendar_meta_key = '_boat_booking_calendar_id';
         $form_meta_key = '_boat_booking_form_id';
         $post_type_label = 'Boat';
+        $selection_type = 'single';   // Single day for boat bookings
+        $selection_style = 'normal';  // Normal selection (full day)
         break;
     case 'experience':
         $calendar_meta_key = '_experience_booking_calendar_id';
         $form_meta_key = '_experience_booking_form_id';
         $post_type_label = 'Experience';
+        $selection_type = 'single';   // Single day for experience bookings
+        $selection_style = 'normal';  // Normal selection (full day)
         break;
     case 'event_offer':
         $calendar_meta_key = '_event_offer_booking_calendar_id';
         $form_meta_key = '_event_offer_booking_form_id';
         $post_type_label = 'Event/Offer';
+        $selection_type = 'single';   // Single day for event bookings
+        $selection_style = 'normal';  // Normal selection (full day)
         break;
     default:
         $post_type_label = '';
@@ -69,12 +77,28 @@ if ($calendar_id) :
             <div class="villa-booking-calendar-wrapper">
                 <?php 
                 if ($calendar_id) {
-                    echo do_shortcode(
-                        sprintf('[wpbs id="%s"%s]',
-                            esc_attr($calendar_id),
-                            $form_id ? ' form_id="' . esc_attr($form_id) . '"' : ''
-                        )
+                    // Build shortcode with all necessary attributes
+                    $shortcode_attrs = array(
+                        'id' => esc_attr($calendar_id),
+                        'history' => '3', // Show past dates as unavailable
+                        'selection_type' => esc_attr($selection_type),
+                        'selection_style' => esc_attr($selection_style)
                     );
+                    
+                    // Add form_id if available
+                    if ($form_id) {
+                        $shortcode_attrs['form_id'] = esc_attr($form_id);
+                    }
+                    
+                    // Build the shortcode string
+                    $shortcode_parts = array();
+                    foreach ($shortcode_attrs as $key => $value) {
+                        $shortcode_parts[] = $key . '="' . $value . '"';
+                    }
+                    
+                    $shortcode = '[wpbs ' . implode(' ', $shortcode_parts) . ']';
+                    
+                    echo do_shortcode($shortcode);
                 }
                 ?>
             </div>
