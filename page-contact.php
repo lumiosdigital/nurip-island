@@ -70,7 +70,7 @@ get_header();
                 <!-- Phone Field -->
                 <div class="form-field">
                     <label for="contact-phone" class="form-label">
-                        <?php echo esc_html(get_theme_mod('nirup_contact_label_phone', 'Phone')); ?>
+                        <?php echo esc_html(get_theme_mod('nirup_contact_label_phone', 'Phone*')); ?>
                     </label>
                     <input 
                         type="tel" 
@@ -78,6 +78,7 @@ get_header();
                         name="phone" 
                         class="form-input" 
                         placeholder="<?php echo esc_attr(get_theme_mod('nirup_contact_placeholder_phone', 'Your Phone Number')); ?>"
+                        required
                     >
                 </div>
 
