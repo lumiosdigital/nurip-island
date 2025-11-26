@@ -127,6 +127,11 @@ get_header();
                     </span>
                     <span class="btn-loader"></span>
                 </button>
+                <small class="recaptcha-note-nirup">
+                    This site is protected by reCAPTCHA and the Google
+                    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and
+                    <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+                </small>
 
                 <!-- Form Messages -->
                 <div class="form-message" id="form-message"></div>
