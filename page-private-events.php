@@ -271,10 +271,17 @@ get_header();
                             <label class="private-form-label">Message</label>
                             <textarea name="message" class="private-form-textarea" id="event-message" placeholder="Tell us about your event details or special requests"></textarea>
                         </div>
-                        <button type="submit" class="private-form-submit-btn">
-                            <span class="private-btn-text">Submit Inquiry</span>
-                            <span class="private-btn-loader"></span>
-                        </button>
+                        <div class="private-form-field private-form-submit-wrapper">
+                            <button type="submit" class="private-form-submit-btn">
+                                <span class="private-btn-text">Submit Inquiry</span>
+                                <span class="private-btn-loader"></span>
+                            </button>
+                            <small class="recaptcha-note-nirup">
+                                This site is protected by reCAPTCHA and the Google
+                                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and
+                                <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+                            </small>
+                        </div>
                     </div>
                 </div>
 

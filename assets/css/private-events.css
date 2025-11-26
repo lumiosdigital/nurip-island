@@ -291,6 +291,10 @@
     opacity: 1;
 }
 
+.private-form-field.private-form-submit-wrapper {
+    display: flex;
+    flex-direction: column;
+}
 
 .private-form-input:focus,
 .private-form-select:focus {
