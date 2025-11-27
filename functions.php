@@ -10254,20 +10254,25 @@ add_action('wp_enqueue_scripts', 'nirup_enqueue_ferry_map_styles');
 
 function nirup_enqueue_private_events_assets() {
     if (is_page_template('page-private-events.php')) {
-        // CSS
+        $dir_uri  = get_stylesheet_directory_uri();
+        $dir_path = get_stylesheet_directory();
+        
+        // CSS with automatic cache-busting
+        $css_path = $dir_path . '/assets/css/private-events.css';
         wp_enqueue_style(
             'nirup-private-events',
-            get_template_directory_uri() . '/assets/css/private-events.css',
+            $dir_uri . '/assets/css/private-events.css',
             array(),
-            '1.0.0'
+            file_exists($css_path) ? filemtime($css_path) : '1.0.0'
         );
 
-        // JS
+        // JS with automatic cache-busting
+        $js_path = $dir_path . '/assets/js/private-events.js';
         wp_enqueue_script(
             'nirup-private-events',
-            get_template_directory_uri() . '/assets/js/private-events.js',
+            $dir_uri . '/assets/js/private-events.js',
             array('jquery'),
-            '1.0.0',
+            file_exists($js_path) ? filemtime($js_path) : '1.0.0',
             true
         );
 
