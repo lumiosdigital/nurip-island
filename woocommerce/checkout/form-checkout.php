@@ -33,9 +33,14 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
                 Complete your booking
             </h1>
             <p class="nirup-checkout-subtitle">
-                Please review your details and confirm your reservation. Payment is processed securely via Midtrans.
+                Please review your details and confirm your reservation.
             </p>
         </header>
+        <?php if ( wc_coupons_enabled() ) : ?>
+            <div class="nirup-checkout-coupon-inline">
+                <?php woocommerce_checkout_coupon_form(); ?>
+            </div>
+        <?php endif; ?>
 
         <!-- IMPORTANT: the form now wraps BOTH columns -->
         <form name="checkout"
@@ -107,10 +112,9 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
             </div><!-- .nirup-checkout-col--order -->
 
         </form><!-- .checkout -->
+         <?php do_action( 'woocommerce_after_checkout_form', $checkout ); ?>
 
     </div><!-- .nirup-checkout-wrapper -->
 
 </main><!-- .nirup-checkout-main -->
 
-<?php
-do_action( 'woocommerce_after_checkout_form', $checkout );

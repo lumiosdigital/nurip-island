@@ -1,0 +1,1220 @@
+
+.nirup-checkout-main {
+    /* background-color: #f3eeea; */
+    padding: 60px 0 120px;
+}
+
+/* Hide default page title on checkout */
+body.woocommerce-checkout .entry-title {
+    display: none;
+}
+
+.nirup-checkout-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.nirup-checkout-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.nirup-checkout-eyebrow {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8b5e1d;
+    margin: 0 0 12px 0;
+}
+
+.nirup-checkout-title {
+    font-family: 'Amiri', serif;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3d332f;
+    margin: 0 0 16px 0;
+}
+
+.nirup-checkout-subtitle {
+    max-width: 640px;
+    margin: 0 auto;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: #3d332f;
+}
+
+.nirup-checkout-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.nirup-checkout-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.nirup-checkout-card {
+    /* background-color: #fcfaf6; */
+    border: 1px solid rgba(200, 180, 155, 0.4);
+    padding: 32px 30px;
+}
+
+
+.nirup-checkout-section-title {
+    font-family: 'Amiri', serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3d332f;
+    margin: 0 0 24px 0;
+}
+
+.nirup-checkout-customer-details {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+}
+
+.nirup-checkout-section--secondary {
+    border-top: 1px solid rgba(61, 51, 47, 0.12);
+    padding-top: 24px;
+}
+
+/* Woo billing/additional field wrappers – grid like your other forms */
+
+/* .nirup-checkout-main .woocommerce-billing-fields__field-wrapper,
+.nirup-checkout-main .woocommerce-additional-fields__field-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 32px;
+    row-gap: 20px;
+} */
+
+/* Force wide fields to span both columns (address, notes, etc.) */
+
+.nirup-checkout-main .woocommerce-billing-fields__field-wrapper .form-row-wide,
+.nirup-checkout-main .woocommerce-additional-fields__field-wrapper .form-row-wide {
+    grid-column: 1 / -1;
+}
+
+/* Labels */
+
+.nirup-checkout-main .woocommerce-billing-fields label,
+.nirup-checkout-main .woocommerce-shipping-fields label,
+.nirup-checkout-main .woocommerce-additional-fields label {
+    display: block;
+    margin-bottom: 6px;
+    font-family: 'Amiri', serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #3d332f;
+}
+
+.woocommerce-additional-fields h3 {
+    margin-bottom: 24px;
+    font-family: 'Amiri', serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3d332f;
+}
+
+/* Required asterisk */
+
+.nirup-checkout-main .woocommerce-billing-fields .required,
+.nirup-checkout-main .woocommerce-shipping-fields .required,
+.nirup-checkout-main .woocommerce-additional-fields .required {
+    color: #8b5e1d;
+}
+
+/* Inputs, selects, textareas – similar to contact / private events */
+
+.nirup-checkout-main .woocommerce-billing-fields input.input-text,
+.nirup-checkout-main .woocommerce-billing-fields select,
+.nirup-checkout-main .woocommerce-shipping-fields input.input-text,
+.nirup-checkout-main .woocommerce-shipping-fields select,
+.nirup-checkout-main .woocommerce-additional-fields textarea,
+.nirup-checkout-main .woocommerce-additional-fields input.input-text,
+.nirup-checkout-main .woocommerce-additional-fields select {
+    width: 100%;
+    padding: 12px 14px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #3d332f;
+    background-color: #ffffff;
+    border: 1px solid #d4c5b0;
+    outline: none;
+    border-radius: 0px !important;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.nirup-checkout-main .woocommerce-billing-fields input.input-text::placeholder,
+.nirup-checkout-main .woocommerce-additional-fields textarea::placeholder {
+    color: #9d8f7f;
+    opacity: 1;
+}
+
+.nirup-checkout-main .woocommerce-billing-fields input.input-text:focus,
+.nirup-checkout-main .woocommerce-billing-fields select:focus,
+.nirup-checkout-main .woocommerce-shipping-fields input.input-text:focus,
+.nirup-checkout-main .woocommerce-shipping-fields select:focus,
+.nirup-checkout-main .woocommerce-additional-fields textarea:focus,
+.nirup-checkout-main .woocommerce-additional-fields input.input-text:focus,
+.nirup-checkout-main .woocommerce-additional-fields select:focus {
+    border-color: #8b5e1d;
+    background-color: #ffffff;
+}
+
+/* Textarea height */
+
+.nirup-checkout-main .woocommerce-additional-fields textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Woo select2 (country/state) styling to match inputs */
+
+.nirup-checkout-main .select2-container--default .select2-selection--single {
+    height: auto;
+    padding: 10px 14px;
+    border: 1px solid #d4c5b0;
+    border-radius: 0px;
+    background-color: #ffffff;
+}
+
+.nirup-checkout-main .select2-container--default .select2-selection--single .select2-selection__rendered {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+    padding-left: 0;
+}
+
+.nirup-checkout-main .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+    right: 8px;
+}
+
+.nirup-checkout-main .select2-container--open .select2-selection--single {
+    border-color: #8b5e1d;
+}
+
+/* Errors under fields */
+
+.nirup-checkout-main .woocommerce-invalid .input-text,
+.nirup-checkout-main .woocommerce-invalid select {
+    border-color: #c0392b;
+}
+
+/* =========================================
+   ORDER SUMMARY TABLE
+   ========================================= */
+
+.nirup-checkout-order-review {
+    margin-top: 8px;
+}
+
+/* Woo table */
+
+.nirup-checkout-order-review .shop_table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    margin-bottom: 24px;
+}
+
+.nirup-checkout-order-review .shop_table th,
+.nirup-checkout-order-review .shop_table td {
+    padding: 8px 0;
+    border: none;
+}
+
+/* Header row */
+
+.nirup-checkout-order-review .shop_table thead th {
+    font-family: 'Amiri', serif;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: #3d332f;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+    padding-bottom: 10px;
+}
+
+/* Body cells */
+
+.nirup-checkout-order-review .shop_table tbody td {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+}
+
+/* Product name & meta */
+
+.nirup-checkout-order-review .shop_table .product-name {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 12px;
+}
+
+.nirup-checkout-order-review .shop_table .product-name .wc-item-meta {
+    margin-top: 4px;
+    font-size: 12px;
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 0.8;
+}
+
+/* Totals */
+
+.nirup-checkout-order-review .shop_table tfoot th,
+.nirup-checkout-order-review .shop_table tfoot td {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+    padding: 6px 0;
+}
+
+.nirup-checkout-order-review .shop_table tfoot th {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: 'Amiri', serif;
+    font-size: 11px;
+}
+
+.nirup-checkout-order-review .shop_table tfoot tr:last-child th,
+.nirup-checkout-order-review .shop_table tfoot tr:last-child td {
+    border-top: 1px solid rgba(0, 0, 0, 0.14);
+    padding-top: 10px;
+    font-weight: 600;
+}
+
+/* Align numeric cells to right */
+
+.nirup-checkout-order-review .shop_table td.product-total,
+.nirup-checkout-order-review .shop_table tfoot td {
+    text-align: right;
+}
+
+/* =========================================
+   PAYMENT METHODS & PLACE ORDER BUTTON
+   ========================================= */
+
+
+/* Payment method titles */
+
+.woocommerce-checkout-payment .wc_payment_methods {
+    list-style: none;
+    margin: 0 0 18px 0;
+    padding: 0;
+}
+
+.woocommerce-checkout-payment .wc_payment_methods li {
+    margin-bottom: 10px;
+}
+
+.woocommerce-checkout-payment .wc_payment_methods label {
+    font-family: 'Amiri', serif;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #3d332f;
+}
+
+/* Payment description text */
+
+.woocommerce-checkout-payment .payment_box {
+    margin: 8px 0 12px 0;
+    padding: 10px 12px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-left: 2px solid #8b5e1d;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    color: #555250;
+}
+
+/* Terms & privacy */
+
+.woocommerce-checkout-payment .woocommerce-terms-and-conditions-wrapper {
+    margin-bottom: 18px;
+}
+
+.woocommerce-checkout-payment .woocommerce-privacy-policy-text,
+.woocommerce-checkout-payment .woocommerce-terms-and-conditions-checkbox-text {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    color: #555250;
+}
+
+/* Place order button – match site buttons */
+
+.woocommerce-checkout-payment #place_order {
+    width: 100%;
+    background-color: #8b5e1d;
+    color: #ffffff;
+    border: none;
+    height: 44px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border-radius: 0px;
+    transition: all 0.3s ease;
+}
+
+.woocommerce-checkout-payment #place_order:hover {
+    background-color: #a48456;
+    transform: translateY(-1px);
+}
+
+/* Security note below order review */
+
+.nirup-checkout-security-note {
+    margin-top: 16px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 12px;
+    color: #555250;
+    opacity: 0.85;
+}
+
+/* =========================================
+   NOTICES (errors, messages) – subtle and on-brand
+   ========================================= */
+
+.nirup-checkout-main .woocommerce-error,
+.nirup-checkout-main .woocommerce-message,
+.nirup-checkout-main .woocommerce-info {
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    border-radius: 0;
+    border-width: 1px;
+    border-style: solid;
+    background-color: #fcfaf6;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.nirup-checkout-main .woocommerce-error {
+    border-color: #f5c6cb;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.nirup-checkout-main .woocommerce-message {
+    border-color: #c3e6cb;
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.nirup-checkout-main .woocommerce-info {
+    border-color: #bee5eb;
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+/* Remove default bullet styling for notices */
+
+.nirup-checkout-main ul.woocommerce-error,
+.nirup-checkout-main ul.woocommerce-message,
+.nirup-checkout-main ul.woocommerce-info {
+    list-style: none;
+    padding-left: 0;
+}
+
+/* =========================================
+   COUPON / LOGIN TOGGLES (IF USED)
+   ========================================= */
+
+.nirup-checkout-main .woocommerce-form-coupon-toggle,
+.nirup-checkout-main .woocommerce-form-login-toggle {
+    margin-bottom: 24px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    color: #3d332f;
+}
+
+.nirup-checkout-main .woocommerce-form-coupon,
+.nirup-checkout-main .woocommerce-form-login {
+    margin-bottom: 32px;
+    padding: 16px 20px;
+    background-color: #fcfaf6;
+    border: 1px solid rgba(200, 180, 155, 0.4);
+}
+
+/* Coupon/login input */
+
+.nirup-checkout-main .woocommerce-form-coupon input.input-text,
+.nirup-checkout-main .woocommerce-form-login input.input-text {
+    width: 100%;
+    max-width: 260px;
+}
+
+/* Coupon/login buttons */
+
+.nirup-checkout-main .woocommerce-form-coupon .button,
+.nirup-checkout-main .woocommerce-form-login .button {
+    background-color: #8b5e1d;
+    color: #ffffff;
+    border-radius: 0;
+    border: none;
+    padding: 10px 20px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nirup-checkout-main .woocommerce-form-coupon .button:hover,
+.nirup-checkout-main .woocommerce-form-login .button:hover {
+    background-color: #a48456;
+    transform: translateY(-1px);
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 1024px) {
+    .nirup-checkout-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .nirup-checkout-main {
+        padding: 40px 0 80px;
+    }
+
+    .nirup-checkout-title {
+        font-size: 36px;
+    }
+
+    .nirup-checkout-card {
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nirup-checkout-wrapper {
+        padding: 0 16px;
+    }
+
+    .nirup-checkout-main .woocommerce-billing-fields__field-wrapper,
+    .nirup-checkout-main .woocommerce-additional-fields__field-wrapper {
+        grid-template-columns: 1fr;
+        row-gap: 18px;
+    }
+
+    .nirup-checkout-title {
+        font-size: 32px;
+    }
+
+    .nirup-checkout-subtitle {
+        font-size: 14px;
+    }
+
+    .nirup-checkout-header {
+        margin-bottom: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nirup-checkout-title {
+        font-size: 28px;
+    }
+
+    .nirup-checkout-subtitle {
+        font-size: 13px;
+    }
+}
+
+/* =========================================
+   1. First / Last name on their own rows
+   ========================================= */
+
+.nirup-checkout-main .woocommerce-billing-fields__field-wrapper .form-row-first,
+.nirup-checkout-main .woocommerce-billing-fields__field-wrapper .form-row-last {
+    grid-column: 1 / -1;
+    /* span full width */
+}
+
+/* Order notes as wide as the rest */
+
+.nirup-checkout-main .woocommerce-additional-fields .form-row,
+.nirup-checkout-main .woocommerce-additional-fields .form-row textarea {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* =========================================
+   2. Match titles: Billing details & Stay summary
+   ========================================= */
+
+.nirup-checkout-main .woocommerce-billing-fields>h3,
+.nirup-checkout-main #order_review_heading {
+    font-family: 'Amiri', serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3d332f;
+    margin: 0 0 24px 0;
+}
+
+/* =========================================
+   3. Stay summary card: same bg + no radius
+   ========================================= */
+
+.nirup-checkout-card {
+    background-color: #fcfaf6;
+    border-radius: 0;
+}
+
+.nirup-checkout-card--order {
+    background-color: #fcfaf6;
+    /* same as billing card */
+    border-radius: 0;
+}
+
+/* Make sure inner elements don’t reintroduce radius */
+.nirup-checkout-order-review .shop_table,
+.woocommerce-checkout-payment {
+    border-radius: 0;
+}
+
+/* =========================================
+   4. Order table line + price alignment
+   ========================================= */
+
+/* Remove extra padding that shifts totals further right */
+.nirup-checkout-order-review .shop_table th,
+.nirup-checkout-order-review .shop_table td {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Keep numeric column right-aligned, all in same column */
+.nirup-checkout-order-review .shop_table td.product-total,
+.nirup-checkout-order-review .shop_table tfoot td {
+    text-align: center;
+}
+
+/* Remove extra line between header and first row
+   so there is just a single simple line (from the header border) */
+.nirup-checkout-order-review .shop_table tbody tr:first-child td {
+    border-top: none;
+    padding: 9px 12px;
+    vertical-align: middle;
+    line-height: 1.5em;
+    border-collapse: collapse;
+    border: 1px solid #d4c5b0;
+}
+
+.woocommerce table.shop_table {
+    border-radius: 0px;
+}
+
+.woocommerce table.shop_table tbody th,
+.woocommerce table.shop_table tfoot td,
+.woocommerce table.shop_table tfoot th {
+    /* border-top: 1px solid rgba(0, 0, 0, 0.14); */
+    padding: 9px 12px;
+    vertical-align: middle;
+    line-height: 1.5em;
+    border-collapse: collapse;
+    border: 1px solid #d4c5b0;
+}
+
+.nirup-checkout-order-review .shop_table .product-name {
+    border: 1px solid #d4c5b0;
+}
+
+.nirup-checkout-order-review .shop_table thead th {
+    border: 1px solid #d4c5b0;
+}
+
+/* =========================================
+   Order table – keep only horizontal lines
+   ========================================= */
+
+/* Remove vertical borders between columns */
+.nirup-checkout-order-review .shop_table th,
+.nirup-checkout-order-review .shop_table td,
+.woocommerce table.shop_table tbody th,
+.woocommerce table.shop_table tbody td,
+.woocommerce table.shop_table tfoot th,
+.woocommerce table.shop_table tfoot td,
+.nirup-checkout-order-review .shop_table .product-name,
+.nirup-checkout-order-review .shop_table thead th {
+    border-left: none !important;
+    border-right: none !important;
+}
+
+/* Outer border for the whole table */
+.nirup-checkout-order-review .shop_table,
+.woocommerce table.shop_table {
+    border: 1px solid #d4c5b0;
+    border-radius: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* Horizontal lines between rows (body + footer) */
+.nirup-checkout-order-review .shop_table tbody tr,
+.nirup-checkout-order-review .shop_table tfoot tr {
+    border-top: 1px solid #d4c5b0;
+}
+
+/* =========================================
+   Order table – softer inner horizontal lines
+   ========================================= */
+
+/* Strong outer border */
+.nirup-checkout-main .nirup-checkout-order-review .shop_table {
+    border: 1px solid #d4c5b0 !important;
+    border-radius: 0;
+    border-collapse: collapse;
+}
+
+/* Remove any borders on cells/rows */
+.nirup-checkout-main .nirup-checkout-order-review .shop_table th,
+.nirup-checkout-main .nirup-checkout-order-review .shop_table td,
+.nirup-checkout-main .nirup-checkout-order-review .shop_table tr {
+    border: 0 !important;
+
+}
+
+/* Inner horizontal lines (header bottom, booking bottom, subtotal bottom) */
+.nirup-checkout-main .nirup-checkout-order-review .shop_table thead tr,
+.nirup-checkout-main .nirup-checkout-order-review .shop_table tbody tr,
+.nirup-checkout-main .nirup-checkout-order-review .shop_table tfoot tr:not(:last-child) {
+    border-bottom: 1px solid rgba(212, 197, 176, 0.55) !important;
+}
+
+/* Make sure no vertical lines sneak back in */
+.nirup-checkout-main .nirup-checkout-order-review .shop_table tr>*+* {
+    border-left: none !important;
+
+}
+
+.woocommerce form .form-row .input-text,
+.woocommerce form .form-row select {
+    border: 1px solid #d4c5b0;
+}
+
+.woocommerce form .form-row .input-text:focus,
+.woocommerce form .form-row select:focus {
+    border-color: #8b5e1d;
+        background-color: #ffffff;
+}
+
+#add_payment_method #payment,
+.woocommerce-cart #payment,
+.woocommerce-checkout #payment {
+    border-radius: 0px;
+}
+
+/* ===================================================
+   Coupon block – between summary and payment
+   =================================================== */
+
+.nirup-checkout-coupon-block {
+    margin: 20px 0 24px;
+}
+
+/* The info line: "Have a coupon? Click here…" */
+.nirup-checkout-coupon-block .woocommerce-form-coupon-toggle {
+    margin-bottom: 10px;
+}
+
+.nirup-checkout-coupon-block .woocommerce-info {
+    position: relative;
+    padding: 10px 14px;
+    border-radius: 0;
+    border: 1px solid rgba(200, 180, 155, 0.7);
+    background-color: #fcfaf6;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #3d332f;
+}
+
+/* Remove Woo’s default icon bubble if present */
+.nirup-checkout-coupon-block .woocommerce-info:before,
+.nirup-checkout-coupon-block .woocommerce-info:after {
+    display: none !important;
+}
+
+/* "Have a coupon?" text */
+.nirup-checkout-coupon-block .woocommerce-info {
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+/* The link "Click here to enter your code" */
+.nirup-checkout-coupon-block .woocommerce-info a.showcoupon {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    text-decoration: none;
+    margin-left: 6px;
+    color: #8b5e1d;
+    border-bottom: 1px solid rgba(139, 94, 29, 0.25);
+    padding-bottom: 1px;
+}
+
+.nirup-checkout-coupon-block .woocommerce-info a.showcoupon:hover {
+    color: #a48456;
+    border-bottom-color: rgba(164, 132, 86, 0.5);
+}
+
+/* The coupon form when opened */
+.nirup-checkout-coupon-block form.checkout_coupon {
+    margin: 12px 0 0;
+    padding: 14px 16px;
+    background-color: #fcfaf6;
+    border: 1px solid rgba(200, 180, 155, 0.5);
+}
+
+/* Align code input + button horizontally on desktop */
+.nirup-checkout-coupon-block form.checkout_coupon p.form-row {
+    margin: 0 0 10px;
+}
+
+.nirup-checkout-coupon-block form.checkout_coupon p.form-row-first,
+.nirup-checkout-coupon-block form.checkout_coupon p.form-row-last {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.nirup-checkout-coupon-block form.checkout_coupon p.form-row-first {
+    width: 65%;
+    margin-right: 3%;
+}
+
+.nirup-checkout-coupon-block form.checkout_coupon p.form-row-last {
+    width: 32%;
+}
+
+/* Input styling – match other fields */
+.nirup-checkout-coupon-block form.checkout_coupon input.input-text {
+    width: 100%;
+    padding: 10px 12px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+    background-color: #ffffff;
+    border: 1px solid #d4c5b0;
+    border-radius: 0;
+}
+
+/* Button styling – match checkout buttons */
+.nirup-checkout-coupon-block form.checkout_coupon .button {
+    width: 100%;
+    height: 40px;
+    background-color: #8b5e1d;
+    color: #ffffff;
+    border: none;
+    border-radius: 0;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nirup-checkout-coupon-block form.checkout_coupon .button:hover {
+    background-color: #a48456;
+    transform: translateY(-1px);
+}
+
+/* Mobile: stack input and button */
+@media (max-width: 600px) {
+
+    .nirup-checkout-coupon-block form.checkout_coupon p.form-row-first,
+    .nirup-checkout-coupon-block form.checkout_coupon p.form-row-last {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+
+/* ===================================================
+   Coupon strip tweaks
+   =================================================== */
+
+/* 1) Make the "Have a coupon?" line simple text, no box */
+.nirup-checkout-coupon-block .woocommerce-form-coupon-toggle .woocommerce-info {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin-bottom: 8px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    color: #3d332f;
+}
+
+/* Hide the "Click here to enter your code" link text */
+.nirup-checkout-coupon-block .woocommerce-form-coupon-toggle .woocommerce-info a.showcoupon {
+    display: none !important;
+}
+
+/* 2) Coupon input + button: square corners */
+.nirup-checkout-coupon-block form.checkout_coupon input.input-text {
+    border-radius: 0 !important;
+}
+
+/* 3) Button: transparent with gold border, fill on hover */
+.nirup-checkout-coupon-block form.checkout_coupon .button {
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #8b5e1d !important;
+    /* gold text */
+    border: 1px solid #8b5e1d !important;
+    /* gold border */
+    height: 40px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.nirup-checkout-coupon-block form.checkout_coupon .button:hover {
+    background: #8b5e1d !important;
+    /* same as place order */
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+.nirup-checkout-coupon-outer {
+    margin-top: 24px;
+    margin-bottom: 40px;
+}
+
+/* Position coupon block under the right column (stay summary) */
+.nirup-checkout-coupon-outer {
+    margin-top: 24px;
+    margin-bottom: 40px;
+}
+
+/* Make inner wrapper behave like a single right-aligned column */
+.nirup-checkout-coupon-outer .nirup-checkout-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    /* push coupon block to the right edge */
+}
+
+/* Match width/feel of the stay-summary card */
+.nirup-checkout-coupon-block {
+    width: 100%;
+    /* max-width: 420px; */
+    /* tweak if your summary card is wider/narrower */
+}
+
+/* Optional: same card styling as checkout cards */
+.nirup-checkout-coupon-block form.checkout_coupon {
+    background-color: #fcfaf6;
+    border: 1px solid rgba(200, 180, 155, 0.4);
+    padding: 16px 20px;
+}
+
+/* =========================================
+   Coupon block – show form & position
+   ========================================= */
+
+/* Reduce huge gap above the coupon (bottom padding of checkout) */
+.nirup-checkout-main {
+    padding-bottom: 40px;
+    /* was 120px */
+}
+
+/* Outer wrapper (hooked after checkout) */
+.nirup-checkout-coupon-outer {
+    margin-top: 0;
+    margin-bottom: 60px;
+}
+
+/* Align coupon with right column width */
+.nirup-checkout-coupon-outer .nirup-checkout-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: flex-end;
+    /* stick to the right like the summary card */
+}
+
+/* Main coupon block */
+.nirup-checkout-coupon-block {
+    width: 100%;
+    max-width: 420px;
+    /* adjust if your stay-summary card is wider/narrower */
+    font-family: 'Albert Sans', sans-serif;
+}
+
+/* --- Top line: "Have a coupon?" only, no box --- */
+
+.nirup-checkout-coupon-block .woocommerce-form-coupon-toggle .woocommerce-info {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #3d332f;
+}
+
+/* Hide the “Click here to enter your code” link */
+.nirup-checkout-coupon-block .woocommerce-form-coupon-toggle .woocommerce-info a.showcoupon {
+    display: none !important;
+}
+
+/* --- Show the form permanently --- */
+
+.nirup-checkout-coupon-block form.checkout_coupon {
+    display: block !important;
+    /* override Woo’s inline display:none */
+    background-color: #fcfaf6;
+    border: 1px solid rgba(200, 180, 155, 0.4);
+    padding: 16px 20px;
+    margin: 0;
+}
+
+/* Align input + button on one line on desktop */
+.nirup-checkout-coupon-block form.checkout_coupon p.form-row {
+    margin: 0 0 10px;
+}
+
+.nirup-checkout-coupon-block form.checkout_coupon p.form-row-first,
+.nirup-checkout-coupon-block form.checkout_coupon p.form-row-last {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.nirup-checkout-coupon-block form.checkout_coupon p.form-row-first {
+    width: 65%;
+    margin-right: 3%;
+}
+
+.nirup-checkout-coupon-block form.checkout_coupon p.form-row-last {
+    width: 32%;
+}
+
+/* Input: match other fields, square corners */
+.nirup-checkout-coupon-block form.checkout_coupon input.input-text {
+    width: 100%;
+    padding: 10px 12px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+    background-color: #ffffff;
+    border: 1px solid #d4c5b0;
+    border-radius: 0 !important;
+}
+
+/* Button: transparent with gold border, fills on hover */
+.nirup-checkout-coupon-block form.checkout_coupon .button {
+    width: 100%;
+    height: 40px;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #8b5e1d !important;
+    border: 1px solid #8b5e1d !important;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.woocommerce form .form-row {
+    padding: 0;
+}
+.nirup-checkout-coupon-block form.checkout_coupon .button:hover {
+    background: #8b5e1d !important;
+    /* same as place order */
+    color: #ffffff !important;
+    transform: translateY(-1px);
+
+}
+
+/* Mobile: stack input and button */
+@media (max-width: 600px) {
+
+    .nirup-checkout-coupon-block form.checkout_coupon p.form-row-first,
+    .nirup-checkout-coupon-block form.checkout_coupon p.form-row-last {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+
+.woocommerce form.checkout_coupon,
+.woocommerce form.login,
+.woocommerce form.register {
+    border-radius: 0px;
+}
+
+/* ================================
+   Checkout coupon toggle strip
+   ================================ */
+
+/* Container */
+body.woocommerce-checkout .woocommerce-form-coupon-toggle {
+    margin: 0 0 16px;
+}
+
+/* Bar styling */
+body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info {
+    position: relative;
+    padding: 10px 16px;
+    border-radius: 0;
+    border: 1px solid rgba(200, 180, 155, 0.7);
+    background-color: #fcfaf6;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 16px;
+    color: #3d332f;
+}
+
+/* Remove the blue SVG / icon bubble */
+body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info::before,
+body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* "Have a coupon?" text */
+body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info {
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+/* Link: "Click here to enter your code" */
+body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info a {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    margin-left: 6px;
+    color: #8b5e1d;
+    border-bottom: 1px solid rgba(139, 94, 29, 0.25);
+    padding-bottom: 1px;
+}
+
+body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info a:hover {
+    color: #a48456;
+    border-bottom-color: rgba(164, 132, 86, 0.5);
+}
+
+/* =========================================
+   Coupon form – compact, right aligned
+   ========================================= */
+
+body.woocommerce-checkout form.checkout_coupon {
+    max-width: 450px;
+    /* smaller block */
+    margin: 8px 0 16px auto;
+    /* align to the right */
+    padding: 12px 16px;
+}
+
+/* Put input + button on one line, closer together */
+body.woocommerce-checkout form.checkout_coupon p.form-row-first,
+body.woocommerce-checkout form.checkout_coupon p.form-row-last {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+}
+
+body.woocommerce-checkout form.checkout_coupon p.form-row-first {
+    width: 58%;
+    margin-right: 4%;
+    /* small gap between input & button */
+}
+
+body.woocommerce-checkout form.checkout_coupon p.form-row-last {
+    width: 38%;
+}
+
+/* Input: no border-radius */
+body.woocommerce-checkout form.checkout_coupon input.input-text {
+    width: 100%;
+    border-radius: 0 !important;
+}
+
+/* Button: same style as now, but sized to the row */
+body.woocommerce-checkout form.checkout_coupon .button {
+    width: 100%;
+    /* height: 40px; */
+    border-radius: 0 !important;
+    line-height: normal;
+        letter-spacing: 0.1em;
+            font-weight: 500;
+}
+
+/* Align "Have a coupon?" bar with the coupon form */
+body.woocommerce-checkout .woocommerce-form-coupon-toggle {
+    margin: 0 0 16px;
+    text-align: right;
+    /* push inner bar to the right */
+}
+
+body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info {
+    display: inline-block;
+    width: 100%;
+    max-width: 450px;
+    /* same as form.checkout_coupon */
+}
+
+.nirup-checkout-main .woocommerce-error,
+.nirup-checkout-main .woocommerce-message,
+.nirup-checkout-main .woocommerce-info {
+    margin-bottom: 0px;
+}
+
+.woocommerce:where(body:not(.woocommerce-block-theme-has-button-styles)) #respond input#submit:hover,
+.woocommerce:where(body:not(.woocommerce-block-theme-has-button-styles)) a.button:hover,
+.woocommerce:where(body:not(.woocommerce-block-theme-has-button-styles)) button.button:hover,
+.woocommerce:where(body:not(.woocommerce-block-theme-has-button-styles)) input.button:hover,
+:where(body:not(.woocommerce-block-theme-has-button-styles)):where(:not(.edit-post-visual-editor)) .woocommerce #respond input#submit:hover,
+:where(body:not(.woocommerce-block-theme-has-button-styles)):where(:not(.edit-post-visual-editor)) .woocommerce a.button:hover,
+:where(body:not(.woocommerce-block-theme-has-button-styles)):where(:not(.edit-post-visual-editor)) .woocommerce button.button:hover,
+:where(body:not(.woocommerce-block-theme-has-button-styles)):where(:not(.edit-post-visual-editor)) .woocommerce input.button:hover{
+    color: #ffffff;
+}
+
+/* .nirup-checkout-main .woocommerce-form-coupon .button,
+.nirup-checkout-main .woocommerce-form-login .button {
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    line-height: normal;
+    height: auto;
+        font-size: 11px;
+} */

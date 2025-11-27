@@ -96,7 +96,7 @@ function nirup_enqueue_assets() {
         ['nirup-media-coverage',        '/assets/css/media-coverage.css',        ['nirup-main']],
         ['nirup-press-kit',         '/assets/css/press-kit.css',         ['nirup-main']],
         ['nirup-villa-booking',         '/assets/css/villa-booking.css',         ['nirup-main']],
-        // ['nirup-woocommerce-booking',         '/assets/css/woocommerce-booking.css',         ['nirup-main']],
+        ['nirup-woocommerce',         '/assets/css/woocommerce.css',         ['nirup-main']],
     ];
 
     foreach ($css_files as [$handle, $rel, $deps]) {
@@ -14295,5 +14295,9 @@ function nirup_redirect_cart_to_checkout() {
     }
 }
 add_action( 'template_redirect', 'nirup_redirect_cart_to_checkout' );
+
+// Hide WooCommerce's default "Have a coupon?" block at the top of the checkout
+remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
+
 
 ?>
