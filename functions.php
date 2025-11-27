@@ -10261,7 +10261,7 @@ function nirup_enqueue_private_events_assets() {
             array(),
             '1.0.0'
         );
-        
+
         // JS
         wp_enqueue_script(
             'nirup-private-events',
@@ -10270,157 +10270,241 @@ function nirup_enqueue_private_events_assets() {
             '1.0.0',
             true
         );
+
+        // Get reCAPTCHA site key (same as contact/newsletter)
+        $site_key = nirup_get_secret('RECAPTCHA_SITE_KEY', 'nirup_recaptcha_site_key', '');
+
+        wp_localize_script('nirup-private-events', 'nirup_private_events_ajax', array(
+            'ajax_url'  => admin_url('admin-ajax.php'),
+            'nonce'     => wp_create_nonce('private_events_form_nonce'),
+            'recaptcha' => array(
+                'site_key' => $site_key,
+                'action'   => 'private_event_submit',
+            ),
+        ));
     }
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_private_events_assets');
 
+
+/**
+ * Handle Private Events Form Submission
+ */
 /**
  * Handle Private Events Form Submission
  */
 function nirup_private_events_form_submit() {
     // Check nonce for security
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'private_events_form_nonce')) {
+    if (
+        ! isset($_POST['nonce']) ||
+        ! wp_verify_nonce($_POST['nonce'], 'private_events_form_nonce')
+    ) {
         wp_send_json_error(array('message' => 'Security check failed.'));
-        return;
     }
-    
+
     // Get and sanitize form data
-    $form_data = isset($_POST['form_data']) ? $_POST['form_data'] : array();
-    
-    $name = sanitize_text_field($form_data['name']);
-    $email = sanitize_email($form_data['email']);
-    $phone = sanitize_text_field($form_data['phone']);
-    $event_type = sanitize_text_field($form_data['event_type']);
-    $event_date = sanitize_text_field($form_data['event_date']);
-    $guest_count = sanitize_text_field($form_data['guest_count']);
-    $message = sanitize_textarea_field($form_data['message']);
-    
+    $form_data = isset($_POST['form_data']) && is_array($_POST['form_data'])
+        ? $_POST['form_data']
+        : array();
+
+    $name        = sanitize_text_field($form_data['name']        ?? '');
+    $email       = sanitize_email($form_data['email']            ?? '');
+    $phone       = sanitize_text_field($form_data['phone']       ?? '');
+    $event_type  = sanitize_text_field($form_data['event_type']  ?? '');
+    $event_date  = sanitize_text_field($form_data['event_date']  ?? '');
+    $guest_count = sanitize_text_field($form_data['guest_count'] ?? '');
+    $message     = sanitize_textarea_field($form_data['message'] ?? '');
+
     // Validate required fields
     if (empty($name) || empty($email) || empty($event_type) || empty($message)) {
         wp_send_json_error(array('message' => 'Please fill in all required fields.'));
-        return;
     }
-    
+
     // Validate email
-    if (!is_email($email)) {
+    if (! is_email($email)) {
         wp_send_json_error(array('message' => 'Please enter a valid email address.'));
-        return;
     }
-    
+
+        // ---- reCAPTCHA v3 verification ----
+    $recaptcha_secret = nirup_get_secret('RECAPTCHA_SECRET', 'nirup_recaptcha_secret', '');
+    $recaptcha_token  = isset($_POST['recaptcha_token'])
+        ? sanitize_text_field($_POST['recaptcha_token'])
+        : '';
+
+    // Only enforce captcha if we have BOTH a secret and a token
+    $captcha_enabled = ! defined('NIRUP_DISABLE_CAPTCHA')
+        && ! empty($recaptcha_secret)
+        && ! empty($recaptcha_token);
+
+    if ($captcha_enabled) {
+        $verify = wp_remote_post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            array(
+                'body'    => array(
+                    'secret'   => $recaptcha_secret,
+                    'response' => $recaptcha_token,
+                    'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+                ),
+                'timeout' => 10,
+            )
+        );
+
+        if (is_wp_error($verify)) {
+            wp_send_json_error(
+                array('message' => 'Captcha verification failed. Please try again.'),
+                400
+            );
+        }
+
+        $vbody = json_decode(wp_remote_retrieve_body($verify), true);
+        $score = isset($vbody['score']) ? (float) $vbody['score'] : 0.0;
+
+        // Threshold 0.5 (loosen to 0.3 if needed on dev)
+        if (empty($vbody['success']) || $score < 0.5) {
+            wp_send_json_error(
+                array('message' => 'Captcha failed. Please try again.'),
+                400
+            );
+        }
+    } else {
+        // No token or no secret -> act as if captcha is disabled
+        error_log(
+            'Private Events Form: reCAPTCHA skipped (missing token or secret, or explicitly disabled).'
+        );
+    }
+    // ---- end captcha ----
+
+
+
     // Store submission in database FIRST
-    nirup_store_private_event_submission($name, $email, $phone, $event_type, $event_date, $guest_count, $message);
+    nirup_store_private_event_submission(
+        $name,
+        $email,
+        $phone,
+        $event_type,
+        $event_date,
+        $guest_count,
+        $message
+    );
     error_log('Private Events Form - Submission saved to database');
-    
+
     // Get email settings from customizer
     $admin_email = get_theme_mod('nirup_private_events_form_email', 'explore@nirupisland.com');
-    $from_email = get_theme_mod('nirup_private_events_form_from_email', 'explore@nirupisland.com');
-    $from_name = get_bloginfo('name');
-    
+    $from_email  = get_theme_mod('nirup_private_events_form_from_email', 'explore@nirupisland.com');
+    $from_name   = get_bloginfo('name');
+
     error_log('Private Events Form - Admin email: ' . $admin_email);
     error_log('Private Events Form - From email: ' . $from_email);
     error_log('Private Events Form - User email: ' . $email);
-    
+
     // ==========================================
     // EMAIL 1: ADMIN NOTIFICATION (Internal)
     // ==========================================
     $admin_subject = '[' . get_bloginfo('name') . '] New Private Event Request from ' . $name;
-    
-    $admin_body = "New private event request:\n\n";
+
+    $admin_body  = "New private event request:\n\n";
     $admin_body .= "Name: " . $name . "\n";
     $admin_body .= "Email: " . $email . "\n";
-    $admin_body .= "Phone: " . (!empty($phone) ? $phone : 'Not provided') . "\n";
+    $admin_body .= "Phone: " . (! empty($phone) ? $phone : 'Not provided') . "\n";
     $admin_body .= "Event Type: " . $event_type . "\n";
-    $admin_body .= "Preferred Date: " . (!empty($event_date) ? date('F j, Y', strtotime($event_date)) : 'Not specified') . "\n";
-    $admin_body .= "Number of Guests: " . (!empty($guest_count) ? $guest_count : 'Not specified') . "\n\n";
+    $admin_body .= "Preferred Date: "
+        . (! empty($event_date) ? date('F j, Y', strtotime($event_date)) : 'Not specified')
+        . "\n";
+    $admin_body .= "Number of Guests: "
+        . (! empty($guest_count) ? $guest_count : 'Not specified')
+        . "\n\n";
     $admin_body .= "Additional Details:\n" . $message . "\n\n";
     $admin_body .= "---\n";
     $admin_body .= "This email was sent from the private events form on " . get_bloginfo('url') . "\n";
     $admin_body .= "Submitted on: " . current_time('F j, Y g:i A');
-    
+
     $admin_headers = array(
         'Content-Type: text/plain; charset=UTF-8',
         'From: ' . $from_name . ' <' . $from_email . '>',
-        'Reply-To: ' . $name . ' <' . $email . '>'
+        'Reply-To: ' . $name . ' <' . $email . '>',
     );
-    
+
     // ==========================================
     // EMAIL 2: USER CONFIRMATION (Customer)
     // ==========================================
-    
-    // Get customizable email content
-    $user_subject_template = get_theme_mod('nirup_private_events_confirmation_subject', 'Thank you for your event inquiry - {site_name}');
-    $user_body_template = get_theme_mod('nirup_private_events_confirmation_body', "Dear {user_name},\n\nThank you for your interest in hosting your event at {site_name}. We have received your request and our events team is reviewing the details.\n\nEvent Request Summary:\nEvent Type: {event_type}\nPreferred Date: {event_date}\nExpected Guests: {guest_count}\n\nOur events coordinator will contact you within 1-2 business days with a customized proposal tailored to your needs.\n\nIf you have any immediate questions, please don't hesitate to call us at {phone_number}.\n\nWe look forward to making your event extraordinary!\n\nWarm regards,\nThe {site_name} Events Team");
-    $user_footer_template = get_theme_mod('nirup_private_events_confirmation_footer', "---\nThis is an automated confirmation email. Please do not reply to this message.");
-    
-    // Replace placeholders with actual values
-    $replacements = array(
-        '{site_name}' => get_bloginfo('name'),
-        '{user_name}' => $name,
-        '{user_email}' => $email,
-        '{user_phone}' => !empty($phone) ? $phone : 'Not provided',
-        '{event_type}' => $event_type,
-        '{event_date}' => !empty($event_date) ? date('F j, Y', strtotime($event_date)) : 'Not specified',
-        '{guest_count}' => !empty($guest_count) ? $guest_count : 'Not specified',
-        '{phone_number}' => get_theme_mod('nirup_contact_phone_primary', '+62 811 6220 999')
+    $user_subject_template = get_theme_mod(
+        'nirup_private_events_confirmation_subject',
+        'Thank you for your event inquiry - {site_name}'
     );
-    
-    // Apply replacements
+    $user_body_template = get_theme_mod(
+        'nirup_private_events_confirmation_body',
+        "Dear {user_name},\n\nThank you for your interest in hosting your event at {site_name}. We have received your request and our events team is reviewing the details.\n\nEvent Request Summary:\nEvent Type: {event_type}\nPreferred Date: {event_date}\nExpected Guests: {guest_count}\n\nOur events coordinator will contact you within 1-2 business days with a customized proposal tailored to your needs.\n\nIf you have any immediate questions, please don't hesitate to call us at {phone_number}.\n\nWe look forward to making your event extraordinary!\n\nWarm regards,\nThe {site_name} Events Team"
+    );
+    $user_footer_template = get_theme_mod(
+        'nirup_private_events_confirmation_footer',
+        "---\nThis is an automated confirmation email. Please do not reply to this message."
+    );
+
+    $replacements = array(
+        '{site_name}'   => get_bloginfo('name'),
+        '{user_name}'   => $name,
+        '{user_email}'  => $email,
+        '{user_phone}'  => ! empty($phone) ? $phone : 'Not provided',
+        '{event_type}'  => $event_type,
+        '{event_date}'  => ! empty($event_date)
+            ? date('F j, Y', strtotime($event_date))
+            : 'Not specified',
+        '{guest_count}' => ! empty($guest_count) ? $guest_count : 'Not specified',
+        '{phone_number}' => get_theme_mod('nirup_contact_phone_primary', '+62 811 6220 999'),
+    );
+
     $user_subject = str_replace(array_keys($replacements), array_values($replacements), $user_subject_template);
-    $user_body = str_replace(array_keys($replacements), array_values($replacements), $user_body_template);
-    $user_footer = str_replace(array_keys($replacements), array_values($replacements), $user_footer_template);
-    
-    // Combine body and footer
+    $user_body    = str_replace(array_keys($replacements), array_values($replacements), $user_body_template);
+    $user_footer  = str_replace(array_keys($replacements), array_values($replacements), $user_footer_template);
+
     $user_body = $user_body . "\n\n" . $user_footer;
-    
+
     $user_headers = array(
         'Content-Type: text/plain; charset=UTF-8',
-        'From: ' . $from_name . ' <' . $from_email . '>'
+        'From: ' . $from_name . ' <' . $from_email . '>',
     );
-    
+
     // ==========================================
     // SEND BOTH EMAILS
     // ==========================================
-    
-    // Send admin notification
     error_log('Private Events Form - Attempting to send admin email to: ' . $admin_email);
     $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
     error_log('Private Events Form - Admin email result: ' . ($admin_mail_sent ? 'SUCCESS' : 'FAILED'));
-    
-    // Send user confirmation
+
     error_log('Private Events Form - Attempting to send user email to: ' . $email);
     $user_mail_sent = wp_mail($email, $user_subject, $user_body, $user_headers);
     error_log('Private Events Form - User email result: ' . ($user_mail_sent ? 'SUCCESS' : 'FAILED'));
-    
+
     // Check for PHPMailer errors
-    if (!$admin_mail_sent || !$user_mail_sent) {
+    if (! $admin_mail_sent || ! $user_mail_sent) {
         global $phpmailer;
-        if (isset($phpmailer) && !empty($phpmailer->ErrorInfo)) {
+        if (! empty($phpmailer) && ! empty($phpmailer->ErrorInfo)) {
             error_log('Private Events Form - PHPMailer Error: ' . $phpmailer->ErrorInfo);
         }
     }
-    
+
     // ==========================================
     // RETURN RESPONSE
     // ==========================================
-    
-    // Return success if at least one email sent
     if ($admin_mail_sent || $user_mail_sent) {
         wp_send_json_success(array(
-            'message' => 'Your event request has been received! We will respond within 1-2 business days.',
+            'message'    => 'Your event request has been received! We will respond within 1-2 business days.',
             'admin_sent' => $admin_mail_sent,
-            'user_sent' => $user_mail_sent
+            'user_sent'  => $user_mail_sent,
         ));
     } else {
         // Both failed but data is saved
         wp_send_json_success(array(
-            'message' => 'Your event request has been saved! We will respond within 1-2 business days.',
+            'message'    => 'Your event request has been saved! We will respond within 1-2 business days.',
             'admin_sent' => false,
-            'user_sent' => false
+            'user_sent'  => false,
         ));
     }
 }
+
 add_action('wp_ajax_nirup_private_events_form_submit', 'nirup_private_events_form_submit');
 add_action('wp_ajax_nopriv_nirup_private_events_form_submit', 'nirup_private_events_form_submit');
+
 
 /**
  * Store Private Event Submission in Database
@@ -11090,6 +11174,8 @@ function nirup_private_events_customizer_preview() {
     );
 }
 add_action('customize_preview_init', 'nirup_private_events_customizer_preview');
+
+
 
 function nirup_enqueue_accommodations_page_assets() {
     // Only on accommodations page template
