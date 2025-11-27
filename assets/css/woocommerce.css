@@ -1218,3 +1218,24 @@ body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info {
     height: auto;
         font-size: 11px;
 } */
+
+#add_payment_method #payment,
+.woocommerce-cart #payment,
+.woocommerce-checkout #payment {
+    background-color: #F6F2EB;
+}
+
+#add_payment_method #payment div.payment_box,
+.woocommerce-cart #payment div.payment_box,
+.woocommerce-checkout #payment div.payment_box {
+    background-color: #EDE6DB;
+}
+
+#add_payment_method #payment div.payment_box::before,
+.woocommerce-cart #payment div.payment_box::before,
+.woocommerce-checkout #payment div.payment_box::before {
+    border: 1em solid #EDE6DB;
+    border-right-color: transparent;
+    border-left-color: transparent;
+    border-top-color: transparent;
+}
