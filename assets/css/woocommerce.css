@@ -693,6 +693,7 @@ body.woocommerce-checkout .entry-title {
     border: 1px solid #d4c5b0 !important;
     border-radius: 0;
     border-collapse: collapse;
+    background-color: #F6F2EB;
 }
 
 /* Remove any borders on cells/rows */
@@ -1223,12 +1224,14 @@ body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info {
 .woocommerce-cart #payment,
 .woocommerce-checkout #payment {
     background-color: #F6F2EB;
+    border: 1px solid #d4c5b0;
 }
 
 #add_payment_method #payment div.payment_box,
 .woocommerce-cart #payment div.payment_box,
 .woocommerce-checkout #payment div.payment_box {
     background-color: #EDE6DB;
+    border-left: none;
 }
 
 #add_payment_method #payment div.payment_box::before,
