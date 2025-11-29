@@ -14302,5 +14302,159 @@ add_action( 'template_redirect', 'nirup_redirect_cart_to_checkout' );
 // Hide WooCommerce's default "Have a coupon?" block at the top of the checkout
 remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
 
+function nirup_add_event_offer_booking_calendar_meta_box() {
+    add_meta_box(
+        'event_offer_booking_calendar',
+        '📅 WP Booking System Calendar',
+        'nirup_event_offer_booking_calendar_callback',
+        'event_offer',
+        'side',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'nirup_add_event_offer_booking_calendar_meta_box');
 
+/**
+ * Event Offer Booking Calendar Meta Box Callback
+ */
+function nirup_event_offer_booking_calendar_callback($post) {
+    wp_nonce_field('nirup_save_event_offer_booking_calendar', 'nirup_event_offer_booking_calendar_nonce');
+    
+    $calendar_id = get_post_meta($post->ID, '_event_offer_booking_calendar_id', true);
+    $form_id = get_post_meta($post->ID, '_event_offer_booking_form_id', true);
+    ?>
+    
+    <style>
+        .event-offer-booking-field {
+            margin-bottom: 15px;
+        }
+        .event-offer-booking-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .event-offer-booking-input {
+            width: 100%;
+            padding: 6px 8px;
+        }
+        .event-offer-booking-help {
+            margin-top: 5px;
+            color: #666;
+            font-size: 12px;
+        }
+        .event-offer-booking-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+    </style>
+
+    <div class="event-offer-booking-note">
+        <strong>Note:</strong> If both a booking link and calendar/form are set, the booking link takes priority.
+    </div>
+
+    <div class="event-offer-booking-field">
+        <label class="event-offer-booking-label" for="event_offer_booking_calendar_id">
+            WP Booking Calendar ID
+        </label>
+        <input 
+            type="text" 
+            id="event_offer_booking_calendar_id" 
+            name="event_offer_booking_calendar_id" 
+            value="<?php echo esc_attr($calendar_id); ?>" 
+            class="event-offer-booking-input"
+            placeholder="e.g., 1"
+        />
+        <p class="event-offer-booking-help">
+            Enter the WP Booking System calendar ID for this event/offer. 
+            <br>Find it in: <strong>WP Booking System > Calendars</strong>
+        </p>
+    </div>
+
+    <div class="event-offer-booking-field">
+        <label class="event-offer-booking-label" for="event_offer_booking_form_id">
+            WP Booking Form ID
+        </label>
+        <input 
+            type="text" 
+            id="event_offer_booking_form_id" 
+            name="event_offer_booking_form_id" 
+            value="<?php echo esc_attr($form_id); ?>" 
+            class="event-offer-booking-input"
+            placeholder="e.g., 1"
+        />
+        <p class="event-offer-booking-help">
+            Enter the WP Booking System form ID to attach to the calendar.
+            <br>Find it in: <strong>WP Booking System > Forms</strong>
+        </p>
+    </div>
+    <?php
+}
+
+/**
+ * Save Event Offer Booking Calendar Meta
+ */
+function nirup_save_event_offer_booking_calendar_meta($post_id) {
+    // Verify nonce
+    if (!isset($_POST['nirup_event_offer_booking_calendar_nonce']) || 
+        !wp_verify_nonce($_POST['nirup_event_offer_booking_calendar_nonce'], 'nirup_save_event_offer_booking_calendar')) {
+        return;
+    }
+
+    // Check autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    // Check permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save calendar ID
+    if (isset($_POST['event_offer_booking_calendar_id'])) {
+        update_post_meta($post_id, '_event_offer_booking_calendar_id', sanitize_text_field($_POST['event_offer_booking_calendar_id']));
+    }
+
+    // Save form ID
+    if (isset($_POST['event_offer_booking_form_id'])) {
+        update_post_meta($post_id, '_event_offer_booking_form_id', sanitize_text_field($_POST['event_offer_booking_form_id']));
+    }
+}
+add_action('save_post_event_offer', 'nirup_save_event_offer_booking_calendar_meta');
+
+/**
+ * Enqueue Event Offer Booking Assets (conditionally)
+ */
+function nirup_enqueue_event_offer_booking_assets() {
+    if (is_singular('event_offer')) {
+        $post_id = get_the_ID();
+        $booking_link = get_post_meta($post_id, '_event_offer_booking_link', true);
+        $calendar_id = get_post_meta($post_id, '_event_offer_booking_calendar_id', true);
+        $form_id = get_post_meta($post_id, '_event_offer_booking_form_id', true);
+        
+        // Only load booking modal assets if no booking link but has calendar/form
+        if (empty($booking_link) && !empty($calendar_id) && !empty($form_id)) {
+            // Reuse villa booking styles (they're generic modal styles)
+            wp_enqueue_style(
+                'nirup-villa-booking',
+                get_template_directory_uri() . '/assets/css/villa-booking.css',
+                array(),
+                filemtime(get_template_directory() . '/assets/css/villa-booking.css')
+            );
+            
+            // Event offer booking JS
+            wp_enqueue_script(
+                'nirup-event-offer-booking',
+                get_template_directory_uri() . '/assets/js/event-offer-booking.js',
+                array('jquery'),
+                filemtime(get_template_directory() . '/assets/js/event-offer-booking.js'),
+                true
+            );
+        }
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_event_offer_booking_assets');
 ?>

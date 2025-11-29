@@ -67,10 +67,13 @@ get_header(); ?>
                                 </div>
                             <?php endif; ?>
                             
-                            <!-- Book Now Button - External Link -->
+                            <!-- Book Now Button - Priority: Booking Link > Calendar/Form Modal -->
                             <?php
-                            // Check if this event/offer has a booking link configured
                             $booking_link = get_post_meta(get_the_ID(), '_event_offer_booking_link', true);
+                            $calendar_id = get_post_meta(get_the_ID(), '_event_offer_booking_calendar_id', true);
+                            $form_id = get_post_meta(get_the_ID(), '_event_offer_booking_form_id', true);
+                            
+                            // Show booking link if it exists
                             if (!empty($booking_link)) :
                             ?>
                                 <div class="single-event-offer-booking">
@@ -80,6 +83,17 @@ get_header(); ?>
                                        rel="noopener noreferrer">
                                         Book Now
                                     </a>
+                                </div>
+                            <?php 
+                            // Otherwise, show modal button if calendar and form are set
+                            elseif (!empty($calendar_id) && !empty($form_id)) : 
+                            ?>
+                                <div class="single-event-offer-booking">
+                                    <button type="button"
+                                            class="single-event-offer-book-btn event-offer-book-btn"
+                                            data-event-offer-id="<?php echo esc_attr(get_the_ID()); ?>">
+                                        Book Now
+                                    </button>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -240,7 +254,14 @@ get_header(); ?>
 </main>
 
 <?php
-// Booking modal and thank you modal removed - now using external booking links
+// Include booking modal only if calendar/form are set and no booking link
+$booking_link = get_post_meta(get_the_ID(), '_event_offer_booking_link', true);
+$calendar_id = get_post_meta(get_the_ID(), '_event_offer_booking_calendar_id', true);
+$form_id = get_post_meta(get_the_ID(), '_event_offer_booking_form_id', true);
+
+if (empty($booking_link) && !empty($calendar_id) && !empty($form_id)) {
+    get_template_part('template-parts/booking-calendar-modal');
+}
 ?>
 
 <?php get_footer(); ?>
