@@ -5,7 +5,7 @@
         const $form = $('#villa-selling-form');
         const $submitBtn = $('.villa-selling-submit-btn');
         const $formMessage = $('#villa-form-message');
-        const $modal = $('#villa-thank-you-modal');
+        const $modal = $('#villaThankYouModal');
 
         if (!$form.length) {
             console.log('❌ Villa selling form not found on this page');
@@ -47,35 +47,67 @@
             // Loading state
             $submitBtn.addClass('loading');
 
-            $.ajax({
-                url: nirup_villa_selling_ajax.ajax_url,
-                type: 'POST',
-                data: {
-                    action: 'nirup_villa_selling_form_submit',
-                    nonce: nirup_villa_selling_ajax.nonce,
-                    form_data: formData
-                },
-                success: function(response) {
-                    console.log('✅ AJAX Success:', response);
-                    if (response.success) {
-                        console.log('✅ Form submitted successfully');
-                        $form[0].reset();
-                        showThankYouModal();
-                    } else {
-                        console.log('❌ Submission failed:', response.data.message);
-                        showMessage(response.data.message || 'Something went wrong. Please try again.', 'error');
+            // Function to send AJAX with optional token
+            function sendVillaSellingAjax(recaptchaToken) {
+                $.ajax({
+                    url: nirup_villa_selling_ajax.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'nirup_villa_selling_form_submit',
+                        nonce: nirup_villa_selling_ajax.nonce,
+                        form_data: formData,
+                        recaptcha_token: recaptchaToken
+                    },
+                    success: function(response) {
+                        console.log('✅ Villa selling AJAX Success:', response);
+                        if (response.success) {
+                            console.log('✅ Villa form submitted successfully');
+                            $form[0].reset();
+                            showThankYouModal();
+                        } else {
+                            console.log('❌ Villa submission failed:', response.data.message);
+                            const msg = response.data && response.data.message
+                                ? response.data.message
+                                : 'Something went wrong. Please try again.';
+                            showMessage(msg, 'error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('❌ Villa selling AJAX error:', status, error);
+                        if (xhr && xhr.responseText) {
+                            console.error('Response:', xhr.responseText);
+                        }
+                        showMessage('Failed to send your enquiry. Please try again later.', 'error');
+                    },
+                    complete: function() {
+                        $submitBtn.removeClass('loading');
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('❌ AJAX Error:', status, error);
-                    console.error('Response:', xhr.responseText);
-                    showMessage('Failed to send your enquiry. Please try again later.', 'error');
-                },
-                complete: function() {
-                    console.log('🏁 AJAX request completed');
-                    $submitBtn.removeClass('loading');
-                }
-            });
+                });
+            }
+
+            // reCAPTCHA handling
+            var hasRecaptcha =
+                typeof nirup_villa_selling_ajax !== 'undefined' &&
+                nirup_villa_selling_ajax.recaptcha &&
+                nirup_villa_selling_ajax.recaptcha.site_key;
+
+            if (hasRecaptcha && typeof grecaptcha !== 'undefined') {
+                grecaptcha.ready(function() {
+                    grecaptcha.execute(
+                        nirup_villa_selling_ajax.recaptcha.site_key,
+                        { action: nirup_villa_selling_ajax.recaptcha.action }
+                    ).then(function(token) {
+                        console.log('✅ Got reCAPTCHA token for villa selling');
+                        sendVillaSellingAjax(token);
+                    }).catch(function(err) {
+                        console.warn('⚠️ reCAPTCHA error, sending without token', err);
+                        sendVillaSellingAjax('');
+                    });
+                });
+            } else {
+                console.log('ℹ️ reCAPTCHA not configured or grecaptcha not loaded, sending without token');
+                sendVillaSellingAjax('');
+            }
         });
 
         // Modal overlay click to close
@@ -114,7 +146,7 @@
     }
 
     function showThankYouModal() {
-        const $modal = $('#villa-thank-you-modal');
+        const $modal = $('#villaThankYouModal');
         $modal.addClass('active');
         $('body').css('overflow', 'hidden');
 
@@ -124,7 +156,7 @@
     }
 
     function hideThankYouModal() {
-        const $modal = $('#villa-thank-you-modal');
+        const $modal = $('#villaThankYouModal');
         $modal.removeClass('active');
         $('body').css('overflow', '');
     }

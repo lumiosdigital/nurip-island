@@ -415,7 +415,7 @@
 }
 
 .villa-selling-submit-btn {
-    background-color: #a48456;
+    background-color: #8B5E1D;
     color: white;
     font-family: 'Albert Sans', sans-serif;
     font-weight: 300;
@@ -434,7 +434,7 @@
 }
 
 .villa-selling-submit-btn:hover {
-    background-color: #8B5E1D;
+    background-color: #a48456;
 }
 
 .villa-selling-submit-btn.loading {

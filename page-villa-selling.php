@@ -260,10 +260,18 @@ $form_description = get_theme_mod('nirup_villa_selling_form_description', 'Pleas
                     <textarea id="villa-message" name="message" placeholder="Tell us about your requirements..."></textarea>
                 </div>
                 
-                <button type="submit" class="villa-selling-submit-btn">
-                    <span class="submit-text">Submit Enquiry</span>
-                    <span class="submit-loading" style="display: none;">Sending<span class="dots"></span></span>
-                </button>
+                <div>
+                    <button type="submit" class="villa-selling-submit-btn">
+                        <span class="submit-text">Submit Enquiry</span>
+                        <span class="submit-loading" style="display: none;">Sending<span class="dots"></span></span>
+                    </button>
+                    <small class="recaptcha-note-nirup">
+                        This site is protected by reCAPTCHA and the Google
+                        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and
+                        <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+                    </small>                    
+                </div>
+
             </div>
             
             <!-- Form Messages -->

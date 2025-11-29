@@ -13715,27 +13715,39 @@ add_action('manage_selling_unit_posts_custom_column', 'nirup_selling_unit_admin_
 
 function nirup_enqueue_villa_selling_assets() {
     if (is_page_template('page-villa-selling.php')) {
-        // Enqueue CSS
+        $dir_uri  = get_stylesheet_directory_uri();
+        $dir_path = get_stylesheet_directory();
+        
+        // CSS with automatic cache-busting
+        $css_path = $dir_path . '/assets/css/villa-selling.css';
         wp_enqueue_style(
             'nirup-villa-selling',
-            get_template_directory_uri() . '/assets/css/villa-selling.css',
+            $dir_uri . '/assets/css/villa-selling.css',
             array(),
-            '1.0.0'
+            file_exists($css_path) ? filemtime($css_path) : '1.0.0'
         );
         
-        // Enqueue JavaScript
+        // JS with automatic cache-busting
+        $js_path = $dir_path . '/assets/js/villa-selling.js';
         wp_enqueue_script(
             'nirup-villa-selling',
-            get_template_directory_uri() . '/assets/js/villa-selling.js',
+            $dir_uri . '/assets/js/villa-selling.js',
             array('jquery'),
-            '1.0.0',
+            file_exists($js_path) ? filemtime($js_path) : '1.0.0',
             true
         );
         
-        // Localize script
+        // Get reCAPTCHA site key (same as contact/newsletter/private events)
+        $site_key = nirup_get_secret('RECAPTCHA_SITE_KEY', 'nirup_recaptcha_site_key', '');
+        
+        // Localize script with reCAPTCHA support
         wp_localize_script('nirup-villa-selling', 'nirup_villa_selling_ajax', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('nirup_villa_selling_form_nonce')
+            'ajax_url'  => admin_url('admin-ajax.php'),
+            'nonce'     => wp_create_nonce('nirup_villa_selling_form_nonce'),
+            'recaptcha' => array(
+                'site_key' => $site_key,
+                'action'   => 'villa_selling_submit',
+            ),
         ));
     }
 }
@@ -13750,14 +13762,16 @@ function nirup_villa_selling_form_submit() {
     }
 
     // Get form data
-    $form_data = $_POST['form_data'];
+    $form_data = isset($_POST['form_data']) && is_array($_POST['form_data'])
+        ? $_POST['form_data']
+        : array();
     
-    $name = sanitize_text_field($form_data['name']);
-    $email = sanitize_email($form_data['email']);
-    $phone = sanitize_text_field($form_data['phone']);
-    $language = sanitize_text_field($form_data['language']);
-    $villa_unit = sanitize_text_field($form_data['villa_unit']);
-    $message = sanitize_textarea_field($form_data['message']);
+    $name = sanitize_text_field($form_data['name'] ?? '');
+    $email = sanitize_email($form_data['email'] ?? '');
+    $phone = sanitize_text_field($form_data['phone'] ?? '');
+    $language = sanitize_text_field($form_data['language'] ?? '');
+    $villa_unit = sanitize_text_field($form_data['villa_unit'] ?? '');
+    $message = sanitize_textarea_field($form_data['message'] ?? '');
     
     // Validate required fields
     if (empty($name) || empty($email) || empty($phone)) {
@@ -13768,69 +13782,117 @@ function nirup_villa_selling_form_submit() {
         wp_send_json_error(array('message' => 'Please enter a valid email address.'));
     }
 
-    // Store in database
+    // ---- reCAPTCHA v3 verification ----
+    $recaptcha_secret = nirup_get_secret('RECAPTCHA_SECRET', 'nirup_recaptcha_secret', '');
+    $recaptcha_token  = isset($_POST['recaptcha_token'])
+        ? sanitize_text_field($_POST['recaptcha_token'])
+        : '';
+
+    // Only enforce captcha if we have BOTH a secret and a token
+    $captcha_enabled = !defined('NIRUP_DISABLE_CAPTCHA')
+        && !empty($recaptcha_secret)
+        && !empty($recaptcha_token);
+
+    if ($captcha_enabled) {
+        $verify = wp_remote_post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            array(
+                'body'    => array(
+                    'secret'   => $recaptcha_secret,
+                    'response' => $recaptcha_token,
+                    'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+                ),
+                'timeout' => 10,
+            )
+        );
+
+        if (is_wp_error($verify)) {
+            wp_send_json_error(
+                array('message' => 'Captcha verification failed. Please try again.'),
+                400
+            );
+        }
+
+        $vbody = json_decode(wp_remote_retrieve_body($verify), true);
+        $score = isset($vbody['score']) ? (float) $vbody['score'] : 0.0;
+
+        // Threshold 0.5 (loosen to 0.3 if needed on dev)
+        if (empty($vbody['success']) || $score < 0.5) {
+            wp_send_json_error(
+                array('message' => 'Captcha failed. Please try again.'),
+                400
+            );
+        }
+    } else {
+        // No token or no secret -> act as if captcha is disabled
+        error_log(
+            'Villa Selling Form: reCAPTCHA skipped (missing token or secret, or explicitly disabled).'
+        );
+    }
+    // ---- end captcha ----
+
+    // Store submission in database FIRST
     nirup_store_villa_selling_submission($name, $email, $phone, $language, $villa_unit, $message);
+    error_log('Villa Selling Form - Submission saved to database');
     
-    // Prepare email to admin
-    $admin_email = get_option('admin_email');
-    $admin_subject = sprintf('[Villa Selling Enquiry] New enquiry from %s', $name);
+    // Get email settings from customizer
+    $admin_email = get_theme_mod('nirup_villa_selling_form_email', 'explore@nirupisland.com');
+    $from_email  = get_theme_mod('nirup_villa_selling_form_from_email', 'explore@nirupisland.com');
+    $from_name   = get_bloginfo('name');
     
-    $admin_body = sprintf(
-        "New Villa Selling Enquiry\n\n" .
-        "Name: %s\n" .
-        "Email: %s\n" .
-        "Phone: %s\n" .
-        "Preferred Language: %s\n" .
-        "Villa Interest: %s\n\n" .
-        "Message:\n%s\n\n" .
-        "---\n" .
-        "This enquiry was submitted from the Villa Selling Options page at %s",
-        $name,
-        $email,
-        $phone,
-        $language ? $language : 'Not specified',
-        $villa_unit ? $villa_unit : 'Not specified',
-        $message,
-        get_site_url()
-    );
+    error_log('Villa Selling Form - Admin email: ' . $admin_email);
+    error_log('Villa Selling Form - From email: ' . $from_email);
+    error_log('Villa Selling Form - User email: ' . $email);
+    
+    // ==========================================
+    // EMAIL 1: ADMIN NOTIFICATION (Internal)
+    // ==========================================
+    $admin_subject = '[' . get_bloginfo('name') . '] New Villa Ownership Enquiry from ' . $name;
+    
+    $admin_body  = "New villa ownership enquiry:\n\n";
+    $admin_body .= "Name: " . $name . "\n";
+    $admin_body .= "Email: " . $email . "\n";
+    $admin_body .= "Phone: " . $phone . "\n";
+    $admin_body .= "Preferred Language: " . (!empty($language) ? $language : 'Not specified') . "\n";
+    $admin_body .= "Interested Villa Unit: " . (!empty($villa_unit) ? $villa_unit : 'Not specified') . "\n\n";
+    $admin_body .= "Message:\n" . $message . "\n\n";
+    $admin_body .= "---\n";
+    $admin_body .= "This email was sent from the villa ownership enquiry form on " . get_bloginfo('url') . "\n";
+    $admin_body .= "Submitted on: " . current_time('F j, Y g:i A');
     
     $admin_headers = array(
         'Content-Type: text/plain; charset=UTF-8',
-        'Reply-To: ' . $name . ' <' . $email . '>'
+        'From: ' . $from_name . ' <' . $from_email . '>',
+        'Reply-To: ' . $name . ' <' . $email . '>',
     );
     
-    // Prepare confirmation email to user
-    $user_subject = 'Thank you for your enquiry - Nirup Island';
-    $user_body = sprintf(
-        "Dear %s,\n\n" .
-        "Thank you for your interest in owning a villa at Nirup Island.\n\n" .
-        "We have received your enquiry and our sales team will contact you within 24 hours to discuss your requirements.\n\n" .
-        "Your Enquiry Details:\n" .
-        "- Preferred Language: %s\n" .
-        "- Villa Interest: %s\n" .
-        "- Message: %s\n\n" .
-        "We look forward to helping you find your perfect island retreat.\n\n" .
-        "Best regards,\n" .
-        "Nirup Island Sales Team\n\n" .
-        "---\n" .
-        "If you have any questions, please contact us at %s",
-        $name,
-        $language ? $language : 'Not specified',
-        $villa_unit ? $villa_unit : 'Not specified',
-        $message ? $message : 'No additional message',
-        $admin_email
-    );
+    $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
+    
+    // ==========================================
+    // EMAIL 2: USER CONFIRMATION (External)
+    // ==========================================
+    $user_subject = 'Thank you for your interest in Riahi Residences';
+    
+    $user_body  = "Dear " . $name . ",\n\n";
+    $user_body .= "Thank you for your enquiry about villa ownership at Nirup Island. We have received your message and will be in touch with you within 24 hours to discuss the available options.\n\n";
+    $user_body .= "Your enquiry details:\n";
+    $user_body .= "Preferred Language: " . (!empty($language) ? $language : 'Not specified') . "\n";
+    $user_body .= "Interested Villa Unit: " . (!empty($villa_unit) ? $villa_unit : 'Not specified') . "\n\n";
+    $user_body .= "We look forward to helping you find your perfect island retreat.\n\n";
+    $user_body .= "Best regards,\n";
+    $user_body .= "The Nirup Island Sales Team\n\n";
+    $user_body .= "---\n";
+    $user_body .= get_bloginfo('name') . "\n";
+    $user_body .= get_bloginfo('url');
     
     $user_headers = array(
         'Content-Type: text/plain; charset=UTF-8',
-        'From: Nirup Island <' . get_option('admin_email') . '>'
+        'From: ' . $from_name . ' <' . $from_email . '>',
     );
     
-    // Send emails
-    $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
     $user_mail_sent = wp_mail($email, $user_subject, $user_body, $user_headers);
     
-    // Log results
+    // Log email results
     error_log('Villa Selling Form - Admin email result: ' . ($admin_mail_sent ? 'SUCCESS' : 'FAILED'));
     error_log('Villa Selling Form - User email result: ' . ($user_mail_sent ? 'SUCCESS' : 'FAILED'));
     
@@ -13843,6 +13905,7 @@ function nirup_villa_selling_form_submit() {
 }
 add_action('wp_ajax_nirup_villa_selling_form_submit', 'nirup_villa_selling_form_submit');
 add_action('wp_ajax_nopriv_nirup_villa_selling_form_submit', 'nirup_villa_selling_form_submit');
+
 
 // ========== 6. STORE SUBMISSION IN DATABASE ==========
 
@@ -13902,7 +13965,6 @@ function nirup_create_villa_selling_submissions_table() {
 // Create table on theme activation
 add_action('after_switch_theme', 'nirup_create_villa_selling_submissions_table');
 
-// ========== 7. ADMIN PAGE FOR SUBMISSIONS ==========
 
 function nirup_villa_selling_admin_menu() {
     add_submenu_page(
@@ -13920,6 +13982,44 @@ function nirup_villa_selling_enquiries_page() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'villa_selling_submissions';
     
+    // Handle status update
+    if (isset($_POST['update_status']) && wp_verify_nonce($_POST['villa_enquiry_nonce'], 'villa_enquiry_action')) {
+        $id = intval($_POST['submission_id']);
+        $new_status = sanitize_text_field($_POST['status']);
+        
+        $updated = $wpdb->update(
+            $table_name,
+            array('status' => $new_status),
+            array('id' => $id),
+            array('%s'),
+            array('%d')
+        );
+        
+        if ($updated !== false) {
+            echo '<div class="notice notice-success is-dismissible"><p>Status updated successfully!</p></div>';
+        } else {
+            echo '<div class="notice notice-error is-dismissible"><p>Failed to update status.</p></div>';
+        }
+    }
+    
+    // Handle deletion
+    if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+        // Verify nonce
+        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'delete_villa_enquiry_' . $_GET['id'])) {
+            wp_die('Security check failed');
+        }
+        
+        $id = intval($_GET['id']);
+        $deleted = $wpdb->delete($table_name, array('id' => $id), array('%d'));
+        
+        if ($deleted) {
+            echo '<div class="notice notice-success is-dismissible"><p>Enquiry deleted successfully!</p></div>';
+        } else {
+            echo '<div class="notice notice-error is-dismissible"><p>Failed to delete enquiry.</p></div>';
+        }
+    }
+    
+    // Get all submissions
     $submissions = $wpdb->get_results("SELECT * FROM $table_name ORDER BY submission_date DESC");
     ?>
     <div class="wrap">
@@ -13937,23 +14037,116 @@ function nirup_villa_selling_enquiries_page() {
                         <th>Phone</th>
                         <th>Villa Interest</th>
                         <th>Language</th>
+                        <th>Message</th>
                         <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($submissions as $submission): ?>
                         <tr>
-                            <td><?php echo date('M j, Y', strtotime($submission->submission_date)); ?></td>
+                            <td><?php echo date('M j, Y g:i A', strtotime($submission->submission_date)); ?></td>
                             <td><strong><?php echo esc_html($submission->name); ?></strong></td>
                             <td><a href="mailto:<?php echo esc_attr($submission->email); ?>"><?php echo esc_html($submission->email); ?></a></td>
                             <td><?php echo esc_html($submission->phone); ?></td>
                             <td><?php echo $submission->villa_unit ? esc_html($submission->villa_unit) : '—'; ?></td>
                             <td><?php echo $submission->language ? esc_html($submission->language) : '—'; ?></td>
-                            <td><?php echo esc_html($submission->status); ?></td>
+                            <td>
+                                <?php 
+                                if (!empty($submission->message)) {
+                                    $message = esc_html($submission->message);
+                                    if (strlen($message) > 100) {
+                                        echo substr($message, 0, 100) . '...';
+                                    } else {
+                                        echo $message;
+                                    }
+                                } else {
+                                    echo '—';
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php 
+                                $status = esc_html($submission->status);
+                                $status_colors = array(
+                                    'pending'   => '#ffc107',  // Yellow
+                                    'answered'  => '#28a745',  // Green
+                                    'follow_up' => '#17a2b8',  // Blue
+                                    'archived'  => '#6c757d'   // Gray
+                                );
+                                $status_labels = array(
+                                    'pending'   => 'Pending',
+                                    'answered'  => 'Answered',
+                                    'follow_up' => 'Follow Up',
+                                    'archived'  => 'Archived'
+                                );
+                                $color = isset($status_colors[$submission->status]) ? $status_colors[$submission->status] : '#6c757d';
+                                $label = isset($status_labels[$submission->status]) ? $status_labels[$submission->status] : ucfirst($status);
+                                ?>
+                                <span style="color: <?php echo $color; ?>; font-weight: 600;">
+                                    <?php echo $label; ?>
+                                </span>
+                            </td>
+                            <td>
+                                <!-- Status Update Form -->
+                                <form method="post" style="display: inline-block; margin-right: 8px;">
+                                    <?php wp_nonce_field('villa_enquiry_action', 'villa_enquiry_nonce'); ?>
+                                    <input type="hidden" name="submission_id" value="<?php echo $submission->id; ?>">
+                                    <select name="status" onchange="this.form.submit()" style="padding: 2px 4px; font-size: 12px;">
+                                        <option value="">Change Status...</option>
+                                        <option value="pending" <?php selected($submission->status, 'pending'); ?>>Pending</option>
+                                        <option value="answered" <?php selected($submission->status, 'answered'); ?>>Answered</option>
+                                        <option value="follow_up" <?php selected($submission->status, 'follow_up'); ?>>Follow Up</option>
+                                        <option value="archived" <?php selected($submission->status, 'archived'); ?>>Archived</option>
+                                    </select>
+                                    <input type="hidden" name="update_status" value="1">
+                                </form>
+                                
+                                <!-- Delete Button -->
+                                <?php
+                                $delete_url = wp_nonce_url(
+                                    add_query_arg(
+                                        array(
+                                            'page' => 'villa-selling-enquiries',
+                                            'action' => 'delete',
+                                            'id' => $submission->id
+                                        ),
+                                        admin_url('edit.php?post_type=selling_unit')
+                                    ),
+                                    'delete_villa_enquiry_' . $submission->id
+                                );
+                                ?>
+                                <a href="<?php echo esc_url($delete_url); ?>" 
+                                   class="button button-small"
+                                   onclick="return confirm('Are you sure you want to delete this enquiry? This action cannot be undone.');"
+                                   style="color: #d63638;">
+                                    Delete
+                                </a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            
+            <style>
+                .wp-list-table th,
+                .wp-list-table td {
+                    vertical-align: middle;
+                }
+                .wp-list-table td a.button {
+                    text-decoration: none;
+                }
+                .wp-list-table select {
+                    max-width: 140px;
+                    cursor: pointer;
+                }
+                .wp-list-table select:hover {
+                    border-color: #8c8f94;
+                }
+                .wp-list-table td form {
+                    margin: 0;
+                }
+            </style>
         <?php endif; ?>
     </div>
     <?php
@@ -14061,6 +14254,36 @@ function nirup_villa_selling_customizer($wp_customize) {
         'label'   => __('Form Section - Description', 'nirup-island'),
         'section' => 'nirup_villa_selling',
         'type'    => 'textarea',
+    ));
+
+    // ==========================================
+    // EMAIL SETTINGS
+    // ==========================================
+    
+    // Admin Email (recipient)
+    $wp_customize->add_setting('nirup_villa_selling_form_email', array(
+        'default'           => 'explore@nirupisland.com',
+        'sanitize_callback' => 'sanitize_email',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_form_email', array(
+        'label'       => __('Form Recipient Email', 'nirup-island'),
+        'description' => __('Email address where villa enquiry submissions will be sent', 'nirup-island'),
+        'section'     => 'nirup_villa_selling',
+        'type'        => 'email',
+    ));
+
+    // From Email (sender)
+    $wp_customize->add_setting('nirup_villa_selling_form_from_email', array(
+        'default'           => 'explore@nirupisland.com',
+        'sanitize_callback' => 'sanitize_email',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_form_from_email', array(
+        'label'       => __('Form From Email', 'nirup-island'),
+        'description' => __('Email address used as sender for form emails', 'nirup-island'),
+        'section'     => 'nirup_villa_selling',
+        'type'        => 'email',
     ));
 }
 add_action('customize_register', 'nirup_villa_selling_customizer');
