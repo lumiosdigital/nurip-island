@@ -144,6 +144,9 @@ function nirup_enqueue_assets() {
         ['nirup-footer',                '/assets/js/footer.js',                  ['jquery']],
         ['single-event-offer-gallery',  '/assets/js/single-event-offer-gallery.js',['jquery']],
         ['nirup-contact',               '/assets/js/contact.js',                 ['jquery']],
+        ['nirup-media-coverage', '/assets/js/media-coverage.js', ['jquery','nirup-main']],
+
+
     ];
 
     foreach ($js_files as [$handle, $rel, $deps]) {
@@ -13190,7 +13193,7 @@ add_action('manage_media_coverage_posts_custom_column', 'nirup_media_coverage_ad
  */
 function nirup_load_more_media_articles() {
     // Verify nonce
-    check_ajax_referer('media_coverage_nonce', 'nonce');
+    check_ajax_referer('nirup_nonce', 'nonce');
     
     $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
     
