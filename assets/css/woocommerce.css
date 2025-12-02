@@ -1242,3 +1242,55 @@ body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info {
     border-left-color: transparent;
     border-top-color: transparent;
 }
+
+.nirup-checkout-layout>.woocommerce-NoticeGroup,
+.nirup-checkout-layout>.woocommerce-notices-wrapper,
+.nirup-checkout-layout>.woocommerce-error,
+.nirup-checkout-layout>.woocommerce-message,
+.nirup-checkout-layout>.woocommerce-info {
+    grid-column: 1 / -1;
+    /* span across both columns */
+    width: 100%;
+    /* margin-bottom: 12px; */
+    /* give it some breathing room */
+}
+
+/* Optional: keep notice text left-aligned and tidy */
+.nirup-checkout-layout>.woocommerce-error,
+.nirup-checkout-layout>.woocommerce-message,
+.nirup-checkout-layout>.woocommerce-info {
+    box-sizing: border-box;
+}
+
+/* =========================================
+   Checkout notices – remove default icons
+   ========================================= */
+
+.nirup-checkout-main .woocommerce-error::before,
+.nirup-checkout-main .woocommerce-error::after,
+.nirup-checkout-main .woocommerce-message::before,
+.nirup-checkout-main .woocommerce-message::after,
+.nirup-checkout-main .woocommerce-info::before,
+.nirup-checkout-main .woocommerce-info::after,
+.nirup-checkout-main .woocommerce-error li::before,
+.nirup-checkout-main .woocommerce-message li::before,
+.nirup-checkout-main .woocommerce-info li::before {
+    content: none !important;
+    display: none !important;
+}
+
+/* Checkout notices – inner spacing so text isn't glued to the edge */
+.nirup-checkout-main .woocommerce-error,
+.nirup-checkout-main .woocommerce-message,
+.nirup-checkout-main .woocommerce-info {
+    padding: 12px 20px;
+    /* top/bottom 12px, left/right 20px */
+    box-sizing: border-box;
+}
+
+.nirup-checkout-main ul.woocommerce-error,
+.nirup-checkout-main ul.woocommerce-message,
+.nirup-checkout-main ul.woocommerce-info {
+    padding-left: 20px;
+    margin-bottom: -12px;
+}
