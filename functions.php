@@ -13837,10 +13837,12 @@ function nirup_villa_selling_form_submit() {
     
     // Get email settings from customizer
     $admin_email = get_theme_mod('nirup_villa_selling_form_email', 'explore@nirupisland.com');
+    $cc_email    = get_theme_mod('nirup_villa_selling_form_cc_email', ''); // Optional CC email
     $from_email  = get_theme_mod('nirup_villa_selling_form_from_email', 'explore@nirupisland.com');
     $from_name   = get_bloginfo('name');
     
     error_log('Villa Selling Form - Admin email: ' . $admin_email);
+    error_log('Villa Selling Form - CC email: ' . ($cc_email ? $cc_email : 'Not set'));
     error_log('Villa Selling Form - From email: ' . $from_email);
     error_log('Villa Selling Form - User email: ' . $email);
     
@@ -13866,24 +13868,49 @@ function nirup_villa_selling_form_submit() {
         'Reply-To: ' . $name . ' <' . $email . '>',
     );
     
+    // Add CC header if CC email is set
+    if (!empty($cc_email) && is_email($cc_email)) {
+        $admin_headers[] = 'Cc: ' . $cc_email;
+        error_log('Villa Selling Form - CC added to admin notification: ' . $cc_email);
+    }
+    
     $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
     
     // ==========================================
     // EMAIL 2: USER CONFIRMATION (External)
     // ==========================================
-    $user_subject = 'Thank you for your interest in Riahi Residences';
+    $user_subject_template = get_theme_mod(
+        'nirup_villa_selling_confirmation_subject',
+        'Thank you for your interest in Riahi Residences'
+    );
     
-    $user_body  = "Dear " . $name . ",\n\n";
-    $user_body .= "Thank you for your enquiry about villa ownership at Nirup Island. We have received your message and will be in touch with you within 24 hours to discuss the available options.\n\n";
-    $user_body .= "Your enquiry details:\n";
-    $user_body .= "Preferred Language: " . (!empty($language) ? $language : 'Not specified') . "\n";
-    $user_body .= "Interested Villa Unit: " . (!empty($villa_unit) ? $villa_unit : 'Not specified') . "\n\n";
-    $user_body .= "We look forward to helping you find your perfect island retreat.\n\n";
-    $user_body .= "Best regards,\n";
-    $user_body .= "The Nirup Island Sales Team\n\n";
-    $user_body .= "---\n";
-    $user_body .= get_bloginfo('name') . "\n";
-    $user_body .= get_bloginfo('url');
+    $user_body_template = get_theme_mod(
+        'nirup_villa_selling_confirmation_body',
+        "Dear {user_name},\n\nThank you for your enquiry about villa ownership at Nirup Island. We have received your message and will be in touch with you within 24 hours to discuss the available options.\n\nYour enquiry details:\nPreferred Language: {language}\nInterested Villa Unit: {villa_unit}\n\nWe look forward to helping you find your perfect island retreat.\n\nBest regards,\nThe Nirup Island Sales Team"
+    );
+    
+    $user_footer_template = get_theme_mod(
+        'nirup_villa_selling_confirmation_footer',
+        "---\n{site_name}\n{site_url}"
+    );
+    
+    // Replace template tags
+    $replacements = array(
+        '{site_name}'  => get_bloginfo('name'),
+        '{site_url}'   => get_bloginfo('url'),
+        '{user_name}'  => $name,
+        '{user_email}' => $email,
+        '{user_phone}' => $phone,
+        '{language}'   => !empty($language) ? $language : 'Not specified',
+        '{villa_unit}' => !empty($villa_unit) ? $villa_unit : 'Not specified',
+        '{phone_number}' => get_theme_mod('nirup_contact_phone_primary', '+62 811 6220 999'),
+    );
+    
+    $user_subject = str_replace(array_keys($replacements), array_values($replacements), $user_subject_template);
+    $user_body    = str_replace(array_keys($replacements), array_values($replacements), $user_body_template);
+    $user_footer  = str_replace(array_keys($replacements), array_values($replacements), $user_footer_template);
+    
+    $user_body = $user_body . "\n\n" . $user_footer;
     
     $user_headers = array(
         'Content-Type: text/plain; charset=UTF-8',
@@ -14268,7 +14295,20 @@ function nirup_villa_selling_customizer($wp_customize) {
     
     $wp_customize->add_control('nirup_villa_selling_form_email', array(
         'label'       => __('Form Recipient Email', 'nirup-island'),
-        'description' => __('Email address where villa enquiry submissions will be sent', 'nirup-island'),
+        'description' => __('Primary email address where villa enquiry submissions will be sent', 'nirup-island'),
+        'section'     => 'nirup_villa_selling',
+        'type'        => 'email',
+    ));
+
+    // CC Email (optional second recipient)
+    $wp_customize->add_setting('nirup_villa_selling_form_cc_email', array(
+        'default'           => '',
+        'sanitize_callback' => 'sanitize_email',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_form_cc_email', array(
+        'label'       => __('CC Email (Optional)', 'nirup-island'),
+        'description' => __('Optional: Add a second email address to receive a copy of all villa enquiries. Leave blank if not needed.', 'nirup-island'),
         'section'     => 'nirup_villa_selling',
         'type'        => 'email',
     ));
@@ -14284,6 +14324,55 @@ function nirup_villa_selling_customizer($wp_customize) {
         'description' => __('Email address used as sender for form emails', 'nirup-island'),
         'section'     => 'nirup_villa_selling',
         'type'        => 'email',
+    ));
+    
+    // ==========================================
+    // CONFIRMATION EMAIL SETTINGS
+    // ==========================================
+    
+    // Confirmation Email Subject
+    $wp_customize->add_setting('nirup_villa_selling_confirmation_subject', array(
+        'default'           => __('Thank you for your interest in Riahi Residences', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_confirmation_subject', array(
+        'label'       => __('Confirmation Email Subject', 'nirup-island'),
+        'description' => __('Subject line for customer confirmation email. Available tags: {site_name}, {user_name}', 'nirup-island'),
+        'section'     => 'nirup_villa_selling',
+        'type'        => 'text',
+    ));
+    
+    // Confirmation Email Body
+    $wp_customize->add_setting('nirup_villa_selling_confirmation_body', array(
+        'default'           => __("Dear {user_name},\n\nThank you for your enquiry about villa ownership at Nirup Island. We have received your message and will be in touch with you within 24 hours to discuss the available options.\n\nYour enquiry details:\nPreferred Language: {language}\nInterested Villa Unit: {villa_unit}\n\nWe look forward to helping you find your perfect island retreat.\n\nBest regards,\nThe Nirup Island Sales Team", 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_confirmation_body', array(
+        'label'       => __('Confirmation Email Body', 'nirup-island'),
+        'description' => __('Main content for customer confirmation email. Available tags: {site_name}, {site_url}, {user_name}, {user_email}, {user_phone}, {language}, {villa_unit}, {phone_number}', 'nirup-island'),
+        'section'     => 'nirup_villa_selling',
+        'type'        => 'textarea',
+        'input_attrs' => array(
+            'rows' => 12,
+        ),
+    ));
+    
+    // Confirmation Email Footer
+    $wp_customize->add_setting('nirup_villa_selling_confirmation_footer', array(
+        'default'           => __("---\n{site_name}\n{site_url}", 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    
+    $wp_customize->add_control('nirup_villa_selling_confirmation_footer', array(
+        'label'       => __('Confirmation Email Footer', 'nirup-island'),
+        'description' => __('Footer text for confirmation email. Available tags: {site_name}, {site_url}', 'nirup-island'),
+        'section'     => 'nirup_villa_selling',
+        'type'        => 'textarea',
+        'input_attrs' => array(
+            'rows' => 3,
+        ),
     ));
 }
 add_action('customize_register', 'nirup_villa_selling_customizer');
