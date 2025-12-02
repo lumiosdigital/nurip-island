@@ -13837,12 +13837,12 @@ function nirup_villa_selling_form_submit() {
     
     // Get email settings from customizer
     $admin_email = get_theme_mod('nirup_villa_selling_form_email', 'explore@nirupisland.com');
-    $cc_email    = get_theme_mod('nirup_villa_selling_form_cc_email', ''); // Optional CC email
+    $cc_emails   = get_theme_mod('nirup_villa_selling_form_cc_email', ''); // Optional CC emails (comma-separated)
     $from_email  = get_theme_mod('nirup_villa_selling_form_from_email', 'explore@nirupisland.com');
     $from_name   = get_bloginfo('name');
     
     error_log('Villa Selling Form - Admin email: ' . $admin_email);
-    error_log('Villa Selling Form - CC email: ' . ($cc_email ? $cc_email : 'Not set'));
+    error_log('Villa Selling Form - CC emails: ' . ($cc_emails ? $cc_emails : 'Not set'));
     error_log('Villa Selling Form - From email: ' . $from_email);
     error_log('Villa Selling Form - User email: ' . $email);
     
@@ -13868,10 +13868,29 @@ function nirup_villa_selling_form_submit() {
         'Reply-To: ' . $name . ' <' . $email . '>',
     );
     
-    // Add CC header if CC email is set
-    if (!empty($cc_email) && is_email($cc_email)) {
-        $admin_headers[] = 'Cc: ' . $cc_email;
-        error_log('Villa Selling Form - CC added to admin notification: ' . $cc_email);
+    // Add CC headers if CC emails are set (supports multiple comma-separated emails)
+    if (!empty($cc_emails)) {
+        // Split by comma and process each email
+        $cc_array = array_map('trim', explode(',', $cc_emails));
+        $valid_cc_emails = array();
+        
+        foreach ($cc_array as $cc_email) {
+            // Validate each email
+            if (!empty($cc_email) && is_email($cc_email)) {
+                $valid_cc_emails[] = $cc_email;
+            } else if (!empty($cc_email)) {
+                error_log('Villa Selling Form - Invalid CC email skipped: ' . $cc_email);
+            }
+        }
+        
+        // Add valid CC emails to headers - use separate header for each email
+        if (!empty($valid_cc_emails)) {
+            // Add each CC as a separate header line (more reliable than comma-separated)
+            foreach ($valid_cc_emails as $valid_cc) {
+                $admin_headers[] = 'Cc: ' . $valid_cc;
+            }
+            error_log('Villa Selling Form - CC added to admin notification (' . count($valid_cc_emails) . ' recipients): ' . implode(', ', $valid_cc_emails));
+        }
     }
     
     $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
@@ -13932,6 +13951,7 @@ function nirup_villa_selling_form_submit() {
 }
 add_action('wp_ajax_nirup_villa_selling_form_submit', 'nirup_villa_selling_form_submit');
 add_action('wp_ajax_nopriv_nirup_villa_selling_form_submit', 'nirup_villa_selling_form_submit');
+
 
 
 // ========== 6. STORE SUBMISSION IN DATABASE ==========
@@ -14303,14 +14323,17 @@ function nirup_villa_selling_customizer($wp_customize) {
     // CC Email (optional second recipient)
     $wp_customize->add_setting('nirup_villa_selling_form_cc_email', array(
         'default'           => '',
-        'sanitize_callback' => 'sanitize_email',
+        'sanitize_callback' => 'sanitize_text_field',
     ));
     
     $wp_customize->add_control('nirup_villa_selling_form_cc_email', array(
-        'label'       => __('CC Email (Optional)', 'nirup-island'),
-        'description' => __('Optional: Add a second email address to receive a copy of all villa enquiries. Leave blank if not needed.', 'nirup-island'),
+        'label'       => __('CC Email Addresses (Optional)', 'nirup-island'),
+        'description' => __('Add one or more email addresses to receive copies of villa enquiries. Separate multiple emails with commas. Example: manager@nirupisland.com, owner@nirupisland.com', 'nirup-island'),
         'section'     => 'nirup_villa_selling',
-        'type'        => 'email',
+        'type'        => 'text',
+        'input_attrs' => array(
+            'placeholder' => 'email1@example.com, email2@example.com',
+        ),
     ));
 
     // From Email (sender)
