@@ -250,10 +250,11 @@
 .berthing-form-submit-wrapper {
     text-align: center;
     margin-top: 60px;
+    display: flex;
+    flex-direction: column;
 }
 
 .berthing-submit-btn {
-
     background: #8B5E1D;    
     border: none;
     padding: 10px 0;
@@ -262,6 +263,8 @@
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .berthing-submit-btn:hover {

@@ -247,6 +247,11 @@ get_header(); ?>
                         <span class="submit-text">Submit Reservation</span>
                         <span class="submit-loading" style="display: none;">Sending<span class="dots"></span></span>
                     </button>
+                    <small class="recaptcha-note-nirup">
+                        This site is protected by reCAPTCHA and the Google
+                        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and
+                        <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+                    </small>
                 </div>
 
                 <!-- Form Message -->
