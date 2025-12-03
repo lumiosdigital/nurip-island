@@ -97,6 +97,7 @@ function nirup_enqueue_assets() {
         ['nirup-press-kit',         '/assets/css/press-kit.css',         ['nirup-main']],
         ['nirup-villa-booking',         '/assets/css/villa-booking.css',         ['nirup-main']],
         ['nirup-woocommerce',         '/assets/css/woocommerce.css',         ['nirup-main']],
+        ['nirup-berthing',          '/assets/css/berthing.css',          ['nirup-main']],
     ];
 
     foreach ($css_files as [$handle, $rel, $deps]) {
@@ -145,6 +146,7 @@ function nirup_enqueue_assets() {
         ['single-event-offer-gallery',  '/assets/js/single-event-offer-gallery.js',['jquery']],
         ['nirup-contact',               '/assets/js/contact.js',                 ['jquery']],
         ['nirup-media-coverage', '/assets/js/media-coverage.js', ['jquery','nirup-main']],
+        ['nirup-berthing',              '/assets/js/berthing.js',               ['jquery']],
 
 
     ];
@@ -214,6 +216,15 @@ function nirup_enqueue_assets() {
         ],
     ]);
 
+    wp_localize_script('nirup-berthing', 'nirup_berthing_ajax', [
+        'ajax_url'  => admin_url('admin-ajax.php'),
+        'nonce'     => wp_create_nonce('berthing_form_nonce'),
+        'recaptcha' => [
+            'site_key' => nirup_get_secret('RECAPTCHA_SITE_KEY', 'nirup_recaptcha_site_key', ''),
+            'action'   => 'berthing_submit',
+        ],
+    ]);
+
     if (!empty($site_key) && !defined('NIRUP_DISABLE_CAPTCHA')) {
         wp_enqueue_script(
             'recaptcha-v3',
@@ -223,6 +234,7 @@ function nirup_enqueue_assets() {
             true
         );
     }
+
 }
 
 // Make sure the hook is properly registered
@@ -14792,4 +14804,630 @@ function nirup_enqueue_event_offer_booking_assets() {
     }
 }
 add_action('wp_enqueue_scripts', 'nirup_enqueue_event_offer_booking_assets');
+// ========== 1. ENQUEUE ASSETS (BERTHING) ==========
+
+function nirup_enqueue_berthing_assets() {
+    $dir_uri  = get_stylesheet_directory_uri();
+    $dir_path = get_stylesheet_directory();
+
+    // CSS with automatic cache-busting
+    $css_path = $dir_path . '/assets/css/berthing.css';
+    if (file_exists($css_path)) {
+        wp_enqueue_style(
+            'nirup-berthing',
+            $dir_uri . '/assets/css/berthing.css',
+            array(),
+            filemtime($css_path)
+        );
+    }
+
+    // JS with automatic cache-busting
+    $js_path = $dir_path . '/assets/js/berthing.js';
+    if (file_exists($js_path)) {
+        wp_enqueue_script(
+            'nirup-berthing',
+            $dir_uri . '/assets/js/berthing.js',
+            array('jquery'),
+            filemtime($js_path),
+            true
+        );
+
+        // Get reCAPTCHA site key
+        $site_key = nirup_get_secret('RECAPTCHA_SITE_KEY', 'nirup_recaptcha_site_key', '');
+
+        wp_localize_script('nirup-berthing', 'nirup_berthing_ajax', array(
+            'ajax_url'  => admin_url('admin-ajax.php'),
+            'nonce'     => wp_create_nonce('berthing_form_nonce'),
+            'recaptcha' => array(
+                'site_key' => $site_key,
+                'action'   => 'berthing_submit',
+            ),
+        ));
+
+        // Ensure reCAPTCHA v3 script is loaded if configured
+        if (!empty($site_key) && !defined('NIRUP_DISABLE_CAPTCHA')) {
+            wp_enqueue_script(
+                'recaptcha-v3-berthing',
+                'https://www.google.com/recaptcha/api.js?render=' . rawurlencode($site_key),
+                array(),
+                null,
+                true
+            );
+        }
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_berthing_assets');
+
+
+// ========== 2. FORM SUBMISSION HANDLER ==========
+
+function nirup_berthing_form_submit() {
+    // Check nonce for security
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'berthing_form_nonce')) {
+        wp_send_json_error(array('message' => 'Security check failed.'));
+    }
+
+    // Get and sanitize form data
+    $yacht_owner_name = sanitize_text_field($_POST['yacht_owner_name'] ?? '');
+    $contact_name     = sanitize_text_field($_POST['contact_name'] ?? '');
+    $phone            = sanitize_text_field($_POST['phone'] ?? '');
+    $email            = sanitize_email($_POST['email'] ?? '');
+    $owner_address    = sanitize_textarea_field($_POST['owner_address'] ?? '');
+    
+    $vessel_name   = sanitize_text_field($_POST['vessel_name'] ?? '');
+    $vessel_type   = sanitize_text_field($_POST['vessel_type'] ?? '');
+    $vessel_flag   = sanitize_text_field($_POST['vessel_flag'] ?? '');
+    $vessel_length = sanitize_text_field($_POST['vessel_length'] ?? '');
+    $vessel_beam   = sanitize_text_field($_POST['vessel_beam'] ?? '');
+    $vessel_draft  = sanitize_text_field($_POST['vessel_draft'] ?? '');
+    
+    $arrival_date   = sanitize_text_field($_POST['arrival_date'] ?? '');
+    $arrival_time   = sanitize_text_field($_POST['arrival_time'] ?? '');
+    $departure_date = sanitize_text_field($_POST['departure_date'] ?? '');
+
+    // Validate required fields
+    if (empty($yacht_owner_name) || empty($contact_name) || empty($email) || empty($vessel_name)) {
+        wp_send_json_error(array('message' => 'Please fill in all required fields.'));
+    }
+
+    // Validate email
+    if (!is_email($email)) {
+        wp_send_json_error(array('message' => 'Please enter a valid email address.'));
+    }
+
+    // ---- reCAPTCHA v3 verification ----
+    $recaptcha_secret = nirup_get_secret('RECAPTCHA_SECRET', 'nirup_recaptcha_secret', '');
+    $recaptcha_token  = sanitize_text_field($_POST['recaptcha_token'] ?? '');
+    $captcha_enabled  = !defined('NIRUP_DISABLE_CAPTCHA') && !empty($recaptcha_secret);
+
+    if ($captcha_enabled && !empty($recaptcha_token)) {
+        $verify = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', array(
+            'body' => array(
+                'secret'   => $recaptcha_secret,
+                'response' => $recaptcha_token,
+                'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+            ),
+            'timeout' => 10,
+        ));
+
+        if (is_wp_error($verify)) {
+            wp_send_json_error(array('message' => 'Captcha verification failed. Please try again.'), 400);
+        }
+
+        $vbody = json_decode(wp_remote_retrieve_body($verify), true);
+        $score = isset($vbody['score']) ? (float) $vbody['score'] : 0;
+
+        if (empty($vbody['success']) || $score < 0.5) {
+            wp_send_json_error(array('message' => 'Captcha failed. Please try again.'), 400);
+        }
+    } elseif ($captcha_enabled && empty($recaptcha_token)) {
+        error_log('Berthing form: reCAPTCHA enabled but no token received; skipping verification.');
+    } else {
+        error_log('Berthing form: reCAPTCHA disabled or not configured; skipping verification.');
+    }
+    // ---- end captcha ----
+
+    // Handle file uploads
+    $uploaded_files = array();
+    $file_fields = array(
+        'vessel_registration',
+        'vessel_insurance',
+        'vessel_mmsi',
+        'crew_list',
+        'passenger_list',
+        'port_clearance'
+    );
+
+    require_once(ABSPATH . 'wp-admin/includes/file.php');
+
+    foreach ($file_fields as $field) {
+        if (isset($_FILES[$field]) && $_FILES[$field]['error'] === UPLOAD_ERR_OK) {
+            // Determine max file size based on field
+            $max_size = ($field === 'port_clearance') ? 64 * 1024 * 1024 : 5 * 1024 * 1024; // 64MB or 5MB
+            
+            if ($_FILES[$field]['size'] > $max_size) {
+                wp_send_json_error(array('message' => 'File size exceeds the limit for ' . $field));
+            }
+
+            $upload = wp_handle_upload($_FILES[$field], array('test_form' => false));
+            
+            if (isset($upload['error'])) {
+                error_log('Berthing Form - File upload error for ' . $field . ': ' . $upload['error']);
+                wp_send_json_error(array('message' => 'File upload failed for ' . $field));
+            }
+            
+            $uploaded_files[$field] = $upload['url'];
+        } else {
+            // All defined fields are required
+            wp_send_json_error(array('message' => 'Required file missing: ' . $field));
+        }
+    }
+
+    // Store submission in database
+    $submission_id = nirup_store_berthing_submission(
+        $yacht_owner_name, $contact_name, $phone, $email, $owner_address,
+        $vessel_name, $vessel_type, $vessel_flag, $vessel_length, $vessel_beam, $vessel_draft,
+        $arrival_date, $arrival_time, $departure_date, $uploaded_files
+    );
+    
+    if (!$submission_id) {
+        error_log('Berthing Form - Database storage failed');
+    } else {
+        error_log('Berthing Form - Submission saved to database (ID: ' . $submission_id . ')');
+    }
+
+    // Get email settings from customizer
+    $admin_email = get_theme_mod('nirup_berthing_form_email', 'marina@nirupisland.com');
+    $cc_email    = get_theme_mod('nirup_berthing_form_cc_email', '');
+    $from_email  = get_theme_mod('nirup_berthing_form_from_email', 'marina@nirupisland.com');
+    $from_name   = get_bloginfo('name');
+
+    error_log('Berthing Form - Admin email: ' . $admin_email);
+    error_log('Berthing Form - CC email: ' . $cc_email);
+    error_log('Berthing Form - From email: ' . $from_email);
+
+    // ========== EMAIL 1: ADMIN NOTIFICATION ==========
+    $admin_subject = '[' . get_bloginfo('name') . '] New Berthing Request from ' . $yacht_owner_name;
+
+    $admin_body  = "New Berthing & Arrival Notice Submission\n\n";
+    $admin_body .= "========== CONTACT INFORMATION ==========\n";
+    $admin_body .= "Yacht Owner Name: " . $yacht_owner_name . "\n";
+    $admin_body .= "Contact Name: " . $contact_name . "\n";
+    $admin_body .= "Phone: " . $phone . "\n";
+    $admin_body .= "Email: " . $email . "\n";
+    $admin_body .= "Owner's Address: " . $owner_address . "\n\n";
+    
+    $admin_body .= "========== VESSEL PARTICULARS ==========\n";
+    $admin_body .= "Vessel Name: " . $vessel_name . "\n";
+    $admin_body .= "Vessel Type: " . $vessel_type . "\n";
+    $admin_body .= "Flag: " . $vessel_flag . "\n";
+    $admin_body .= "Length: " . $vessel_length . " meters\n";
+    $admin_body .= "Beam: " . $vessel_beam . " meters\n";
+    $admin_body .= "Draft: " . $vessel_draft . " meters\n\n";
+    
+    $admin_body .= "========== ARRIVAL INFORMATION ==========\n";
+    $admin_body .= "Arrival Date: " . (!empty($arrival_date) ? date('F j, Y', strtotime($arrival_date)) : 'Not specified') . "\n";
+    $admin_body .= "Arrival Time: " . $arrival_time . "\n";
+    $admin_body .= "Departure Date: " . (!empty($departure_date) ? date('F j, Y', strtotime($departure_date)) : 'Not specified') . "\n\n";
+    
+    $admin_body .= "========== UPLOADED DOCUMENTS ==========\n";
+    foreach ($uploaded_files as $field => $url) {
+        $admin_body .= ucwords(str_replace('_', ' ', $field)) . ": " . $url . "\n";
+    }
+    
+    $admin_body .= "\n---\n";
+    $admin_body .= "This email was sent from the berthing form on " . get_bloginfo('url') . "\n";
+    $admin_body .= "Submitted on: " . current_time('F j, Y g:i A');
+
+    $admin_headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: ' . $from_name . ' <' . $from_email . '>',
+        'Reply-To: ' . $contact_name . ' <' . $email . '>'
+    );
+
+    // Add CC if provided
+    if (!empty($cc_email) && is_email($cc_email)) {
+        $admin_headers[] = 'Cc: ' . $cc_email;
+    }
+
+    // ========== EMAIL 2: USER CONFIRMATION ==========
+    $user_subject_template = get_theme_mod(
+        'nirup_berthing_confirmation_subject',
+        'Thank you for your berthing request - {site_name}'
+    );
+    
+    $user_body_template = get_theme_mod(
+        'nirup_berthing_confirmation_body',
+        "Dear {contact_name},\n\nThank you for submitting your arrival notice and berth reservation request for {vessel_name}.\n\nOur marina team has received your submission and will review it shortly. We aim to respond within 24 hours with confirmation and berth assignment details.\n\nYour Request Summary:\nVessel: {vessel_name} ({vessel_type})\nArrival Date: {arrival_date}\nArrival Time: {arrival_time}\nLength: {vessel_length}m | Beam: {vessel_beam}m | Draft: {vessel_draft}m\n\nFor urgent inquiries, please contact our marina directly at +62 811-6253-888.\n\nWe look forward to welcoming you to Nirup Island Marina.\n\nBest regards,\n{site_name} Marina Team"
+    );
+    
+    $user_footer_template = get_theme_mod(
+        'nirup_berthing_confirmation_footer',
+        "---\nThis is an automated confirmation email. Please do not reply to this message."
+    );
+
+    $replacements = array(
+        '{site_name}'      => get_bloginfo('name'),
+        '{contact_name}'   => $contact_name,
+        '{yacht_owner}'    => $yacht_owner_name,
+        '{email}'          => $email,
+        '{phone}'          => $phone,
+        '{vessel_name}'    => $vessel_name,
+        '{vessel_type}'    => $vessel_type,
+        '{vessel_flag}'    => $vessel_flag,
+        '{vessel_length}'  => $vessel_length,
+        '{vessel_beam}'    => $vessel_beam,
+        '{vessel_draft}'   => $vessel_draft,
+        '{arrival_date}'   => !empty($arrival_date) ? date('F j, Y', strtotime($arrival_date)) : 'Not specified',
+        '{arrival_time}'   => $arrival_time,
+        '{departure_date}' => !empty($departure_date) ? date('F j, Y', strtotime($departure_date)) : 'Not specified',
+    );
+
+    $user_subject = str_replace(array_keys($replacements), array_values($replacements), $user_subject_template);
+    $user_body    = str_replace(array_keys($replacements), array_values($replacements), $user_body_template);
+    $user_footer  = str_replace(array_keys($replacements), array_values($replacements), $user_footer_template);
+    $user_body    = $user_body . "\n\n" . $user_footer;
+
+    $user_headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: ' . $from_name . ' <' . $from_email . '>'
+    );
+
+    // ========== SEND EMAILS ==========
+    error_log('Berthing Form - Attempting to send admin email to: ' . $admin_email);
+    $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_body, $admin_headers);
+    error_log('Berthing Form - Admin email result: ' . ($admin_mail_sent ? 'SUCCESS' : 'FAILED'));
+
+    error_log('Berthing Form - Attempting to send user email to: ' . $email);
+    $user_mail_sent = wp_mail($email, $user_subject, $user_body, $user_headers);
+    error_log('Berthing Form - User email result: ' . ($user_mail_sent ? 'SUCCESS' : 'FAILED'));
+
+    if (!$admin_mail_sent || !$user_mail_sent) {
+        global $phpmailer;
+        if (!empty($phpmailer) && !empty($phpmailer->ErrorInfo)) {
+            error_log('Berthing Form - PHPMailer Error: ' . $phpmailer->ErrorInfo);
+        }
+    }
+
+    // ========== RETURN RESPONSE ==========
+    if ($admin_mail_sent || $user_mail_sent) {
+        wp_send_json_success(array(
+            'message'    => 'Your berthing request has been received! Our marina team will respond within 24 hours.',
+            'admin_sent' => $admin_mail_sent,
+            'user_sent'  => $user_mail_sent,
+        ));
+    } else {
+        wp_send_json_success(array(
+            'message'    => 'Your berthing request has been saved! Our marina team will respond within 24 hours.',
+            'admin_sent' => false,
+            'user_sent'  => false,
+        ));
+    }
+}
+add_action('wp_ajax_nirup_berthing_form_submit', 'nirup_berthing_form_submit');
+add_action('wp_ajax_nopriv_nirup_berthing_form_submit', 'nirup_berthing_form_submit');
+
+
+// ========== 3. STORE SUBMISSION IN DATABASE ==========
+
+function nirup_store_berthing_submission(
+    $yacht_owner_name, $contact_name, $phone, $email, $owner_address,
+    $vessel_name, $vessel_type, $vessel_flag, $vessel_length, $vessel_beam, $vessel_draft,
+    $arrival_date, $arrival_time, $departure_date, $uploaded_files
+) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'berthing_submissions';
+    
+    // Create table if it doesn't exist
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        nirup_create_berthing_submissions_table();
+    }
+    
+    // Insert submission
+    $result = $wpdb->insert(
+        $table_name,
+        array(
+            'yacht_owner_name' => $yacht_owner_name,
+            'contact_name'     => $contact_name,
+            'phone'            => $phone,
+            'email'            => $email,
+            'owner_address'    => $owner_address,
+            'vessel_name'      => $vessel_name,
+            'vessel_type'      => $vessel_type,
+            'vessel_flag'      => $vessel_flag,
+            'vessel_length'    => $vessel_length,
+            'vessel_beam'      => $vessel_beam,
+            'vessel_draft'     => $vessel_draft,
+            'arrival_date'     => $arrival_date,
+            'arrival_time'     => $arrival_time,
+            'departure_date'   => $departure_date,
+            'uploaded_files'   => json_encode($uploaded_files),
+            'submission_date'  => current_time('mysql')
+        ),
+        array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
+    );
+    
+    if ($result === false) {
+        error_log('Berthing Form - Database storage failed: ' . $wpdb->last_error);
+        return false;
+    }
+    
+    return $wpdb->insert_id;
+}
+
+
+// ========== 4. CREATE DATABASE TABLE ==========
+
+function nirup_create_berthing_submissions_table() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'berthing_submissions';
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $sql = "CREATE TABLE $table_name (
+        id bigint(20) NOT NULL AUTO_INCREMENT,
+        yacht_owner_name varchar(255) NOT NULL,
+        contact_name varchar(255) NOT NULL,
+        phone varchar(100) NOT NULL,
+        email varchar(255) NOT NULL,
+        owner_address text NOT NULL,
+        vessel_name varchar(255) NOT NULL,
+        vessel_type varchar(100) NOT NULL,
+        vessel_flag varchar(100) NOT NULL,
+        vessel_length varchar(50) NOT NULL,
+        vessel_beam varchar(50) NOT NULL,
+        vessel_draft varchar(50) NOT NULL,
+        arrival_date date DEFAULT NULL,
+        arrival_time time DEFAULT NULL,
+        departure_date date DEFAULT NULL,
+        uploaded_files text DEFAULT NULL,
+        submission_date datetime NOT NULL,
+        status varchar(20) DEFAULT 'new',
+        PRIMARY KEY (id),
+        KEY email (email),
+        KEY submission_date (submission_date),
+        KEY status (status),
+        KEY vessel_name (vessel_name),
+        KEY arrival_date (arrival_date)
+    ) $charset_collate;";
+    
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+}
+add_action('after_switch_theme', 'nirup_create_berthing_submissions_table');
+
+
+// ========== 5. CUSTOMIZER SETTINGS ==========
+
+function nirup_berthing_form_customizer($wp_customize) {
+    // Add Berthing Form Section
+    $wp_customize->add_section('nirup_berthing_form_settings', array(
+        'title'       => __('Berthing Form Settings', 'nirup-island'),
+        'priority'    => 47,
+        'description' => __('Configure email addresses and content for the berthing form', 'nirup-island'),
+    ));
+
+    // Hero Title
+    $wp_customize->add_setting('nirup_berthing_hero_title', array(
+        'default'           => __('ARRIVAL NOTICE & BERTH RESERVATION FORM', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_berthing_hero_title', array(
+        'label'    => __('Hero Title', 'nirup-island'),
+        'section'  => 'nirup_berthing_form_settings',
+        'type'     => 'text',
+        'priority' => 5,
+    ));
+
+    // Hero Description
+    $wp_customize->add_setting('nirup_berthing_hero_description', array(
+        'default'           => __('Please complete the form in full and provide at least 48 hours\' notice prior to your boat\'s arrival.<br>Our team will review your submission and contact you as soon as possible.<br>For urgent inquiries, please contact the marina at +62 811-6253-888.', 'nirup-island'),
+        'sanitize_callback' => 'wp_kses_post',
+        'transport'         => 'postMessage',
+    ));
+    
+    $wp_customize->add_control('nirup_berthing_hero_description', array(
+        'label'    => __('Hero Description', 'nirup-island'),
+        'section'  => 'nirup_berthing_form_settings',
+        'type'     => 'textarea',
+        'priority' => 10,
+    ));
+
+    // Admin Recipient Email
+    $wp_customize->add_setting('nirup_berthing_form_email', array(
+        'default'           => 'marina@nirupisland.com',
+        'sanitize_callback' => 'sanitize_email',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_berthing_form_email', array(
+        'label'       => __('Admin Recipient Email', 'nirup-island'),
+        'description' => __('Primary email where berthing requests will be sent', 'nirup-island'),
+        'section'     => 'nirup_berthing_form_settings',
+        'type'        => 'email',
+        'priority'    => 20,
+    ));
+
+    // CC Email
+    $wp_customize->add_setting('nirup_berthing_form_cc_email', array(
+        'default'           => '',
+        'sanitize_callback' => 'sanitize_email',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_berthing_form_cc_email', array(
+        'label'       => __('CC Email (Optional)', 'nirup-island'),
+        'description' => __('Additional email to receive a copy of berthing requests', 'nirup-island'),
+        'section'     => 'nirup_berthing_form_settings',
+        'type'        => 'email',
+        'priority'    => 25,
+    ));
+
+    // From Email Address
+    $wp_customize->add_setting('nirup_berthing_form_from_email', array(
+        'default'           => 'marina@nirupisland.com',
+        'sanitize_callback' => 'sanitize_email',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_berthing_form_from_email', array(
+        'label'       => __('From Email Address', 'nirup-island'),
+        'description' => __('Email address that will appear in the "From" field', 'nirup-island'),
+        'section'     => 'nirup_berthing_form_settings',
+        'type'        => 'email',
+        'priority'    => 30,
+    ));
+
+    // Confirmation Email Subject
+    $wp_customize->add_setting('nirup_berthing_confirmation_subject', array(
+        'default'           => __('Thank you for your berthing request - {site_name}', 'nirup-island'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_berthing_confirmation_subject', array(
+        'label'       => __('Confirmation Email Subject', 'nirup-island'),
+        'description' => __('Available tag: {site_name}', 'nirup-island'),
+        'section'     => 'nirup_berthing_form_settings',
+        'type'        => 'text',
+        'priority'    => 40,
+    ));
+
+    // Confirmation Email Body
+    $wp_customize->add_setting('nirup_berthing_confirmation_body', array(
+        'default'           => __("Dear {contact_name},\n\nThank you for submitting your arrival notice and berth reservation request for {vessel_name}.\n\nOur marina team has received your submission and will review it shortly. We aim to respond within 24 hours with confirmation and berth assignment details.\n\nYour Request Summary:\nVessel: {vessel_name} ({vessel_type})\nArrival Date: {arrival_date}\nArrival Time: {arrival_time}\nLength: {vessel_length}m | Beam: {vessel_beam}m | Draft: {vessel_draft}m\n\nFor urgent inquiries, please contact our marina directly at +62 811-6253-888.\n\nWe look forward to welcoming you to Nirup Island Marina.\n\nBest regards,\n{site_name} Marina Team", 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_berthing_confirmation_body', array(
+        'label'       => __('Confirmation Email Body', 'nirup-island'),
+        'description' => __('Available tags: {site_name}, {contact_name}, {vessel_name}, {vessel_type}, {vessel_length}, {vessel_beam}, {vessel_draft}, {arrival_date}, {arrival_time}, {departure_date}', 'nirup-island'),
+        'section'     => 'nirup_berthing_form_settings',
+        'type'        => 'textarea',
+        'input_attrs' => array('rows' => 12),
+        'priority'    => 50,
+    ));
+
+    // Confirmation Email Footer
+    $wp_customize->add_setting('nirup_berthing_confirmation_footer', array(
+        'default'           => __("---\nThis is an automated confirmation email. Please do not reply to this message.", 'nirup-island'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport'         => 'refresh',
+    ));
+    
+    $wp_customize->add_control('nirup_berthing_confirmation_footer', array(
+        'label'    => __('Confirmation Email Footer', 'nirup-island'),
+        'section'  => 'nirup_berthing_form_settings',
+        'type'     => 'textarea',
+        'priority' => 60,
+    ));
+}
+add_action('customize_register', 'nirup_berthing_form_customizer');
+
+
+// ========== 6. ADMIN MENU (for viewing submissions) ==========
+
+function nirup_berthing_admin_menu() {
+    add_submenu_page(
+        'edit.php?post_type=page',
+        'Berthing Submissions',
+        'Berthing Submissions',
+        'manage_options',
+        'berthing-submissions',
+        'nirup_berthing_submissions_page'
+    );
+}
+add_action('admin_menu', 'nirup_berthing_admin_menu');
+
+function nirup_berthing_submissions_page() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'berthing_submissions';
+    
+    // Handle status updates
+    if (isset($_POST['update_status']) && isset($_POST['submission_id'])) {
+        $submission_id = intval($_POST['submission_id']);
+        $new_status    = sanitize_text_field($_POST['status']);
+        
+        $wpdb->update(
+            $table_name,
+            array('status' => $new_status),
+            array('id' => $submission_id),
+            array('%s'),
+            array('%d')
+        );
+        
+        echo '<div class="notice notice-success"><p>Status updated successfully!</p></div>';
+    }
+    
+    $submissions = $wpdb->get_results("SELECT * FROM $table_name ORDER BY submission_date DESC LIMIT 50");
+    
+    ?>
+    <div class="wrap">
+        <h1>Berthing Form Submissions</h1>
+        
+        <?php if (empty($submissions)): ?>
+            <p>No submissions yet.</p>
+        <?php else: ?>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Vessel Name</th>
+                        <th>Owner</th>
+                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>Arrival Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($submissions as $submission): ?>
+                        <tr>
+                            <td><?php echo esc_html($submission->id); ?></td>
+                            <td><?php echo esc_html(date('Y-m-d H:i', strtotime($submission->submission_date))); ?></td>
+                            <td><strong><?php echo esc_html($submission->vessel_name); ?></strong></td>
+                            <td><?php echo esc_html($submission->yacht_owner_name); ?></td>
+                            <td><?php echo esc_html($submission->contact_name); ?></td>
+                            <td><?php echo esc_html($submission->email); ?></td>
+                            <td><?php echo esc_html($submission->arrival_date); ?></td>
+                            <td>
+                                <form method="post" style="display: inline;">
+                                    <input type="hidden" name="submission_id" value="<?php echo esc_attr($submission->id); ?>">
+                                    <select name="status" onchange="this.form.submit()">
+                                        <option value="new" <?php selected($submission->status, 'new'); ?>>New</option>
+                                        <option value="reviewed" <?php selected($submission->status, 'reviewed'); ?>>Reviewed</option>
+                                        <option value="confirmed" <?php selected($submission->status, 'confirmed'); ?>>Confirmed</option>
+                                        <option value="completed" <?php selected($submission->status, 'completed'); ?>>Completed</option>
+                                    </select>
+                                    <input type="hidden" name="update_status" value="1">
+                                </form>
+                            </td>
+                            <td>
+                                <button type="button" class="button" onclick="viewDetails(<?php echo esc_js($submission->id); ?>)">View Details</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+    
+    <style>
+        .wrap table { margin-top: 20px; }
+        .wrap td, .wrap th { padding: 12px; }
+    </style>
+    
+    <script>
+    function viewDetails(id) {
+        alert('View details for submission #' + id + '\\n\\nYou can implement a detailed view here.');
+    }
+    </script>
+    <?php
+}
+
+
 ?>

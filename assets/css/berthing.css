@@ -1,0 +1,470 @@
+/* ===============================================
+   BERTHING FORM PAGE STYLES
+   =============================================== */
+
+.berthing-page {
+    /* background: #fff; */
+    position: relative;
+    overflow: hidden;
+}
+
+/* ===============================================
+   HERO SECTION
+   =============================================== */
+.berthing-hero {
+    padding: 90px 0 60px;
+    text-align: center;
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.berthing-hero-title {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 72px;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3D332F;
+    margin: 0 0 30px;
+}
+
+.berthing-hero-description {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.4;
+    color: #3D332F;
+    /* max-width: 1054px; */
+    margin: 0 auto;
+}
+
+.berthing-hero-description p {
+    margin: 0;
+}
+
+/* ===============================================
+   FORM SECTION
+   =============================================== */
+.berthing-form-section {
+    padding: 60px 0 120px;
+}
+
+.berthing-form {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Section Titles */
+.berthing-section-title {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #555250;
+    text-align: center;
+    margin: 80px 0 20px;
+}
+
+.berthing-section-subtitle {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #3D332F;
+    text-align: center;
+    opacity: 0.8;
+    margin: -10px 0 30px;
+}
+
+/* Form Rows */
+.berthing-form-row {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.berthing-form-row-1 {
+    grid-template-columns: 1fr;
+}
+
+.berthing-form-row-2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.berthing-form-row-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* Form Fields */
+.berthing-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.berthing-form-label {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.4;
+    color: #3D332F;
+}
+
+.berthing-form-input,
+.berthing-form-select {
+    width: 100%;
+    height: 46px;
+    padding: 14px 13px;
+    background: #FEFEFE;
+    border: 1px solid #CEBDA8;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.3;
+    color: #3D332F;
+    transition: border-color 0.3s ease;
+}
+
+.berthing-form-input::placeholder {
+    color: #3D332F;
+    opacity: 0.5;
+}
+
+.berthing-form-input:focus,
+.berthing-form-select:focus {
+    outline: none;
+    border-color: #A48456;
+}
+
+/* Select Field */
+.berthing-form-field {
+    position: relative;
+}
+
+.berthing-form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+.select-arrow {
+    position: absolute;
+    right: 13px;
+    bottom: 19px;
+    pointer-events: none;
+}
+
+/* ===============================================
+   FILE UPLOAD
+   =============================================== */
+.berthing-file-upload {
+    position: relative;
+}
+
+/* Hide any validation error messages that get injected by plugins */
+.berthing-file-upload .wpbs-form-field-error,
+.berthing-file-upload .form-field-error,
+.berthing-file-upload small {
+    display: none !important;
+}
+
+.berthing-file-upload input[type="file"] {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 46px;
+    padding: 14px 13px;
+    /* background: #FEFEFE; */
+    border: 1px dashed #CEBDA8;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-upload-label:hover {
+    border-color: #A48456;
+    background: #FAFAF8;
+}
+
+.paperclip-icon {
+    flex-shrink: 0;
+}
+
+.file-label-text {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.3;
+    color: #8B5E1D;
+    text-decoration: underline;
+    flex: 1;
+}
+
+.file-label-size {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #3D332F;
+    white-space: nowrap;
+}
+
+.file-name {
+    display: none;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 12px;
+    color: #555250;
+    margin-top: 8px;
+    padding: 5px 10px;
+    background: #F9F8F6;
+    border-radius: 3px;
+    line-height: 1.4;
+}
+
+.berthing-file-upload.has-file .file-upload-label {
+    border-color: #A48456;
+    background: #FAFAF8;
+}
+
+.berthing-file-upload.has-file .file-name {
+    display: block;
+}
+
+/* ===============================================
+   SUBMIT BUTTON
+   =============================================== */
+.berthing-form-submit-wrapper {
+    text-align: center;
+    margin-top: 60px;
+}
+
+.berthing-submit-btn {
+
+    background: #8B5E1D;    
+    border: none;
+    padding: 10px 0;
+    min-width: 301px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.berthing-submit-btn:hover {
+    background: #A48456;
+}
+
+.berthing-submit-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.submit-text,
+.submit-loading {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+}
+
+.submit-loading {
+    display: none;
+}
+
+.berthing-submit-btn.loading .submit-text {
+    display: none;
+}
+
+.berthing-submit-btn.loading .submit-loading {
+    display: inline;
+}
+
+.submit-loading .dots::after {
+    content: '...';
+    animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+
+    0%,
+    20% {
+        content: '.';
+    }
+
+    40% {
+        content: '..';
+    }
+
+    60%,
+    100% {
+        content: '...';
+    }
+}
+
+/* ===============================================
+   FORM MESSAGE
+   =============================================== */
+.form-message {
+    display: none;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: center;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.form-message.success {
+    display: block;
+    background: #E8F5E9;
+    color: #2E7D32;
+    border: 1px solid #81C784;
+}
+
+.form-message.error {
+    display: block;
+    background: #FFEBEE;
+    color: #C62828;
+    border: 1px solid #EF5350;
+}
+
+/* ===============================================
+   THANK YOU MODAL
+   =============================================== */
+.berthing-thank-you-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+}
+
+.berthing-thank-you-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+.modal-content {
+    position: relative;
+    background: #FFFFFF;
+    padding: 60px 80px;
+    text-align: center;
+    max-width: 500px;
+    z-index: 1;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-icon {
+    margin-bottom: 30px;
+}
+
+.modal-title {
+    font-family: 'Amiri', serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.2;
+    color: #3D332F;
+    margin: 0 0 15px;
+}
+
+.modal-message {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #3D332F;
+    margin: 0;
+}
+
+/* ===============================================
+   RESPONSIVE
+   =============================================== */
+@media (max-width: 1024px) {
+    .berthing-hero-title {
+        font-size: 56px;
+    }
+
+    .berthing-form-row-3 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .berthing-hero-title {
+        font-size: 40px;
+    }
+
+    .berthing-hero-description {
+        font-size: 16px;
+    }
+
+    .berthing-section-title {
+        font-size: 32px;
+    }
+
+    .berthing-form-row-2,
+    .berthing-form-row-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        padding: 40px;
+        margin: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .berthing-hero-title {
+        font-size: 32px;
+    }
+
+    .berthing-section-title {
+        font-size: 28px;
+    }
+
+    .berthing-submit-btn {
+        min-width: 100%;
+    }
+}

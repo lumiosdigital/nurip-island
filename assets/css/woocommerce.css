@@ -1294,3 +1294,237 @@ body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info {
     padding-left: 20px;
     margin-bottom: -12px;
 }
+
+/* =========================================
+   Thank You / Order Received page
+   ========================================= */
+
+/* Hide the default page title "Order received" from the theme */
+body.woocommerce-order-received .entry-title {
+    display: none;
+}
+
+/* Slightly tighter bottom padding (no giant gap) */
+body.woocommerce-order-received .nirup-checkout-main {
+    padding-top: 60px;
+    padding-bottom: 80px;
+}
+
+/* Layout is shared with checkout, but we add a hookable class */
+.nirup-thankyou-main .nirup-checkout-header {
+    margin-bottom: 48px;
+}
+
+.nirup-thankyou-subtitle {
+    max-width: 520px;
+}
+
+/* Columns – reuse checkout grid, just allow the right card to be a bit narrower on large screens */
+.nirup-thankyou-layout {
+    align-items: flex-start;
+}
+
+.nirup-thankyou-col--main {
+    gap: 24px;
+}
+
+.nirup-thankyou-card {
+    background-color: #fcfaf6;
+    border-radius: 0;
+}
+
+/* Summary list (right column) */
+
+.nirup-thankyou-summary-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+}
+
+.nirup-thankyou-summary-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(212, 197, 176, 0.55);
+}
+
+.nirup-thankyou-summary-list li:last-child {
+    border-bottom: none;
+}
+
+.nirup-thankyou-summary-label {
+    font-family: 'Amiri', serif;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #7a6a5f;
+}
+
+.nirup-thankyou-summary-value {
+    text-align: right;
+    font-weight: 400;
+}
+
+/* Billing card */
+
+.nirup-thankyou-billing {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+    line-height: 1.6;
+}
+
+.nirup-thankyou-billing p {
+    margin: 0 0 4px;
+}
+
+.nirup-thankyou-billing-line {
+    margin-top: 12px;
+}
+
+/* Failed order card */
+
+.nirup-thankyou-card--failed .woocommerce-notice {
+    margin: 0 0 16px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+}
+
+.nirup-thankyou-failed-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.nirup-thankyou-failed-actions .button.pay {
+    background-color: #8b5e1d;
+    color: #fff;
+    border-radius: 0;
+    padding: 10px 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.nirup-thankyou-secondary-button {
+    background-color: transparent;
+    color: #8b5e1d;
+    border: 1px solid #8b5e1d;
+}
+
+.nirup-thankyou-secondary-button:hover {
+    background-color: #8b5e1d;
+    color: #fff;
+}
+
+/* Booking details block coming from plugins inside .nirup-thankyou-card--extra */
+
+
+.nirup-thankyou-card--extra h2,
+.nirup-thankyou-card--extra .woocommerce-column__title {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3d332f;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+/* Make any .shop_table inside the extra card match the order table styling */
+.nirup-thankyou-card--extra table.shop_table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 0;
+    background-color: #F6F2EB;
+    border: 1px solid #d4c5b0;
+}
+
+.nirup-thankyou-card--extra table.shop_table th,
+.nirup-thankyou-card--extra table.shop_table td {
+    border: 0;
+    padding: 9px 12px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+}
+
+.nirup-thankyou-card--extra table.shop_table tr+tr {
+    border-top: 1px solid rgba(212, 197, 176, 0.55);
+}
+
+/* Responsiveness */
+
+@media (max-width: 1024px) {
+    body.woocommerce-order-received .nirup-checkout-main {
+        padding-top: 40px;
+        padding-bottom: 60px;
+    }
+
+    .nirup-thankyou-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nirup-thankyou-summary-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .nirup-thankyou-summary-value {
+        text-align: left;
+    }
+}
+
+/* Thank You – order details: remove duplicate Woo heading */
+.nirup-thankyou-card--order .woocommerce-order-details__title {
+    display: none;
+}
+
+/* Thank You – order details table typography */
+.nirup-thankyou-card--order table.shop_table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #F6F2EB;
+    border: 1px solid #d4c5b0;
+}
+
+.nirup-thankyou-card--order table.shop_table th,
+.nirup-thankyou-card--order table.shop_table td {
+    border: 0;
+    padding: 9px 12px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    color: #3d332f;
+}
+
+.nirup-thankyou-card--order table.shop_table thead th {
+    font-weight: 600;
+}
+
+.nirup-thankyou-card--order table.shop_table tr+tr {
+    border-top: 1px solid rgba(212, 197, 176, 0.55);
+}
+
+.nirup-thankyou-card--order table.shop_table tfoot th {
+    font-weight: 600;
+}
+
+.nirup-thankyou-card--order table.shop_table tfoot td {
+    text-align: right;
+}
+
+/* Thank You – remove duplicate billing address under order table */
+body.woocommerce-order-received .nirup-thankyou-card--order .woocommerce-customer-details {
+    display: none;
+}
+
