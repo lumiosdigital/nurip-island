@@ -1528,3 +1528,7 @@ body.woocommerce-order-received .nirup-thankyou-card--order .woocommerce-custome
     display: none;
 }
 
+/* Thank You page – hide "Order again" button in Order details card */
+body.woocommerce-order-received .nirup-thankyou-card--order .order-again {
+    display: none !important;
+}
