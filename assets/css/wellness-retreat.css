@@ -10,7 +10,7 @@
     width: 1400px;
     height: 800px;
     overflow: hidden;
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
     font-display: swap;
     margin: 70px auto;
 }
@@ -129,7 +129,7 @@
 
 /* Image Side Styling */
 .wellness-image {
-    /* flex: 1; */
+    flex: 1;
     position: relative;
     overflow: hidden;
 }
@@ -146,6 +146,9 @@
 @media (max-width: 1024px) {
     .wellness-retreat-section {
         height: auto;
+        width: 100%;
+        margin: 60px auto;
+        padding: 0px 25px;
     }
 
     .wellness-retreat-section .relative {
@@ -158,14 +161,16 @@
         width: 100%;
     }
 
-    .wellness-image {
-        height: 400px;
-        order: -1;
-        /* Show image first on mobile */
+    /* Content appears FIRST (natural order) */
+    .wellness-content {
+        order: 1;
+        padding: 3rem 2rem;
     }
 
-    .wellness-content {
-        padding: 3rem 2rem;
+    /* Image appears SECOND (natural order) */
+    .wellness-image {
+        order: 2;
+        height: 400px;
     }
 
     .wellness-content .main-title h2 {
@@ -174,12 +179,17 @@
 }
 
 @media (max-width: 768px) {
+    .wellness-retreat-section {
+        margin: 40px auto;
+        padding: 0px 15px;
+    }
+
     .wellness-content {
-        padding: 2rem 1rem;
+        padding: 2.5rem 1.5rem;
     }
 
     .wellness-content .main-title h2 {
-        font-size: 28px;
+        font-size: 32px;
         line-height: 1.1;
     }
 
@@ -188,7 +198,7 @@
     }
 
     .wellness-content .description p {
-        font-size: 14px;
+        font-size: 15px;
     }
 
     .wellness-content .cta-button a {
@@ -199,11 +209,19 @@
     .wellness-content .small-title p {
         font-size: 16px;
     }
+
+    .wellness-image {
+        height: 350px;
+    }
 }
 
 @media (max-width: 480px) {
+    .wellness-retreat-section {
+        margin: 40px auto;
+    }
+
     .wellness-content {
-        padding: 1.5rem 1rem;
+        padding: 2rem 1rem;
     }
 
     .wellness-content .content-wrapper {
@@ -211,7 +229,7 @@
     }
 
     .wellness-content .main-title h2 {
-        font-size: 24px;
+        font-size: 28px;
     }
 
     .wellness-content .date-range p {
@@ -219,11 +237,19 @@
     }
 
     .wellness-content .description p {
-        font-size: 13px;
+        font-size: 14px;
     }
 
     .wellness-content .cta-button a {
         min-width: 240px;
         padding: 0.75rem 1rem;
+    }
+
+    .wellness-content .small-title p {
+        font-size: 14px;
+    }
+
+    .wellness-image {
+        height: 300px;
     }
 }

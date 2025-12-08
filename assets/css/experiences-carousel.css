@@ -17,7 +17,16 @@
 .experiences-header {
     text-align: center;
     margin-bottom: 60px;
-    /* max-width: 650px; */
+    position: relative;
+}
+
+.experiences-subtitle-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .experiences-subtitle {
@@ -45,6 +54,35 @@
     margin-right: auto;
 }
 
+/* See All Button - ABSOLUTE POSITIONING TO FAR RIGHT on Desktop */
+.experiences-see-all {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.experiences-see-all-link {
+    display: flex;
+    text-transform: uppercase;
+    gap: 10px;
+    align-items: center;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #8B5E1D;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    padding-bottom: 1px;
+    border-bottom: 0.5px solid #8B5E1D;
+    transition: all 0.2s ease;
+}
+
+.experiences-see-all-link:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+    border-bottom-color: transparent;
+}
+
 /* Carousel Container */
 .experiences-carousel {
     position: relative;
@@ -57,9 +95,7 @@
     display: flex;
     gap: 20px;
     transition: transform 0.3s ease-in-out;
-    /* padding: 0 20px; */
     will-change: transform;
-    /* margin: -10px 0; */
 }
 
 /* Experience Card */
@@ -175,7 +211,6 @@
     width: 100%;
     margin-top: 40px;
     height: 40px;
-    /* Set height to match button height */
 }
 
 .carousel-line {
@@ -183,7 +218,6 @@
     top: 50%;
     left: 0;
     right: 110px;
-    /* Leave space for buttons on the right */
     height: 1px;
     background: #A48456;
     transform: translateY(-50%);
@@ -220,10 +254,6 @@
     transform: scale(1.05);
 }
 
-/* .carousel-nav-btn:focus:not(:disabled) {
-    transform: scale(1.1);
-} */
-
 .carousel-nav-btn:disabled {
     opacity: 0.5;
     cursor: default;
@@ -252,13 +282,6 @@
     pointer-events: none;
 }
 
-/* Focus states for accessibility */
-/* .experience-link:focus,
-.carousel-nav-btn:focus {
-    outline: 2px solid #8b5e1d;
-    outline-offset: 2px;
-} */
-
 /* Responsive Design */
 @media (max-width: 1440px) {
     .experiences-container {
@@ -284,17 +307,115 @@
     }
 }
 
-@media (max-width: 768px) {
+/* Tablet and Mobile - 1024px and below */
+@media (max-width: 1024px) {
     .experiences-section {
         padding: 60px 0;
     }
 
+    .experiences-container {
+        padding: 0 25px;
+    }
+
+    /* Reorganize header layout for tablet/mobile */
+    .experiences-header {
+        margin-bottom: 40px;
+    }
+
+    /* Change subtitle-row to column layout */
+    .experiences-subtitle-row {
+        flex-direction: column;
+        gap: 0;
+        margin-bottom: 0;
+    }
+
+    .experiences-title {
+        padding-bottom: 25px;
+        position: relative;
+        margin-bottom: 25px;
+    }
+
+    /* Add decorative line below title on tablet */
+    .experiences-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 1px;
+        background: #A48456;
+        opacity: 0.3;
+    }
+
+    /* Button now appears below title and line */
+    .experiences-see-all {
+        position: static;
+        text-align: center;
+    }
+
+    .experiences-see-all-link {
+        border-bottom: none;
+        /* Remove underline */
+    }
+}
+
+/* Mobile - 768px and below */
+@media (max-width: 768px) {
+    .experiences-section {
+        padding: 40px 0;
+    }
+
+    .experiences-container {
+        padding: 0 15px;
+    }
+
+    .experiences-header {
+        margin-bottom: 35px;
+    }
+
+    /* Ensure column stacking */
+    .experiences-subtitle-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
     .experiences-title {
         font-size: 40px;
+        margin-bottom: 0;
+        padding-bottom: 20px;
+        position: relative;
+    }
+
+    /* Add decorative line below title on mobile */
+    .experiences-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 1px;
+        background: #A48456;
+        opacity: 0.3;
     }
 
     .experiences-subtitle {
         font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    /* "See All" button styling for mobile */
+    .experiences-see-all {
+        position: static;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .experiences-see-all-link {
+        font-size: 12px;
+        border-bottom: none;
+        /* Remove underline on mobile */
     }
 
     .experience-card {
@@ -310,29 +431,22 @@
         font-size: 24px;
     }
 
+    /* HIDE navigation line and buttons on mobile - users can swipe */
     .carousel-navigation {
-        margin-top: 30px;
-        gap: 20px;
-    }
-
-    .carousel-line {
-        max-width: 200px;
-    }
-
-    .carousel-nav-btn {
-        width: 36px;
-        height: 36px;
-    }
-
-    .carousel-nav-btn.next {
-        width: 38px;
-        height: 38px;
+        display: none;
     }
 }
 
+/* Small Mobile - 480px and below */
 @media (max-width: 480px) {
     .experiences-container {
-        padding: 0 20px;
+        padding: 0 15px;
+    }
+
+    /* Ensure column stacking */
+    .experiences-subtitle-row {
+        flex-direction: column;
+        gap: 0;
     }
 
     .experience-card {
@@ -347,6 +461,30 @@
     .experiences-title {
         font-size: 32px;
         line-height: 1.1;
+        padding-bottom: 20px;
+        margin-bottom: 0;
+    }
+
+    /* Decorative line below title */
+    .experiences-title::after {
+        width: 80px;
+    }
+
+    .experiences-subtitle {
+        font-size: 14px;
+    }
+
+    /* Button below line */
+    .experiences-see-all {
+        position: static;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .experiences-see-all-link {
+        font-size: 11px;
+        border-bottom: none;
+        /* No underline on small mobile */
     }
 
     .experience-title {
@@ -357,12 +495,9 @@
         font-size: 11px;
     }
 
+    /* Navigation remains hidden on small mobile */
     .carousel-navigation {
-        gap: 15px;
-    }
-
-    .carousel-line {
-        max-width: 100px;
+        display: none;
     }
 }
 
@@ -381,54 +516,5 @@
         width: 100%;
         margin-bottom: 20px;
         page-break-inside: avoid;
-    }
-}
-
-/* Section Header Updates */
-.experiences-header {
-    position: relative;
-    text-align: center;
-    margin-bottom: 60px;
-    width: 100%;
-}
-
-.experiences-subtitle-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.experiences-see-all-link {
-    display: flex;
-    text-transform: uppercase;
-    gap: 10px;
-    align-items: center;
-}
-
-.experiences-see-all-link:hover {
-    opacity: 0.8;
-    transform: translateY(-1px);
-    border-bottom-color: transparent;
-}
-
-/* See All Button - ABSOLUTE POSITIONING TO FAR RIGHT */
-.experiences-see-all {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-@media (max-width: 768px) {
-    .experiences-see-all {
-        position: static;
-        text-align: center;
-        margin-top: 15px;
-    }
-
-    .experiences-subtitle-row {
-        margin-bottom: 30px;
     }
 }

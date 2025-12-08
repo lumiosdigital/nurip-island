@@ -738,3 +738,16 @@
     }
 }
 
+@media (max-width: 1024px) {
+    .map-section {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .map-section {
+        display: none;
+    }
+
+}
