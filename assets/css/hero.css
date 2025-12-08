@@ -1,4 +1,3 @@
-
 .hero-section {
     position: relative;
     width: 100%;
@@ -133,12 +132,18 @@
 @media (max-width: 768px) {
     .hero-section {
         min-height: 600px;
-        height: 100vh;
+        height: 75vh;
     }
 
     .hero-content {
-        gap: 30px;
+        gap: 70px;
         padding: 0 15px;
+        margin-top: -40px;
+        /* Move content up slightly */
+    }
+
+    .hero-text {
+        gap: 20px;
     }
 
     .hero-title {
@@ -148,6 +153,11 @@
 
     .hero-subtitle {
         font-size: 18px;
+    }
+
+    .hero-bottom {
+        gap: 70px;
+        /* Increased from 50px - more space between line and Westin logo */
     }
 
     .hero-logo {
@@ -171,84 +181,17 @@
     }
 
     .hero-content {
-        gap: 25px;
-    }
-}
-
-.palm-shadow-animation {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-    overflow: hidden;
-}
-
-.palm-shadow {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-position: top right;
-    background-size: contain;
-    opacity: 0;
-    animation: palmShadowFade 14s ease-in-out infinite;
-}
-
-.palm-shadow-1 {
-    background-image: url('../images/palm-shadow-1.png');
-    animation-delay: 0s;
-}
-
-.palm-shadow-2 {
-    background-image: url('../images/palm-shadow-2.png');
-    animation-delay: 3.5s;
-}
-
-.palm-shadow-3 {
-    background-image: url('../images/palm-shadow-3.png');
-    animation-delay: 7s;
-}
-
-.palm-shadow-2-return {
-    background-image: url('../images/palm-shadow-2.png');
-    animation-delay: 10.5s;
-}
-
-@keyframes palmShadowFade {
-    0% {
-        opacity: 0;
+        gap: 70px;
+        margin-top: -30px;
+        /* Less adjustment on very small screens */
     }
 
-    3% {
-        opacity: 1;
+    .hero-text {
+        gap: 15px;
     }
 
-    22% {
-        opacity: 1;
-    }
-
-    28% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-@media (max-width: 768px) {
-    .palm-shadow {
-        background-size: cover;
-    }
-}
-
-@media (max-width: 480px) {
-    .palm-shadow-animation {
-        opacity: 0.7;
+    .hero-bottom {
+        gap: 60px;
+        /* Still more space than default, but slightly less than 768px */
     }
 }
