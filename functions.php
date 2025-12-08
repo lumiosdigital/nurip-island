@@ -30,6 +30,7 @@ function nirup_theme_setup() {
     register_nav_menus(array(
         'primary' => __('Primary Menu (Left Side)', 'nirup-island'),
         'secondary' => __('Secondary Menu (Right Side)', 'nirup-island'),
+        'mobile' => __('Mobile Menu', 'nirup-island'),
         'footer_stay' => __('Footer - Stay Menu', 'nirup-island'),
         'footer_experiences' => __('Footer - Experiences Menu', 'nirup-island'),
         'footer_dining' => __('Footer - Dining Menu', 'nirup-island'),

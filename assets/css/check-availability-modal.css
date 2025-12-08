@@ -1,29 +1,36 @@
 /**
- * Check Availability Modal Styles - Updated
+ * Check Availability Modal Styles - Mobile Responsive
  * File: assets/css/check-availability-modal.css
  * 
  * Positioned below check availability button, no overlay, golden accents
  */
 
+/* Prevent any overflow issues */
+.check-availability-modal,
+.check-availability-modal * {
+    box-sizing: border-box;
+}
+
 /* Modal Wrapper */
 .check-availability-modal {
     position: fixed;
     top: 0;
-    right: 20px;
-    width: 1400px;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100vw;
     height: 100%;
     z-index: 10000;
     display: none;
     align-items: flex-start;
     justify-content: center;
     padding-top: 115px;
-    /* padding-right: 20px; */
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
-    margin-right: auto;
-    margin-left: auto;
-
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .check-availability-modal.active {
@@ -53,7 +60,10 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     animation: modalSlideDown 0.3s ease-out;
     border-radius: 0;
-    /* No border radius */
+    max-width: 720px;
+    width: calc(100% - 40px);
+    margin: 0 20px;
+    box-sizing: border-box;
 }
 
 @keyframes modalSlideDown {
@@ -80,7 +90,6 @@
     cursor: pointer;
     padding: 0;
     color: #8B5E1D;
-    /* Golden color */
     transition: opacity 0.2s ease;
     display: flex;
     align-items: center;
@@ -99,7 +108,6 @@
 
 .check-availability-close svg path {
     stroke: #8B5E1D;
-    /* Golden stroke */
 }
 
 /* Content Area */
@@ -172,7 +180,6 @@
     box-sizing: border-box !important;
     transition: border-color 0.2s ease !important;
     border-radius: 0 !important;
-    /* No border radius */
     box-shadow: none !important;
     outline: none !important;
 }
@@ -237,7 +244,6 @@
 .check-availability-modal button.wpbs_s-search-widget-datepicker-submit,
 .check-availability-modal input[type="submit"].wpbs_s-search-widget-datepicker-submit {
     background-color: #8B5E1D !important;
-    /* Golden color */
     border: none !important;
     color: #FFFFFF !important;
     font-family: 'Albert Sans', sans-serif !important;
@@ -253,9 +259,12 @@
     padding: 10px !important;
     box-sizing: border-box !important;
     border-radius: 0 !important;
-    /* No border radius */
     box-shadow: none !important;
     margin: 0 !important;
+}
+
+.check-availability-modal .wpbs_s-search-widget-datepicker-submit:hover {
+    opacity: 0.8 !important;
 }
 
 /* Hide Elements We Don't Need */
@@ -275,48 +284,9 @@
     display: none !important;
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-    .check-availability-modal {
-        justify-content: center;
-        padding-right: 20px;
-        padding-left: 20px;
-    }
-}
-
-@media (max-width: 768px) {
-    .check-availability-modal {
-        padding-top: 120px;
-        justify-content: center;
-    }
-
-    .check-availability-container {
-        margin: 0 15px;
-        max-width: 100%;
-    }
-
-    .check-availability-modal .wpbs_s-search-widget-form {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 15px !important;
-    }
-
-    .check-availability-modal .wpbs_s-search-widget-field-start-date,
-    .check-availability-modal .wpbs_s-search-widget-field-end-date,
-    .check-availability-modal .wpbs_s-search-widget-field-submit {
-        width: 100% !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .check-availability-container {
-        padding: 15px;
-    }
-
-    .check-availability-close {
-        top: 8px;
-        right: 8px;
-    }
+/* Remove any border-radius from WPBS elements */
+.check-availability-modal * {
+    border-radius: 0 !important;
 }
 
 /* Accessibility */
@@ -333,59 +303,133 @@ body.check-availability-modal-open {
     overflow: hidden;
 }
 
-/* Ensure proper positioning */
-.check-availability-modal .wpbs_s-search-widget-field-start-date,
-.check-availability-modal .wpbs_s-search-widget-field-end-date {
-    position: relative;
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+/* Large Tablet - 1200px and below */
+@media (max-width: 1200px) {
+    .check-availability-modal {
+        justify-content: center;
+        padding: 115px 20px 20px;
+    }
+
+    .check-availability-container {
+        max-width: 100%;
+        width: calc(100% - 40px);
+        margin: 0;
+    }
 }
 
-/* Remove any border-radius from WPBS elements */
-.check-availability-modal * {
-    border-radius: 0 !important;
+/* Tablet and Mobile - 1024px and below */
+@media (max-width: 1024px) {
+    .check-availability-modal {
+        padding: 140px 15px 20px;
+    }
+
+    .check-availability-container {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 20px 15px;
+    }
+
+    /* Stack form fields vertically */
+    .check-availability-modal .wpbs_s-search-widget-form {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 15px !important;
+    }
+
+    .check-availability-modal .wpbs_s-search-widget-field-start-date,
+    .check-availability-modal .wpbs_s-search-widget-field-end-date,
+    .check-availability-modal .wpbs_s-search-widget-field-submit {
+        width: 100% !important;
+    }
+
+    /* Adjust input height for touch */
+    .check-availability-modal .wpbs_s-search-widget-datepicker {
+        height: 48px !important;
+    }
+
+    .check-availability-modal .wpbs_s-search-widget-datepicker-submit {
+        height: 48px !important;
+        padding: 14px !important;
+    }
 }
 
-/* Search Submit Button - Golden */
-.check-availability-modal .wpbs_s-search-widget-datepicker-submit,
-.check-availability-modal button.wpbs_s-search-widget-datepicker-submit,
-.check-availability-modal input[type="submit"].wpbs_s-search-widget-datepicker-submit {
-    background-color: #8B5E1D !important;
-    /* brand color */
-    border: none !important;
-    color: #FFFFFF !important;
-    /* ... */
-    border-radius: 0 !important;
-    /* No border radius */
+/* Medium Mobile - 768px and below */
+@media (max-width: 768px) {
+    .check-availability-modal {
+        padding: 140px 15px 20px;
+    }
+
+    .check-availability-container {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .check-availability-close {
+        top: 8px;
+        right: 8px;
+        width: 10px;
+        height: 10px;
+    }
+
+    .check-availability-close svg {
+        width: 10px;
+        height: 10px;
+    }
+
+    /* Increase label size for readability */
+    .check-availability-modal .wpbs_s-search-widget-field label {
+        font-size: 14px !important;
+    }
 }
 
-/* Remove any border-radius from WPBS elements */
-.check-availability-modal * {
-    border-radius: 0 !important;
+/* Small Mobile - 480px and below */
+@media (max-width: 480px) {
+    .check-availability-container {
+        padding: 15px;
+        width: 100%;
+        margin: 0;
+    }
+
+    .check-availability-modal {
+        padding: 130px 10px 20px;
+    }
+
+    /* Smaller input padding on mobile */
+    .check-availability-modal .wpbs_s-search-widget-datepicker {
+        padding: 0 35px 0 35px !important;
+        font-size: 13px !important;
+    }
+
+    /* Adjust icon sizes */
+    .check-availability-modal .wpbs_s-search-widget-field-start-date>div::before,
+    .check-availability-modal .wpbs_s-search-widget-field-end-date>div::before {
+        width: 18px;
+        height: 18px;
+        left: 10px;
+    }
+
+    .check-availability-modal .wpbs_s-search-widget-field-start-date>div::after,
+    .check-availability-modal .wpbs_s-search-widget-field-end-date>div::after {
+        width: 20px;
+        height: 20px;
+        right: 10px;
+    }
+
+    /* Button text size */
+    .check-availability-modal .wpbs_s-search-widget-datepicker-submit {
+        font-size: 10px !important;
+    }
 }
 
-.wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field button.wpbs_s-search-widget-datepicker-submit,
-.wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type=submit] {
-    border-radius: 0 !important;
-    background-color: #8B5E1D !important;
-    font-family: 'Albert Sans', sans-serif !important;
-    font-size: 11px !important;
-    font-weight: 300 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    line-height: 1.2 !important;
-    color: #FFFFFF !important;
-    height: auto !important;
-    padding: 15px 15px !important;
-}
-
-.wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field button.wpbs_s-search-widget-datepicker-submit:hover,
-.wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type=submit]:hover {
-    border-radius: 0 !important;
-    background-color: #a48456 !important;
-    font-family: 'Albert Sans', sans-serif !important;
-    font-size: 11px !important;
-    font-weight: 300 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    line-height: 1.2 !important;
-    color: #FFFFFF !important;
+/* Print Styles */
+@media print {
+    .check-availability-modal {
+        display: none !important;
+    }
 }

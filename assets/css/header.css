@@ -18,6 +18,8 @@
     width: 100%;
     z-index: 101;
     transition: transform 0.3s ease;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .announcement-bar.header-hidden {
@@ -70,8 +72,11 @@
     top: 31px;
     left: 0;
     right: 0;
+    width: 100%;
     z-index: 100;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .site-header.header-hidden {
@@ -91,13 +96,15 @@
     justify-content: space-between;
     position: relative;
     height: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 
 /* Logo/Branding */
 .site-branding {
     position: absolute;
     left: 50%;
-    top: 60%;
+    top: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
 }
@@ -376,47 +383,60 @@
     background: none;
     border: none;
     cursor: pointer;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    font-weight: 300;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--color-black);
     padding: 8px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
+    transition: opacity 0.3s ease;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .mobile-menu-toggle:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    opacity: 0.7;
 }
 
 .hamburger {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
 }
 
 .hamburger span {
-    width: 16px;
-    height: 1px;
-    background-color: var(--color-black);
+    width: 20px;
+    height: 2px;
+    background-color: #8B5E1D;
     transition: all 0.3s ease;
-    border-radius: 1px;
+    border-radius: 2px;
 }
 
 .mobile-menu-toggle.active .hamburger span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+    transform: rotate(45deg) translate(5.5px, 5.6px);
+    background-color: #8B5E1D;
 }
 
 .mobile-menu-toggle.active .hamburger span:nth-child(2) {
     opacity: 0;
+    background-color: #8B5E1D;
 }
 
 .mobile-menu-toggle.active .hamburger span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -6px);
+    transform: rotate(-45deg) translate(3px, -3px);
+    background-color: #8B5E1D;
+}
+
+/* Mobile Check Availability Button */
+.mobile-check-availability-toggle {
+    display: none;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 8px;
+}
+
+.mobile-check-availability-toggle .check-availability-icon {
+    width: 24px;
+    height: 24px;
 }
 
 /* Mobile Menu */
@@ -426,12 +446,15 @@
     top: 111px;
     left: 0;
     width: 100%;
+    max-width: 100vw;
     height: calc(100vh - 111px);
     background-color: var(--color-white);
     z-index: 1000;
     overflow-y: auto;
+    overflow-x: hidden;
     opacity: 0;
     transition: opacity 0.3s ease;
+    box-sizing: border-box;
 }
 
 .mobile-menu.active {
@@ -444,20 +467,17 @@
     margin: 0 auto;
 }
 
-.mobile-primary-menu,
-.mobile-secondary-menu {
+.mobile-primary-menu {
     list-style: none;
     margin: 0 0 30px 0;
     padding: 0;
 }
 
-.mobile-primary-menu li,
-.mobile-secondary-menu li {
-    margin: 0 0 20px 0;
+.mobile-primary-menu li {
+    margin: 0 0 0 0;
 }
 
-.mobile-primary-menu a,
-.mobile-secondary-menu a {
+.mobile-primary-menu a {
     color: var(--color-black);
     text-decoration: none;
     font-size: 16px;
@@ -470,14 +490,15 @@
     transition: all 0.3s ease;
 }
 
-.mobile-primary-menu a:hover,
-.mobile-secondary-menu a:hover {
+.mobile-primary-menu a:hover {
     color: var(--color-golden);
     padding-left: 10px;
 }
 
 .mobile-booking {
     margin-top: 30px;
+    padding-top: 30px;
+    /* border-top: 1px solid var(--color-border); */
 }
 
 .mobile-booking-button {
@@ -492,7 +513,7 @@
     letter-spacing: 0.5px;
     text-decoration: none;
     transition: opacity 0.3s ease;
-    border-radius: 4px;
+    /* border-radius: 4px; */
 }
 
 .mobile-booking-button:hover {
@@ -508,62 +529,106 @@ body {
     padding-top: 111px;
 }
 
-/* Responsive Styles */
+/* ============================================
+   MOBILE RESPONSIVE STYLES - STARTING AT 1024px
+   ============================================ */
+
+/* Prevent horizontal overflow on all screen sizes */
+html {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Override container max-width on mobile to prevent viewport issues */
 @media (max-width: 1024px) {
-    .nav-right-items {
-        gap: 15px;
-    }
 
-    .primary-menu-left,
-    .secondary-menu {
-        gap: 15px;
-    }
-
-    .header-container {
-        padding: 0 15px;
-    }
-
-    /* Hide text on check availability button, show only icon */
-    .check-availability-text {
-        display: none;
-    }
-
-    .check-availability-toggle {
-        padding: 8px;
+    .header-container,
+    .announcement-content {
+        max-width: 100% !important;
     }
 }
 
-@media (max-width: 768px) {
+/* Tablet and Mobile - 1024px and below */
+@media (max-width: 1024px) {
+
+    /* Set fixed height for announcement bar to prevent overlap */
+    .announcement-bar {
+        height: auto;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+    }
+
+    /* Ensure header sits exactly below announcement bar */
+    .site-header {
+        top: 40px;
+    }
+
+    /* Update header hide animation for new position */
+    .site-header.header-hidden {
+        transform: translateY(-120px);
+    }
+
+    /* Adjust body padding to account for new header position */
     body {
-        padding-top: 111px;
+        padding-top: 120px;
     }
 
-    .header-container {
-        padding: 0 15px;
+    /* Adjust mobile menu position */
+    .mobile-menu {
+        top: 120px;
+        height: calc(100vh - 120px);
     }
 
+    /* Hide desktop navigation */
     .nav-left,
     .nav-right {
-        display: none;
+        display: none !important;
     }
 
+    /* Show mobile menu toggle on left */
     .mobile-menu-toggle {
         display: flex;
     }
 
+    /* Show mobile check availability button on right */
+    .mobile-check-availability-toggle {
+        display: flex;
+    }
+
+    /* Center logo */
     .site-branding {
-        left: 60px;
-        transform: translateY(-50%);
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
     }
 
     .custom-logo-wrapper {
-        width: 100px;
-        height: 34px;
+        width: 110px;
+        height: 37px;
     }
 
+    .header-container {
+        padding: 0 20px;
+    }
+
+    /* Announcement bar adjustments */
     .announcement-content {
-        padding: 0 15px;
-        font-size: 10px;
+        padding: 0 20px;
+        font-size: 11px;
     }
 
     .announcement-text {
@@ -571,18 +636,37 @@ body {
         text-align: center;
         line-height: 1.3;
     }
+}
 
-    .language-dropdown-menu {
-        right: -10px;
-        min-width: 100px;
+/* Medium Tablet - 768px and below */
+@media (max-width: 768px) {
+    .custom-logo-wrapper {
+        width: 100px;
+        height: 34px;
+    }
+
+    .header-container {
+        padding: 0 15px;
+    }
+
+    .announcement-content {
+        padding: 0 15px;
+        font-size: 10px;
+    }
+
+    .mobile-menu-toggle,
+    .mobile-check-availability-toggle {
+        left: 15px;
+    }
+
+    .mobile-check-availability-toggle {
+        left: auto;
+        right: 15px;
     }
 }
 
+/* Small Mobile - 480px and below */
 @media (max-width: 480px) {
-    .site-branding {
-        left: 50px;
-    }
-
     .custom-logo-wrapper {
         width: 80px;
         height: 28px;
@@ -603,9 +687,9 @@ body {
         height: 12px;
     }
 
-    .language-dropdown-menu {
-        right: -20px;
-        min-width: 120px;
+    .mobile-primary-menu a {
+        font-size: 14px;
+        padding: 12px 0;
     }
 }
 
@@ -614,6 +698,7 @@ body {
 
     .announcement-bar,
     .mobile-menu-toggle,
+    .mobile-check-availability-toggle,
     .check-availability-toggle,
     .mobile-menu,
     .booking-button {
