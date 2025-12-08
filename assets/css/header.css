@@ -1,4 +1,9 @@
+/**
+ * Header Styles - Nirup Island Theme
+ * File: assets/css/header.css
+ */
 
+/* Announcement Bar */
 .announcement-bar {
     background-color: var(--color-primary-blue);
     color: var(--color-white);
@@ -54,6 +59,7 @@
     fill: currentColor;
 }
 
+/* Site Header */
 .site-header {
     background-color: var(--color-stone-50);
     border-bottom: 1px solid var(--color-border);
@@ -87,6 +93,7 @@
     height: 100%;
 }
 
+/* Logo/Branding */
 .site-branding {
     position: absolute;
     left: 50%;
@@ -145,6 +152,7 @@
     opacity: 1 !important;
 }
 
+/* Navigation */
 .nav-left,
 .nav-right {
     display: flex;
@@ -194,6 +202,7 @@
     opacity: 1;
 }
 
+/* Language Switcher */
 .language-switcher-container {
     position: relative;
     display: inline-block;
@@ -241,7 +250,6 @@
     right: 0;
     background: var(--color-white);
     border: 1px solid var(--color-border);
-    /* border-radius: 4px; */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     min-width: 80px;
     z-index: 1000;
@@ -305,28 +313,40 @@
     color: var(--color-black);
 }
 
-.search-toggle {
+/* Check Availability Button */
+.check-availability-toggle {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 8px;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: opacity 0.3s ease;
-    /* border-radius: 4px; */
-}
-
-.search-toggle:hover {
+    gap: 8px;
+    transition: all 0.3s ease;
     color: var(--color-golden);
+    font-family: var(--font-family);
 }
 
-.search-icon {
+.check-availability-toggle:hover {
+    opacity: 0.8;
+}
+
+.check-availability-text {
+    font-size: 11px;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.check-availability-icon {
     width: 16px;
     height: 16px;
-    fill: currentColor;
+    flex-shrink: 0;
 }
 
+/* Booking Button */
 .booking-button {
     background: transparent;
     border: 0.5px solid var(--color-golden);
@@ -341,7 +361,6 @@
     white-space: nowrap;
     transition: all 0.3s ease;
     font-family: var(--font-family);
-    /* border-radius: 2px; */
     display: inline-block;
 }
 
@@ -351,6 +370,7 @@
     opacity: 1;
 }
 
+/* Mobile Menu Toggle */
 .mobile-menu-toggle {
     display: none;
     background: none;
@@ -399,6 +419,7 @@
     transform: rotate(-45deg) translate(7px, -6px);
 }
 
+/* Mobile Menu */
 .mobile-menu {
     display: none;
     position: fixed;
@@ -482,116 +503,12 @@ body.mobile-menu-open {
     overflow: hidden;
 }
 
-.search-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.search-overlay.active {
-    opacity: 1;
-}
-
-.search-overlay-content {
-    background: var(--color-black);
-    padding: 40px;
-    /* border-radius: 8px; */
-    max-width: 600px;
-    width: 90%;
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
-    top: 20%;
-    left: 35%;
-}
-
-.search-overlay.active .search-overlay-content {
-    transform: translateY(0);
-}
-
-.search-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--color-black);
-    transition: opacity 0.3s ease;
-    padding: 8px;
-    /* border-radius: 4px; */
-}
-
-.search-close:hover {
-    opacity: 0.7;
-}
-
-.search-form-wrapper {
-    margin-top: 20px;
-}
-
-.search-form {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.search-field {
-    flex: 1;
-    padding: 15px;
-    border: 1px solid var(--color-border);
-    font-size: 16px;
-    font-family: var(--font-family);
-    /* border-radius: 4px; */
-    transition: border-color 0.3s ease;
-    width: 100%;
-}
-
-.search-submit {
-    background: var(--color-golden);
-    border: none;
-    padding: 15px 20px;
-    color: var(--color-white);
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-    border-radius: 0px;
-    font-family: var(--font-family);
-    font-weight: 500;
-}
-
-.search-submit:hover {
-    opacity: 0.8;
-}
-
-.search-overlay.loading .search-overlay-content::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-}
-
+/* Body padding for fixed header */
 body {
     padding-top: 111px;
 }
 
-
+/* Responsive Styles */
 @media (max-width: 1024px) {
     .nav-right-items {
         gap: 15px;
@@ -604,6 +521,15 @@ body {
 
     .header-container {
         padding: 0 15px;
+    }
+
+    /* Hide text on check availability button, show only icon */
+    .check-availability-text {
+        display: none;
+    }
+
+    .check-availability-toggle {
+        padding: 8px;
     }
 }
 
@@ -646,12 +572,6 @@ body {
         line-height: 1.3;
     }
 
-    .search-overlay-content {
-        padding: 30px 20px;
-        margin: 20px;
-        width: calc(100% - 40px);
-    }
-
     .language-dropdown-menu {
         right: -10px;
         min-width: 100px;
@@ -689,13 +609,13 @@ body {
     }
 }
 
+/* Print Styles */
 @media print {
 
     .announcement-bar,
     .mobile-menu-toggle,
-    .search-toggle,
+    .check-availability-toggle,
     .mobile-menu,
-    .search-overlay,
     .booking-button {
         display: none !important;
     }

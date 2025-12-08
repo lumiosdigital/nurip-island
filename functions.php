@@ -98,6 +98,7 @@ function nirup_enqueue_assets() {
         ['nirup-villa-booking',         '/assets/css/villa-booking.css',         ['nirup-main']],
         ['nirup-woocommerce',         '/assets/css/woocommerce.css',         ['nirup-main']],
         ['nirup-berthing',          '/assets/css/berthing.css',          ['nirup-main']],
+        ['nirup-availability-modal',    '/assets/css/check-availability-modal.css',    ['nirup-main']],
     ];
 
     foreach ($css_files as [$handle, $rel, $deps]) {
@@ -147,6 +148,7 @@ function nirup_enqueue_assets() {
         ['nirup-contact',               '/assets/js/contact.js',                 ['jquery']],
         ['nirup-media-coverage', '/assets/js/media-coverage.js', ['jquery','nirup-main']],
         ['nirup-berthing',              '/assets/js/berthing.js',               ['jquery']],
+        ['nirup-availability-modal',    '/assets/js/check-availability.js',    ['jquery']],
 
 
     ];

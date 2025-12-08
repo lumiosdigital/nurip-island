@@ -84,10 +84,11 @@
                         <!-- Language Switcher -->
                         <?php nirup_language_dropdown(); ?>
 
-                        <!-- Search Icon -->
-                        <button class="search-toggle" aria-label="<?php _e('Search', 'nirup-island'); ?>">
-                            <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" fill="currentColor"/>
+                        <!-- Check Availability Button -->
+                        <button class="check-availability-toggle" aria-label="<?php _e('Check Availability', 'nirup-island'); ?>">
+                            <span class="check-availability-text"><?php _e('CHECK AVAILABILITY', 'nirup-island'); ?></span>
+                            <svg class="check-availability-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M5.33333 1.33337V4.00004M10.6667 1.33337V4.00004M2 6.66671H14M5.33333 9.33337H5.34M8 9.33337H8.00667M10.6667 9.33337H10.6733M5.33333 12H5.34M8 12H8.00667M10.6667 12H10.6733M3.33333 2.66671H12.6667C13.403 2.66671 14 3.26366 14 4.00004V13.3334C14 14.0698 13.403 14.6667 12.6667 14.6667H3.33333C2.59695 14.6667 2 14.0698 2 13.3334V4.00004C2 3.26366 2.59695 2.66671 3.33333 2.66671Z" stroke="#8B5E1D" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </button>
 
@@ -145,20 +146,6 @@
                     <?php endif; ?>
                 </div>
             </div>
-
-            <!-- Search Overlay -->
-            <div class="search-overlay" id="search-overlay">
-                <div class="search-overlay-content">
-                    <button class="search-close" aria-label="<?php _e('Close Search', 'nirup-island'); ?>">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M14 14L11.1067 11.1067M12.6667 7.33333C12.6667 10.2789 10.2789 12.6667 7.33333 12.6667C4.38781 12.6667 2 10.2789 2 7.33333C2 4.38781 4.38781 2 7.33333 2C10.2789 2 12.6667 4.38781 12.6667 7.33333Z" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                    <div class="search-form-wrapper">
-                        <?php get_search_form(); ?>
-                    </div>
-                </div>
-            </div>
         </header>
 
         <?php
@@ -166,4 +153,7 @@
         if (function_exists('yoast_breadcrumb') && !is_front_page()) {
             nirup_yoast_breadcrumbs();
         }
+        
+        // Check Availability Modal (global - available on all pages)
+        get_template_part('template-parts/check-availability-modal');
         ?>
