@@ -37,14 +37,7 @@
     border-radius: 0;
     overflow: hidden;
     transition: transform 0.1s ease, box-shadow 0.1s ease;
-    /* opacity: 0; */
-    /* transform: translateY(30px); */
 }
-
-/* .accommodation-card.animate-in {
-    opacity: 1;
-    transform: translateY(0);
-} */
 
 .accommodation-card:hover {
     transform: translateY(-5px);
@@ -73,117 +66,91 @@
     transition: transform 0.3s ease;
 }
 
-.accommodation-card:hover {
-    transform: scale(1.01);
-    /* cursor: pointer; */
+.accommodation-card:hover .accommodation-image {
+    transform: scale(1.05);
 }
 
-/* .accommodation-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom,
-            rgba(0, 0, 0, 0) 0%,
-            rgba(0, 0, 0, 0.1) 70%,
-            rgba(0, 0, 0, 0.3) 100%);
-} */
-
 /* ===========================
-   CONTENT AREA
+   CONTENT SECTION
    =========================== */
 
 .accommodation-content {
     position: relative;
-    z-index: 10;
     margin-top: 450px;
-    padding: 60px 40px 40px;
+    padding: 40px 30px 40px;
+    /* Increased bottom padding from 30px to 40px */
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 25px;
+    height: 100%;
     flex: 1;
 }
 
-/* ===========================
-   HEADER STYLES
-   =========================== */
-
 .accommodation-header {
-    text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
+    text-align: center;
+    /* Center align all header text */
 }
 
 .accommodation-category {
-    font-family: var(--font-hero);
-    font-size: 18px;
+    font-family: 'Amiri', serif;
+    /* Changed to Amiri */
+    font-size: 14px;
     font-weight: 400;
-    line-height: 1.4;
-    color: #555250;
     text-transform: uppercase;
-    margin: 0;
     letter-spacing: 0.5px;
+    color: #3d332f;
+    margin: 0;
 }
 
 .accommodation-title {
-    font-family: var(--font-hero);
-    font-size: 40px;
+    font-family: 'Amiri', serif;
+    /* Ensure Amiri font */
+    font-size: 36px;
     font-weight: 400;
-    line-height: 1;
-    color: #555250;
-    text-transform: uppercase;
+    line-height: 1.2;
+    color: #3d332f;
     margin: 0;
     letter-spacing: -1px;
+    text-transform: uppercase;
 }
 
 .accommodation-description {
-    font-family: var(--font-hero);
+    font-family: 'Amiri', serif;
+    /* Changed to Amiri */
     font-size: 16px;
     font-weight: 400;
     line-height: 1.4;
-    color: #555250;
+    color: #3d332f;
     margin: 0;
+    opacity: 0.8;
 }
 
 /* ===========================
-   AMENITIES STYLES
+   AMENITIES GRID
    =========================== */
 
 .accommodation-amenities {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    flex: 1;
 }
 
 .amenities-column {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
+    flex: 1;
 }
 
 .amenity-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    /* transition: transform 0.2s ease, color 0.2s ease; */
-    padding: 2px 0;
+    gap: 12px;
+    transition: transform 0.2s ease;
 }
-/* 
-.amenity-item.hovered {
-    transform: translateX(5px);
-} */
-
-/* .amenity-item.hovered .amenity-text {
-    color: var(--color-golden);
-} */
-
-/* .amenity-item.hovered .amenity-icon svg {
-    fill: var(--color-golden);
-    color: var(--color-golden);
-} */
 
 .amenity-icon {
     width: 28px;
@@ -220,14 +187,16 @@
 .accommodation-cta {
     margin-top: auto;
     text-align: center;
-    padding-top: 20px;
+    padding-top: 25px;
+    /* Increased from 20px */
 }
 
 .accommodation-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 24px;
+    padding: 12px 30px;
+    /* Increased horizontal padding from 24px to 30px */
     border: 1px solid var(--color-golden);
     background: transparent;
     color: var(--color-golden);
@@ -239,8 +208,8 @@
     text-decoration: none;
     transition: all 0.3s ease;
     white-space: nowrap;
-    /* border-radius: 2px; */
-    min-width: 160px;
+    min-width: 180px;
+    /* Increased from 160px */
 }
 
 .accommodation-button:hover {
@@ -262,15 +231,6 @@
     transition-delay: 0.2s;
 }
 
-/* Hover effects for different card types */
-/* .resort-card:hover .accommodation-title {
-    color: #8b5e1d;
-}
-
-.villas-card:hover .accommodation-title {
-    color: #8b5e1d;
-} */
-
 /* ===========================
    RESPONSIVE STYLES
    =========================== */
@@ -279,65 +239,44 @@
     .accommodations-container {
         gap: 30px;
     }
-
-    .accommodation-content {
-        padding: 50px 30px 30px;
-        gap: 30px;
-    }
-
-    .accommodation-title {
-        font-size: 36px;
-    }
-
-    .accommodation-amenities {
-        gap: 30px;
-    }
 }
 
-@media (max-width: 968px) {
+/* Tablet - 1024px and below */
+@media (max-width: 1024px) {
     .accommodations-section {
-        padding: 80px 0;
+        padding: 60px 0;
     }
 
     .accommodations-container {
         grid-template-columns: 1fr;
         gap: 40px;
-        max-width: 600px;
+        padding: 0 20px;
     }
 
     .accommodation-card {
         min-height: 650px;
     }
 
-    .accommodation-background {
-        height: 400px;
-    }
-
     .accommodation-content {
-        margin-top: 400px;
-        padding: 40px 30px 30px;
+        padding: 35px 30px 35px;
+        /* Better padding for tablet */
     }
 
-    .accommodation-title {
-        font-size: 32px;
-    }
-
-    .accommodation-amenities {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
+    /* Keep two columns on tablet, but allow text wrapping */
     .amenity-text {
         white-space: normal;
+        word-wrap: break-word;
     }
 }
 
+/* Mobile - 768px and below */
 @media (max-width: 768px) {
     .accommodations-section {
-        padding: 60px 0;
+        padding: 40px 0;
     }
 
     .accommodations-container {
+        gap: 30px;
         padding: 0 15px;
     }
 
@@ -351,43 +290,57 @@
 
     .accommodation-content {
         margin-top: 350px;
-        padding: 30px 20px 20px;
-        gap: 25px;
+        padding: 30px 25px 30px;
+        /* Good breathing room on mobile */
+        gap: 20px;
     }
 
     .accommodation-title {
         font-size: 28px;
-        line-height: 1.1;
     }
 
     .accommodation-category {
-        font-size: 16px;
+        font-size: 12px;
     }
 
     .accommodation-description {
         font-size: 15px;
     }
 
-    .amenity-item {
-        gap: 8px;
+    /* Stack amenities in single column on mobile */
+    .accommodation-amenities {
+        flex-direction: column;
+        gap: 0;
     }
 
-    .amenity-icon {
-        width: 24px;
-        height: 24px;
+    .amenities-column {
+        width: 100%;
+        /* Force full width */
+        flex: none;
+        /* Remove flex properties */
+        gap: 14px;
     }
 
+    /* Allow text wrapping on mobile */
     .amenity-text {
         font-size: 14px;
+        white-space: normal;
+        /* Allow wrapping */
+        word-wrap: break-word;
+    }
+
+    .accommodation-cta {
+        padding-top: 20px;
     }
 
     .accommodation-button {
-        padding: 10px 20px;
+        padding: 12px 25px;
         font-size: 10px;
-        min-width: 140px;
+        min-width: 160px;
     }
 }
 
+/* Small Mobile - 480px and below */
 @media (max-width: 480px) {
     .accommodation-card {
         min-height: 550px;
@@ -399,7 +352,8 @@
 
     .accommodation-content {
         margin-top: 300px;
-        padding: 25px 15px 15px;
+        padding: 25px 20px 30px;
+        /* Increased bottom padding from 15px to 30px */
         gap: 20px;
     }
 
@@ -416,12 +370,37 @@
         line-height: 1.5;
     }
 
+    /* Stack amenities in single column */
+    .accommodation-amenities {
+        flex-direction: column;
+        gap: 0;
+    }
+
     .amenities-column {
+        width: 100%;
+        /* Force full width */
+        flex: none;
+        /* Remove flex properties */
         gap: 12px;
     }
 
+    /* Allow text wrapping on small mobile */
     .amenity-text {
         font-size: 13px;
+        white-space: normal;
+        /* Allow wrapping */
+        word-wrap: break-word;
+    }
+
+    .accommodation-cta {
+        padding-top: 20px;
+        margin-bottom: 5px;
+        /* Extra bottom margin for breathing room */
+    }
+
+    .accommodation-button {
+        padding: 12px 20px;
+        min-width: 150px;
     }
 }
 
@@ -432,11 +411,6 @@
     .accommodation-button,
     .amenity-item {
         transition: none;
-    }
-
-    .accommodation-card.animate-in {
-        opacity: 1;
-        transform: none;
     }
 
     .accommodation-card:hover {

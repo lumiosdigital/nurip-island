@@ -1,4 +1,3 @@
-
 .about-island-section {
     padding: 100px 0;
     position: relative;
@@ -51,6 +50,8 @@
     color: #3D332F;
     margin: 0;
     width: 600px;
+    max-width: 100%;
+    /* Ensure it doesn't overflow on mobile */
 }
 
 .about-features-grid {
@@ -137,7 +138,7 @@
     color: #3d332f;
     margin: 0;
     opacity: 0.8;
-    
+
 }
 
 @media (max-width: 1400px) {
@@ -164,15 +165,39 @@
     }
 }
 
-@media (max-width: 768px) {
+/* Tablet - 1024px and below */
+@media (max-width: 1024px) {
     .about-island-section {
         padding: 60px 0;
     }
 
     .about-island-header {
         margin-bottom: 50px;
-        max-width: 100%;
         padding: 0 20px;
+    }
+
+    .about-main-title {
+        font-size: 42px;
+    }
+
+    .about-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 500px;
+        gap: 35px;
+        padding: 0 20px;
+    }
+}
+
+/* Mobile - 768px and below */
+@media (max-width: 768px) {
+    .about-island-section {
+        padding: 40px 0;
+    }
+
+    .about-island-header {
+        margin-bottom: 40px;
+        max-width: 100%;
+        padding: 0 15px;
     }
 
     .about-main-title {
@@ -187,12 +212,15 @@
 
     .about-description p {
         font-size: 15px;
+        width: 100%;
+        padding: 0 15px;
     }
 
     .about-features-grid {
         grid-template-columns: repeat(2, 1fr);
-        max-width: 400px;
-        gap: 40px;
+        max-width: 100%;
+        gap: 30px;
+        padding: 0 15px;
     }
 
     .feature-item {
@@ -209,6 +237,7 @@
     }
 }
 
+/* Small Mobile - 480px and below */
 @media (max-width: 480px) {
     .about-island-section {
         padding: 40px 0;
@@ -216,6 +245,7 @@
 
     .about-island-header {
         margin-bottom: 40px;
+        padding: 0 15px;
     }
 
     .about-main-title {
@@ -236,6 +266,8 @@
         grid-template-columns: 1fr;
         max-width: 280px;
         gap: 35px;
+        margin: 0 auto;
+        padding: 0 15px;
     }
 
     .feature-item {
