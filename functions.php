@@ -15439,18 +15439,16 @@ function nirup_berthing_submissions_page() {
     </script>
     <?php
 }
-
-function nirup_enqueue_restaurant_gallery_mobile() {
-    if (is_singular('restaurant')) {
+function nirup_enqueue_shared_gallery_modal() {
+    if (is_singular('restaurant') || is_page_template('page-marina.php')) {
         wp_enqueue_script(
-            'nirup-restaurant-gallery-mobile',
-            get_template_directory_uri() . '/assets/js/single-restaurant-gallery-mobile.js',
+            'nirup-shared-gallery-modal',
+            get_template_directory_uri() . '/assets/js/shared-gallery-modal.js',
             array(),
             '1.0.0',
             true
         );
     }
 }
-add_action('wp_enqueue_scripts', 'nirup_enqueue_restaurant_gallery_mobile');
-
+add_action('wp_enqueue_scripts', 'nirup_enqueue_shared_gallery_modal');
 ?>

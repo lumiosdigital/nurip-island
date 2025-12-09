@@ -618,7 +618,7 @@
 
     .luggage-grid {
         grid-template-columns: 1fr;
-        gap: 50px;
+        gap: 25px;
     }
 
     .luggage-items {

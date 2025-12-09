@@ -958,3 +958,9 @@ body.villa-booking-open {
         padding: 20px 24px;
     }
 }
+
+@media (max-width: 1024px) {
+    .wpbs-legend {
+        display: none !important;
+    }
+}

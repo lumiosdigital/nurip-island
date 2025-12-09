@@ -747,3 +747,538 @@
         font-size: 20px;
     }
 }
+
+@media (max-width: 1024px) {
+    .marina-page {
+        padding-top: 40px;
+    }
+
+    /* Hero Section */
+    .marina-hero {
+        padding: 40px 20px 0;
+        margin-bottom: 50px;
+    }
+
+    .marina-title {
+        font-size: 60px;
+        line-height: 1.1;
+    }
+
+    .marina-subtitle {
+        font-size: 18px;
+    }
+
+    /* Gallery Section */
+    .marina-gallery-wrapper {
+        padding: 0 20px;
+        margin-bottom: 50px;
+    }
+
+    .marina-gallery {
+        height: 550px;
+    }
+
+    /* Berthing Section */
+    .marina-berthing-section {
+        padding: 0 20px;
+        margin-bottom: 100px;
+    }
+
+    .berthing-content {
+        gap: 40px;
+    }
+
+    .berthing-title {
+        font-size: 50px;
+    }
+
+    .berthing-description p {
+        font-size: 18px;
+    }
+
+    /* Private Charters Section */
+    .private-charters-section {
+        padding: 0 20px;
+        margin-bottom: 80px;
+    }
+
+    .charters-title {
+        font-size: 48px;
+    }
+
+    .charters-intro {
+        font-size: 18px;
+    }
+
+    .charter-item {
+        gap: 35px;
+    }
+
+    .charter-image {
+        flex: 0 0 500px;
+        height: 400px;
+    }
+
+    .charter-name {
+        font-size: 38px;
+    }
+
+    .charter-description {
+        font-size: 18px;
+    }
+}
+
+/* ===========================
+   MOBILE - 768px
+   =========================== */
+
+@media (max-width: 768px) {
+    .marina-page {
+        padding-top: 30px;
+    }
+
+    /* Hero Section */
+    .marina-hero {
+        padding: 30px 15px 0;
+        margin-bottom: 40px;
+    }
+
+    .marina-title {
+        font-size: 44px;
+        line-height: 1.1;
+    }
+
+    .marina-subtitle {
+        font-size: 16px;
+    }
+
+    /* ===========================
+       MOBILE GALLERY - SWIPEABLE
+       =========================== */
+
+    .marina-gallery-wrapper {
+        padding: 0 15px;
+        margin-bottom: 40px;
+    }
+
+    /* Make gallery horizontally scrollable */
+    .marina-gallery {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 0;
+        height: 400px;
+    }
+
+    .marina-gallery::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Make all images full-width slides */
+    .gallery-main-image,
+    .gallery-grid-item {
+        flex: 0 0 100% !important;
+        width: 100%;
+        height: 100%;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .gallery-main-image img,
+    .gallery-grid-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        pointer-events: none;
+    }
+
+    /* Make grid items direct children of gallery */
+    .gallery-grid {
+        display: contents !important;
+    }
+
+    /* Remove overlay on mobile */
+    .gallery-grid-item.has-overlay .gallery-overlay {
+        display: none;
+    }
+
+    /* Position "See All Photos" button */
+    .gallery-main-image {
+        position: relative;
+    }
+
+    .see-all-photos-btn {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        z-index: 10;
+        background: rgba(243, 238, 234, 0.95);
+        backdrop-filter: blur(4px);
+    }
+
+    /* No images state */
+    .gallery-no-images {
+        display: flex;
+        flex-direction: row;
+        gap: 0;
+        height: 100%;
+    }
+
+    .gallery-placeholder-main,
+    .gallery-placeholder {
+        flex: 0 0 100%;
+        scroll-snap-align: center;
+    }
+
+    /* Smooth scrolling */
+    .marina-gallery {
+        scroll-behavior: smooth;
+    }
+
+    /* Prevent image dragging */
+    .marina-gallery img {
+        -webkit-user-drag: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    /* ===========================
+       BERTHING SECTION
+       =========================== */
+
+    .marina-berthing-section {
+        padding: 0 15px;
+        margin-bottom: 80px;
+    }
+
+    .berthing-content {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .berthing-text {
+        max-width: 100%;
+        gap: 90px;
+    }
+
+    .berthing-title {
+        font-size: 40px;
+    }
+
+    .berthing-description p {
+        font-size: 16px;
+    }
+
+    /* Horizontal divider on mobile */
+    .berthing-divider {
+        width: 100%;
+        height: 1px;
+        margin: 0;
+        border-left: none;
+        border-top: 1px solid rgba(164, 132, 86, 0.3);
+    }
+
+    .berthing-amenities {
+        width: 100%;
+        gap: 15px;
+    }
+
+    .amenity-item {
+        gap: 10px;
+    }
+
+    .amenity-item-title {
+        font-size: 16px;
+    }
+
+    .amenity-item-content p {
+        font-size: 12px;
+    }
+
+    .berthing-buttons {
+        width: 100%;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .berthing-links {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .berthing-link {
+        width: 100%;
+    }
+
+    /* ===========================
+       PRIVATE CHARTERS SECTION
+       =========================== */
+
+    .private-charters-section {
+        padding: 0 15px;
+        margin-bottom: 60px;
+    }
+
+    .charters-intro-section {
+        margin-bottom: 50px;
+    }
+
+    .charters-title {
+        font-size: 40px;
+        margin-bottom: 25px;
+    }
+
+    .charters-intro {
+        font-size: 16px;
+    }
+
+    .charters-list {
+        gap: 50px;
+    }
+
+    .charter-item {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .charter-image {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 100%;
+        height: 350px;
+    }
+
+    .charter-content {
+        max-width: 100%;
+    }
+
+    .charter-name {
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+
+    .charter-description {
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+
+    .charter-specifications {
+        flex-direction: column;
+        gap: 25px;
+        align-items: flex-start;
+    }
+
+    /* Horizontal divider on mobile */
+    .charter-divider {
+        height: 1px;
+        width: 100%;
+        margin: 0;
+        border-left: none;
+        border-top: 1px solid rgba(164, 132, 86, 0.3);
+    }
+
+    .charter-details {
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+    }
+
+    .charter-specs,
+    .charter-info {
+        gap: 12px;
+    }
+
+    .charter-spec {
+        gap: 12px;
+    }
+
+    .charter-spec span,
+    .charter-pricing {
+        font-size: 15px;
+    }
+
+    .charter-book-btn {
+        width: 100%;
+    }
+}
+
+/* ===========================
+   SMALL MOBILE - 480px
+   =========================== */
+
+@media (max-width: 480px) {
+    .marina-page {
+        padding-top: 25px;
+    }
+
+    /* Hero Section */
+    .marina-hero {
+        padding: 25px 15px 0;
+        margin-bottom: 30px;
+    }
+
+    .marina-title {
+        font-size: 32px;
+        line-height: 1.1;
+    }
+
+    .marina-subtitle {
+        font-size: 14px;
+    }
+
+    /* Gallery Section */
+    .marina-gallery {
+        height: 320px;
+    }
+
+    .see-all-photos-btn {
+        bottom: 12px;
+        right: 12px;
+        font-size: 10px;
+        padding: 8px 12px;
+        height: 36px;
+    }
+
+    /* Berthing Section */
+    .marina-berthing-section {
+        margin-bottom: 60px;
+    }
+
+    .berthing-title {
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+
+    .berthing-description p {
+        font-size: 15px;
+    }
+
+    .amenity-item-title {
+        font-size: 15px;
+    }
+
+    .amenity-item-content p {
+        font-size: 11px;
+    }
+
+    /* Private Charters Section */
+    .private-charters-section {
+        margin-bottom: 50px;
+    }
+
+    .charters-intro-section {
+        margin-bottom: 40px;
+    }
+
+    .charters-title {
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+
+    .charters-intro {
+        font-size: 15px;
+    }
+
+    .charters-list {
+        gap: 40px;
+    }
+
+    .charter-image {
+        height: 300px;
+    }
+
+    .charter-name {
+        font-size: 28px;
+        margin-bottom: 18px;
+    }
+
+    .charter-description {
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+
+    .charter-specifications {
+        gap: 20px;
+    }
+
+    .charter-details {
+        gap: 18px;
+    }
+
+    .charter-specs,
+    .charter-info {
+        gap: 10px;
+    }
+
+    .charter-spec {
+        gap: 10px;
+    }
+
+    .charter-spec span,
+    .charter-pricing {
+        font-size: 14px;
+    }
+
+    .charter-book-btn {
+        padding: 12px 20px;
+        font-size: 10px;
+    }
+}
+
+/* ===========================
+   MODAL RESPONSIVE
+   =========================== */
+
+@media (max-width: 768px) {
+    .marina-gallery-modal-close {
+        top: 15px;
+        right: 20px;
+        font-size: 35px;
+    }
+
+    .marina-gallery-modal-content {
+        max-width: 95%;
+        max-height: 90%;
+    }
+
+    .marina-gallery-modal-prev,
+    .marina-gallery-modal-next {
+        padding: 14px 18px;
+        font-size: 22px;
+    }
+
+
+    .berthing-link {
+        width: fit-content;
+    }
+    
+}
+
+@media (max-width: 480px) {
+    .marina-gallery-modal-close {
+        top: 10px;
+        right: 15px;
+        font-size: 30px;
+    }
+
+    .marina-gallery-modal-content {
+        max-width: 95vw;
+        max-height: 85vh;
+    }
+
+    .marina-gallery-modal-prev,
+    .marina-gallery-modal-next {
+        padding: 12px 16px;
+        font-size: 20px;
+    }
+}
