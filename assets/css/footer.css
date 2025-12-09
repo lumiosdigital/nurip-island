@@ -438,6 +438,7 @@
     .footer-main-content {
         margin-top: 70px;
         gap: 40px;
+        width: auto;
     }
 
     /* Menu grid STAYS 2x2 on mobile */
@@ -512,7 +513,7 @@
 @media (max-width: 480px) {
     .site-footer {
         margin-top: 50px;
-        padding: 25px 0 0;
+        padding: 25px 10px 0;
     }
 
     .footer-main-content {

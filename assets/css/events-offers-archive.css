@@ -187,12 +187,16 @@
         gap: 50px 30px;
     }
 
+    .archive-event-offer-card {
+        height: fit-content;
+    }
+
     .archive-event-offer-image {
         height: 280px;
     }
 
     .archive-event-offer-content {
-        padding: 30px 25px;
+        padding: 30px 25px 50px;
         min-height: 200px;
     }
 }
@@ -228,7 +232,7 @@
     }
 
     .archive-event-offer-content {
-        padding: 25px 20px;
+        padding: 25px 20px 45px;
         min-height: 180px;
     }
 
@@ -256,7 +260,7 @@
     }
 
     .archive-event-offer-content {
-        padding: 20px 15px;
+        padding: 20px 15px 30px;
         min-height: 160px;
     }
 

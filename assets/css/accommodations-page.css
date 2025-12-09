@@ -432,162 +432,6 @@
 }
 
 /* ===========================
-   RESPONSIVE STYLES
-   =========================== */
-
-@media (max-width: 1440px) {
-    .accpage-carousel-track {
-        padding: 0 40px;
-    }
-}
-
-@media (max-width: 968px) {
-    .accommodations-hero-section {
-        height: 600px;
-        margin: 40px 20px 0;
-    }
-
-    .accommodations-hero-title {
-        font-size: 56px;
-        line-height: 1.1;
-    }
-
-    .accommodations-hero-subtitle {
-        font-size: 20px;
-    }
-
-    .riahi-title,
-    .westin-title {
-        font-size: 40px;
-    }
-
-    .riahi-description,
-    .westin-description {
-        font-size: 18px;
-    }
-
-    .accpage-amenities-row {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .riahi-container,
-    .westin-container {
-        padding: 0 20px;
-    }
-}
-
-@media (max-width: 768px) {
-    .accommodations-hero-section {
-        height: 500px;
-    }
-
-    .accommodations-hero-title {
-        font-size: 48px;
-    }
-
-    .accommodations-hero-subtitle {
-        font-size: 18px;
-    }
-
-    .riahi-section,
-    .westin-section {
-        padding: 60px 0 0;
-    }
-
-    .riahi-title,
-    .westin-title {
-        font-size: 36px;
-    }
-
-    .riahi-description,
-    .westin-description {
-        font-size: 16px;
-    }
-
-    .accpage-card {
-        flex: 0 0 340px;
-        height: 550px;
-    }
-
-    .accpage-image-container {
-        width: 340px;
-        height: 380px;
-    }
-
-    .accpage-name {
-        font-size: 24px;
-    }
-
-    .accpage-carousel-nav {
-        margin-top: 30px;
-        gap: 20px;
-    }
-
-    .accpage-nav-btn {
-        width: 36px;
-        height: 36px;
-    }
-
-    .accpage-nav-btn.next {
-        width: 38px;
-        height: 38px;
-    }
-
-    .westin-cta-button {
-        width: 250px;
-        font-size: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .accommodations-hero-section {
-        height: 400px;
-    }
-
-    .accommodations-hero-title {
-        font-size: 36px;
-        line-height: 1.1;
-    }
-
-    .accommodations-hero-subtitle {
-        font-size: 16px;
-    }
-
-    .riahi-title,
-    .westin-title {
-        font-size: 32px;
-    }
-
-    .accpage-card {
-        flex: 0 0 300px;
-        height: 500px;
-    }
-
-    .accpage-image-container {
-        width: 300px;
-        height: 340px;
-    }
-
-    .accpage-name {
-        font-size: 22px;
-    }
-
-    .accpage-carousel-track {
-        padding: 0 20px;
-        gap: 15px;
-    }
-
-    .accpage-carousel-nav {
-        gap: 15px;
-    }
-
-    .accpage-carousel-line {
-        max-width: 100px;
-    }
-}
-
-/* ===========================
    PRINT STYLES
    =========================== */
 
@@ -640,5 +484,404 @@
 @media (max-width: 768px) {
     .accpage-divider {
         margin-bottom: 30px;
+    }
+}
+
+/* ===========================
+   DESKTOP - 1024px TABLET
+   =========================== */
+
+@media (max-width: 1024px) {
+    .accommodations-hero-section {
+        height: 650px;
+        width: calc(100% - 40px);
+        /* Account for left and right margins */
+        max-width: calc(1400px - 40px);
+        margin-top: 40px;
+        margin-right: 20px;
+        margin-bottom: 0;
+        margin-left: 20px;
+    }
+
+    .accommodations-hero-content {
+        max-width: 600px;
+        padding: 0 20px;
+    }
+
+    .accommodations-hero-title {
+        font-size: 60px;
+        line-height: 1.1;
+    }
+
+    .accommodations-hero-subtitle {
+        font-size: 18px;
+        line-height: 1.5;
+    }
+
+    /* Sections */
+    .riahi-section,
+    .westin-section {
+        padding: 80px 0 0;
+    }
+
+    .riahi-container,
+    .westin-container {
+        padding: 0 20px;
+        margin-bottom: 80px;
+    }
+
+    .riahi-header,
+    .westin-header {
+        margin-bottom: 50px;
+    }
+
+    .riahi-title,
+    .westin-title {
+        font-size: 42px;
+    }
+
+    .riahi-description,
+    .westin-description {
+        font-size: 18px;
+    }
+
+    /* Amenities */
+    .riahi-amenities {
+        gap: 30px;
+    }
+
+    .accpage-amenities-row {
+        gap: 30px;
+    }
+
+    .westin-amenities {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px 20px;
+    }
+
+    /* Carousel */
+    .accpage-carousel {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 80px;
+    }
+
+    .accpage-carousel-track {
+        padding: 10px 20px 0;
+    }
+
+    /* Cards */
+    .accpage-card {
+        flex: 0 0 360px;
+        height: 600px;
+    }
+
+    .accpage-image-container {
+        width: 360px;
+        height: 400px;
+    }
+
+    /* Navigation */
+    .accpage-carousel-nav {
+        margin-top: 35px;
+    }
+
+    /* CTA Buttons */
+    .riahi-cta-wrapper,
+    .westin-cta-wrapper {
+        margin-top: 80px;
+    }
+
+    /* Divider */
+    .accpage-divider {
+        margin-bottom: 40px;
+        padding: 0 20px;
+    }
+}
+
+/* ===========================
+   MOBILE - 768px
+   =========================== */
+
+@media (max-width: 768px) {
+    .accommodations-hero-section {
+        height: 500px;
+        width: calc(100% - 30px);
+        /* Account for left and right margins */
+        max-width: 100%;
+        margin-top: 30px;
+        margin-right: 15px;
+        margin-bottom: 0;
+        margin-left: 15px;
+    }
+
+    .accommodations-hero-content {
+        max-width: 90%;
+        padding: 0 15px;
+    }
+
+    .accommodations-hero-title {
+        font-size: 44px;
+        line-height: 1.1;
+    }
+
+    .accommodations-hero-subtitle {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+    /* Sections */
+    .riahi-section,
+    .westin-section {
+        padding: 60px 0 0;
+    }
+
+    .riahi-container,
+    .westin-container {
+        padding: 0 15px;
+        margin-bottom: 60px;
+    }
+
+    .riahi-header,
+    .westin-header {
+        margin-bottom: 40px;
+    }
+
+    .riahi-title,
+    .westin-title {
+        font-size: 36px;
+    }
+
+    .accpage-carousel-wrapper {
+        overflow: hidden;
+        margin: 0 15px;
+    }
+
+    .riahi-description,
+    .westin-description {
+        font-size: 16px;
+    }
+
+    /* Amenities - Single Column */
+    .riahi-amenities {
+        gap: 25px;
+    }
+
+    .accpage-amenities-row {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .westin-amenities {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .accpage-amenity-item {
+        min-width: auto;
+        width: 100%;
+    }
+
+    /* Carousel */
+    .accpage-carousel {
+        margin-bottom: 60px;
+    }
+
+    .accpage-carousel-track {
+        padding: 10px 0px 0;
+        gap: 15px;
+    }
+
+    /* Cards */
+    .accpage-card {
+        flex: 0 0 320px;
+        height: 540px;
+    }
+
+    .accpage-image-container {
+        width: 320px;
+        height: 360px;
+    }
+
+    .accpage-details {
+        padding: 15px;
+    }
+
+    .accpage-category {
+        font-size: 16px;
+    }
+
+    .accpage-name {
+        font-size: 24px;
+    }
+
+    .accpage-button {
+        width: 140px;
+        padding: 14px 0;
+        font-size: 10px;
+    }
+
+    /* Hide carousel navigation on mobile - users swipe */
+    .accpage-carousel-nav {
+        display: none;
+    }
+
+    /* CTA Buttons */
+    .riahi-cta-wrapper,
+    .westin-cta-wrapper {
+        margin-top: 60px;
+    }
+
+    .riahi-cta-button,
+    .westin-cta-button {
+        width: 100%;
+        max-width: 280px;
+        padding: 14px 0;
+        font-size: 10px;
+    }
+
+    /* Divider */
+    .accpage-divider {
+        margin-bottom: 30px;
+        padding: 0 15px;
+    }
+
+    .accpage-divider-text {
+        font-size: 10px;
+    }
+}
+
+/* ===========================
+   SMALL MOBILE - 480px
+   =========================== */
+
+@media (max-width: 480px) {
+    .accommodations-hero-section {
+        height: 400px;
+        width: calc(100% - 40px);
+        /* Account for left and right margins */
+        max-width: 100%;
+        margin-top: 25px;
+        margin-right: 20px;
+        margin-bottom: 0;
+        margin-left: 20px;
+    }
+
+    .accommodations-hero-content {
+        max-width: 95%;
+        padding: 0 10px;
+    }
+
+    .accommodations-hero-title {
+        font-size: 32px;
+        line-height: 1.1;
+    }
+
+    .accommodations-hero-subtitle {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    /* Sections */
+    .riahi-section,
+    .westin-section {
+        padding: 50px 0 0;
+    }
+
+    .riahi-header,
+    .westin-header {
+        margin-bottom: 30px;
+    }
+
+    .riahi-title,
+    .westin-title {
+        font-size: 32px;
+    }
+
+    .riahi-description,
+    .westin-description {
+        font-size: 15px;
+    }
+
+    /* Amenities */
+    .riahi-amenities {
+        gap: 20px;
+    }
+
+    .accpage-amenities-row {
+        gap: 18px;
+    }
+
+    .accpage-amenity-item {
+        gap: 12px;
+    }
+
+    .accpage-amenity-item span {
+        font-size: 15px;
+    }
+
+    .westin-amenities {
+        gap: 18px;
+    }
+
+    /* Carousel */
+    .accpage-carousel {
+        margin-bottom: 50px;
+    }
+
+    .accpage-carousel-track {
+        gap: 12px;
+    }
+
+    /* Cards */
+    .accpage-card {
+        flex: 0 0 280px;
+        height: 480px;
+    }
+
+    .accpage-image-container {
+        width: 280px;
+        height: 320px;
+    }
+
+    .accpage-details {
+        padding: 12px;
+    }
+
+    .accpage-category {
+        font-size: 15px;
+    }
+
+    .accpage-name {
+        font-size: 22px;
+    }
+
+    .accpage-button {
+        width: 130px;
+        padding: 12px 0;
+        font-size: 9px;
+    }
+
+    /* CTA Buttons */
+    .riahi-cta-wrapper,
+    .westin-cta-wrapper {
+        margin-top: 50px;
+    }
+
+    .riahi-cta-button,
+    .westin-cta-button {
+        max-width: 250px;
+        padding: 12px 0;
+        font-size: 9px;
+    }
+
+    /* Divider */
+    .accpage-divider {
+        margin-bottom: 25px;
+    }
+
+    .accpage-divider-text {
+        font-size: 9px;
     }
 }

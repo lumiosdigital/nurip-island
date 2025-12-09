@@ -456,6 +456,7 @@ body.check-availability-modal-open {
 
     .check-availability-modal {
         padding: 110px 10px 20px;
+        top: 15px;
     }
 
     /* Smaller input padding on narrow screens */

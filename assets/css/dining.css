@@ -500,6 +500,14 @@
 }
 
 @media (max-width: 480px) {
+
+    .dining-hero-section {
+        margin-top: 25px;
+        margin-right: 20px;
+        margin-bottom: 0;
+        margin-left: 20px;
+    }
+
     .signature-experience-card {
         height: 450px;
     }
@@ -565,9 +573,6 @@
 }
 
 @media (max-width: 768px) {
-    .dining-archive-main {
-        padding-top: 100px;
-    }
 
     .dining-hero-section {
         height: 500px;

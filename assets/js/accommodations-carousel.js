@@ -1,8 +1,8 @@
 /**
- * Accommodations Page Carousels
+ * Accommodations Page Carousels - UPDATED WITH LIVE DRAGGING
  * File: assets/js/accommodations-carousel.js
  * Two separate carousels: Riahi Residences and Westin Rooms
- * Updated with new class names to avoid conflicts
+ * Updated to match homepage carousel behavior with live dragging
  */
 
 // Initialize both carousels when DOM is ready
@@ -40,6 +40,10 @@ function initRiahiCarousel() {
         visibleCards = Math.max(1, Math.min(visibleCards, cards.length));
         
         maxIndex = Math.max(0, cards.length - visibleCards);
+        
+        if (currentIndex > maxIndex) {
+            currentIndex = maxIndex;
+        }
     }
 
     function updateCarousel() {
@@ -83,51 +87,43 @@ function initRiahiCarousel() {
         resizeTimeout = setTimeout(updateLayout, 150);
     });
 
-    // Touch/swipe handling
-    let touchStartX = 0;
-    let touchStartY = 0;
+    // Touch/swipe handling with LIVE DRAGGING (matches homepage)
+    let startX = 0;
+    let currentX = 0;
     let isDragging = false;
-    let startTime = 0;
 
     track.addEventListener('touchstart', function(e) {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        startTime = Date.now();
+        startX = e.touches[0].clientX;
         isDragging = true;
+        track.style.transition = 'none';
     }, { passive: true });
 
     track.addEventListener('touchmove', function(e) {
         if (!isDragging) return;
         
-        const touchX = e.touches[0].clientX;
-        const touchY = e.touches[0].clientY;
-        const deltaX = Math.abs(touchX - touchStartX);
-        const deltaY = Math.abs(touchY - touchStartY);
-        
-        if (deltaX > deltaY && deltaX > 10) {
-            e.preventDefault();
-        }
-    }, { passive: false });
+        currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+        const translateX = -currentIndex * (cardWidth + gap) + diff;
+        track.style.transform = `translateX(${translateX}px)`;
+    }, { passive: true });
 
-    track.addEventListener('touchend', function(e) {
+    track.addEventListener('touchend', function() {
         if (!isDragging) return;
         
-        const endX = e.changedTouches[0].clientX;
-        const endTime = Date.now();
-        const diff = touchStartX - endX;
-        const timeDiff = endTime - startTime;
+        isDragging = false;
+        track.style.transition = 'transform 0.3s ease-in-out';
         
-        if (timeDiff < 300 && Math.abs(diff) > 50) {
-            if (diff > 0 && currentIndex < maxIndex) {
-                currentIndex++;
-            } else if (diff < 0 && currentIndex > 0) {
-                currentIndex--;
-            }
-            updateCarousel();
+        const diff = currentX - startX;
+        const threshold = (cardWidth + gap) * 0.2; // 20% of card width
+        
+        if (diff > threshold && currentIndex > 0) {
+            currentIndex--;
+        } else if (diff < -threshold && currentIndex < maxIndex) {
+            currentIndex++;
         }
         
-        isDragging = false;
-    }, { passive: true });
+        updateCarousel();
+    });
 
     // Keyboard navigation
     document.addEventListener('keydown', function(e) {
@@ -151,7 +147,7 @@ function initRiahiCarousel() {
     currentIndex = 0;
     updateLayout();
     
-    console.log('Riahi Carousel initialized:', {
+    console.log('Riahi Carousel initialized with live dragging:', {
         totalCards: cards.length,
         visibleCards: visibleCards,
         maxIndex: maxIndex,
@@ -188,6 +184,10 @@ function initWestinCarousel() {
         visibleCards = Math.max(1, Math.min(visibleCards, cards.length));
         
         maxIndex = Math.max(0, cards.length - visibleCards);
+        
+        if (currentIndex > maxIndex) {
+            currentIndex = maxIndex;
+        }
     }
 
     function updateCarousel() {
@@ -231,51 +231,43 @@ function initWestinCarousel() {
         resizeTimeout = setTimeout(updateLayout, 150);
     });
 
-    // Touch/swipe handling
-    let touchStartX = 0;
-    let touchStartY = 0;
+    // Touch/swipe handling with LIVE DRAGGING (matches homepage)
+    let startX = 0;
+    let currentX = 0;
     let isDragging = false;
-    let startTime = 0;
 
     track.addEventListener('touchstart', function(e) {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        startTime = Date.now();
+        startX = e.touches[0].clientX;
         isDragging = true;
+        track.style.transition = 'none';
     }, { passive: true });
 
     track.addEventListener('touchmove', function(e) {
         if (!isDragging) return;
         
-        const touchX = e.touches[0].clientX;
-        const touchY = e.touches[0].clientY;
-        const deltaX = Math.abs(touchX - touchStartX);
-        const deltaY = Math.abs(touchY - touchStartY);
-        
-        if (deltaX > deltaY && deltaX > 10) {
-            e.preventDefault();
-        }
-    }, { passive: false });
+        currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+        const translateX = -currentIndex * (cardWidth + gap) + diff;
+        track.style.transform = `translateX(${translateX}px)`;
+    }, { passive: true });
 
-    track.addEventListener('touchend', function(e) {
+    track.addEventListener('touchend', function() {
         if (!isDragging) return;
         
-        const endX = e.changedTouches[0].clientX;
-        const endTime = Date.now();
-        const diff = touchStartX - endX;
-        const timeDiff = endTime - startTime;
+        isDragging = false;
+        track.style.transition = 'transform 0.3s ease-in-out';
         
-        if (timeDiff < 300 && Math.abs(diff) > 50) {
-            if (diff > 0 && currentIndex < maxIndex) {
-                currentIndex++;
-            } else if (diff < 0 && currentIndex > 0) {
-                currentIndex--;
-            }
-            updateCarousel();
+        const diff = currentX - startX;
+        const threshold = (cardWidth + gap) * 0.2; // 20% of card width
+        
+        if (diff > threshold && currentIndex > 0) {
+            currentIndex--;
+        } else if (diff < -threshold && currentIndex < maxIndex) {
+            currentIndex++;
         }
         
-        isDragging = false;
-    }, { passive: true });
+        updateCarousel();
+    });
 
     // Keyboard navigation
     document.addEventListener('keydown', function(e) {
@@ -299,7 +291,7 @@ function initWestinCarousel() {
     currentIndex = 0;
     updateLayout();
     
-    console.log('Westin Carousel initialized:', {
+    console.log('Westin Carousel initialized with live dragging:', {
         totalCards: cards.length,
         visibleCards: visibleCards,
         maxIndex: maxIndex,

@@ -210,8 +210,12 @@
         height: 280px;
     }
 
+    .experience-archive-card {
+        height: fit-content;
+    }
+
     .experience-archive-content {
-        padding: 30px 25px;
+        padding: 30px 25px 50px;
         min-height: 200px;
     }
 }
@@ -247,7 +251,7 @@
     }
 
     .experience-archive-content {
-        padding: 25px 20px;
+        padding: 25px 20px 45px;
         min-height: 180px;
     }
 
@@ -275,7 +279,7 @@
     }
 
     .experience-archive-content {
-        padding: 20px 15px;
+        padding: 20px 15px 30px;
         min-height: 160px;
     }
 
