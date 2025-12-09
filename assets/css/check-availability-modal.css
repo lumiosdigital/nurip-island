@@ -1,11 +1,9 @@
 /**
  * Check Availability Modal Styles - Mobile Responsive
- * File: assets/css/check-availability-modal.css
- * 
  * Positioned below check availability button, no overlay, golden accents
  */
 
-/* Prevent any overflow issues */
+/* Prevent any overflow issues & unify box-sizing */
 .check-availability-modal,
 .check-availability-modal * {
     box-sizing: border-box;
@@ -16,7 +14,7 @@
     position: fixed;
     top: 0;
     right: 0;
-    left: 0;
+    left: 150px;
     width: 100%;
     max-width: 100vw;
     height: 100%;
@@ -29,7 +27,6 @@
     transition: opacity 0.3s ease;
     pointer-events: none;
     margin: 0 auto;
-    box-sizing: border-box;
     overflow-x: hidden;
 }
 
@@ -39,7 +36,7 @@
     pointer-events: auto;
 }
 
-/* Modal Backdrop - Transparent, no blur */
+/* Modal Backdrop - Transparent */
 .check-availability-backdrop {
     position: absolute;
     top: 0;
@@ -59,13 +56,12 @@
     z-index: 2;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     animation: modalSlideDown 0.3s ease-out;
-    border-radius: 0;
     max-width: 720px;
     width: calc(100% - 40px);
     margin: 0 20px;
-    box-sizing: border-box;
 }
 
+/* Slide animation */
 @keyframes modalSlideDown {
     from {
         opacity: 0;
@@ -115,6 +111,20 @@
     position: relative;
 }
 
+/* NOTE ABOVE FIELDS */
+.check-availability-note {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #524d4a;
+    margin: 0 0 12px 0;
+}
+
+/* Form block wrapper (just for spacing if needed) */
+.check-availability-form-block {
+    margin: 0;
+}
+
 /* WPBS Search Widget - Hide default title */
 .check-availability-modal .wpbs_s-search-widget h2,
 .check-availability-modal .wpbs_s-search-widget-title {
@@ -161,6 +171,7 @@
     margin: 0 0 4px 0 !important;
     padding: 0 !important;
     display: block !important;
+    text-transform: uppercase !important;
 }
 
 /* Date Input Fields */
@@ -177,9 +188,7 @@
     color: #3D332F !important;
     opacity: 0.5 !important;
     width: 100% !important;
-    box-sizing: border-box !important;
     transition: border-color 0.2s ease !important;
-    border-radius: 0 !important;
     box-shadow: none !important;
     outline: none !important;
 }
@@ -239,11 +248,11 @@
     padding: 0 !important;
 }
 
-/* Search Submit Button - Golden */
-.check-availability-modal .wpbs_s-search-widget-datepicker-submit,
-.check-availability-modal button.wpbs_s-search-widget-datepicker-submit,
-.check-availability-modal input[type="submit"].wpbs_s-search-widget-datepicker-submit {
+/* Search Submit Button - Golden (override plugin styles) */
+.check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field button.wpbs_s-search-widget-datepicker-submit,
+.check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type="submit"].wpbs_s-search-widget-datepicker-submit {
     background-color: #8B5E1D !important;
+    /* gold */
     border: none !important;
     color: #FFFFFF !important;
     font-family: 'Albert Sans', sans-serif !important;
@@ -252,18 +261,20 @@
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;
     line-height: 1.2 !important;
-    height: 40px !important;
+    /* height: 40px !important; */
     width: 100% !important;
     cursor: pointer !important;
     transition: opacity 0.2s ease !important;
     padding: 10px !important;
     box-sizing: border-box !important;
     border-radius: 0 !important;
+    /* flat corners */
     box-shadow: none !important;
     margin: 0 !important;
 }
 
-.check-availability-modal .wpbs_s-search-widget-datepicker-submit:hover {
+.check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field button.wpbs_s-search-widget-datepicker-submit:hover,
+.check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type="submit"].wpbs_s-search-widget-datepicker-submit:hover {
     opacity: 0.8 !important;
 }
 
@@ -284,7 +295,7 @@
     display: none !important;
 }
 
-/* Remove any border-radius from WPBS elements */
+/* Remove any border-radius from everything in the modal */
 .check-availability-modal * {
     border-radius: 0 !important;
 }
@@ -302,6 +313,39 @@
 body.check-availability-modal-open {
     overflow: hidden;
 }
+
+/* ====== LINK BELOW SEARCH ("Book at The Westin →") ====== */
+
+.check-availability-aux-link {
+    margin: 24px 0 0 0;
+}
+
+.check-availability-aux-link__anchor {
+    display: flex;
+    text-transform: uppercase;
+    gap: 10px;
+    align-items: center;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #8B5E1D;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    padding-bottom: 1px;
+    border-bottom: 0.5px solid #8B5E1D;
+    transition: all 0.2s ease;
+    width: fit-content;
+}
+
+.check-availability-aux-link__anchor:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+    border-bottom-color: transparent;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
 
 /* ============================================
    MOBILE RESPONSIVE STYLES
@@ -323,14 +367,20 @@ body.check-availability-modal-open {
 
 /* Tablet and Mobile - 1024px and below */
 @media (max-width: 1024px) {
+
+    /* Center modal in viewport */
     .check-availability-modal {
-        padding: 140px 15px 20px;
+        top: 5px;
+        left: 0;
+        right: 0;
+        padding: 120px 15px 20px;
+        justify-content: center;
     }
 
     .check-availability-container {
         width: 100%;
         max-width: 100%;
-        margin: 0;
+        margin: 0 auto;
         padding: 20px 15px;
     }
 
@@ -347,21 +397,29 @@ body.check-availability-modal-open {
         width: 100% !important;
     }
 
-    /* Adjust input height for touch */
-    .check-availability-modal .wpbs_s-search-widget-datepicker {
+    /* Taller inputs for touch */
+    .check-availability-modal .wpbs_s-search-widget-datepicker,
+    .check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type="text"].wpbs_s-search-widget-datepicker {
         height: 48px !important;
     }
 
-    .check-availability-modal .wpbs_s-search-widget-datepicker-submit {
+    /* Taller search button for touch */
+    .check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field button.wpbs_s-search-widget-datepicker-submit,
+    .check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type="submit"].wpbs_s-search-widget-datepicker-submit {
         height: 48px !important;
         padding: 14px !important;
+    }
+
+    /* Keep Westin link nicely under the button */
+    .check-availability-aux-link {
+        margin-top: 16px;
     }
 }
 
 /* Medium Mobile - 768px and below */
 @media (max-width: 768px) {
     .check-availability-modal {
-        padding: 140px 15px 20px;
+        padding: 120px 15px 20px;
     }
 
     .check-availability-container {
@@ -382,7 +440,7 @@ body.check-availability-modal-open {
         height: 10px;
     }
 
-    /* Increase label size for readability */
+    /* Slightly smaller labels for compact screens */
     .check-availability-modal .wpbs_s-search-widget-field label {
         font-size: 14px !important;
     }
@@ -397,11 +455,12 @@ body.check-availability-modal-open {
     }
 
     .check-availability-modal {
-        padding: 130px 10px 20px;
+        padding: 110px 10px 20px;
     }
 
-    /* Smaller input padding on mobile */
-    .check-availability-modal .wpbs_s-search-widget-datepicker {
+    /* Smaller input padding on narrow screens */
+    .check-availability-modal .wpbs_s-search-widget-datepicker,
+    .check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type="text"].wpbs_s-search-widget-datepicker {
         padding: 0 35px 0 35px !important;
         font-size: 13px !important;
     }
@@ -422,7 +481,8 @@ body.check-availability-modal-open {
     }
 
     /* Button text size */
-    .check-availability-modal .wpbs_s-search-widget-datepicker-submit {
+    .check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field button.wpbs_s-search-widget-datepicker-submit,
+    .check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type="submit"].wpbs_s-search-widget-datepicker-submit {
         font-size: 10px !important;
     }
 }
@@ -432,4 +492,21 @@ body.check-availability-modal-open {
     .check-availability-modal {
         display: none !important;
     }
+}
+
+.wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type=text],
+.wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field select {
+    border-radius: 0px !important;
+    border: 1px solid #8B5E1D !important;
+}
+
+.wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type=text]:focus,
+.wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field select:focus {
+    border-color: #8B5E1D !important;
+    box-shadow: none !important;
+    outline:#8B5E1D solid 1px !important;
+}
+
+.ui-datepicker.wpbs-datepicker {
+    border-radius: 0px !important;
 }

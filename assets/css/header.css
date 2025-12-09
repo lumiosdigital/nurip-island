@@ -888,3 +888,9 @@ body {
         font-size: 13px;
     }
 }
+
+.site-header {
+    overflow: visible;
+    overflow-x: visible;
+    /* explicitly re-apply only for X */
+}

@@ -244,8 +244,16 @@ window.nirupMapData = {
     display: flex;
     text-transform: uppercase;
     gap: 10px;
-    /* justify-items: center; */
     align-items: center;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #8B5E1D;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    padding-bottom: 1px;
+    border-bottom: 0.5px solid #8B5E1D;
+    transition: all 0.2s ease;
 }
 
 .getting-here-see-more-link:hover {

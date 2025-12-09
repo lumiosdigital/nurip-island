@@ -21,13 +21,6 @@
     min-height: 200px;
 }
 
-/* Footer Logo Section - Absolute Positioned */
-.footer-logo-section {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-}
 
 .footer-logo {
     display: block;
@@ -71,20 +64,18 @@
 /* Main Footer Content */
 .footer-main-content {
     display: flex;
-    gap: 60px;
-    margin-top: 85px;
+    margin-top: 5.3rem;
     align-items: flex-start;
+    width: 1400px;
     justify-content: space-between;
+    gap: 30px;
 }
 
-/* Navigation Columns - 2x2 GRID LAYOUT */
 .footer-navigation-columns {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, auto);
-    gap: 40px 80px;
-    flex: 1;
-    max-width: 700px;
+    display: flex;
+    max-width: 867px;
+    gap: 80px;
+    flex: 1 1 0%;
 }
 
 .footer-nav-column {
@@ -134,7 +125,7 @@
 
 /* Newsletter and Contact Section - RIGHT SIDE */
 .footer-sidebar-content {
-    width: 400px;
+    width: 429px;
     flex-shrink: 0;
 }
 
@@ -373,6 +364,16 @@
 
 /* Tablet - 1024px */
 @media (max-width: 1024px) {
+
+    .footer-navigation-columns {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, auto);
+            gap: 40px 80px;
+            flex: 1;
+            max-width: 700px;
+        }
+
     .site-footer {
         padding: 40px 0 0;
         margin-top: 80px;
