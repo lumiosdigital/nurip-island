@@ -15440,5 +15440,17 @@ function nirup_berthing_submissions_page() {
     <?php
 }
 
+function nirup_enqueue_restaurant_gallery_mobile() {
+    if (is_singular('restaurant')) {
+        wp_enqueue_script(
+            'nirup-restaurant-gallery-mobile',
+            get_template_directory_uri() . '/assets/js/single-restaurant-gallery-mobile.js',
+            array(),
+            '1.0.0',
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'nirup_enqueue_restaurant_gallery_mobile');
 
 ?>

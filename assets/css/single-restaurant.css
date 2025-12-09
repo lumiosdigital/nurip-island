@@ -413,7 +413,7 @@
 
 @media (max-width: 968px) {
     .single-restaurant-main {
-        padding-top: 120px;
+        padding-top: 60px;
     }
 
     .single-restaurant-container,
@@ -524,7 +524,7 @@
 
 @media (max-width: 480px) {
     .single-restaurant-main {
-        padding-top: 100px;
+        padding-top: 60px;
     }
 
     .single-restaurant-title {
@@ -576,5 +576,227 @@
 
     .discover-menu-btn {
         display: none;
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* Make gallery a horizontal scrolling container */
+    .single-restaurant-gallery {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 0;
+        height: 400px;
+        margin-bottom: 40px;
+        padding: 0;
+    }
+
+    .single-restaurant-gallery::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Make ALL images full-width slides */
+    .gallery-main-image,
+    .gallery-grid-item {
+        flex: 0 0 100% !important;
+        width: 100%;
+        height: 100%;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Ensure images fill their containers */
+    .gallery-main-image img,
+    .gallery-grid-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        pointer-events: none;
+    }
+
+    /* CRITICAL: Make grid items direct children of gallery */
+    .gallery-grid {
+        display: contents !important;
+        /* This makes grid-item children appear as direct children of gallery */
+    }
+
+    /* Remove the overlay container completely on mobile */
+    .gallery-grid-item.has-overlay .gallery-overlay {
+        display: none;
+    }
+
+    /* Position "See All Photos" button on first slide */
+    .gallery-main-image {
+        position: relative;
+    }
+
+    .see-all-photos-btn {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        z-index: 10;
+        background: rgba(243, 238, 234, 0.95);
+        backdrop-filter: blur(4px);
+    }
+
+    /* No images state */
+    .gallery-no-images {
+        display: flex;
+        flex-direction: row;
+        gap: 0;
+        height: 100%;
+    }
+
+    .gallery-placeholder-main,
+    .gallery-placeholder {
+        flex: 0 0 100%;
+        scroll-snap-align: center;
+    }
+
+    /* Smooth scrolling */
+    .single-restaurant-gallery {
+        scroll-behavior: smooth;
+    }
+
+    /* Prevent image dragging */
+    .single-restaurant-gallery img {
+        -webkit-user-drag: none;
+        user-drag: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    /* Gallery wrapper adjustments */
+    .single-restaurant-gallery-wrapper {
+        padding: 0;
+        margin: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .single-restaurant-gallery {
+        height: 320px;
+        margin-bottom: 30px;
+    }
+
+    .see-all-photos-btn {
+        bottom: 12px;
+        right: 12px;
+        font-size: 10px;
+        padding: 8px 12px;
+        height: 36px;
+    }
+}
+
+/* ===========================
+   CONTENT SECTION MOBILE
+   =========================== */
+
+@media (max-width: 768px) {
+    .single-restaurant-container {
+        padding: 0 15px;
+    }
+
+    .single-restaurant-hero {
+        margin-bottom: 40px;
+        padding: 0 15px;
+    }
+
+    .single-restaurant-title {
+        font-size: 42px;
+        line-height: 1.1;
+    }
+
+    .single-restaurant-subtitle {
+        font-size: 18px;
+    }
+
+    .single-restaurant-content {
+        flex-direction: column;
+        gap: 30px;
+        padding: 0 15px;
+    }
+
+    .restaurant-main-content {
+        max-width: 100%;
+    }
+
+    .restaurant-category-title {
+        font-size: 32px;
+    }
+
+    .restaurant-description p {
+        font-size: 18px;
+    }
+
+    /* Horizontal divider on mobile */
+    .content-divider {
+        height: 1px;
+        width: 100%;
+        margin: 0;
+        background: url('data:image/svg+xml,<svg width="240" height="1" viewBox="0 0 240 1" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0.5" x2="240" y2="0.5" stroke="%23A48456" stroke-opacity="0.3"/></svg>') center/contain no-repeat;
+    }
+
+    .restaurant-sidebar {
+        width: 100%;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .sidebar-item {
+        min-width: auto;
+    }
+
+    .sidebar-menu-button {
+        margin-top: 15px;
+    }
+
+    .discover-menu-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .single-restaurant-hero {
+        margin-bottom: 30px;
+    }
+
+    .single-restaurant-title {
+        font-size: 36px;
+        line-height: 1.1;
+    }
+
+    .single-restaurant-subtitle {
+        font-size: 16px;
+    }
+
+    .single-restaurant-content {
+        gap: 25px;
+    }
+
+    .restaurant-category-title {
+        font-size: 28px;
+    }
+
+    .restaurant-description p {
+        font-size: 16px;
+    }
+
+    .sidebar-item-title {
+        font-size: 16px;
+    }
+
+    .sidebar-item-content p {
+        font-size: 11px;
     }
 }

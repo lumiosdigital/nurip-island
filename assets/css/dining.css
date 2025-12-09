@@ -534,43 +534,6 @@
     margin: 0;
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-    .dining-hero-section {
-        height: 600px;
-    }
-
-    .dining-hero-title {
-        font-size: 56px;
-        line-height: 56px;
-    }
-
-    .dining-about-title {
-        font-size: 50px;
-    }
-
-    .dining-restaurants-section {
-        padding: 0 30px;
-    }
-
-    .restaurants-grid {
-        gap: 50px 30px;
-    }
-
-    .restaurant-archive-image {
-        height: 280px;
-    }
-
-    .restaurant-archive-content {
-        padding: 30px 25px;
-        min-height: 200px;
-    }
-
-    .signature-experiences-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-}
 
 @media (max-width: 768px) {
 
@@ -693,3 +656,554 @@
         font-size: 24px;
     }
 }
+
+/* ===========================
+   DINING PAGE - RESPONSIVE
+   Add this to the END of assets/css/dining.css
+   =========================== */
+
+/* ===========================
+   TABLET - 1024px
+   =========================== */
+
+@media (max-width: 1024px) {
+    .dining-hero-section {
+        height: 650px;
+        width: calc(100% - 40px);
+        max-width: calc(1400px - 40px);
+        margin-top: 40px;
+        margin-right: 20px;
+        margin-bottom: 0;
+        margin-left: 20px;
+    }
+
+    .dining-hero-content {
+        max-width: 600px;
+        padding: 0 20px;
+    }
+
+    .dining-hero-title {
+        font-size: 60px;
+        line-height: 1.1;
+    }
+
+    .dining-hero-subtitle {
+        font-size: 18px;
+        line-height: 1.5;
+    }
+
+    .dining-about-content {
+        padding: 0 20px;
+    }
+
+    .dining-restaurants-section {
+        padding: 0 20px;
+    }
+}
+
+/* ===========================
+   MOBILE - 768px
+   =========================== */
+
+@media (max-width: 768px) {
+    .dining-hero-section {
+        height: 500px;
+        width: calc(100% - 30px);
+        max-width: 100%;
+        margin-top: 30px;
+        margin-right: 15px;
+        margin-bottom: 0;
+        margin-left: 15px;
+    }
+
+    .dining-hero-content {
+        max-width: 90%;
+        padding: 0 15px;
+    }
+
+    .dining-hero-title {
+        font-size: 44px;
+        line-height: 1.1;
+    }
+
+    .dining-hero-subtitle {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+    .dining-about-content {
+        padding: 0 15px;
+    }
+
+    .dining-restaurants-section {
+        padding: 0 15px;
+    }
+
+    .restaurants-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===========================
+   SMALL MOBILE - 480px
+   =========================== */
+
+@media (max-width: 480px) {
+    .dining-hero-section {
+        height: 400px;
+        width: calc(100% - 30px);
+        max-width: 100%;
+        margin-top: 25px;
+        margin-right: 15px;
+        margin-bottom: 0;
+        margin-left: 15px;
+    }
+
+    .dining-hero-content {
+        max-width: 95%;
+        padding: 0 10px;
+    }
+
+    .dining-hero-title {
+        font-size: 32px;
+        line-height: 1.1;
+    }
+
+    .dining-hero-subtitle {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+}
+
+/* ===========================
+   DINING PAGE - RESPONSIVE FIX
+   Add to END of assets/css/dining.css
+   Works with EXISTING HTML structure
+   =========================== */
+
+/* ===========================
+   FIX HERO IMAGE DISPLAY
+   =========================== */
+
+/* Desktop - Fix hero structure */
+.dining-hero-section {
+    position: relative;
+    height: 780px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.dining-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.dining-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.dining-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(41, 26, 26, 0.4);
+    z-index: 2;
+}
+
+.dining-hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    text-align: center;
+    color: white;
+    max-width: 650px;
+    width: 100%;
+}
+
+/* ===========================
+   TABLET - 1024px
+   =========================== */
+
+@media (max-width: 1024px) {
+    .dining-hero-section {
+        height: 650px;
+        width: calc(100% - 40px);
+        max-width: calc(1400px - 40px);
+        margin-top: 40px;
+        margin-right: 20px;
+        margin-bottom: 0;
+        margin-left: 20px;
+    }
+
+    .dining-hero-content {
+        max-width: 600px;
+        padding: 0 20px;
+    }
+
+    .dining-hero-title {
+        font-size: 60px;
+        line-height: 1.1;
+    }
+
+    .dining-hero-subtitle {
+        font-size: 18px;
+        line-height: 1.5;
+    }
+
+    /* About Section */
+    .dining-about-section {
+        margin-bottom: 100px;
+    }
+
+    .dining-about-content {
+        padding: 0 20px;
+        margin: 80px auto 60px;
+    }
+
+    .dining-about-title {
+        font-size: 50px;
+    }
+
+    .dining-about-category {
+        font-size: 16px;
+    }
+
+    /* Features */
+    .dining-features {
+        gap: 35px;
+        padding: 0 20px;
+    }
+
+    /* Restaurants Section */
+    .dining-restaurants-section {
+        padding: 0 20px;
+        margin-bottom: 120px;
+    }
+
+    .restaurants-grid {
+        gap: 40px 30px;
+    }
+
+    .restaurant-archive-card {
+        height: 770px;
+    }
+
+    .restaurant-archive-image {
+        height: 400px;
+    }
+
+    .restaurant-archive-content {
+        padding: 30px 25px;
+    }
+
+    /* Signature Experiences Section */
+    .signature-experiences-section {
+        padding: 0 20px;
+        margin-bottom: 100px;
+    }
+
+    .signature-experiences-title {
+        font-size: 50px;
+        margin-bottom: 50px;
+    }
+
+    .signature-experiences-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .signature-experience-card {
+        height: 550px;
+    }
+
+    .signature-experience-image {
+        height: 380px;
+    }
+
+    .signature-experience-content {
+        padding: 25px 20px;
+    }
+}
+
+/* ===========================
+   MOBILE - 768px
+   =========================== */
+
+@media (max-width: 768px) {
+    .dining-hero-section {
+        height: 500px;
+        width: calc(100% - 30px);
+        max-width: 100%;
+        margin-top: 30px;
+        margin-right: 15px;
+        margin-bottom: 0;
+        margin-left: 15px;
+    }
+
+    .dining-hero-content {
+        max-width: 90%;
+        padding: 0 15px;
+    }
+
+    .dining-hero-title {
+        font-size: 44px;
+        line-height: 1.1;
+    }
+
+    .dining-hero-subtitle {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+    /* About Section */
+    .dining-about-section {
+        margin-bottom: 80px;
+    }
+
+    .dining-about-content {
+        padding: 0 15px;
+        margin: 60px auto 50px;
+    }
+
+    .dining-about-title {
+        font-size: 40px;
+    }
+
+    .dining-about-category {
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+
+    .dining-about-description p {
+        font-size: 15px;
+    }
+
+    /* Features */
+    .dining-features {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        padding: 0 15px;
+    }
+
+    /* Restaurants Section */
+    .dining-restaurants-section {
+        padding: 0 15px;
+        margin-bottom: 80px;
+    }
+
+    .restaurants-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .restaurant-archive-card {
+        height: auto;
+    }
+
+    .restaurant-archive-image {
+        height: 420px;
+    }
+
+    .restaurant-archive-content {
+        padding: 25px 20px;
+        min-height: auto;
+    }
+
+    .restaurant-archive-card-title {
+        font-size: 26px;
+        margin-bottom: 15px;
+    }
+
+    .restaurant-archive-description p {
+        font-size: 14px;
+    }
+
+    /* Signature Experiences Section */
+    .signature-experiences-section {
+        padding: 0 15px;
+        margin-bottom: 80px;
+    }
+
+    .signature-experiences-header {
+        margin-bottom: 40px;
+    }
+
+    .signature-experiences-category {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .signature-experiences-title {
+        font-size: 40px;
+        margin-bottom: 40px;
+    }
+
+    .signature-experiences-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .signature-experience-card {
+        height: auto;
+    }
+
+    .signature-experience-image {
+        height: 350px;
+    }
+
+    .signature-experience-content {
+        padding: 20px;
+    }
+
+    .signature-experience-title {
+        font-size: 26px;
+        margin-bottom: 10px;
+    }
+
+    .signature-experience-description {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+}
+
+/* ===========================
+   SMALL MOBILE - 480px
+   =========================== */
+
+@media (max-width: 480px) {
+    .dining-hero-section {
+        height: 400px;
+        width: calc(100% - 30px);
+        max-width: 100%;
+        margin-top: 25px;
+        margin-right: 15px;
+        margin-bottom: 0;
+        margin-left: 15px;
+    }
+
+    .dining-hero-content {
+        max-width: 95%;
+        padding: 0 10px;
+    }
+
+    .dining-hero-title {
+        font-size: 32px;
+        line-height: 1.1;
+    }
+
+    .dining-hero-subtitle {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    /* About Section */
+    .dining-about-section {
+        margin-bottom: 60px;
+    }
+
+    .dining-about-content {
+        margin: 50px auto 40px;
+    }
+
+    .dining-about-title {
+        font-size: 32px;
+    }
+
+    .dining-about-category {
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+
+    .dining-about-description p {
+        font-size: 14px;
+    }
+
+    /* Features */
+    .dining-feature-item {
+        max-width: 100%;
+    }
+
+    .dining-feature-title {
+        font-size: 16px;
+    }
+
+    .dining-feature-description {
+        font-size: 11px;
+    }
+
+    /* Restaurants Section */
+    .dining-restaurants-section {
+        margin-bottom: 60px;
+    }
+
+    .restaurants-grid {
+        gap: 30px;
+    }
+
+    .restaurant-archive-image {
+        height: 360px;
+    }
+
+    .restaurant-archive-content {
+        padding: 20px 15px;
+    }
+
+    .restaurant-archive-card-title {
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+
+    .restaurant-archive-description p {
+        font-size: 13px;
+    }
+
+    /* Signature Experiences Section */
+    .signature-experiences-section {
+        margin-bottom: 60px;
+    }
+
+    .signature-experiences-header {
+        margin-bottom: 30px;
+    }
+
+    .signature-experiences-category {
+        font-size: 15px;
+        margin-bottom: 15px;
+    }
+
+    .signature-experiences-title {
+        font-size: 32px;
+        margin-bottom: 30px;
+    }
+
+    .signature-experiences-grid {
+        gap: 25px;
+    }
+
+    .signature-experience-image {
+        height: 300px;
+    }
+
+    .signature-experience-content {
+        padding: 18px 15px;
+    }
+
+    .signature-experience-title {
+        font-size: 22px;
+        margin-bottom: 8px;
+    }
+
+    .signature-experience-description {
+        font-size: 12px;
+    }
+}
+
