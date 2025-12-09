@@ -264,7 +264,7 @@ window.nirupMapData = {
     border-bottom-color: transparent;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .getting-here-see-more {
         position: static;
         text-align: center;
@@ -274,7 +274,7 @@ window.nirupMapData = {
     .getting-here-title-row {
         margin-bottom: 30px;
     }
-}
+} */
 
 .getting-here-description {
     font-family: 'Amiri', serif;
@@ -475,6 +475,50 @@ window.nirupMapData = {
     font-size: 14px;
 }
 
+@media (max-width: 1024px) {
+    .getting-here-section {
+        padding: 60px 25px;
+    }
+
+    /* Stack title and button vertically - SAME AS EXPERIENCES CAROUSEL */
+    .getting-here-title-row {
+        flex-direction: column;
+        gap: 0;
+        margin-bottom: 0;
+    }
+
+    .getting-here-title {
+        padding-bottom: 25px;
+        position: relative;
+        margin-bottom: 0;
+    }
+
+    /* Add decorative line below title on tablet */
+    .getting-here-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 1px;
+        background: #A48456;
+        opacity: 0.3;
+    }
+
+    /* Button below line */
+    .getting-here-see-more {
+        position: static;
+        text-align: center;
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
+
+    .getting-here-see-more-link {
+        border-bottom: none;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .getting-here-section {
@@ -484,13 +528,49 @@ window.nirupMapData = {
     .getting-here-container {
         padding: 0 15px;
     }
+
+    /* Stack title and button vertically - SAME AS EXPERIENCES CAROUSEL */
+    .getting-here-title-row {
+        flex-direction: column;
+        gap: 0;
+        margin-bottom: 0;
+    }
     
     .getting-here-title {
         font-size: 36px;
+        padding-bottom: 20px;
+        position: relative;
+        margin-bottom: 0;
+    }
+
+    /* Add decorative line below title - SAME AS EXPERIENCES CAROUSEL */
+    .getting-here-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 1px;
+        background: #A48456;
+        opacity: 0.3;
+    }
+
+    /* Button below line - SAME AS EXPERIENCES CAROUSEL */
+    .getting-here-see-more {
+        position: static;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .getting-here-see-more-link {
+        font-size: 12px;
+        border-bottom: none; /* Remove underline on mobile */
     }
     
     .getting-here-description {
         font-size: 14px;
+        margin-top: 20px;
     }
     
     .getting-here-map-container {
@@ -528,8 +608,32 @@ window.nirupMapData = {
 }
 
 @media (max-width: 480px) {
+    /* Stack title and button */
+    .getting-here-title-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
     .getting-here-title {
         font-size: 28px;
+        padding-bottom: 20px;
+    }
+
+    /* Decorative line */
+    .getting-here-title::after {
+        width: 80px;
+    }
+
+    /* Button styling */
+    .getting-here-see-more {
+        position: static;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .getting-here-see-more-link {
+        font-size: 11px;
+        border-bottom: none;
     }
     
     .getting-here-map-container {
@@ -542,4 +646,6 @@ window.nirupMapData = {
         right: 10px;
     }
 }
+
+
 </style>

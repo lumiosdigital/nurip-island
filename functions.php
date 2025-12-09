@@ -1676,7 +1676,7 @@ $wp_customize->add_control('nirup_video_loop', array(
         'priority' => 21,
     ));
 
-    // Book Your Stay Button Text
+    // Booking Button Text (Header & Mobile)
     $wp_customize->add_setting('nirup_booking_button_text', array(
         'default' => __('Book Your Stay', 'nirup-island'),
         'sanitize_callback' => 'sanitize_text_field',
@@ -1684,14 +1684,22 @@ $wp_customize->add_control('nirup_video_loop', array(
 
     $wp_customize->add_control('nirup_booking_button_text', array(
         'label' => __('Booking Button Text', 'nirup-island'),
+        'description' => __('Text for both header and mobile booking buttons', 'nirup-island'),
         'section' => 'nirup_navigation',
         'type' => 'text',
     ));
 
-    // Book Your Stay Button Link
+    // Booking Button Link (Header & Mobile)
     $wp_customize->add_setting('nirup_booking_button_link', array(
-        'default' => '',
+        'default' => '/accommodations/the-westin-nirup-island-resort-spa/',
         'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control('nirup_booking_button_link', array(
+        'label' => __('Booking Button Link', 'nirup-island'),
+        'description' => __('URL for both header and mobile booking buttons (e.g., Westin page)', 'nirup-island'),
+        'section' => 'nirup_navigation',
+        'type' => 'url',
     ));
 
 

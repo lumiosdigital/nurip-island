@@ -41,8 +41,7 @@
         bindEvents: function() {
             var self = this;
 
-            // Open modal when clicking Book Your Stay buttons
-            $(document).on('click', '.booking-button, .hero-cta, .hero-cta-button, .mobile-booking-button', function(e) {
+            $(document).on('click', '.hero-cta, .hero-cta-button', function(e) {
                 e.preventDefault();
                 self.openModal($(this));
             });

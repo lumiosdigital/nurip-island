@@ -86,7 +86,7 @@
 
                         <!-- Check Availability Button -->
                         <button class="check-availability-toggle" aria-label="<?php _e('Check Availability', 'nirup-island'); ?>">
-                            <span class="check-availability-text"><?php _e('CHECK AVAILABILITY', 'nirup-island'); ?></span>
+                            <span class="check-availability-text"><?php _e('BOOK RIAHI VILLAS', 'nirup-island'); ?></span>
                             <svg class="check-availability-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                                 <path d="M5.33333 1.33337V4.00004M10.6667 1.33337V4.00004M2 6.66671H14M5.33333 9.33337H5.34M8 9.33337H8.00667M10.6667 9.33337H10.6733M5.33333 12H5.34M8 12H8.00667M10.6667 12H10.6733M3.33333 2.66671H12.6667C13.403 2.66671 14 3.26366 14 4.00004V13.3334C14 14.0698 13.403 14.6667 12.6667 14.6667H3.33333C2.59695 14.6667 2 14.0698 2 13.3334V4.00004C2 3.26366 2.59695 2.66671 3.33333 2.66671Z" stroke="#8B5E1D" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
@@ -95,10 +95,14 @@
                         <!-- Booking Button -->
                         <?php 
                         $booking_text = get_theme_mod('nirup_booking_button_text', __('Book Your Stay', 'nirup-island'));
-                        $booking_link = get_theme_mod('nirup_booking_button_link', '');
+                        $booking_link = get_theme_mod('nirup_booking_button_link', '/accommodations/the-westin-nirup-island-resort-spa/');
                         if ($booking_text) :
                         ?>
-                        <a href="#" class="booking-button">
+                        <a 
+                        href="<?php echo esc_url($booking_link); ?>" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        class="header-booking-button">
                             <?php echo esc_html($booking_text); ?>
                         </a>
                         <?php endif; ?>
@@ -143,9 +147,18 @@
                     
                     <?php if ($booking_text) : ?>
                     <div class="mobile-booking">
-                        <a href="#" class="mobile-booking-button">
+                        <a 
+                        href="<?php echo esc_url($booking_link); ?>" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        class="mobile-booking-button">
                             <?php echo esc_html($booking_text); ?>
                         </a>
+                        <div class="mobile-language-section">
+                            <div class="mobile-language-switcher">
+                                <?php nirup_language_dropdown(); ?>
+                            </div>
+                        </div>
                     </div>
                     <?php endif; ?>
                 </div>

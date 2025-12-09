@@ -1,5 +1,6 @@
 /**
  * Experiences Carousel JavaScript
+ * Updated with live dragging behavior
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -59,7 +60,7 @@ function initExperiencesCarousel() {
         nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
         
         prevBtn.style.cursor = currentIndex <= 0 ? 'default' : 'pointer';
-        nextBtn.style.cursor = currentIndex >= maxIndex ? '0.5' : 'pointer';
+        nextBtn.style.cursor = currentIndex >= maxIndex ? 'default' : 'pointer';
     }
     
     function updateLayout() {
@@ -89,53 +90,43 @@ function initExperiencesCarousel() {
         resizeTimeout = setTimeout(updateLayout, 150);
     });
     
-    // Touch/swipe handling for mobile
-    let touchStartX = 0;
-    let touchStartY = 0;
+    // Touch/swipe handling with LIVE DRAGGING (matches events-offers carousel)
+    let startX = 0;
+    let currentX = 0;
     let isDragging = false;
-    let startTime = 0;
     
     track.addEventListener('touchstart', function(e) {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        startTime = Date.now();
+        startX = e.touches[0].clientX;
         isDragging = true;
+        track.style.transition = 'none';
     }, { passive: true });
     
     track.addEventListener('touchmove', function(e) {
         if (!isDragging) return;
         
-        const touchX = e.touches[0].clientX;
-        const touchY = e.touches[0].clientY;
-        const deltaX = Math.abs(touchX - touchStartX);
-        const deltaY = Math.abs(touchY - touchStartY);
-        
-        // If horizontal swipe is more significant than vertical, prevent scrolling
-        if (deltaX > deltaY && deltaX > 10) {
-            e.preventDefault();
-        }
-    }, { passive: false });
+        currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+        const translateX = -currentIndex * cardStep + diff;
+        track.style.transform = `translateX(${translateX}px)`;
+    }, { passive: true });
     
-    track.addEventListener('touchend', function(e) {
+    track.addEventListener('touchend', function() {
         if (!isDragging) return;
         
-        const endX = e.changedTouches[0].clientX;
-        const endTime = Date.now();
-        const diff = touchStartX - endX;
-        const timeDiff = endTime - startTime;
+        isDragging = false;
+        track.style.transition = 'transform 0.3s ease-in-out';
         
-        // Only trigger if it's a quick swipe (under 300ms) and significant distance (over 50px)
-        if (timeDiff < 300 && Math.abs(diff) > 50) {
-            if (diff > 0 && currentIndex < maxIndex) {
-                currentIndex++;
-            } else if (diff < 0 && currentIndex > 0) {
-                currentIndex--;
-            }
-            updateCarousel();
+        const diff = currentX - startX;
+        const threshold = cardStep * 0.2; // 20% of card width
+        
+        if (diff > threshold && currentIndex > 0) {
+            currentIndex--;
+        } else if (diff < -threshold && currentIndex < maxIndex) {
+            currentIndex++;
         }
         
-        isDragging = false;
-    }, { passive: true });
+        updateCarousel();
+    });
     
     // Keyboard navigation
     document.addEventListener('keydown', function(e) {
@@ -161,7 +152,7 @@ function initExperiencesCarousel() {
     updateLayout();
     
     // Debug info (remove in production)
-    console.log('Carousel initialized:', {
+    console.log('Experiences Carousel initialized with live dragging:', {
         totalCards: cards.length,
         visibleCards: visibleCards,
         maxIndex: maxIndex,

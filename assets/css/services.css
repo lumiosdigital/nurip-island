@@ -130,36 +130,40 @@
    RESPONSIVE DESIGN
    =========================== */
 
-/* Tablets */
-@media (max-width: 992px) {
+/* Tablets - 1024px */
+@media (max-width: 1024px) {
     .services-section {
         padding: 60px 0;
     }
 
     .services-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 40px;
+        gap: 15px;
+        padding: 0 20px;
     }
 
     .service-card {
-        width: 100%;
-        max-width: 453px;
+        width: calc(33.333% - 10px);
+        max-width: none;
+        height: 650px;
     }
 }
 
-/* Mobile phones */
+/* Mobile - 768px */
 @media (max-width: 768px) {
     .services-section {
         padding: 40px 0;
     }
 
     .services-container {
+        flex-direction: column;
+        align-items: center;
         gap: 30px;
         padding: 0 15px;
     }
 
     .service-card {
+        width: 100%;
+        max-width: 453px;
         height: auto;
         min-height: 500px;
     }
@@ -178,13 +182,25 @@
     }
 }
 
-/* Small mobile phones */
+/* Small Mobile - 480px */
 @media (max-width: 480px) {
+    .services-container {
+        gap: 25px;
+    }
+
+    .service-card {
+        min-height: 450px;
+    }
+
     .service-image-container {
         height: 250px;
     }
 
     .service-title {
         font-size: 22px;
+    }
+
+    .service-description p {
+        font-size: 12px;
     }
 }
