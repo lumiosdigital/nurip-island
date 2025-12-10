@@ -579,6 +579,10 @@
     }
 }
 
+.gallery-swipe-label {
+    display: none;
+}
+
 @media (max-width: 768px) {
 
     /* Make gallery a horizontal scrolling container */
@@ -592,7 +596,7 @@
         scrollbar-width: none;
         gap: 0;
         height: 400px;
-        margin-bottom: 40px;
+        margin-bottom: 8px;
         padding: 0;
     }
 
@@ -671,7 +675,6 @@
     /* Prevent image dragging */
     .single-restaurant-gallery img {
         -webkit-user-drag: none;
-        user-drag: none;
         -webkit-user-select: none;
         user-select: none;
     }
@@ -686,7 +689,7 @@
 @media (max-width: 480px) {
     .single-restaurant-gallery {
         height: 320px;
-        margin-bottom: 30px;
+        margin-bottom: 8px;
     }
 
     .see-all-photos-btn {
@@ -764,6 +767,29 @@
     .discover-menu-btn {
         width: 100%;
     }
+
+        .gallery-swipe-label {
+            display: flex;
+            justify-content: right;
+            font-family: 'Albert Sans', sans-serif;
+            font-size: 14px;
+            color: #555250;
+            margin-top: 8px;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+    
+        .gallery-swipe-paragraph {
+            margin: 0;
+        }
+    
+        .gallery-swipe-arrow {
+            margin-left: 2px;
+        }
+    
+        .gallery-swipe-arrow svg path {
+            stroke: #555250;
+        }
 }
 
 @media (max-width: 480px) {
@@ -800,3 +826,4 @@
         font-size: 11px;
     }
 }
+

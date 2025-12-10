@@ -75,6 +75,7 @@ get_header(); ?>
                                 </div>
                             <?php endforeach; ?>
                         </div>
+                        
                     </div>
                 <?php else : ?>
                     <!-- No Images Placeholder -->
@@ -88,6 +89,13 @@ get_header(); ?>
                         </div>
                     </div>
                 <?php endif; ?>
+
+                <div class="gallery-swipe-label" >
+                    <p class="gallery-swipe-paragraph">Swipe top see more</p>
+                    <svg class="gallery-swipe-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M3.33398 7.99992H12.6673M12.6673 7.99992L8.00065 3.33325M12.6673 7.99992L8.00065 12.6666" stroke="#555250" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
             </div>
 
             <!-- Fullscreen Gallery Modal - EXACTLY COPIED FROM SINGLE RESTAURANT -->

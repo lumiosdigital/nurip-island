@@ -734,3 +734,1200 @@
         font-size: 28px;
     }
 }
+
+.private-events-hero {
+    position: relative;
+    height: 780px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto 120px;
+    overflow: hidden;
+}
+
+.private-hero-bg-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.private-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(41, 26, 26, 0.4);
+}
+
+.private-hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    max-width: 694px;
+    width: 100%;
+    z-index: 10;
+}
+
+.private-hero-title {
+    font-family: 'Amiri', serif;
+    font-size: 72px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    margin: 0 0 15px 0;
+}
+
+.private-hero-subtitle {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 23px;
+    font-weight: 300;
+    line-height: 1.4;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* ===========================
+   EVENT CARDS - MATCH DINING CARDS
+   =========================== */
+
+/* Desktop - Cards matching dining restaurant cards */
+.events-cards-section {
+    padding: 0 20px 116px;
+}
+
+.events-cards-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.event-card {
+    background: #fcfaf6;
+    width: 100%;
+    height: 880px;
+    /* Match dining cards */
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card:nth-child(3) {
+    grid-column: 1;
+}
+
+.event-card-image {
+    width: 100%;
+    height: 510px;
+    /* Match dining cards */
+    overflow: hidden;
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.event-card-content {
+    padding: 40px 30px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.event-card-location {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #555250;
+    opacity: 0.8;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.event-card-title {
+    font-family: 'Amiri', serif;
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #555250;
+    margin: 0;
+}
+
+.event-card-description {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #555250;
+    margin: 0;
+}
+
+.event-card-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px 40px;
+    text-align: left;
+    margin-top: auto;
+}
+
+.detail-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.detail-item svg {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+}
+
+.detail-item span {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #555250;
+}
+
+/* ===========================
+   THANK YOU MODAL - IMPROVED
+   =========================== */
+
+.thank-you-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.thank-you-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    background: #fcfaf6;
+    max-width: 600px;
+    width: calc(100% - 40px);
+    padding: 60px 50px;
+    text-align: center;
+    z-index: 10001;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    font-size: 32px;
+    color: #8b5e1d;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+    color: #3d332f;
+    transform: rotate(90deg);
+}
+
+.modal-title {
+    font-family: 'Amiri', serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    color: #3d332f;
+    margin: 0 0 25px 0;
+}
+
+.modal-intro-text {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #3d332f;
+    margin: 0 0 30px 0;
+}
+
+.modal-divider {
+    width: 80px;
+    height: 1px;
+    background: rgba(164, 132, 86, 0.4);
+    margin: 30px auto;
+}
+
+.modal-contact-text {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #3d332f;
+    margin: 0 0 15px 0;
+}
+
+.modal-phone-number {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: #8b5e1d;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #8b5e1d;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.modal-phone-number:hover {
+    opacity: 0.8;
+    border-bottom-color: transparent;
+}
+
+.modal-closing-text {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #3d332f;
+    margin: 30px 0 0 0;
+}
+
+/* ===========================
+   TABLET - 1024px
+   =========================== */
+
+@media (max-width: 1024px) {
+
+    /* Hero Section */
+    .private-events-hero {
+        height: 650px;
+        width: calc(100% - 40px);
+        max-width: calc(1400px - 40px);
+        margin-top: 40px;
+        margin-right: 20px;
+        margin-bottom: 100px;
+        margin-left: 20px;
+    }
+
+    .private-hero-content {
+        max-width: 600px;
+        padding: 0 20px;
+    }
+
+    .private-hero-title {
+        font-size: 60px;
+        line-height: 1.1;
+    }
+
+    .private-hero-subtitle {
+        font-size: 18px;
+    }
+
+    /* Events Section Header */
+    .events-section-header {
+        padding: 0 20px 80px;
+    }
+
+    .events-section-title {
+        font-size: 42px;
+    }
+
+    .events-section-description {
+        font-size: 15px;
+    }
+
+    /* Event Cards */
+    .events-cards-section {
+        padding: 0 20px 100px;
+    }
+
+    .events-cards-container {
+        gap: 30px;
+    }
+
+    .event-card {
+        height: auto;
+    }
+
+    .event-card-image {
+        height: 400px;
+    }
+
+    .event-card-content {
+        padding: 35px 25px;
+    }
+
+    .event-card-title {
+        font-size: 36px;
+    }
+
+    /* Form Section */
+    .private-form-section {
+        padding: 100px 20px 200px;
+    }
+
+    .private-form-section-title {
+        font-size: 42px;
+    }
+
+    /* Modal */
+    .modal-content {
+        max-width: 550px;
+        padding: 50px 40px;
+    }
+
+    .modal-title {
+        font-size: 28px;
+    }
+
+    .modal-intro-text {
+        font-size: 16px;
+    }
+}
+
+/* ===========================
+   MOBILE - 768px
+   =========================== */
+
+@media (max-width: 768px) {
+
+    /* Hero Section */
+    .private-events-hero {
+        height: 500px;
+        width: calc(100% - 30px);
+        max-width: 100%;
+        margin-top: 30px;
+        margin-right: 15px;
+        margin-bottom: 80px;
+        margin-left: 15px;
+    }
+
+    .private-hero-content {
+        max-width: 90%;
+        padding: 0 15px;
+    }
+
+    .private-hero-title {
+        font-size: 44px;
+        line-height: 1.1;
+    }
+
+    .private-hero-subtitle {
+        font-size: 16px;
+    }
+
+    /* Events Section Header */
+    .events-section-header {
+        padding: 0 15px 60px;
+    }
+
+    .events-header-container {
+        max-width: 100%;
+    }
+
+    .events-section-title {
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .events-section-description {
+        font-size: 15px;
+    }
+
+    /* Event Cards */
+    .events-cards-section {
+        padding: 0 15px 80px;
+    }
+
+    .events-cards-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .event-card {
+        height: auto;
+    }
+
+    .event-card:nth-child(3) {
+        grid-column: auto;
+    }
+
+    .event-card-image {
+        height: 420px;
+    }
+
+    .event-card-content {
+        padding: 30px 20px;
+        gap: 18px;
+    }
+
+    .event-card-location {
+        font-size: 16px;
+    }
+
+    .event-card-title {
+        font-size: 32px;
+    }
+
+    .event-card-description {
+        font-size: 15px;
+    }
+
+    .event-card-details {
+        gap: 15px 30px;
+    }
+
+    .detail-item span {
+        font-size: 15px;
+    }
+
+    /* Form Section */
+    .private-form-section {
+        padding: 80px 15px 150px;
+    }
+
+    .private-form-section-title {
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .form-columns {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .private-form-column-left,
+    .private-form-column-right {
+        width: 100%;
+    }
+
+    .private-form-submit-btn {
+        width: 100%;
+    }
+
+    /* Modal */
+    .modal-content {
+        max-width: calc(100% - 30px);
+        width: calc(100% - 30px);
+        padding: 40px 30px;
+    }
+
+    .modal-close-btn {
+        top: 15px;
+        right: 15px;
+        font-size: 28px;
+        width: 36px;
+        height: 36px;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .modal-intro-text {
+        font-size: 15px;
+        margin-bottom: 25px;
+    }
+
+    .modal-divider {
+        margin: 25px auto;
+    }
+
+    .modal-contact-text {
+        font-size: 15px;
+    }
+
+    .modal-phone-number {
+        font-size: 13px;
+    }
+
+    .modal-closing-text {
+        font-size: 15px;
+        margin-top: 25px;
+    }
+}
+
+/* ===========================
+   SMALL MOBILE - 480px
+   =========================== */
+
+@media (max-width: 480px) {
+
+    /* Hero Section */
+    .private-events-hero {
+        height: 400px;
+        width: calc(100% - 30px);
+        margin-top: 25px;
+        margin-bottom: 60px;
+    }
+
+    .private-hero-content {
+        max-width: 95%;
+        padding: 0 10px;
+    }
+
+    .private-hero-title {
+        font-size: 32px;
+        line-height: 1.1;
+    }
+
+    .private-hero-subtitle {
+        font-size: 14px;
+    }
+
+    /* Events Section Header */
+    .events-section-header {
+        padding: 0 15px 50px;
+    }
+
+    .events-section-title {
+        font-size: 28px;
+        margin-bottom: 18px;
+    }
+
+    .events-section-description {
+        font-size: 14px;
+    }
+
+    /* Event Cards */
+    .events-cards-section {
+        padding: 0 15px 60px;
+    }
+
+    .events-cards-container {
+        gap: 30px;
+    }
+
+    .event-card-image {
+        height: 360px;
+    }
+
+    .event-card-content {
+        padding: 25px 18px;
+        gap: 16px;
+    }
+
+    .event-card-location {
+        font-size: 15px;
+    }
+
+    .event-card-title {
+        font-size: 28px;
+    }
+
+    .event-card-description {
+        font-size: 14px;
+    }
+
+    .event-card-details {
+        gap: 12px 20px;
+    }
+
+    .detail-item {
+        gap: 8px;
+    }
+
+    .detail-item svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .detail-item span {
+        font-size: 14px;
+    }
+
+    /* Form Section */
+    .private-form-section {
+        padding: 60px 15px 120px;
+    }
+
+    .private-form-section-title {
+        font-size: 28px;
+        margin-bottom: 18px;
+    }
+
+    .form-columns {
+        gap: 25px;
+    }
+
+    .private-form-label {
+        font-size: 13px;
+    }
+
+    .private-form-input,
+    .private-form-select,
+    .private-form-textarea {
+        font-size: 15px;
+    }
+
+    .private-form-submit-btn {
+        font-size: 12px;
+        padding: 14px 24px;
+    }
+
+    /* Modal */
+    .modal-content {
+        padding: 35px 25px;
+    }
+
+    .modal-close-btn {
+        top: 12px;
+        right: 12px;
+        font-size: 24px;
+        width: 32px;
+        height: 32px;
+    }
+
+    .modal-title {
+        font-size: 20px;
+        margin-bottom: 18px;
+    }
+
+    .modal-intro-text {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .modal-divider {
+        width: 60px;
+        margin: 20px auto;
+    }
+
+    .modal-contact-text {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .modal-phone-number {
+        font-size: 12px;
+    }
+
+    .modal-closing-text {
+        font-size: 14px;
+        margin-top: 20px;
+    }
+}
+
+.private-form-section {
+    padding: 116px 20px 250px;
+    background: #f3eeea;
+}
+
+.private-form-section-container {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.private-form-section-title {
+    font-family: 'Amiri', serif;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #3d332f;
+    text-align: center;
+    margin: 0 0 24px 0;
+}
+
+.private-form-section-description {
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3d332f;
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 100px;
+}
+
+.private-events-form {
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.private-form-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 154px;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.private-form-column-left,
+.private-form-column-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.private-form-field {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.private-form-label {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: #3d332f;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* INPUTS - ALWAYS WHITE BACKGROUND */
+.private-form-input,
+.private-form-select {
+    width: 100%;
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 12px;
+    line-height: 1.4;
+    color: #3d332f;
+    background: white !important;
+    /* Always white */
+    border: 1px solid #d4c5b0;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.private-form-input::placeholder,
+.private-form-select option[value=""] {
+    color: #9d8f7f;
+    opacity: 1;
+}
+
+.private-form-input:focus,
+.private-form-select:focus {
+    border-color: #8b5e1d;
+    background: white !important;
+    /* Stay white on focus */
+}
+
+.private-form-select {
+    appearance: none;
+    cursor: pointer;
+}
+
+.select-container {
+    position: relative;
+}
+
+.private-select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    width: 14px;
+    height: 14px;
+}
+
+/* TEXTAREA - ALWAYS WHITE BACKGROUND */
+.private-form-textarea {
+    width: 100%;
+    height: 345px;
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #3d332f;
+    background: white !important;
+    /* Always white */
+    border: 1px solid #d4c5b0;
+    padding: 12px;
+    outline: none;
+    resize: vertical;
+    min-height: 200px;
+    transition: all 0.2s ease;
+}
+
+.private-form-textarea::placeholder {
+    color: #9d8f7f;
+    opacity: 1;
+}
+
+.private-form-textarea:focus {
+    border-color: #8b5e1d;
+    background: white !important;
+    /* Stay white on focus */
+}
+
+.private-form-submit-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: auto;
+}
+
+.private-form-submit-btn {
+    width: 301px;
+    height: 40px;
+    background: #8b5e1d;
+    border: none;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    border-radius: 0;
+}
+
+.private-form-submit-btn:hover {
+    background: #a48456;
+}
+
+.private-form-submit-btn:disabled,
+.private-form-submit-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.recaptcha-note-nirup {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    line-height: 1.4;
+    color: #666;
+    text-align: left;
+}
+
+.recaptcha-note-nirup a:hover {
+    text-decoration: none;
+}
+
+/* ===========================
+   AUTOFILL - KEEP WHITE BACKGROUND
+   =========================== */
+
+.private-form-input:not(:placeholder-shown),
+.private-form-input:required:valid {
+    background: white !important;
+    color: #3d332f;
+}
+
+.private-form-textarea:not(:placeholder-shown),
+.private-form-textarea:required:valid {
+    background: white !important;
+    color: #3d332f;
+}
+
+.private-form-input:-webkit-autofill,
+.private-form-textarea:-webkit-autofill {
+    box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: #3d332f !important;
+}
+
+.private-form-select:has(option:checked:not([value=""])) {
+    background: white !important;
+    color: #3d332f;
+}
+
+/* ===========================
+   FORM - TABLET 1024px
+   =========================== */
+
+@media (max-width: 1024px) {
+    .private-form-section {
+        padding: 100px 20px 200px;
+    }
+
+    .private-form-section-title {
+        font-size: 42px;
+    }
+
+    .private-form-section-description {
+        font-size: 15px;
+        margin-bottom: 80px;
+    }
+
+    .private-form-columns {
+        gap: 80px;
+    }
+
+    .private-form-column-left,
+    .private-form-column-right {
+        gap: 22px;
+    }
+
+    .private-form-textarea {
+        height: 280px;
+    }
+}
+
+/* ===========================
+   FORM - MOBILE 768px
+   =========================== */
+
+@media (max-width: 768px) {
+    .private-form-section {
+        padding: 80px 15px 150px;
+    }
+
+    .private-form-section-title {
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .private-form-section-description {
+        font-size: 15px;
+        margin-bottom: 60px;
+        padding: 0 10px;
+    }
+
+    /* CRITICAL: Single column layout */
+    .private-form-columns {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .private-form-column-left,
+    .private-form-column-right {
+        width: 100%;
+        gap: 20px;
+    }
+
+    .private-form-field {
+        gap: 6px;
+    }
+
+    .private-form-label {
+        font-size: 13px;
+    }
+
+    .private-form-input,
+    .private-form-select,
+    .private-form-textarea {
+        font-size: 16px;
+        padding: 10px;
+        background: white !important;
+        /* Keep white on mobile */
+    }
+
+    .private-form-textarea {
+        height: 250px;
+        min-height: 180px;
+    }
+
+    /* Full width submit button on mobile */
+    .private-form-submit-btn {
+        width: 100%;
+        height: 44px;
+        font-size: 12px;
+    }
+
+    .recaptcha-note-nirup {
+        font-size: 10px;
+        text-align: center;
+    }
+
+    .private-form-message {
+        font-size: 14px;
+        padding: 12px 15px;
+    }
+}
+
+/* ===========================
+   FORM - SMALL MOBILE 480px
+   =========================== */
+
+@media (max-width: 480px) {
+    .private-form-section {
+        padding: 60px 15px 120px;
+    }
+
+    .private-form-section-title {
+        font-size: 28px;
+        margin-bottom: 18px;
+    }
+
+    .private-form-section-description {
+        font-size: 14px;
+        margin-bottom: 50px;
+    }
+
+    .private-form-columns {
+        gap: 25px;
+    }
+
+    .private-form-column-left,
+    .private-form-column-right {
+        gap: 18px;
+    }
+
+    .private-form-label {
+        font-size: 12px;
+    }
+
+    .private-form-input,
+    .private-form-select,
+    .private-form-textarea {
+        font-size: 15px;
+        padding: 10px;
+        background: white !important;
+        /* Keep white on small mobile */
+    }
+
+    .private-form-textarea {
+        height: 220px;
+        min-height: 160px;
+    }
+
+    .private-form-submit-btn {
+        height: 42px;
+        font-size: 11px;
+        padding: 12px 20px;
+    }
+
+    .recaptcha-note-nirup {
+        font-size: 9px;
+    }
+}
+
+/* ===========================
+   FORM LOADING STATE
+   =========================== */
+
+.private-btn-text {
+    display: inline-block;
+    transition: opacity 0.3s ease;
+}
+
+.private-form-submit-btn.loading .private-btn-text {
+    opacity: 0;
+}
+
+.private-btn-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.private-form-submit-btn.loading .private-btn-loader {
+    opacity: 1;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* ===========================
+   FORM MESSAGE DISPLAY
+   =========================== */
+
+.private-form-message {
+    margin-top: 30px;
+    padding: 15px 20px;
+    border-radius: 4px;
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    display: none;
+}
+
+.private-form-message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.private-form-message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Fix dropdown menu styling - Add to assets/css/private-events.css */
+
+/* Remove default browser styling from select dropdown */
+.private-form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Style the dropdown options */
+.private-form-select option {
+    background: white;
+    color: #3d332f;
+    padding: 10px;
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+}
+
+/* Remove blue highlight on option hover/selection */
+.private-form-select option:hover,
+.private-form-select option:focus,
+.private-form-select option:checked {
+    background: #f3eeea;
+    color: #3d332f;
+}
+
+/* For Firefox */
+.private-form-select option:checked {
+    background: #f3eeea;
+    color: #3d332f;
+    font-weight: normal;
+}
+
+/* Prevent blue selection highlight in dropdown */
+.private-form-select:focus option:checked {
+    background: #f3eeea !important;
+    color: #3d332f !important;
+}

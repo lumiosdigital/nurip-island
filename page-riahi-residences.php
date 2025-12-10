@@ -20,15 +20,18 @@ $overview_description = get_theme_mod('nirup_riahi_overview_description', __('Ri
 <div class="riahi-residences-page">
     
     <!-- Hero Section -->
-    <div class="riahi-hero">
-        <div class="riahi-hero-image" style="background-image: url('<?php echo esc_url($hero_image_url); ?>');">
-            <div class="riahi-hero-overlay"></div>
-        </div>
-        <div class="riahi-hero-content">
-            <p class="riahi-hero-subtitle"><?php echo esc_html($hero_subtitle); ?></p>
-            <h1 class="riahi-hero-title"><?php echo esc_html($hero_title); ?></h1>
-        </div>
+<section class="riahi-hero">
+    <?php if ($hero_image_url) : ?>
+        <img src="<?php echo esc_url($hero_image_url); ?>" 
+             alt="<?php echo esc_attr($hero_title); ?>" 
+             class="riahi-hero-bg-image">
+    <?php endif; ?>
+    <div class="riahi-hero-overlay"></div>
+    <div class="riahi-hero-content">
+        <p class="riahi-hero-subtitle"><?php echo esc_html($hero_subtitle); ?></p>
+        <h1 class="riahi-hero-title"><?php echo esc_html($hero_title); ?></h1>
     </div>
+</section>
 
     <!-- Overview Section -->
     <div class="riahi-overview">
