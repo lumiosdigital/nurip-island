@@ -87,11 +87,13 @@
             }
         },
 
+
         // Open mobile menu
         open: function() {
             var $toggle = $('.mobile-menu-toggle');
             var $menu = $('.mobile-menu');
             var $body = $('body');
+            var $html = $('html');
             
             window.NirupTheme.Utils.log('Opening mobile menu');
             
@@ -99,6 +101,7 @@
             $toggle.addClass('active');
             $menu.show().addClass('active');
             $body.addClass('mobile-menu-open');
+            $html.addClass('mobile-menu-open'); // ADD THIS LINE
             
             // Update ARIA attributes
             $toggle.attr('aria-expanded', 'true');
@@ -121,6 +124,7 @@
             var $toggle = $('.mobile-menu-toggle');
             var $menu = $('.mobile-menu');
             var $body = $('body');
+            var $html = $('html');
             
             window.NirupTheme.Utils.log('Closing mobile menu');
             
@@ -128,6 +132,7 @@
             $toggle.removeClass('active');
             $menu.removeClass('active');
             $body.removeClass('mobile-menu-open');
+            $html.removeClass('mobile-menu-open'); // ADD THIS LINE
             
             // Update ARIA attributes
             $toggle.attr('aria-expanded', 'false');
