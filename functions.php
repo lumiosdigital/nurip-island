@@ -100,6 +100,7 @@ function nirup_enqueue_assets() {
         ['nirup-woocommerce',         '/assets/css/woocommerce.css',         ['nirup-main']],
         ['nirup-berthing',          '/assets/css/berthing.css',          ['nirup-main']],
         ['nirup-availability-modal',    '/assets/css/check-availability-modal.css',    ['nirup-main']],
+        ['nirup-availability-results',  '/assets/css/availability-results.css',  ['nirup-main']],
     ];
 
     foreach ($css_files as [$handle, $rel, $deps]) {
@@ -10264,6 +10265,8 @@ require_once get_template_directory() . '/inc/customizer-map.php';
 
 // Include Experiences Customizer Settings
 require_once get_template_directory() . '/inc/customizer-experiences.php';
+
+require_once get_template_directory() . '/inc/wpbs-search-helpers.php';
 
 function nirup_enqueue_ferry_map_styles() {
     // Only load on pages that use the map
