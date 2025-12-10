@@ -720,3 +720,521 @@
         padding-right: 15px;
     }
 }
+
+/* ===========================
+   EXPERIENCE SINGLE - COMPLETE RESPONSIVE
+   REPLACE the responsive section in assets/css/experience-single.css
+   =========================== */
+
+/* ===========================
+   TABLET - 1024px
+   =========================== */
+
+@media screen and (max-width: 1024px) {
+    .single-hero-section {
+        padding: 170px 20px 0 20px;
+    }
+
+    .single-hero-content {
+        margin-bottom: 150px;
+    }
+
+    .single-hero-title {
+        font-size: 60px;
+        line-height: 60px;
+    }
+
+    .single-hero-subtitle {
+        font-size: 20px;
+    }
+
+    /* Gallery */
+    .single-gallery-container {
+        padding: 0 20px;
+    }
+
+    .single-gallery-grid {
+        height: 550px;
+    }
+
+    .single-gallery-large {
+        height: 550px;
+    }
+
+    .single-gallery-small-grid {
+        height: 550px;
+    }
+
+    /* Main content */
+    .single-main-content-section {
+        padding: 0 20px 50px;
+    }
+
+    .single-main-content-container {
+        width: 100%;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .single-quote-column {
+        width: 100%;
+        text-align: center;
+    }
+
+    .single-content-columns {
+        gap: 40px;
+    }
+
+    /* Additional section */
+    .single-additional-section {
+        padding: 0 20px 100px;
+    }
+
+    .single-additional-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        min-height: auto;
+    }
+
+    .single-additional-large-image {
+        min-height: 400px;
+        max-height: none;
+    }
+
+    .single-additional-bottom {
+        height: auto;
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .single-additional-quote {
+        text-align: left;
+        font-size: 20px;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .single-additional-right {
+        font-size: 18px;
+    }
+
+    /* CTA */
+    .single-cta-section {
+        padding: 150px 20px 150px;
+    }
+
+    .single-cta-title {
+        font-size: 52px;
+    }
+}
+
+/* ===========================
+   MOBILE - 768px
+   =========================== */
+
+@media screen and (max-width: 768px) {
+    .single-hero-section {
+        padding: 130px 15px 0 15px;
+    }
+
+    .single-hero-content {
+        margin-bottom: 100px;
+    }
+
+    .single-hero-title {
+        font-size: 44px;
+        line-height: 44px;
+    }
+
+    .single-hero-subtitle {
+        font-size: 18px;
+    }
+
+    /* Gallery - Stack vertically */
+    .single-gallery-container {
+        padding: 0 15px;
+    }
+
+    .single-gallery-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+        gap: 15px;
+    }
+
+    .single-gallery-large {
+        height: 350px;
+    }
+
+    .single-gallery-small-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, 250px);
+        height: auto;
+        gap: 15px;
+    }
+
+    .single-gallery-small:first-child {
+        grid-column: 1;
+    }
+
+    /* Nature tag */
+    .single-nature-tag-container {
+        padding: 0 15px;
+    }
+
+    /* Main content */
+    .single-main-content-section {
+        padding: 0 15px 40px;
+    }
+
+    .single-main-content-container {
+        gap: 30px;
+    }
+
+    .single-quote-column {
+        font-size: 20px;
+    }
+
+    .single-quote-column-title {
+        font-size: 22px;
+    }
+
+    .single-quote-column-text {
+        font-size: 20px;
+    }
+
+    .single-content-columns {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .single-content-text {
+        font-size: 16px;
+        margin-bottom: 18px;
+    }
+
+    /* Section separator */
+    .single-section-separator {
+        padding: 40px 15px;
+    }
+
+    .single-section-separator-flex {
+        gap: 20px;
+    }
+
+    /* Additional section */
+    .single-additional-section {
+        padding: 0 15px 80px;
+    }
+
+    .single-additional-grid {
+        gap: 30px;
+    }
+
+    .single-additional-large-image {
+        min-height: 300px;
+    }
+
+    .single-additional-bottom {
+        gap: 30px;
+    }
+
+    .single-additional-quote {
+        font-size: 18px;
+        padding: 15px;
+    }
+
+    .single-additional-quote-title {
+        font-size: 22px;
+    }
+
+    .single-additional-quote-text {
+        font-size: 20px;
+    }
+
+    .single-additional-image-small {
+        min-height: 250px;
+    }
+
+    .single-additional-right {
+        font-size: 16px;
+    }
+
+    .single-additional-content p {
+        margin-bottom: 18px;
+    }
+
+    /* CTA */
+    .single-cta-section {
+        padding: 120px 15px 120px;
+    }
+
+    .single-cta-container {
+        padding: 0;
+    }
+
+    .single-cta-title {
+        font-size: 44px;
+    }
+
+    .single-cta-subtitle {
+        font-size: 15px;
+    }
+
+    .single-cta-content {
+        gap: 18px;
+        margin-bottom: 50px;
+    }
+
+    .single-cta-buttons-container {
+        gap: 15px;
+        margin-bottom: 50px;
+    }
+
+    .single-cta-button-primary,
+    .single-cta-button-secondary {
+        width: 100%;
+        height: 48px;
+        font-size: 12px;
+    }
+
+    .single-cta-separator-top {
+        top: -100px;
+    }
+
+    .single-cta-separator-bottom {
+        bottom: -80px;
+    }
+}
+
+/* ===========================
+   SMALL MOBILE - 480px
+   =========================== */
+
+@media screen and (max-width: 480px) {
+    .single-hero-section {
+        padding: 100px 15px 0 15px;
+    }
+
+    .single-hero-content {
+        margin-bottom: 80px;
+    }
+
+    .single-hero-title {
+        font-size: 32px;
+        line-height: 36px;
+    }
+
+    .single-hero-subtitle {
+        font-size: 16px;
+    }
+
+    /* Gallery */
+    .single-gallery-large {
+        height: 280px;
+    }
+
+    .single-gallery-small-grid {
+        grid-template-rows: repeat(3, 200px);
+    }
+
+    /* Main content */
+    .single-main-content-section {
+        padding: 0 15px 30px;
+    }
+
+    .single-quote-column {
+        font-size: 18px;
+    }
+
+    .single-quote-column-title {
+        font-size: 20px;
+    }
+
+    .single-quote-column-text {
+        font-size: 18px;
+    }
+
+    .single-content-text {
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    /* Section separator */
+    .single-section-separator {
+        padding: 30px 15px;
+    }
+
+    .single-section-separator-text {
+        font-size: 10px;
+    }
+
+    /* Additional section */
+    .single-additional-section {
+        padding: 0 15px 60px;
+    }
+
+    .single-additional-grid {
+        gap: 25px;
+    }
+
+    .single-additional-large-image {
+        min-height: 250px;
+    }
+
+    .single-additional-bottom {
+        gap: 25px;
+    }
+
+    .single-additional-quote {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .single-additional-quote-title {
+        font-size: 20px;
+    }
+
+    .single-additional-quote-text {
+        font-size: 18px;
+    }
+
+    .single-additional-image-small {
+        min-height: 200px;
+    }
+
+    .single-additional-right {
+        font-size: 14px;
+    }
+
+    .single-additional-content p {
+        margin-bottom: 16px;
+    }
+
+    /* CTA */
+    .single-cta-section {
+        padding: 100px 15px 100px;
+    }
+
+    .single-cta-title {
+        font-size: 32px;
+    }
+
+    .single-cta-subtitle {
+        font-size: 14px;
+    }
+
+    .single-cta-content {
+        gap: 15px;
+        margin-bottom: 40px;
+    }
+
+    .single-cta-buttons-container {
+        gap: 12px;
+        margin-bottom: 40px;
+    }
+
+    .single-cta-button-primary,
+    .single-cta-button-secondary {
+        height: 46px;
+        font-size: 11px;
+    }
+
+    .single-cta-separator-top {
+        top: -80px;
+    }
+
+    .single-cta-separator-bottom {
+        bottom: -60px;
+    }
+
+    /* Nature tag */
+    .single-nature-tag-flex {
+        gap: 15px;
+    }
+
+    .single-nature-tag-text {
+        font-size: 10px;
+    }
+}
+
+/* ===========================
+   SINGLE EXPERIENCE - MOBILE CONTENT FIX ONLY
+   Add to the MOBILE section in assets/css/experience-single.css
+   =========================== */
+
+/* MOBILE - 768px */
+@media screen and (max-width: 768px) {
+
+    /* Main content - force proper stacking */
+    .single-main-content-section {
+        padding: 0 15px 40px;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .single-main-content-container {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex-direction: column !important;
+        gap: 30px;
+    }
+
+    .single-quote-column {
+        width: 100% !important;
+        max-width: 100%;
+        text-align: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .single-content-columns {
+        width: 100% !important;
+        max-width: 100%;
+        flex-direction: column !important;
+        gap: 20px;
+    }
+
+    .single-content-column-left,
+    .single-content-column-right {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .single-content-text {
+        width: 100% !important;
+        max-width: 100%;
+        font-size: 16px;
+        margin-bottom: 18px;
+        text-align: left !important;
+        padding: 0 !important;
+    }
+
+    .single-content-text p,
+    .single-content-column-left p,
+    .single-content-column-right p {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 0 0 18px 0;
+        text-align: left;
+        padding: 0;
+    }
+}
+
+/* SMALL MOBILE - 480px */
+@media screen and (max-width: 480px) {
+    .single-content-text {
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .single-content-text p,
+    .single-content-column-left p,
+    .single-content-column-right p {
+        margin-bottom: 16px;
+    }
+}

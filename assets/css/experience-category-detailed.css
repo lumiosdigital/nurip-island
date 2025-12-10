@@ -781,3 +781,417 @@
         height: 200px;
     }
 }
+
+/* ===========================
+   EXPERIENCE CATEGORY DETAILED - COMPLETE RESPONSIVE
+   REPLACE the responsive section in assets/css/experience-category-detailed.css
+   =========================== */
+
+/* ===========================
+   TABLET - 1024px
+   =========================== */
+
+@media (max-width: 1024px) {
+    .detailed-hero-section {
+        padding: 170px 20px 50px 20px;
+    }
+
+    .detailed-category-tag {
+        margin-top: 150px;
+        padding: 0 20px;
+    }
+
+    .detailed-hero-title {
+        font-size: 60px;
+        line-height: 60px;
+    }
+
+    .detailed-hero-subtitle {
+        font-size: 20px;
+    }
+
+    /* Gallery */
+    .detailed-gallery-container {
+        padding: 0 20px;
+    }
+
+    .detailed-gallery-grid {
+        height: 550px;
+    }
+
+    /* Content section */
+    .detailed-content-section {
+        padding: 50px 20px;
+    }
+
+    .detailed-content-grid {
+        gap: 40px;
+    }
+
+    /* Section separator */
+    .detailed-section-separator {
+        padding: 40px 20px;
+    }
+
+    /* Additional section */
+    .detailed-additional-section {
+        padding: 0 20px 100px;
+    }
+
+    .detailed-additional-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        min-height: auto;
+    }
+
+    .detailed-additional-large-image {
+        min-height: 400px;
+        max-height: none;
+    }
+
+    .detailed-additional-bottom {
+        height: auto;
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .detailed-additional-quote {
+        text-align: left;
+        font-size: 20px;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .detailed-additional-right {
+        font-size: 18px;
+    }
+
+    /* Recommendations */
+    .detailed-recommendations-section {
+        padding: 100px 20px;
+    }
+
+    .detailed-recommendations-title {
+        font-size: 48px;
+    }
+}
+
+/* ===========================
+   MOBILE - 768px
+   =========================== */
+
+@media (max-width: 768px) {
+    .detailed-hero-section {
+        padding: 130px 15px 40px 15px;
+    }
+
+    .detailed-category-tag {
+        margin-top: 100px;
+        padding: 0 15px;
+    }
+
+    .detailed-category-tag-flex {
+        gap: 20px;
+    }
+
+    .detailed-hero-title {
+        font-size: 44px;
+        line-height: 44px;
+    }
+
+    .detailed-hero-subtitle {
+        font-size: 18px;
+    }
+
+    /* Gallery - Stack vertically */
+    .detailed-gallery-container {
+        padding: 0 15px;
+    }
+
+    .detailed-gallery-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+        gap: 15px;
+    }
+
+    .detailed-gallery-large {
+        height: 350px;
+    }
+
+    .detailed-gallery-small-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, 250px);
+        height: auto;
+        gap: 15px;
+    }
+
+    .detailed-gallery-small:first-child {
+        grid-column: 1;
+    }
+
+    /* Content section */
+    .detailed-content-section {
+        padding: 40px 15px;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .detailed-content-container {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .detailed-content-grid {
+        width: 100% !important;
+        max-width: 100%;
+        grid-template-columns: 1fr !important;
+        gap: 30px;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .detailed-content-quote,
+    .detailed-content-left,
+    .detailed-content-right {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .detailed-content-quote {
+        text-align: center !important;
+        font-size: 20px;
+    }
+
+    .detailed-content-quote-title {
+        font-size: 22px;
+    }
+
+    .detailed-content-quote-text {
+        font-size: 20px;
+    }
+
+    .detailed-content-text {
+        width: 100% !important;
+        max-width: 100%;
+        font-size: 16px;
+        margin-bottom: 18px;
+        text-align: left !important;
+        padding: 0 !important;
+    }
+
+    .detailed-content-text p,
+    .detailed-content-left p,
+    .detailed-content-right p {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 0 0 18px 0;
+        text-align: left;
+        padding: 0;
+    }
+
+    /* Section separator */
+    .detailed-section-separator {
+        padding: 35px 15px;
+    }
+
+    .detailed-section-separator-flex {
+        gap: 20px;
+    }
+
+    /* Additional section */
+    .detailed-additional-section {
+        padding: 0 15px 80px;
+    }
+
+    .detailed-additional-grid {
+        gap: 30px;
+    }
+
+    .detailed-additional-large-image {
+        min-height: 300px;
+    }
+
+    .detailed-additional-bottom {
+        gap: 30px;
+    }
+
+    .detailed-additional-quote {
+        font-size: 18px;
+        padding: 15px;
+    }
+
+    .detailed-additional-quote-title {
+        font-size: 22px;
+    }
+
+    .detailed-additional-quote-text {
+        font-size: 20px;
+    }
+
+    .detailed-additional-image-small {
+        min-height: 250px;
+    }
+
+    .detailed-additional-right {
+        font-size: 16px;
+    }
+
+    .detailed-additional-content p {
+        margin-bottom: 18px;
+    }
+
+    /* Recommendations */
+    .detailed-recommendations-section {
+        padding: 80px 15px;
+    }
+
+    .detailed-recommendations-title {
+        font-size: 36px;
+    }
+
+    .detailed-recommendations-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+/* ===========================
+   SMALL MOBILE - 480px
+   =========================== */
+
+@media (max-width: 480px) {
+    .detailed-hero-section {
+        padding: 100px 15px 30px 15px;
+    }
+
+    .detailed-category-tag {
+        margin-top: 80px;
+    }
+
+    .detailed-category-tag-flex {
+        gap: 15px;
+    }
+
+    .detailed-category-tag-text {
+        font-size: 10px;
+    }
+
+    .detailed-hero-title {
+        font-size: 32px;
+        line-height: 36px;
+    }
+
+    .detailed-hero-subtitle {
+        font-size: 16px;
+    }
+
+    /* Gallery */
+    .detailed-gallery-large {
+        height: 280px;
+    }
+
+    .detailed-gallery-small-grid {
+        grid-template-rows: repeat(3, 200px);
+    }
+
+    /* Content section */
+    .detailed-content-section {
+        padding: 30px 15px;
+    }
+
+    .detailed-content-grid {
+        gap: 25px;
+    }
+
+    .detailed-content-quote {
+        font-size: 18px;
+    }
+
+    .detailed-content-quote-title {
+        font-size: 20px;
+    }
+
+    .detailed-content-quote-text {
+        font-size: 18px;
+    }
+
+    .detailed-content-text {
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .detailed-content-text p,
+    .detailed-content-left p,
+    .detailed-content-right p {
+        margin-bottom: 16px;
+    }
+
+    /* Section separator */
+    .detailed-section-separator {
+        padding: 30px 15px;
+    }
+
+    .detailed-section-separator-text {
+        font-size: 10px;
+    }
+
+    /* Additional section */
+    .detailed-additional-section {
+        padding: 0 15px 60px;
+    }
+
+    .detailed-additional-grid {
+        gap: 25px;
+    }
+
+    .detailed-additional-large-image {
+        min-height: 250px;
+    }
+
+    .detailed-additional-bottom {
+        gap: 25px;
+    }
+
+    .detailed-additional-quote {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .detailed-additional-quote-title {
+        font-size: 20px;
+    }
+
+    .detailed-additional-quote-text {
+        font-size: 18px;
+    }
+
+    .detailed-additional-image-small {
+        min-height: 200px;
+    }
+
+    .detailed-additional-right {
+        font-size: 14px;
+    }
+
+    .detailed-additional-content p {
+        margin-bottom: 16px;
+    }
+
+    /* Recommendations */
+    .detailed-recommendations-section {
+        padding: 60px 15px;
+    }
+
+    .detailed-recommendations-title {
+        font-size: 28px;
+    }
+
+    .detailed-recommendations-grid {
+        gap: 25px;
+    }
+}
