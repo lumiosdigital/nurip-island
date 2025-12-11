@@ -259,43 +259,6 @@
     transition: transform 0.3s ease;
 }
 
-/* WP Booking System Overrides */
-.wpbs-payment-confirmation.wpbs-woocommerce-payment-confirmation {
-    margin: 35px 20px !important;
-}
-
-#wpbs-woocommerce-payment-button a {
-    background-color: #8B5E1D !important;
-    font-family: 'Albert Sans', sans-serif !important;
-}
-
-#wpbs-woocommerce-payment-button a:hover {
-    background-color: #a48456 !important;
-}
-
-.wpbs-form-field-label {
-    font-family: var(--font-hero) !important;
-    text-transform: uppercase !important;
-    font-size: 16px;
-    font-weight: 300;
-    color: #3d332f;
-}
-
-.wpbs-form-field-input {
-    font-family: var(--font-hero) !important;
-    text-transform: uppercase !important;
-    font-size: 16px;
-    font-weight: 300;
-    color: #3d332f;
-}
-
-.wpbs-payment-method-description.wpbs-payment-method-description-woocommerce.wpbs-payment-method-description-open {
-    font-family: 'Albert Sans', sans-serif !important;
-    font-size: 20px !important;
-    color: #555250 !important;
-    margin-top: 10px !important;
-}
-
 /* Prevent body scroll when modal is open */
 body.booking-modal-open {
     overflow: hidden;
@@ -600,7 +563,7 @@ body.booking-modal-open {
 }
 
 /* ========================================
-   PREVENT SCROLL BEHIND MODAL - IMPROVED
+   PREVENT SCROLL BEHIND MODAL
    ======================================== */
 
 body.booking-modal-open {
@@ -611,17 +574,6 @@ body.booking-modal-open {
 }
 
 /* For iOS Safari */
-body.booking-modal-open {
-    -webkit-overflow-scrolling: touch;
-    overflow: hidden !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-/* Ensure html doesn't scroll either */
 html.booking-modal-open {
     overflow: hidden !important;
 }

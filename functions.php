@@ -101,6 +101,7 @@ function nirup_enqueue_assets() {
         ['nirup-berthing',          '/assets/css/berthing.css',          ['nirup-main']],
         ['nirup-availability-modal',    '/assets/css/check-availability-modal.css',    ['nirup-main']],
         ['nirup-availability-results',  '/assets/css/availability-results.css',  ['nirup-main']],
+        ['nirup-booking-modal',        '/assets/css/booking-modal.css',        ['nirup-main']],
     ];
 
     foreach ($css_files as [$handle, $rel, $deps]) {
@@ -7979,13 +7980,6 @@ function nirup_booking_modal_customizer($wp_customize) {
 add_action('customize_register', 'nirup_booking_modal_customizer');
 
 function nirup_enqueue_booking_modal_assets() {
-    // Enqueue booking modal CSS
-    wp_enqueue_style(
-        'nirup-booking-modal',
-        get_template_directory_uri() . '/assets/css/booking-modal.css',
-        array(),
-        '1.0.0'
-    );
     
     // Enqueue booking modal JavaScript
     wp_enqueue_script(
