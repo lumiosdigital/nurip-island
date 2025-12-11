@@ -34,13 +34,6 @@ if ($inline_styles) {
 ?>
 
 <section class="hero-section" id="hero">
-    
-    <!-- <div class="palm-shadow-animation">
-        <div class="palm-shadow palm-shadow-1"></div>
-        <div class="palm-shadow palm-shadow-2"></div>
-        <div class="palm-shadow palm-shadow-3"></div>
-        <div class="palm-shadow palm-shadow-2-return"></div>
-    </div> -->
 
     <!-- Hero Content -->
     <div class="hero-content">
