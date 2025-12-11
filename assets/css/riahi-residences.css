@@ -663,6 +663,14 @@
 
 @media (max-width: 1024px) {
 
+    .riahi-villa-card:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+                .riahi-villa-card:hover .riahi-villa-image img {
+                    transform: none;
+                }
     /* Hero Section */
     .riahi-hero {
         height: 650px;

@@ -267,6 +267,15 @@
         white-space: normal;
         word-wrap: break-word;
     }
+
+    .accommodation-card:hover .accommodation-image {
+            transform: none;
+    }
+
+    .accommodation-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
 }
 
 /* Mobile - 768px and below */

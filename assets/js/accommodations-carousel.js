@@ -1,8 +1,7 @@
 /**
- * Accommodations Page Carousels - UPDATED WITH LIVE DRAGGING
- * File: assets/js/accommodations-carousel.js
+ * Accommodations Page Carousels
  * Two separate carousels: Riahi Residences and Westin Rooms
- * Updated to match homepage carousel behavior with live dragging
+ * Matching home page carousel behavior exactly
  */
 
 // Initialize both carousels when DOM is ready
@@ -27,18 +26,36 @@ function initRiahiCarousel() {
 
     let currentIndex = 0;
     let maxIndex = 0;
-    let cardWidth = 380;
-    let gap = 20;
     let visibleCards = 3;
+    let cardWidth = 380;
+    let cardGap = 20;
+    let cardStep = 400;
+
+    function calculateCardDimensions() {
+        // Get actual card width from first card
+        if (cards.length > 0) {
+            const firstCard = cards[0];
+            cardWidth = firstCard.offsetWidth;
+            
+            // Get gap from track
+            const trackStyle = window.getComputedStyle(track);
+            cardGap = parseInt(trackStyle.gap) || 20;
+            
+            cardStep = cardWidth + cardGap;
+        }
+    }
+
+    function calculateVisibleCards() {
+        const containerWidth = carousel.offsetWidth;
+        const availableWidth = containerWidth - 40;
+        const newVisibleCards = Math.floor((availableWidth + cardGap) / cardStep);
+        visibleCards = Math.max(1, Math.min(newVisibleCards, cards.length));
+        return visibleCards;
+    }
 
     function calculateMaxIndex() {
-        const containerWidth = carousel.offsetWidth;
-        const paddingTotal = 40;
-        const availableWidth = containerWidth - paddingTotal;
-        
-        visibleCards = Math.floor((availableWidth + gap) / (cardWidth + gap));
-        visibleCards = Math.max(1, Math.min(visibleCards, cards.length));
-        
+        calculateCardDimensions();
+        calculateVisibleCards();
         maxIndex = Math.max(0, cards.length - visibleCards);
         
         if (currentIndex > maxIndex) {
@@ -47,9 +64,12 @@ function initRiahiCarousel() {
     }
 
     function updateCarousel() {
-        const offset = -currentIndex * (cardWidth + gap);
-        track.style.transform = `translateX(${offset}px)`;
-        
+        const translateX = -currentIndex * cardStep;
+        track.style.transform = `translateX(${translateX}px)`;
+        updateButtonStates();
+    }
+
+    function updateButtonStates() {
         prevBtn.disabled = currentIndex <= 0;
         nextBtn.disabled = currentIndex >= maxIndex;
         
@@ -87,7 +107,7 @@ function initRiahiCarousel() {
         resizeTimeout = setTimeout(updateLayout, 150);
     });
 
-    // Touch/swipe handling with LIVE DRAGGING (matches homepage)
+    // Touch/swipe handling
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
@@ -103,7 +123,13 @@ function initRiahiCarousel() {
         
         currentX = e.touches[0].clientX;
         const diff = currentX - startX;
-        const translateX = -currentIndex * (cardWidth + gap) + diff;
+        let translateX = -currentIndex * cardStep + diff;
+        
+        // Boundary checks
+        const minTranslate = -maxIndex * cardStep;
+        const maxTranslate = 0;
+        translateX = Math.max(minTranslate, Math.min(maxTranslate, translateX));
+        
         track.style.transform = `translateX(${translateX}px)`;
     }, { passive: true });
 
@@ -114,7 +140,7 @@ function initRiahiCarousel() {
         track.style.transition = 'transform 0.3s ease-in-out';
         
         const diff = currentX - startX;
-        const threshold = (cardWidth + gap) * 0.2; // 20% of card width
+        const threshold = cardStep * 0.3;
         
         if (diff > threshold && currentIndex > 0) {
             currentIndex--;
@@ -147,11 +173,13 @@ function initRiahiCarousel() {
     currentIndex = 0;
     updateLayout();
     
-    console.log('Riahi Carousel initialized with live dragging:', {
+    console.log('Riahi Carousel initialized:', {
         totalCards: cards.length,
+        cardWidth: cardWidth,
+        cardGap: cardGap,
+        cardStep: cardStep,
         visibleCards: visibleCards,
-        maxIndex: maxIndex,
-        currentIndex: currentIndex
+        maxIndex: maxIndex
     });
 }
 
@@ -171,18 +199,36 @@ function initWestinCarousel() {
 
     let currentIndex = 0;
     let maxIndex = 0;
-    let cardWidth = 380;
-    let gap = 20;
     let visibleCards = 3;
+    let cardWidth = 380;
+    let cardGap = 20;
+    let cardStep = 400;
+
+    function calculateCardDimensions() {
+        // Get actual card width from first card
+        if (cards.length > 0) {
+            const firstCard = cards[0];
+            cardWidth = firstCard.offsetWidth;
+            
+            // Get gap from track
+            const trackStyle = window.getComputedStyle(track);
+            cardGap = parseInt(trackStyle.gap) || 20;
+            
+            cardStep = cardWidth + cardGap;
+        }
+    }
+
+    function calculateVisibleCards() {
+        const containerWidth = carousel.offsetWidth;
+        const availableWidth = containerWidth - 40;
+        const newVisibleCards = Math.floor((availableWidth + cardGap) / cardStep);
+        visibleCards = Math.max(1, Math.min(newVisibleCards, cards.length));
+        return visibleCards;
+    }
 
     function calculateMaxIndex() {
-        const containerWidth = carousel.offsetWidth;
-        const paddingTotal = 40;
-        const availableWidth = containerWidth - paddingTotal;
-        
-        visibleCards = Math.floor((availableWidth + gap) / (cardWidth + gap));
-        visibleCards = Math.max(1, Math.min(visibleCards, cards.length));
-        
+        calculateCardDimensions();
+        calculateVisibleCards();
         maxIndex = Math.max(0, cards.length - visibleCards);
         
         if (currentIndex > maxIndex) {
@@ -191,9 +237,12 @@ function initWestinCarousel() {
     }
 
     function updateCarousel() {
-        const offset = -currentIndex * (cardWidth + gap);
-        track.style.transform = `translateX(${offset}px)`;
-        
+        const translateX = -currentIndex * cardStep;
+        track.style.transform = `translateX(${translateX}px)`;
+        updateButtonStates();
+    }
+
+    function updateButtonStates() {
         prevBtn.disabled = currentIndex <= 0;
         nextBtn.disabled = currentIndex >= maxIndex;
         
@@ -231,7 +280,7 @@ function initWestinCarousel() {
         resizeTimeout = setTimeout(updateLayout, 150);
     });
 
-    // Touch/swipe handling with LIVE DRAGGING (matches homepage)
+    // Touch/swipe handling
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
@@ -247,7 +296,13 @@ function initWestinCarousel() {
         
         currentX = e.touches[0].clientX;
         const diff = currentX - startX;
-        const translateX = -currentIndex * (cardWidth + gap) + diff;
+        let translateX = -currentIndex * cardStep + diff;
+        
+        // Boundary checks
+        const minTranslate = -maxIndex * cardStep;
+        const maxTranslate = 0;
+        translateX = Math.max(minTranslate, Math.min(maxTranslate, translateX));
+        
         track.style.transform = `translateX(${translateX}px)`;
     }, { passive: true });
 
@@ -258,7 +313,7 @@ function initWestinCarousel() {
         track.style.transition = 'transform 0.3s ease-in-out';
         
         const diff = currentX - startX;
-        const threshold = (cardWidth + gap) * 0.2; // 20% of card width
+        const threshold = cardStep * 0.3;
         
         if (diff > threshold && currentIndex > 0) {
             currentIndex--;
@@ -291,10 +346,12 @@ function initWestinCarousel() {
     currentIndex = 0;
     updateLayout();
     
-    console.log('Westin Carousel initialized with live dragging:', {
+    console.log('Westin Carousel initialized:', {
         totalCards: cards.length,
+        cardWidth: cardWidth,
+        cardGap: cardGap,
+        cardStep: cardStep,
         visibleCards: visibleCards,
-        maxIndex: maxIndex,
-        currentIndex: currentIndex
+        maxIndex: maxIndex
     });
 }

@@ -218,6 +218,15 @@
         padding: 30px 25px 50px;
         min-height: 200px;
     }
+
+    .experience-archive-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+        .experience-archive-card:hover .experience-archive-img {
+            transform: none;
+        }
 }
 
 @media (max-width: 768px) {

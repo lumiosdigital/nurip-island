@@ -897,3 +897,7 @@ display: block !important;
         position: static !important;
     }
 }
+
+.wpbs_s-search-widget.wpbs_s-search-widget-small .wpbs_s-search-widget-results-wrap .wpbs_s-search-widget-result {
+    border-bottom: none !important;
+}

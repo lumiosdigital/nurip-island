@@ -483,6 +483,15 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
     }
+
+        .signature-experience-card:hover .signature-experience-image img {
+            transform: none;
+        }
+
+        .restaurant-archive-card:hover {
+            transform: none;
+            box-shadow: none;
+        }
 }
 
 @media (max-width: 768px) {

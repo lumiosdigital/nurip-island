@@ -146,6 +146,11 @@
         max-width: none;
         height: 650px;
     }
+
+    .service-card-linked:hover {
+        transform: none;
+        box-shadow: none;
+    }
 }
 
 /* Mobile - 768px */

@@ -1,6 +1,6 @@
 /**
  * Experiences Carousel JavaScript
- * Updated with live dragging behavior
+ * Fixed with dynamic card width and proper centering
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -18,27 +18,41 @@ function initExperiencesCarousel() {
     const cards = track.querySelectorAll('.experience-card');
     if (cards.length === 0) return;
     
-    const cardWidth = 380; // Width of each card
-    const cardGap = 20; // Gap between cards
-    const cardStep = cardWidth + cardGap;
-    
     let currentIndex = 0;
     let maxIndex = 0;
-    let visibleCards = 3; // Default number of visible cards
+    let visibleCards = 3;
+    let cardWidth = 380;
+    let cardGap = 20;
+    let cardStep = 400;
+    
+    function calculateCardDimensions() {
+        // Get actual card width from first card
+        if (cards.length > 0) {
+            const firstCard = cards[0];
+            const cardStyle = window.getComputedStyle(firstCard);
+            cardWidth = firstCard.offsetWidth;
+            
+            // Get gap from track
+            const trackStyle = window.getComputedStyle(track);
+            cardGap = parseInt(trackStyle.gap) || 20;
+            
+            cardStep = cardWidth + cardGap;
+        }
+    }
     
     function calculateVisibleCards() {
         const containerWidth = carousel.offsetWidth;
-        const availableWidth = containerWidth - 40; // Account for padding
-        const newVisibleCards = Math.floor(availableWidth / cardStep);
+        const availableWidth = containerWidth - 40;
+        const newVisibleCards = Math.floor((availableWidth + cardGap) / cardStep);
         visibleCards = Math.max(1, Math.min(newVisibleCards, cards.length));
         return visibleCards;
     }
     
     function calculateMaxIndex() {
+        calculateCardDimensions();
         calculateVisibleCards();
         maxIndex = Math.max(0, cards.length - visibleCards);
         
-        // Ensure current index doesn't exceed max
         if (currentIndex > maxIndex) {
             currentIndex = maxIndex;
         }
@@ -47,8 +61,6 @@ function initExperiencesCarousel() {
     function updateCarousel() {
         const translateX = -currentIndex * cardStep;
         track.style.transform = `translateX(${translateX}px)`;
-        
-        // Update button states
         updateButtonStates();
     }
     
@@ -90,7 +102,7 @@ function initExperiencesCarousel() {
         resizeTimeout = setTimeout(updateLayout, 150);
     });
     
-    // Touch/swipe handling with LIVE DRAGGING (matches events-offers carousel)
+    // Touch/swipe handling
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
@@ -106,7 +118,13 @@ function initExperiencesCarousel() {
         
         currentX = e.touches[0].clientX;
         const diff = currentX - startX;
-        const translateX = -currentIndex * cardStep + diff;
+        let translateX = -currentIndex * cardStep + diff;
+        
+        // Boundary checks
+        const minTranslate = -maxIndex * cardStep;
+        const maxTranslate = 0;
+        translateX = Math.max(minTranslate, Math.min(maxTranslate, translateX));
+        
         track.style.transform = `translateX(${translateX}px)`;
     }, { passive: true });
     
@@ -117,7 +135,7 @@ function initExperiencesCarousel() {
         track.style.transition = 'transform 0.3s ease-in-out';
         
         const diff = currentX - startX;
-        const threshold = cardStep * 0.2; // 20% of card width
+        const threshold = cardStep * 0.3; // 30% of card width for better snapping
         
         if (diff > threshold && currentIndex > 0) {
             currentIndex--;
@@ -130,7 +148,6 @@ function initExperiencesCarousel() {
     
     // Keyboard navigation
     document.addEventListener('keydown', function(e) {
-        // Only trigger if carousel is in viewport
         const rect = carousel.getBoundingClientRect();
         const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
         
@@ -147,15 +164,16 @@ function initExperiencesCarousel() {
         }
     });
     
-    // Initialize - Start from leftmost position
+    // Initialize
     currentIndex = 0;
     updateLayout();
     
-    // Debug info (remove in production)
-    console.log('Experiences Carousel initialized with live dragging:', {
+    console.log('Experiences Carousel initialized:', {
         totalCards: cards.length,
+        cardWidth: cardWidth,
+        cardGap: cardGap,
+        cardStep: cardStep,
         visibleCards: visibleCards,
-        maxIndex: maxIndex,
-        currentIndex: currentIndex
+        maxIndex: maxIndex
     });
 }

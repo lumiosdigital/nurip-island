@@ -199,6 +199,15 @@
         padding: 30px 25px 50px;
         min-height: 200px;
     }
+
+        .archive-event-offer-card:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+    .archive-event-offer-card:hover .archive-event-offer-img {
+        transform: none;
+}
 }
 
 @media (max-width: 768px) {

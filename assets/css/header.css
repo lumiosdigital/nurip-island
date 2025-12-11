@@ -513,10 +513,10 @@
     transition: all 0.3s ease;
 }
 
-.mobile-primary-menu a:hover {
+/* .mobile-primary-menu a:hover {
     color: var(--color-golden);
     padding-left: 10px;
-}
+} */
 
 .mobile-booking {
     margin-top: 30px;
@@ -539,9 +539,9 @@
     /* border-radius: 4px; */
 }
 
-.mobile-booking-button:hover {
+/* .mobile-booking-button:hover {
     opacity: 0.8;
-}
+} */
 
 body.mobile-menu-open {
     overflow: hidden;
@@ -783,10 +783,10 @@ body {
     align-items: center;
 }
 
-.mobile-language-switcher .language-current:hover {
+/* .mobile-language-switcher .language-current:hover {
     background-color: #f3eeea;
     border-color: #8B5E1D;
-}
+} */
 
 .mobile-language-switcher .lang-dropdown-arrow {
     width: 10px;

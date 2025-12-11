@@ -518,6 +518,14 @@
         line-height: 1.5;
     }
 
+        .accpage-card:hover {
+            transform: none;
+        }
+
+.accpage-card:hover .accpage-image {
+    transform: none;
+}
+
     /* Sections */
     .riahi-section,
     .westin-section {
