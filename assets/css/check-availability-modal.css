@@ -368,6 +368,11 @@ body.check-availability-modal-open {
 /* Tablet and Mobile - 1024px and below */
 @media (max-width: 1024px) {
 
+
+    .check-availability-modal .wpbs_s-search-widget-form-wrap {
+        max-width: -webkit-fill-available;
+    }
+
     /* Center modal in viewport */
     .check-availability-modal {
         top: 5px;
