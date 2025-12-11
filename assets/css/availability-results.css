@@ -1,35 +1,14 @@
-/**
- * Availability Results Page Styles
- * Styles the WPBS Search Results page to match Figma design
- * Based on actual WPBS Search Widget HTML structure
- */
 
-/* ============================================
-   PAGE LAYOUT & BACKGROUND
-   ============================================ */
-
-/* Main page background */
-body.page-template-default,
-body.page {
-    /* background-color: #F3EFEB; */
-}
-
-/* Entry content wrapper */
 .entry-content {
-    /* background-color: #F3EFEB; */
+
     padding: 80px 20px 80px;
     min-height: 100vh;
 }
 
-/* Container for centered content */
 .entry-content>.wpbs_s-search-widget {
     max-width: 1400px;
     margin: 0 auto;
 }
-
-/* ============================================
-   PAGE TITLE (Add via page editor)
-   ============================================ */
 
 .entry-content h1,
 .entry-content .entry-header h1 {
@@ -44,26 +23,20 @@ body.page {
     margin: 0 0 60px 0;
 }
 
-/* ============================================
-   SEARCH FORM AT TOP
-   ============================================ */
-
-/* Hide the widget title */
 .wpbs_s-search-widget h2,
 .wpbs_s-search-widget .wpbs_s-search-widget-title {
     display: none !important;
 }
 
-/* Form wrapper */
+
 .wpbs_s-search-widget-form-wrap {
-    margin: 0 0 80px 0;
+    margin: 0 0 40px 0;
     padding: 0;
     width: 745px;
     margin-left: auto;
     margin-right: auto;
 }
 
-/* Search form layout - horizontal */
 .wpbs_s-search-widget-form {
     display: flex !important;
     align-items: flex-end !important;
@@ -74,7 +47,6 @@ body.page {
     flex-wrap: nowrap !important;
 }
 
-/* Individual field containers */
 .wpbs_s-search-widget-field {
     display: flex !important;
     flex-direction: column !important;
@@ -83,14 +55,12 @@ body.page {
     padding: 0 !important;
 }
 
-/* Start and End date fields */
 .wpbs_s-search-widget-field-start-date,
 .wpbs_s-search-widget-field-end-date {
     width: 274px !important;
     flex-shrink: 0 !important;
 }
 
-/* Labels */
 .wpbs_s-search-widget-field label {
     font-family: 'Amiri', serif !important;
     font-size: 16px !important;
@@ -103,7 +73,6 @@ body.page {
     text-transform: capitalize !important;
 }
 
-/* Date input fields */
 .wpbs_s-search-widget-datepicker,
 input[type="text"].wpbs_s-search-widget-datepicker {
     background-color: #FEFEFE !important;
@@ -129,13 +98,11 @@ input[type="text"].wpbs_s-search-widget-datepicker:focus {
     opacity: 1 !important;
 }
 
-/* Icon positioning wrapper */
 .wpbs_s-search-widget-field-start-date>div,
 .wpbs_s-search-widget-field-end-date>div {
     position: relative !important;
 }
 
-/* Calendar icon on the left */
 .wpbs_s-search-widget-field-start-date>div::before,
 .wpbs_s-search-widget-field-end-date>div::before {
     content: '';
@@ -152,7 +119,6 @@ input[type="text"].wpbs_s-search-widget-datepicker:focus {
     pointer-events: none;
 }
 
-/* Dropdown arrow on the right */
 .wpbs_s-search-widget-field-start-date>div::after,
 .wpbs_s-search-widget-field-end-date>div::after {
     content: '';
@@ -169,7 +135,6 @@ input[type="text"].wpbs_s-search-widget-datepicker:focus {
     z-index: 1;
 }
 
-/* Submit button field */
 .wpbs_s-search-widget-field-submit {
     width: 131px !important;
     flex-shrink: 0 !important;
@@ -179,7 +144,6 @@ input[type="text"].wpbs_s-search-widget-datepicker:focus {
 
 .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field.wpbs_s-search-widget-field-submit {
     position: relative;
-    /* border-radius: 0px !important; */
 }
 
 .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field button.wpbs_s-search-widget-datepicker-submit,
@@ -210,7 +174,6 @@ input[type="text"].wpbs_s-search-widget-datepicker:focus {
     opacity: 1 !important;
 }
 
-/* Submit button styling */
 button.wpbs_s-search-widget-datepicker-submit,
 input[type="submit"].wpbs_s-search-widget-datepicker-submit {
     background-color: #A48456 !important;
@@ -233,34 +196,24 @@ input[type="submit"].wpbs_s-search-widget-datepicker-submit {
     margin: 0 !important;
 }
 
-
-/* Hide guests field */
 .wpbs_s-search-widget-field-guests {
     display: none !important;
 }
 
-/* Hide standard format fields (hidden date inputs) */
 .wpbs_s-search-widget-datepicker-standard-format-start-date,
 .wpbs_s-search-widget-datepicker-standard-format-end-date {
     display: none !important;
 }
 
-/* ============================================
-   RESULTS SECTION
-   ============================================ */
-
-/* Results wrapper */
 .wpbs_s-search-widget-results-wrap {
     margin: 0;
     padding: 0;
 }
 
-/* Search Results heading */
 .wpbs_s-search-widget-results-wrap h2 {
     display: none !important;
 }
 
-/* Results grid container */
 .wpbs_s-search-widget-results {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
@@ -270,7 +223,6 @@ input[type="submit"].wpbs_s-search-widget-datepicker-submit {
     list-style: none !important;
 }
 
-/* Individual result card */
 .wpbs_s-search-widget-result {
     background-color: #FCFAF6 !important;
     display: flex !important;
@@ -436,11 +388,6 @@ a.wpbs_s-search-widget-result-button:hover {
     opacity: 0.8 !important;
 }
 
-/* ============================================
-   NO RESULTS / LOADING STATES
-   ============================================ */
-
-/* No results message */
 .wpbs_s-search-widget-no-results {
     text-align: center !important;
     padding: 60px 20px !important;
@@ -450,191 +397,10 @@ a.wpbs_s-search-widget-result-button:hover {
     grid-column: 1 / -1 !important;
 }
 
-/* Search container after loading */
-.wpbs-search-container-loaded {
-    /* Any specific styles if needed */
-}
-
-/* ============================================
-   MOBILE RESPONSIVE
-   ============================================ */
-
-/* Tablet - 1024px and below */
-@media (max-width: 1024px) {
-    .entry-content {
-        padding: 40px 15px 60px;
-    }
-
-    .entry-content h1,
-    .entry-content .entry-header h1 {
-        font-size: 42px;
-        margin-bottom: 40px;
-    }
-
-    /* 2 columns on tablets */
-    .wpbs_s-search-widget-results {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 20px !important;
-    }
-
-    /* Stack search form vertically */
-    .wpbs_s-search-widget-form {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 15px !important;
-        max-width: 500px;
-        margin: 0 auto !important;
-    }
-
-    .wpbs_s-search-widget-form-wrap {
-        margin: 0 0 60px 0;
-    }
-
-    .wpbs_s-search-widget-field-start-date,
-    .wpbs_s-search-widget-field-end-date,
-    .wpbs_s-search-widget-field-submit {
-        width: 100% !important;
-    }
-
-    /* Taller inputs for better touch */
-    .wpbs_s-search-widget-datepicker,
-    input[type="text"].wpbs_s-search-widget-datepicker {
-        height: 48px !important;
-    }
-
-    button.wpbs_s-search-widget-datepicker-submit,
-    input[type="submit"].wpbs_s-search-widget-datepicker-submit {
-        height: 48px !important;
-    }
-
-    /* Adjust button container */
-    .wpbs_s-search-widget-result-buttons {
-        width: 100% !important;
-        max-width: 330px;
-    }
-}
-
-/* Medium Tablet - 768px and below */
-@media (max-width: 768px) {
-
-    .entry-content h1,
-    .entry-content .entry-header h1 {
-        font-size: 36px;
-    }
-
-    /* Single column on mobile */
-    .wpbs_s-search-widget-results {
-        grid-template-columns: 1fr !important;
-        max-width: 600px;
-        margin: 0 auto !important;
-    }
-
-    .wpbs_s-search-widget-result {
-        max-width: 100%;
-    }
-
-    /* Reduce image height slightly on mobile */
-    .wpbs_s-search-widget-result-image {
-        height: 320px !important;
-    }
-
-    /* Title size adjustment */
-    .wpbs_s-search-widget-result-title h3 {
-        font-size: 24px !important;
-    }
-}
-
-/* Small Mobile - 480px and below */
-@media (max-width: 480px) {
-    .entry-content {
-        padding: 30px 15px 40px;
-    }
-
-    .entry-content h1,
-    .entry-content .entry-header h1 {
-        font-size: 32px;
-        margin-bottom: 30px;
-    }
-
-    .wpbs_s-search-widget-form-wrap {
-        margin: 0 0 40px 0;
-    }
-
-    /* Slightly smaller image on very small screens */
-    .wpbs_s-search-widget-result-image {
-        height: 280px !important;
-    }
-
-    /* Adjust title sizing */
-    .wpbs_s-search-widget-result-title h3 {
-        font-size: 22px !important;
-    }
-
-    .wpbs_s-search-widget-result-title span,
-    .wpbs_s-search-widget-result-subtitle {
-        font-size: 16px !important;
-    }
-
-    /* Stack buttons vertically on very small screens */
-    .wpbs_s-search-widget-result-buttons {
-        flex-direction: column !important;
-        width: 100% !important;
-    }
-
-    a.wpbs_s-search-widget-result-link,
-    a.wpbs_s-search-widget-result-button {
-        width: 100% !important;
-    }
-
-    /* Adjust inputs on small screens */
-    .wpbs_s-search-widget-datepicker,
-    input[type="text"].wpbs_s-search-widget-datepicker {
-        padding: 0 38px !important;
-        font-size: 13px !important;
-    }
-
-    /* Adjust icon sizes */
-    .wpbs_s-search-widget-field-start-date>div::before,
-    .wpbs_s-search-widget-field-end-date>div::before {
-        width: 18px;
-        height: 18px;
-        left: 10px;
-    }
-
-    .wpbs_s-search-widget-field-start-date>div::after,
-    .wpbs_s-search-widget-field-end-date>div::after {
-        width: 20px;
-        height: 20px;
-        right: 10px;
-    }
-
-    /* Button text size */
-    button.wpbs_s-search-widget-datepicker-submit,
-    input[type="submit"].wpbs_s-search-widget-datepicker-submit {
-        font-size: 10px !important;
-    }
-}
-
-/* ============================================
-   PRINT STYLES
-   ============================================ */
-
-@media print {
-    .wpbs_s-search-widget-form-wrap {
-        display: none !important;
-    }
-}
-
-/* =====================================================
-   NIRUP – FINAL SEARCH RESULTS CARD LAYOUT OVERRIDES
-   ===================================================== */
-
-/* Hide default "Search Results" H2 */
 .wpbs_s-search-widget-results-wrap h2 {
     display: none !important;
 }
 
-/* Grid for cards */
 .wpbs_s-search-widget-results {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
@@ -745,18 +511,6 @@ a.wpbs_s-search-widget-result-button:hover {
     opacity: 0.8 !important;
 }
 
-/* Mobile: one card per row, centered */
-@media (max-width: 1024px) {
-    .wpbs_s-search-widget-results {
-        grid-template-columns: 1fr !important;
-        gap: 30px !important;
-    }
-
-    .wpbs_s-search-widget-result {
-        max-width: 420px !important;
-        margin: 0 auto !important;
-    }
-}
 
 /* ===============================
    FINAL FIXES FOR SEARCH CARDS
@@ -959,4 +713,187 @@ display: block !important;
 
 .wpbs_s-search-widget .wpbs_s-search-widget-results-wrap h2 {
     display: none !important;
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   1024px, 768px, 480px
+   ============================================ */
+
+/* ---------- up to 1024px (large tablets / small laptops) ---------- */
+@media (max-width: 1024px) {
+
+    .entry-content {
+        padding: 60px 24px 70px;
+    }
+
+        .entry-content h1,
+        .entry-content .entry-header h1 {
+            font-size: 52px;
+            margin-bottom: 40px;
+        }
+
+        /* Form wrapper: full width but centered */
+        .wpbs_s-search-widget-form-wrap {
+            width: 100% !important;
+            max-width: 960px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        /* Keep all 3 fields on one row */
+        .wpbs_s-search-widget-form {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: flex-end !important;
+            justify-content: center !important;
+            gap: 12px !important;
+        }
+
+        /* Start / End date share the row */
+        .wpbs_s-search-widget-field-start-date,
+        .wpbs_s-search-widget-field-end-date {
+            flex: 0 0 40% !important;
+            /* about 40% each */
+            width: auto !important;
+        }
+    
+        /* Submit button takes the remaining space */
+        .wpbs_s-search-widget-field-submit {
+            flex: 0 0 20% !important;
+            /* about 20% */
+            width: auto !important;
+        }
+
+    /* Cards: 2 per row */
+    .wpbs_s-search-widget-results {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 30px !important;
+    }
+
+    .wpbs_s-search-widget-result {
+        min-height: 580px !important;
+    }
+}
+
+/* ---------- up to 768px (stacked form, 2 cards per row) ---------- */
+@media (max-width: 768px) {
+
+    .entry-content {
+        padding: 50px 20px 60px;
+    }
+
+    .entry-content h1,
+    .entry-content .entry-header h1 {
+        font-size: 40px;
+        margin-bottom: 32px;
+    }
+
+    /* Centered stacked form */
+    .wpbs_s-search-widget-form-wrap {
+        width: 100% !important;
+        max-width: 520px !important;
+        margin: 0 auto 40px auto !important;
+    }
+
+    .wpbs_s-search-widget-form-fields-2 .wpbs_s-search-widget-field {
+        width: 100% !important;
+    }
+
+    .wpbs_s-search-widget-form {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        gap: 16px !important;
+    }
+
+    .wpbs_s-search-widget-field-start-date,
+    .wpbs_s-search-widget-field-end-date,
+    .wpbs_s-search-widget-field-submit {
+        width: 100% !important;
+        flex: 0 0 auto !important;
+    }
+
+    /* Cards: 2 per row */
+    .wpbs_s-search-widget-results {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 30px !important;
+    }
+
+    .wpbs_s-search-widget-result {
+        min-height: auto !important;
+    }
+
+    .wpbs_s-search-widget-result-image img {
+        height: 260px !important;
+    }
+
+    .wpbs_s-search-widget-result-content {
+        padding: 20px 20px 32px !important;
+    }
+}
+
+/* ---------- up to 480px (small phones) ---------- */
+@media (max-width: 480px) {
+
+    .entry-content {
+        padding: 40px 16px 50px;
+    }
+
+    .entry-content h1,
+    .entry-content .entry-header h1 {
+        font-size: 32px;
+        margin-bottom: 24px;
+    }
+
+    .wpbs_s-search-widget-form {
+        gap: 12px !important;
+    }
+
+    .wpbs_s-search-widget-datepicker,
+    input[type="text"].wpbs_s-search-widget-datepicker {
+        height: 44px !important;
+        font-size: 13px !important;
+    }
+
+    .wpbs_s-search-widget-results {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+    }
+    .wpbs_s-search-widget-result {
+        min-height: auto !important;
+    }
+
+    .wpbs_s-search-widget-result-image img {
+        height: 220px !important;
+    }
+
+    .wpbs_s-search-widget-result-content {
+        padding: 18px 16px 26px !important;
+    }
+
+    .wpbs_s-search-widget-result-heading {
+        font-size: 22px !important;
+    }
+
+    .wpbs_s-search-widget-result-price span {
+        font-size: 14px !important;
+    }
+
+    .wpbs_s-search-widget-result-buttons a.wpbs_s-search-widget-result-link {
+        height: 38px !important;
+        padding: 0 24px !important;
+        font-size: 10px !important;
+    }
+
+    .wpbs_s-search-widget.wpbs_s-search-widget-small .wpbs_s-search-widget-results-wrap .wpbs_s-search-widget-result.wpbs_s-has-thumb {
+        padding: 0 !important;
+    }
+
+    .wpbs_s-search-widget.wpbs_s-search-widget-small .wpbs_s-search-widget-results-wrap .wpbs_s-search-widget-result img {
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: static !important;
+    }
 }
