@@ -1,171 +1,256 @@
 <?php
 /**
- * WPBS Search Integration Helper Functions
- * File: inc/wpbs-search-helpers.php
- * 
- * Ensures villa data is properly formatted for WPBS Search Widget display
+ * Helper functions for styling WP Booking System search results
+ * for the Availability Results page.
+ *
+ * - Uses the Search Add-on filter `wpbs_search_results_html`
+ *   to output custom card markup that matches the Nirup design.
+ * - Maps calendars to Villa posts via the `villa_calendar_id` meta.
+ * - Uses the Villa featured image and `villa_base_price` meta
+ *   for the "Starting from" price text.
  */
 
-/**
- * Filter WPBS search results to add custom villa data
- * This ensures the subtitle (villa location) appears correctly
- */
-add_filter( 'wpbs_search_result_data', 'nirup_customize_wpbs_search_result', 10, 2 );
-function nirup_customize_wpbs_search_result( $result_data, $calendar_id ) {
-    
-    // Find the villa post associated with this calendar
-    $villas = get_posts( array(
-        'post_type'      => 'villa',
-        'posts_per_page' => 1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'villa_calendar_id',
-                'value' => $calendar_id,
-            ),
-        ),
-    ) );
-    
-    if ( ! empty( $villas ) ) {
-        $villa = $villas[0];
-        
-        // Add villa location as subtitle (e.g., "Riahi Residence, Villa 201")
-        $villa_location = get_post_meta( $villa->ID, 'villa_location', true );
-        if ( ! empty( $villa_location ) ) {
-            $result_data['subtitle'] = $villa_location;
-        }
-        
-        // Ensure featured image is included
-        if ( has_post_thumbnail( $villa->ID ) ) {
-            $result_data['image'] = get_the_post_thumbnail_url( $villa->ID, 'large' );
-        }
-        
-        // Add villa URL for "Discover More" button
-        $result_data['url'] = get_permalink( $villa->ID );
-    }
-    
-    return $result_data;
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly.
 }
 
 /**
- * Customize WPBS search result HTML output
- * This modifies the button text to match the design
+ * Get Villa ID associated with a WPBS calendar ID.
+ *
+ * @param int $calendar_id
+ * @return int Villa post ID or 0.
  */
-add_filter( 'wpbs_search_result_html', 'nirup_customize_wpbs_result_html', 10, 2 );
-function nirup_customize_wpbs_result_html( $html, $result_data ) {
-    
-    // Replace button text to match Figma design
-    // "View" becomes "Discover More"
-    $html = str_replace( '>View</', '>Discover More</', $html );
-    
-    // Ensure "Book Now" button text is correct
-    // This might already be "Book Now" but we'll make sure
-    $html = str_replace( '>Book</', '>Book Now</', $html );
-    
-    return $html;
-}
+function nirup_get_villa_id_for_calendar( $calendar_id ) {
+    static $cache = array();
 
-/**
- * Add villa location to calendar post meta
- * This makes the location available to WPBS
- */
-add_action( 'save_post_villa', 'nirup_sync_villa_location_to_calendar', 20, 1 );
-function nirup_sync_villa_location_to_calendar( $post_id ) {
-    
-    // Skip if autosave
-    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-        return;
+    $calendar_id = absint( $calendar_id );
+    if ( ! $calendar_id ) {
+        return 0;
     }
-    
-    // Get villa calendar ID
-    $calendar_id = get_post_meta( $post_id, 'villa_calendar_id', true );
-    
-    if ( empty( $calendar_id ) ) {
-        return;
+
+    if ( isset( $cache[ $calendar_id ] ) ) {
+        return $cache[ $calendar_id ];
     }
-    
-    // Get villa location
-    $villa_location = get_post_meta( $post_id, 'villa_location', true );
-    
-    // If using WPBS calendar posts, update the calendar post meta
-    if ( post_type_exists( 'wpbs_calendar' ) ) {
-        
-        $calendar_posts = get_posts( array(
-            'post_type'      => 'wpbs_calendar',
+
+    $villa_query = new WP_Query(
+        array(
+            'post_type'      => 'villa',
+            'post_status'    => 'publish',
             'posts_per_page' => 1,
-            'p'              => $calendar_id,
-        ) );
-        
-        if ( ! empty( $calendar_posts ) ) {
-            $calendar_post = $calendar_posts[0];
-            
-            // Store villa location in calendar meta
-            update_post_meta( $calendar_post->ID, 'villa_location', $villa_location );
-            
-            // Store villa ID for reverse lookup
-            update_post_meta( $calendar_post->ID, 'villa_post_id', $post_id );
-        }
+            'fields'         => 'ids',
+            'meta_query'     => array(
+                array(
+                    'key'   => 'villa_calendar_id',
+                    'value' => $calendar_id,
+                ),
+            ),
+        )
+    );
+
+    $villa_id = 0;
+
+    if ( $villa_query->have_posts() ) {
+        $villa_id = (int) $villa_query->posts[0];
     }
+
+    $cache[ $calendar_id ] = $villa_id;
+
+    wp_reset_postdata();
+
+    return $villa_id;
 }
 
 /**
- * Ensure villa featured image is used in WPBS results
+ * Optional: Ensure WPBS uses the Villa featured image for calendars
+ * (for any other WPBS output that relies on this filter).
+ *
+ * @param string $image_url
+ * @param int    $calendar_id
+ *
+ * @return string
  */
-add_filter( 'wpbs_calendar_featured_image', 'nirup_use_villa_featured_image', 10, 2 );
 function nirup_use_villa_featured_image( $image_url, $calendar_id ) {
-    
-    // Find villa associated with this calendar
-    $villas = get_posts( array(
-        'post_type'      => 'villa',
-        'posts_per_page' => 1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'villa_calendar_id',
-                'value' => $calendar_id,
-            ),
-        ),
-    ) );
-    
-    if ( ! empty( $villas ) && has_post_thumbnail( $villas[0]->ID ) ) {
-        return get_the_post_thumbnail_url( $villas[0]->ID, 'large' );
+    $villa_id = nirup_get_villa_id_for_calendar( $calendar_id );
+
+    if ( $villa_id ) {
+        $featured_url = get_the_post_thumbnail_url( $villa_id, 'master' );
+        if ( $featured_url ) {
+            return $featured_url;
+        }
     }
-    
+
     return $image_url;
 }
+add_filter( 'wpbs_calendar_featured_image', 'nirup_use_villa_featured_image', 10, 2 );
 
-/**
- * Format the starting price display
- */
-add_filter( 'wpbs_search_result_price', 'nirup_format_search_result_price', 10, 2 );
-function nirup_format_search_result_price( $price_html, $calendar_id ) {
-    
-    // Find villa for this calendar
-    $villas = get_posts( array(
-        'post_type'      => 'villa',
-        'posts_per_page' => 1,
-        'meta_query'     => array(
-            array(
-                'key'   => 'villa_calendar_id',
-                'value' => $calendar_id,
-            ),
-        ),
-    ) );
-    
-    if ( ! empty( $villas ) ) {
-        $villa_id = $villas[0]->ID;
-        
-        // Get base price from villa meta
-        $base_price = get_post_meta( $villa_id, 'villa_base_price', true );
-        
-        if ( ! empty( $base_price ) ) {
-            // Format: "Starting from $XX.XX USD per day."
-            $formatted_price = sprintf(
-                'Starting from $%s USD per day.',
-                number_format( (float) $base_price, 2 )
+
+function nirup_get_villa_starting_price_text( $calendar_id, $data = array(), $original_html = '' ) {
+    $calendar_id = absint( $calendar_id );
+    $villa_id    = $calendar_id ? nirup_get_villa_id_for_calendar( $calendar_id ) : 0;
+
+    // 1) WPBS price array → already in current currency.
+    if ( ! empty( $data['price'] ) && is_array( $data['price'] ) ) {
+
+        if ( ! empty( $data['price']['formatted_price_per_night'] ) ) {
+            $formatted = wp_strip_all_tags( $data['price']['formatted_price_per_night'] );
+
+            return sprintf(
+                __( 'Starting from %s per night.', 'nirup' ),
+                $formatted
             );
-            
-            return '<h3>' . esc_html( $formatted_price ) . '</h3>';
+        }
+
+        if ( ! empty( $data['price']['price_per_night'] ) ) {
+            $price_number = (float) $data['price']['price_per_night'];
+
+            return sprintf(
+                __( 'Starting from %s per night.', 'nirup' ),
+                number_format_i18n( $price_number, 2 )
+            );
         }
     }
-    
-    return $price_html;
+
+    // 2) Fallback: parse the original WPBS HTML (trim off "View" etc).
+    if ( ! empty( $original_html ) ) {
+        $plain = wp_strip_all_tags( $original_html );
+        $pos   = strpos( $plain, 'Starting from' );
+
+        if ( false !== $pos ) {
+            // Try to cut at " per day" / " per night"
+            $end_markers = array(
+                ' per day.',
+                ' per day',
+                ' per night.',
+                ' per night',
+            );
+
+            $end_pos = false;
+
+            foreach ( $end_markers as $marker ) {
+                $marker_pos = strpos( $plain, $marker, $pos );
+                if ( false !== $marker_pos ) {
+                    $candidate_end = $marker_pos + strlen( $marker );
+                    if ( false === $end_pos || $candidate_end < $end_pos ) {
+                        $end_pos = $candidate_end;
+                    }
+                }
+            }
+
+            if ( false !== $end_pos ) {
+                $fragment = substr( $plain, $pos, $end_pos - $pos );
+                return trim( $fragment );
+            }
+
+            // If markers fail, just take up to the next period.
+            $fragment    = substr( $plain, $pos );
+            $period_pos  = strpos( $fragment, '.' );
+            if ( false !== $period_pos ) {
+                $fragment = substr( $fragment, 0, $period_pos + 1 );
+            }
+
+            return trim( $fragment );
+        }
+    }
+
+    // 3) Final fallback: villa_base_price meta (assumed USD).
+    if ( $villa_id ) {
+        $base_price = get_post_meta( $villa_id, 'villa_base_price', true );
+
+        if ( '' !== $base_price && null !== $base_price ) {
+            $price_number = (float) $base_price;
+
+            return sprintf(
+                __( 'Starting from $%s USD per night.', 'nirup' ),
+                number_format_i18n( $price_number, 2 )
+            );
+        }
+    }
+
+    return '';
 }
+
+
+/**
+ * Override WPBS search result HTML with our custom card layout.
+ *
+ * @param string $output Default HTML from the plugin.
+ * @param array  $data   Result data.
+ *
+ * @return string
+ */
+function nirup_wpbs_search_result_card_html( $output, $data ) {
+
+    // Basic data with fallbacks.
+    $calendar_name = isset( $data['calendar_name'] ) ? $data['calendar_name'] : '';
+    $link          = ! empty( $data['link'] ) ? $data['link'] : '#';
+    $calendar_id   = isset( $data['calendar_id'] ) ? (int) $data['calendar_id'] : 0;
+    $post_id       = isset( $data['post_id'] ) ? (int) $data['post_id'] : 0;
+
+    // Determine a Villa ID (either via calendar mapping or linked post).
+    $villa_id = $calendar_id ? nirup_get_villa_id_for_calendar( $calendar_id ) : 0;
+    if ( ! $villa_id && $post_id ) {
+        $villa_id = $post_id;
+    }
+
+    // Build image HTML (prefer the Villa featured image).
+    $image_html = '';
+    if ( $villa_id ) {
+        $image_html = get_the_post_thumbnail(
+            $villa_id,
+            'large',
+            array(
+                'class'   => 'attachment-large size-large wp-post-image',
+                'loading' => 'lazy',
+            )
+        );
+    }
+
+    // If we still don't have an image and no name, keep default output.
+    if ( empty( $image_html ) && empty( $calendar_name ) ) {
+        return $output;
+    }
+
+    // Starting price text (meta → WPBS → parse original HTML).
+    $price_text = nirup_get_villa_starting_price_text( $calendar_id, $data, $output );
+
+    // Build card HTML: only the button has a link.
+    ob_start();
+    ?>
+    <div class="wpbs_s-search-widget-result wpbs_s-has-thumb">
+        <?php if ( ! empty( $image_html ) ) : ?>
+            <div class="wpbs_s-search-widget-result-image">
+                <?php echo $image_html; ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="wpbs_s-search-widget-result-content">
+            <div class="wpbs_s-search-widget-result-title">
+                <?php if ( $calendar_name ) : ?>
+                    <h3 class="wpbs_s-search-widget-result-heading">
+                        <?php echo esc_html( $calendar_name ); ?>
+                    </h3>
+                <?php endif; ?>
+            </div>
+
+            <div class="wpbs_s-search-widget-result-buttons">
+                <a class="wpbs_s-search-widget-result-link"
+                   href="<?php echo esc_url( $link ); ?>"
+                   title="<?php echo esc_attr( $calendar_name ); ?>">
+                    <?php esc_html_e( 'Discover More', 'nirup' ); ?>
+                </a>
+            </div>
+
+            <?php if ( $price_text ) : ?>
+                <div class="wpbs_s-search-widget-result-price">
+                    <span><?php echo esc_html( $price_text ); ?></span>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php
+
+    return ob_get_clean();
+}
+add_filter( 'wpbs_search_results_html', 'nirup_wpbs_search_result_card_html', 10, 2 );
+add_filter( 'wpbs_search_resuts_html', 'nirup_wpbs_search_result_card_html', 10, 2 );
+

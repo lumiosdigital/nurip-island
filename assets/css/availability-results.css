@@ -264,7 +264,7 @@ input[type="submit"].wpbs_s-search-widget-datepicker-submit {
 .wpbs_s-search-widget-results {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
-    gap: 20px !important;
+    /* gap: 20px !important; */
     margin: 0 !important;
     padding: 0 !important;
     list-style: none !important;
@@ -276,7 +276,7 @@ input[type="submit"].wpbs_s-search-widget-datepicker-submit {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 20px !important;
+    /* gap: 20px !important; */
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
@@ -308,7 +308,7 @@ input[type="submit"].wpbs_s-search-widget-datepicker-submit {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 20px !important;
+    /* gap: 30px !important; */
     padding: 0 20px 20px !important;
     text-align: center !important;
     width: 100% !important;
@@ -378,24 +378,28 @@ a.wpbs_s-search-widget-result-link {
     flex: 1 !important;
     background-color: transparent !important;
     border: 1px solid #A48456 !important;
-    color: #A48456 !important;
-    font-family: 'Albert Sans', sans-serif !important;
-    font-size: 11px !important;
-    font-weight: 300 !important;
+    color: #555250 !important;
+    font-family: 'Amirti', serif !important;
+    font-size: 28px !important;
+    font-weight: 400 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    line-height: 1.2 !important;
+    letter-spacing: -1 !important;
+    line-height: 100% !important;
     height: 40px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     text-decoration: none !important;
     transition: opacity 0.2s ease !important;
-    padding: 10px !important;
+    padding: 0 10px !important;
     box-sizing: border-box !important;
     border-radius: 0 !important;
     cursor: pointer !important;
     margin: 0 !important;
+}
+
+.wpbs_s-search-widget .wpbs_s-search-widget-results-wrap .wpbs_s-search-widget-result h3 a {
+    color: #555250 !important;
 }
 
 a.wpbs_s-search-widget-result-link:hover {
@@ -619,4 +623,340 @@ a.wpbs_s-search-widget-result-button:hover {
     .wpbs_s-search-widget-form-wrap {
         display: none !important;
     }
+}
+
+/* =====================================================
+   NIRUP – FINAL SEARCH RESULTS CARD LAYOUT OVERRIDES
+   ===================================================== */
+
+/* Hide default "Search Results" H2 */
+.wpbs_s-search-widget-results-wrap h2 {
+    display: none !important;
+}
+
+/* Grid for cards */
+.wpbs_s-search-widget-results {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 40px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Card wrapper */
+.wpbs_s-search-widget-result {
+    background-color: #FCFAF6 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    /* padding: 0 0 48px !important; */
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    position: relative !important;
+    min-height: 598px !important;
+}
+
+/* Top image (first link inside the card) */
+.wpbs_s-search-widget-result>a.wpbs_s-search-widget-result-link:first-of-type {
+    display: block !important;
+    width: 100% !important;
+    height: 376px !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
+
+.wpbs_s-search-widget-result>a.wpbs_s-search-widget-result-link:first-of-type img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+/* Title area */
+.wpbs_s-search-widget-result-title {
+    /* margin-top: 32px !important; */
+    text-align: center !important;
+    width: 100% !important;
+    padding: 0 20px !important;
+    box-sizing: border-box !important;
+}
+
+.wpbs_s-search-widget-result-title h3 {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'Amiri', serif !important;
+    font-size: 28px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    letter-spacing: -1px !important;
+    text-transform: uppercase !important;
+    color: #555250 !important;
+}
+
+.wpbs_s-search-widget-result-title h3 a {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+/* "Starting from ..." – pinned to the bottom of the card */
+.wpbs_s-search-widget-result-title span {
+    position: absolute !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 100% !important;
+    text-align: center !important;
+
+    font-family: 'Amiri', serif !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    line-height: 1.4 !important;
+    color: #3D332F !important;
+}
+
+/* Discover More button – under the title */
+.wpbs_s-search-widget-result>a.wpbs_s-search-widget-result-button {
+    margin-top: 32px !important;
+    padding: 10px 40px !important;
+    background-color: transparent !important;
+    border: 1px solid #A48456 !important;
+    color: #A48456 !important;
+
+    font-family: 'Albert Sans', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 300 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1.2 !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+    cursor: pointer !important;
+    border-radius: 0 !important;
+    transition: opacity 0.2s ease !important;
+}
+
+.wpbs_s-search-widget-result>a.wpbs_s-search-widget-result-button:hover {
+    opacity: 0.8 !important;
+}
+
+/* Mobile: one card per row, centered */
+@media (max-width: 1024px) {
+    .wpbs_s-search-widget-results {
+        grid-template-columns: 1fr !important;
+        gap: 30px !important;
+    }
+
+    .wpbs_s-search-widget-result {
+        max-width: 420px !important;
+        margin: 0 auto !important;
+    }
+}
+
+/* ===============================
+   FINAL FIXES FOR SEARCH CARDS
+   =============================== */
+
+/* Reset generic link styles inside results */
+.wpbs_s-search-widget-result a.wpbs_s-search-widget-result-link {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: auto !important;
+    display: inline !important;
+    align-items: initial !important;
+    justify-content: initial !important;
+    text-decoration: none !important;
+}
+
+/* IMAGE – full width at the top, no border */
+.wpbs_s-search-widget-result-image {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.wpbs_s-search-widget-result-image a.wpbs_s-search-widget-result-link {
+    display: block !important;
+    width: 100% !important;
+    height: 376px !important;
+    overflow: hidden !important;
+}
+
+.wpbs_s-search-widget-result-image a.wpbs_s-search-widget-result-link img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+/* TITLE – looks like plain text, not a button */
+.wpbs_s-search-widget-result-title a.wpbs_s-search-widget-result-link {
+    text-decoration: none !important;
+}
+
+/* Ensure content is a vertical stack: title → button → price */
+.wpbs_s-search-widget-result-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 30px !important;
+    margin-top: 10px !important;
+}
+
+.wpbs_s-search-widget-result-title {
+    order: 1 !important;
+}
+
+.wpbs_s-search-widget-result-buttons {
+    order: 3 !important;
+}
+
+/* DISCOVER MORE – only the bottom link acts as a button */
+.wpbs_s-search-widget-result-buttons a.wpbs_s-search-widget-result-link {
+    background-color: transparent !important;
+    border: 1px solid #A48456 !important;
+    color: #A48456 !important;
+    font-family: 'Albert Sans', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 300 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1.2 !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    padding: 0 40px !important;
+    box-sizing: border-box !important;
+    border-radius: 0 !important;
+    cursor: pointer !important;
+    /* margin-top: 32px !important; */
+}
+
+.wpbs_s-search-widget-result-buttons a.wpbs_s-search-widget-result-link:hover {
+    opacity: 0.8 !important;
+}
+
+.wpbs_s-search-widget[data-results_layout=grid] .wpbs_s-search-widget-results .wpbs_s-search-widget-result img {
+display: block !important;
+    /* max-width: none !important; */
+    /* width: auto; */
+    height: auto !important;
+    height: 380px !important;
+    object-fit: cover !important;
+}
+
+/* ============================================
+   NIRUP – CARD LAYOUT & PRICE POSITION
+   ============================================ */
+
+/* Card = image on top + content column */
+.wpbs_s-search-widget-result {
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: #FCFAF6 !important;
+    min-height: 620px !important;
+}
+
+/* Image stays fixed at top */
+.wpbs_s-search-widget-result-image {
+    flex-shrink: 0 !important;
+}
+
+.wpbs_s-search-widget-result-image img {
+    width: 100% !important;
+    height: 376px !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+/* Content area: stack title → button → price */
+.wpbs_s-search-widget-result-content {
+    /* flex: 1 1 auto !important; */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 20px 40px 50px !important;
+    box-sizing: border-box !important;
+}
+
+/* Reset any previous ordering */
+.wpbs_s-search-widget-result-title,
+.wpbs_s-search-widget-result-buttons,
+.wpbs_s-search-widget-result-price {
+    order: 0 !important;
+}
+
+/* Title styling */
+.wpbs_s-search-widget-result-heading {
+    margin: 16px 0 0 0 !important;
+    font-family: 'Amiri', serif !important;
+    font-size: 28px !important;
+    font-weight: 400 !important;
+    text-transform: uppercase !important;
+    letter-spacing: -1px !important;
+    color: #555250 !important;
+    text-align: center !important;
+}
+
+/* Only the button looks clickable */
+.wpbs_s-search-widget-result-buttons a.wpbs_s-search-widget-result-link {
+    /* margin-top: 32px !important; */
+    background-color: #8B5E1D !important;
+    /* border: 1px solid #8B5E1D !important; */
+    color: white !important;
+    font-family: 'Albert Sans', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 300 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1.2 !important;
+    height: 40px !important;
+    padding: 0 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+}
+
+.wpbs_s-search-widget-result-buttons a.wpbs_s-search-widget-result-link:hover {
+    background-color: #a48456 !important;
+}
+
+/* Price: pushed to the bottom of the card */
+.wpbs_s-search-widget-result-price {
+    margin-top: auto !important;
+    /* pushes it down */
+    width: 100% !important;
+    text-align: center !important;
+}
+
+.wpbs_s-search-widget-result-price span {
+    font-family: 'Amiri', serif !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    color: #3D332F !important;
+}
+
+.wpbs_s-search-widget .wpbs_s-search-widget-results-wrap .wpbs_s-search-widget-result h3 {
+    margin: 0 !important;
+    font-family: 'Amiri', serif !important;
+    font-size: 28px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    letter-spacing: -1px !important;
+    text-transform: uppercase !important;
+    color: #555250 !important;
+}
+
+.wpbs_s-search-widget .wpbs_s-search-widget-results-wrap h2 {
+    display: none !important;
 }
