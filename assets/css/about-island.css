@@ -337,3 +337,54 @@
         color: #3d332f !important;
     }
 }
+
+@media (max-width: 480px) {
+    .about-island-section {
+        padding: 40px 0;
+    }
+
+    .about-island-header {
+        margin-bottom: 40px;
+        padding: 0 15px;
+    }
+
+    .about-main-title {
+        font-size: 28px;
+        line-height: 1.1;
+    }
+
+    .about-section-title {
+        font-size: 14px;
+    }
+
+    .about-description p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .about-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 100%;
+        gap: 25px 15px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    .feature-item {
+        gap: 15px;
+        padding: 20px 10px;
+    }
+
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .feature-title {
+        font-size: 15px;
+    }
+
+    .feature-description {
+        font-size: 12px;
+    }
+}
