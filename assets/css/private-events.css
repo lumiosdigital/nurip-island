@@ -809,7 +809,7 @@
 .event-card {
     background: #fcfaf6;
     width: 100%;
-    height: 880px;
+    height: 950px;
     /* Match dining cards */
     display: flex;
     flex-direction: column;
