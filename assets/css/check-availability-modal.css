@@ -411,11 +411,15 @@ body.check-availability-modal-open {
         height: 48px !important;
     }
 
-    /* Taller search button for touch */
+    /* Taller search button for touch and make sticky */
     .check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field button.wpbs_s-search-widget-datepicker-submit,
     .check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type="submit"].wpbs_s-search-widget-datepicker-submit {
         height: 48px !important;
         padding: 14px !important;
+        position: sticky !important;
+        bottom: 0 !important;
+        z-index: 10 !important;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1) !important;
     }
 
     /* Keep Westin link nicely under the button */
@@ -507,13 +511,17 @@ body.check-availability-modal-open {
         right: 10px;
     }
 
-    /* Button text size and sizing */
+    /* Button text size and sizing - keep sticky */
     .check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field button.wpbs_s-search-widget-datepicker-submit,
     .check-availability-modal .wpbs_s-search-widget .wpbs_s-search-widget-form .wpbs_s-search-widget-field input[type="submit"].wpbs_s-search-widget-datepicker-submit {
         font-size: 10px !important;
         box-sizing: border-box !important;
         max-width: 100% !important;
         width: 100% !important;
+        position: sticky !important;
+        bottom: 0 !important;
+        z-index: 10 !important;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1) !important;
     }
 
     /* Ensure link fits properly */
