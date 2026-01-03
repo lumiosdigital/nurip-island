@@ -17,23 +17,30 @@ $hero_logo_link = get_theme_mod('nirup_hero_logo_link', '');
 // Get image URLs
 $hero_bg_url = $hero_bg_image_id ? wp_get_attachment_image_url($hero_bg_image_id, 'full') : '';
 $hero_pattern_url = $hero_pattern_image_id ? wp_get_attachment_image_url($hero_pattern_image_id, 'full') : '';
-
-// Build inline styles
-$inline_styles = '';
-if ($hero_bg_url) {
-    $inline_styles .= '.hero-main-bg { background-image: url(' . esc_url($hero_bg_url) . '); }';
-}
-if ($hero_pattern_url) {
-    $inline_styles .= '.hero-pattern-bg { background-image: url(' . esc_url($hero_pattern_url) . '); }';
-}
-
-// Add inline styles if we have any
-if ($inline_styles) {
-    wp_add_inline_style('nirup-hero', $inline_styles);
-}
 ?>
 
+<?php if ($hero_bg_url || $hero_pattern_url): ?>
+<style>
+    <?php if ($hero_bg_url): ?>
+    .hero-main-bg {
+        background-image: url(<?php echo esc_url($hero_bg_url); ?>);
+    }
+    <?php endif; ?>
+    <?php if ($hero_pattern_url): ?>
+    .hero-pattern-bg {
+        background-image: url(<?php echo esc_url($hero_pattern_url); ?>);
+    }
+    <?php endif; ?>
+</style>
+<?php endif; ?>
+
 <section class="hero-section" id="hero">
+
+    <!-- Background Layers -->
+    <div class="hero-main-bg"></div>
+    <?php if ($hero_pattern_url): ?>
+    <div class="hero-pattern-bg"></div>
+    <?php endif; ?>
 
     <!-- Hero Content -->
     <div class="hero-content">

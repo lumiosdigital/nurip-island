@@ -341,3 +341,22 @@ function nirup_enqueue_assets() {
 
 // Register the enqueue function
 add_action('wp_enqueue_scripts', 'nirup_enqueue_assets', 20);
+
+/**
+ * Preload hero background image on front page to prevent white flash
+ */
+function nirup_preload_hero_image() {
+    // Only on front page
+    if (!is_front_page()) {
+        return;
+    }
+
+    $hero_bg_image_id = get_theme_mod('nirup_hero_bg_image');
+    if ($hero_bg_image_id) {
+        $hero_bg_url = wp_get_attachment_image_url($hero_bg_image_id, 'full');
+        if ($hero_bg_url) {
+            echo '<link rel="preload" as="image" href="' . esc_url($hero_bg_url) . '" fetchpriority="high">' . "\n";
+        }
+    }
+}
+add_action('wp_head', 'nirup_preload_hero_image', 1);
