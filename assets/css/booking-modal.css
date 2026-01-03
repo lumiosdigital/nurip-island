@@ -340,10 +340,12 @@ body.booking-modal-open {
         max-height: 100vh;
         max-width: 100%;
         margin: 0;
+        box-sizing: border-box;
     }
 
     .booking-modal-header {
         padding: 35px 15px 12px;
+        box-sizing: border-box;
     }
 
     .booking-modal-title {
@@ -355,6 +357,7 @@ body.booking-modal-open {
         max-height: calc(100vh - 60px);
         overflow-y: auto;
         gap: 0;
+        box-sizing: border-box;
     }
 
     .booking-modal-divider {
@@ -372,12 +375,14 @@ body.booking-modal-open {
         flex: 0 0 50%;
         display: flex;
         flex-direction: column;
+        box-sizing: border-box;
     }
 
     /* Image - clean, no overlay */
     .booking-option-image-wrapper {
         height: 180px;
         position: relative;
+        box-sizing: border-box;
     }
 
     .booking-option-overlay {
@@ -435,6 +440,7 @@ body.booking-modal-open {
         flex-direction: column;
         justify-content: space-between;
         flex: 1;
+        box-sizing: border-box;
     }
 
     /* Hide description on mobile */
@@ -461,6 +467,8 @@ body.booking-modal-open {
         align-items: center;
         justify-content: center;
         gap: 6px;
+        box-sizing: border-box;
+        max-width: 100%;
     }
 
     .booking-option-button:hover {
@@ -488,8 +496,19 @@ body.booking-modal-open {
 
 /* SMALL MOBILE - 480px */
 @media (max-width: 480px) {
+    .booking-modal {
+        padding: 0;
+    }
+
+    .booking-modal-container {
+        box-sizing: border-box;
+        max-width: 100%;
+        width: 100%;
+    }
+
     .booking-modal-header {
         padding: 30px 12px 10px;
+        box-sizing: border-box;
     }
 
     .booking-modal-title {
@@ -498,10 +517,17 @@ body.booking-modal-open {
 
     .booking-modal-content {
         max-height: calc(100vh - 50px);
+        box-sizing: border-box;
+    }
+
+    .booking-option {
+        box-sizing: border-box;
+        max-width: 50%;
     }
 
     .booking-option-image-wrapper {
         height: 160px;
+        box-sizing: border-box;
     }
 
     .booking-option-label {
@@ -516,12 +542,16 @@ body.booking-modal-open {
     .booking-option-info {
         padding: 10px 8px;
         gap: 8px;
+        box-sizing: border-box;
     }
 
     .booking-option-button {
         height: 36px;
         font-size: 8px;
         padding: 0 8px;
+        box-sizing: border-box;
+        max-width: 100%;
+        width: 100%;
     }
 }
 

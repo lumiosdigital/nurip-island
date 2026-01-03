@@ -528,33 +528,205 @@ body.modal-open {
 }
 
 @media (max-width: 768px) {
+    .villa-booking-modal {
+        padding: 10px;
+    }
+
     .villa-booking-container {
-        max-width: 95%;
+        max-width: 100%;
+        max-height: 95vh;
     }
 
     .villa-booking-header {
-        padding: 30px 20px;
+        padding: 25px 15px;
     }
 
     .villa-booking-title {
-        font-size: 28px;
+        font-size: 24px;
+    }
+
+    .villa-booking-subtitle {
+        font-size: 12px;
     }
 
     .villa-booking-modal .wpbs-container,
     .villa-booking-modal .wpbs-form-container {
-        padding: 20px;
+        padding: 15px;
+    }
+
+    .villa-booking-modal .wpbs-calendar {
+        padding: 15px;
+        margin-bottom: 30px;
     }
 
     .villa-booking-modal .wpbs-legend {
-        padding: 20px !important;
+        padding: 15px !important;
         flex-direction: column;
         gap: 10px;
+    }
+
+    /* Fix form inputs on mobile */
+    .villa-booking-modal .wpbs-form input[type="text"],
+    .villa-booking-modal .wpbs-form input[type="email"],
+    .villa-booking-modal .wpbs-form input[type="tel"],
+    .villa-booking-modal .wpbs-form input[type="number"],
+    .villa-booking-modal .wpbs-form textarea,
+    .villa-booking-modal .wpbs-form select {
+        padding: 10px 12px;
+        font-size: 14px;
+        box-sizing: border-box;
+        max-width: 100%;
+    }
+
+    /* Fix total section on mobile */
+    .villa-booking-modal .wpbs-form-field-total .wpbs-total-price,
+    .villa-booking-modal .wpbs-payment-confirmation {
+        padding: 15px;
+    }
+
+    .villa-booking-modal .wpbs-pricing-table td:first-child {
+        padding-right: 20px;
+    }
+
+    .villa-booking-modal .wpbs-pricing-table {
+        font-size: 13px;
+    }
+
+    .villa-booking-modal .wpbs-pricing-table th {
+        font-size: 11px;
+    }
+
+    /* Payment confirmation on mobile */
+    .villa-booking-modal .wpbs-woocommerce-payment-confirmation {
+        margin: 20px 0 0 0 !important;
+    }
+}
+
+/* Extra small screens - Fix horizontal scroll */
+@media (max-width: 480px) {
+    .villa-booking-modal {
+        padding: 5px;
+    }
+
+    .villa-booking-container {
+        max-height: 98vh;
+    }
+
+    .villa-booking-header {
+        padding: 20px 12px;
+    }
+
+    .villa-booking-title {
+        font-size: 20px;
+        letter-spacing: -0.5px;
+    }
+
+    .villa-booking-subtitle {
+        font-size: 11px;
+    }
+
+    .villa-booking-modal .wpbs-container,
+    .villa-booking-modal .wpbs-form-container {
+        padding: 12px;
+    }
+
+    .villa-booking-modal .wpbs-calendar {
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+
+    /* Make all form elements fit on small screens */
+    .villa-booking-modal .wpbs-form input[type="text"],
+    .villa-booking-modal .wpbs-form input[type="email"],
+    .villa-booking-modal .wpbs-form input[type="tel"],
+    .villa-booking-modal .wpbs-form input[type="number"],
+    .villa-booking-modal .wpbs-form textarea,
+    .villa-booking-modal .wpbs-form select {
+        padding: 10px;
+        font-size: 13px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 12px;
+    }
+
+    /* Reduce button padding */
+    .villa-booking-modal .wpbs-form input[type="submit"],
+    .villa-booking-modal .wpbs-form button[type="submit"],
+    [id^="wpbs-form-submit"] {
+        padding: 12px 20px;
+        font-size: 12px;
+    }
+
+    /* Fix total and payment sections */
+    .villa-booking-modal .wpbs-form-field-total .wpbs-total-price,
+    .villa-booking-modal .wpbs-payment-confirmation {
+        padding: 12px;
+    }
+
+    .villa-booking-modal .wpbs-pricing-table {
+        font-size: 12px;
+    }
+
+    .villa-booking-modal .wpbs-pricing-table th {
+        font-size: 10px;
+    }
+
+    .villa-booking-modal .wpbs-pricing-table td:first-child {
+        padding-right: 15px;
+    }
+
+    /* Fix price breakdown on mobile */
+    .villa-booking-modal .wpbs-pricing-table-price-breakdown-line {
+        font-size: 12px;
+        flex-wrap: wrap;
+    }
+
+    .villa-booking-modal .wpbs-pricing-table-price-breakdown-line > span {
+        margin-left: 15px;
+        min-width: 60px;
+    }
+
+    /* Fix payment confirmation */
+    .villa-booking-modal .wpbs-woocommerce-payment-confirmation {
+        margin: 15px 0 0 0 !important;
+    }
+
+    .villa-booking-modal .wpbs-woocommerce-payment-confirmation .wpbs-payment-confirmation-inner {
+        padding: 12px;
+    }
+
+    /* Fix close button on small screens */
+    .villa-booking-close {
+        width: 28px;
+        height: 28px;
+        right: 5px;
+        top: 5px;
+    }
+
+    .villa-booking-close svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    /* Fix payment method section */
+    .villa-booking-modal .wpbs-field-payment-method {
+        padding: 12px 15px;
+        margin-top: 15px;
+    }
+
+    .villa-booking-modal .wpbs-field-payment-method legend,
+    .villa-booking-modal .wpbs-field-payment-method label {
+        font-size: 11px;
     }
 }
 
 /* Prevent body scroll when modal open */
 body.villa-booking-open {
-    overflow: hidden;
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
 }
 
 /* ================================================

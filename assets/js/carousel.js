@@ -102,48 +102,71 @@ function initExperiencesCarousel() {
         resizeTimeout = setTimeout(updateLayout, 150);
     });
     
-    // Touch/swipe handling
+    // Touch/swipe handling with improved scroll prevention
     let startX = 0;
+    let startY = 0;
     let currentX = 0;
     let isDragging = false;
-    
+    let isHorizontalSwipe = false;
+
     track.addEventListener('touchstart', function(e) {
         startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        currentX = startX;
         isDragging = true;
+        isHorizontalSwipe = false;
         track.style.transition = 'none';
     }, { passive: true });
-    
+
     track.addEventListener('touchmove', function(e) {
         if (!isDragging) return;
-        
+
         currentX = e.touches[0].clientX;
-        const diff = currentX - startX;
-        let translateX = -currentIndex * cardStep + diff;
-        
-        // Boundary checks
-        const minTranslate = -maxIndex * cardStep;
-        const maxTranslate = 0;
-        translateX = Math.max(minTranslate, Math.min(maxTranslate, translateX));
-        
-        track.style.transform = `translateX(${translateX}px)`;
-    }, { passive: true });
-    
+        const currentY = e.touches[0].clientY;
+        const diffX = Math.abs(currentX - startX);
+        const diffY = Math.abs(currentY - startY);
+
+        // Determine swipe direction on first significant movement
+        if (!isHorizontalSwipe && (diffX > 5 || diffY > 5)) {
+            isHorizontalSwipe = diffX > diffY;
+        }
+
+        // Only handle horizontal swipes and prevent vertical scroll
+        if (isHorizontalSwipe) {
+            e.preventDefault();
+
+            const diff = currentX - startX;
+            let translateX = -currentIndex * cardStep + diff;
+
+            // Boundary checks
+            const minTranslate = -maxIndex * cardStep;
+            const maxTranslate = 0;
+            translateX = Math.max(minTranslate, Math.min(maxTranslate, translateX));
+
+            track.style.transform = `translateX(${translateX}px)`;
+        }
+    }, { passive: false });
+
     track.addEventListener('touchend', function() {
         if (!isDragging) return;
-        
+
         isDragging = false;
         track.style.transition = 'transform 0.3s ease-in-out';
-        
-        const diff = currentX - startX;
-        const threshold = cardStep * 0.3; // 30% of card width for better snapping
-        
-        if (diff > threshold && currentIndex > 0) {
-            currentIndex--;
-        } else if (diff < -threshold && currentIndex < maxIndex) {
-            currentIndex++;
+
+        // Only change slide if it was a horizontal swipe
+        if (isHorizontalSwipe) {
+            const diff = currentX - startX;
+            const threshold = cardStep * 0.3;
+
+            if (diff > threshold && currentIndex > 0) {
+                currentIndex--;
+            } else if (diff < -threshold && currentIndex < maxIndex) {
+                currentIndex++;
+            }
         }
-        
+
         updateCarousel();
+        isHorizontalSwipe = false;
     });
     
     // Keyboard navigation
