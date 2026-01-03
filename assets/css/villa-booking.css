@@ -964,3 +964,21 @@ body.villa-booking-open {
         display: none !important;
     }
 }
+
+.wpbs-form-field-label span {
+    font-family: 'Amiri', serif !important;
+    text-transform: uppercase !important;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    color: #3d332f; 
+}
+
+.wpbs-payment-method-label.wpbs-payment-method-label-woocommerce {
+    font-family: 'Amiri', serif !important;
+    text-transform: uppercase !important;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    color: #3d332f;
+}
