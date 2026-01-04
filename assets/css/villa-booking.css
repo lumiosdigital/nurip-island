@@ -538,11 +538,12 @@ body.modal-open {
     }
 
     .villa-booking-header {
-        padding: 25px 15px;
+        padding: 25px 50px 25px 15px;
     }
 
     .villa-booking-title {
         font-size: 24px;
+        padding-right: 10px;
     }
 
     .villa-booking-subtitle {
@@ -623,12 +624,14 @@ body.modal-open {
     }
 
     .villa-booking-header {
-        padding: 20px 12px;
+        padding: 20px 45px 20px 12px;
     }
 
     .villa-booking-title {
-        font-size: 20px;
+        font-size: 18px;
         letter-spacing: -0.5px;
+        line-height: 1.2;
+        padding-right: 5px;
     }
 
     .villa-booking-subtitle {
