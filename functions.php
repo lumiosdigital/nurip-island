@@ -79,3 +79,9 @@ require_once get_template_directory() . '/inc/meta-boxes.php';
  * Moved to inc/template-functions.php for better organization
  */
 require_once get_template_directory() . '/inc/template-functions.php';
+
+/**
+ * Availability Results Page Meta Box
+ * Custom field for configuring search calendar IDs
+ */
+require_once get_template_directory() . '/inc/availability-results-meta.php';

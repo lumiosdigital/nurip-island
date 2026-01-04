@@ -34,37 +34,17 @@ get_header(); ?>
                 // WPBS Search Widget
                 // This outputs the search form and handles the results display
                 if ( shortcode_exists( 'wpbs-search' ) ) {
-                    
+
                     /**
-                     * Collect all villa calendar IDs
+                     * Get calendar IDs from custom field
+                     * Default to calendars: 1, 4, 5, and 6 if not set
                      */
-                    $villa_calendar_ids = array();
-                    
-                    $villas_query = new WP_Query( array(
-                        'post_type'      => 'villa',
-                        'post_status'    => 'publish',
-                        'posts_per_page' => -1,
-                        'no_found_rows'  => true,
-                        'fields'         => 'ids',
-                    ) );
-                    
-                    if ( $villas_query->have_posts() ) {
-                        foreach ( $villas_query->posts as $villa_id ) {
-                            $calendar_id = get_post_meta( $villa_id, 'villa_calendar_id', true );
-                            if ( ! empty( $calendar_id ) ) {
-                                $villa_calendar_ids[] = absint( $calendar_id );
-                            }
-                        }
+                    $calendar_ids_string = get_post_meta( get_the_ID(), 'search_calendar_ids', true );
+
+                    // Default calendar IDs if custom field is empty
+                    if ( empty( $calendar_ids_string ) ) {
+                        $calendar_ids_string = '1,4,5,6';
                     }
-                    
-                    wp_reset_postdata();
-                    
-                    // De-duplicate and build calendars string
-                    $villa_calendar_ids = array_unique( array_filter( $villa_calendar_ids ) );
-                    $calendar_ids_string = ! empty( $villa_calendar_ids )
-                        ? implode( ',', $villa_calendar_ids )
-                        : 'all';
-                    
 
                     $shortcode = sprintf(
                         '[wpbs-search calendars="%1$s" language="auto" start_day="1" title="no" mark_selection="yes" selection_type="date_range" minimum_stay="0" featured_image="yes" starting_price="yes" results_layout="grid" results_per_page="9" show_results_on_load="no"]',
